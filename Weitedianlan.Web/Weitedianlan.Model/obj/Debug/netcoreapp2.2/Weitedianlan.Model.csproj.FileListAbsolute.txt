@@ -1,0 +1,9 @@
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\bin\Debug\netcoreapp2.2\Weitedianlan.Model.deps.json
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\bin\Debug\netcoreapp2.2\Weitedianlan.Model.dll
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\bin\Debug\netcoreapp2.2\Weitedianlan.Model.pdb
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\obj\Debug\netcoreapp2.2\Weitedianlan.Model.csprojAssemblyReference.cache
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\obj\Debug\netcoreapp2.2\Weitedianlan.Model.AssemblyInfoInputs.cache
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\obj\Debug\netcoreapp2.2\Weitedianlan.Model.AssemblyInfo.cs
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\obj\Debug\netcoreapp2.2\Weitedianlan.Model.csproj.CoreCompileInputs.cache
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\obj\Debug\netcoreapp2.2\Weitedianlan.Model.dll
+F:\Visual Studio 2015\威特电缆\Weitedianlan.Web\Weitedianlan.Model\obj\Debug\netcoreapp2.2\Weitedianlan.Model.pdb

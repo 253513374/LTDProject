@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackEndServer", "LogisticInfos\BackEndServer.csproj", "{78B9D576-82EF-40FA-BEA5-ADAD961C2E9B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78B9D576-82EF-40FA-BEA5-ADAD961C2E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78B9D576-82EF-40FA-BEA5-ADAD961C2E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78B9D576-82EF-40FA-BEA5-ADAD961C2E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78B9D576-82EF-40FA-BEA5-ADAD961C2E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B991BED-E817-47BC-8852-BE01AED0CD38}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://qinxishi.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = LogisticInfos\\BackEndServer.csproj
+		SccProjectName1 = LogisticInfos
+		SccLocalPath1 = LogisticInfos
+	EndGlobalSection
+EndGlobal

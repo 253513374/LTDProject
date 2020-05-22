@@ -1,0 +1,72 @@
+﻿<Window x:Class="ServerProt.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ServerProt"
+        mc:Ignorable="d"
+        Title="威特电缆集团防伪查询V2.0.624"
+        WindowStartupLocation="CenterScreen"
+        Unloaded="Window_Unloaded" 
+        Loaded="Window_Loaded"
+      Height="300" Width="500">
+    <Window.Resources>
+        <Thickness x:Key="ControlMargin">0 5 0 0</Thickness>
+        
+    </Window.Resources>
+    <Grid DataContext="{Binding ServerUri}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"></ColumnDefinition>
+            <ColumnDefinition Width="50*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0"  Margin="15">
+            <Label Content="服务器IP:" 
+                   VerticalAlignment="Center" 
+                   Margin="{StaticResource ControlMargin}"/>
+
+            <TextBox   Text="{Binding ServerIP}"
+                       x:Name="txbServerIP"
+                       VerticalAlignment="Stretch"
+                       HorizontalAlignment="Left"  
+                       Margin="{StaticResource ControlMargin}"
+                       Width="185"/>
+
+            <Label Content="端口:"
+                   Margin="{StaticResource ControlMargin}"
+                   VerticalAlignment="Center" />
+            <TextBox  Text="{Binding ServerProt}"
+                     Margin="{StaticResource ControlMargin}"  
+                     x:Name="Serverprot" 
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Left"  
+                     Width="65"  />
+            <Separator HorizontalAlignment="Stretch" Margin="{StaticResource ControlMargin}" ></Separator>
+            <WrapPanel  VerticalAlignment="Center" 
+                        HorizontalAlignment="Stretch"
+                        Margin="{StaticResource ControlMargin}">
+
+                <Button Content="启动服务器" 
+                         Margin="{StaticResource ControlMargin}" 
+                       
+                        Click="StartButton_Click" x:Name="StartButton"  />
+
+                <Separator Width="65" Visibility="Hidden"></Separator>
+
+                <Button Content="关闭服务器"  
+                       
+                        x:Name="StopButton" 
+                        Click="StopButton_Click"   
+                        Margin="{StaticResource ControlMargin}"  />
+            </WrapPanel>
+
+        </StackPanel>
+
+        <ListBox 
+                Margin="{StaticResource ControlMargin}"
+                HorizontalAlignment="Stretch"  
+                VerticalAlignment="Stretch"  
+                Grid.Column="1">
+
+        </ListBox>
+    </Grid>
+</Window>

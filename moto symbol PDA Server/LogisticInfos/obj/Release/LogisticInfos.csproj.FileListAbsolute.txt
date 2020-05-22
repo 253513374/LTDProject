@@ -1,0 +1,207 @@
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\LogisticInfos.exe.config
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\LogisticInfos.exe
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\LogisticInfos.pdb
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\BLL.dll
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\CFG.dll
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\Hprose.dll
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\DAL.dll
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\BLL.pdb
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\CFG.pdb
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\bin\Release\DAL.pdb
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\MainWindow.baml
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\MainWindow.g.cs
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\App.g.cs
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos_Content.g.cs
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos_MarkupCompile.cache
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos.g.resources
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos.Properties.Resources.resources
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos.exe
+D:\CSApp\CSharpApp\VS2012\Project\PPK365InterFace\LogisticInfos\obj\Release\LogisticInfos.pdb
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\LgmServer.exe.config
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\LgmServer.exe
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\LgmServer.pdb
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\BLL.dll
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\CFG.dll
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\Hprose.dll
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\DAL.dll
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\BLL.pdb
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\CFG.pdb
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\bin\Release\DAL.pdb
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\MainWindow.baml
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\MainWindow.g.cs
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\App.g.cs
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LgmServer.g.resources
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LgmServer.exe
+E:\解决方案\net项目\老干妈-欣技\服务器端\LogisticInfos\obj\Release\LgmServer.pdb
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe.config
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.exe
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.pdb
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe.manifest
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.application
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.pdb
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\BLL.dll
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\CFG.dll
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\Hprose.dll
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\System.Numerics.dll
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\DAL.dll
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\BLL.pdb
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\CFG.pdb
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\DAL.pdb
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\MainWindow.baml
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\MainWindow.g.cs
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\App.g.cs
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.g.resources
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.exe.manifest
+E:\物流\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.application
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe.config
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.exe
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.pdb
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe.manifest
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.application
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.pdb
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\BLL.dll
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\CFG.dll
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\Hprose.dll
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\System.Numerics.dll
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\DAL.dll
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\BLL.pdb
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\CFG.pdb
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\bin\Release\DAL.pdb
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\MainWindow.baml
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\MainWindow.g.cs
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\App.g.cs
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.g.resources
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.exe.manifest
+E:\物流\采集器\燕皇采集器\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.application
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe.config
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.exe
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.pdb
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe.manifest
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.application
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.exe
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\LgmServer.pdb
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\BLL.dll
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\CFG.dll
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\Hprose.dll
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\System.Numerics.dll
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\DAL.dll
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\BLL.pdb
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\CFG.pdb
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\bin\Release\DAL.pdb
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\MainWindow.baml
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\MainWindow.g.cs
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\App.g.cs
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.g.resources
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.exe.manifest
+E:\物流\客户信息\小兔哥\服务器端\LogisticInfos\obj\Release\LgmServer.application
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\LgmServer.exe.config
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer.exe
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer.pdb
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\MainWindow.baml
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\MainWindow.g.cs
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\App.g.cs
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer.g.resources
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\LgmServer.exe.manifest
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\LgmServer.application
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\LgmServer.exe
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\LgmServer.pdb
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\BLL.dll
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\CFG.dll
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\DAL.dll
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\NLog.dll
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\System.Numerics.dll
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\BLL.pdb
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\CFG.pdb
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\DAL.pdb
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\bin\Release\NLog.xml
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer.exe.manifest
+D:\解决方案\贴针灸项目\2015-8-31\服务端\LogisticInfos\obj\Release\LgmServer.application
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\LgmServer.exe.config
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer.exe
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer.pdb
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\LgmServer.exe.manifest
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\LgmServer.application
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\LgmServer.exe
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\LgmServer.pdb
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\BLL.dll
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\CFG.dll
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\DAL.dll
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\NLog.dll
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\System.Numerics.dll
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\BLL.pdb
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\CFG.pdb
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\DAL.pdb
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\bin\Release\NLog.xml
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\MainWindow.baml
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\MainWindow.g.cs
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\App.g.cs
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer.g.resources
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer.exe.manifest
+D:\解决方案\贴针灸项目\服务端\LogisticInfos\obj\Release\LgmServer.application
+D:\解决方案\威特电缆\服务端\LogisticInfos\bin\Release\LgmServer.exe.config
+D:\解决方案\威特电缆\服务端\LogisticInfos\obj\Release\LgmServer.exe
+D:\解决方案\威特电缆\服务端\LogisticInfos\obj\Release\LgmServer.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\LgmServer.exe.config
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer.exe
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\LgmServer.exe.manifest
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\LgmServer.application
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\LgmServer.exe
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\LgmServer.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\BLL.dll
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\CFG.dll
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\DAL.dll
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\NLog.dll
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\protobuf-net.dll
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\System.Numerics.dll
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\BLL.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\CFG.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\DAL.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\NLog.xml
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\protobuf-net.pdb
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\bin\Release\protobuf-net.xml
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LogisticInfos.csprojResolveAssemblyReference.cache
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\MainWindow.baml
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\MainWindow.g.cs
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\App.g.cs
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer_Content.g.cs
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer_MarkupCompile.cache
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer.g.resources
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer.Properties.Resources.resources
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LogisticInfos.csproj.GenerateResource.Cache
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer.exe.manifest
+D:\解决方案\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\LgmServer.application

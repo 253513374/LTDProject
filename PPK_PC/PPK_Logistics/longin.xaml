@@ -1,0 +1,187 @@
+﻿<Window
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:res="clr-namespace:PPK_Logistics.Properties"
+		xmlns:local="clr-namespace:PPK_Logistics"
+		xmlns:local2 ="clr-namespace:PPK_Logistics.Config"
+		xmlns:local3 =" clr-namespace:PPK_Logistics.Verify"
+		xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+		x:Class="PPK_Logistics.longin"
+
+		Title="longin" Height="350" Width="500" FontSize="12" ResizeMode="NoResize" ShowInTaskbar="False" BorderThickness="1" WindowStyle="None" Background="Transparent"
+		AllowsTransparency="True" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Window.Resources>
+        <local:UserReadonly x:Key="userinfo" />
+    </Window.Resources>
+    <Border BorderThickness="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" CornerRadius="0,20,20,20" MouseLeftButtonDown="Border_MouseLeftButtonDown" Margin="0,0,25,25"
+			Style="{DynamicResource WinBackground}">
+        <Border.Effect>
+            <DropShadowEffect />
+        </Border.Effect>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="45" />
+                <RowDefinition Height="100*" />
+                <RowDefinition Height="55" />
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Name="Button1" Style="{StaticResource ButtonStyle}" Click="CloseWindow" Width="25" Height="25" Content="X" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="3,3,3,3"></Button>
+            <TextBlock  Grid.Row="1" VerticalAlignment="Bottom" Text="企业溯源作业系统"  FontSize="29.333" Foreground="White" />
+
+            <Grid  Grid.Row="2">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Offset="0.1" Color="#B5CBEF" />
+                        <GradientStop Offset="1" Color="Transparent" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <WrapPanel>
+                        <Label x:Name="userid" Content="账号：" FontSize="16" Height="30" Width="63" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                        <TextBox     x:Name="textuser" FontSize="16"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="169" Height="25" Style="{StaticResource TextBoxStyle1}">
+                            <TextBox.Text>
+                                <Binding Source="{StaticResource userinfo}"  Path="UserId" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <!--<ExceptionValidationRule></ExceptionValidationRule>-->
+                                        <local:NotNullValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </WrapPanel>
+                    <WrapPanel VerticalAlignment="Top">
+                        <Rectangle RenderTransformOrigin="1,0.5"  Width="63"  Height="25"  HorizontalAlignment="Left" VerticalAlignment="Stretch"  Style="{StaticResource Rect}">
+                            <Rectangle.Fill>
+                                <VisualBrush Visual="{Binding ElementName=userid}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Rectangle  RenderTransformOrigin="1,0.5" Width="169"  Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource Rect}">
+                            <Rectangle.Fill>
+                                <VisualBrush Visual="{Binding ElementName=textuser}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <Label x:Name="passid" Content="密码：" Height="30" Width="63" FontSize="16" HorizontalAlignment="Left" />
+                        <PasswordBox x:Name="Passwordtext"   HorizontalAlignment="Left"  Width="169" Height="25" Style="{DynamicResource PasswordBoxStyle1}" Password="">
+                            <PasswordBox.Resources>
+                                <LinearGradientBrush x:Key="TextBoxBorder" EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">
+                                    <GradientStop Color="#ABADB3" Offset="0.05" />
+                                    <GradientStop Color="#E2E3EA" Offset="0.07" />
+                                    <GradientStop Color="#E3E9EF" Offset="1" />
+                                </LinearGradientBrush>
+                                <Style x:Key="PasswordBoxStyle1" TargetType="{x:Type PasswordBox}">
+                                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource TextBoxBorder}" />
+                                    <Setter Property="FontFamily" Value="Times New Roman" />
+                                    <Setter Property="PasswordChar" Value="●" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                    <Setter Property="Padding" Value="1" />
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                    <Setter Property="AllowDrop" Value="true" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type PasswordBox}">
+                                                <Border x:Name="Bd"
+												BorderBrush="{TemplateBinding BorderBrush}"
+												BorderThickness="{TemplateBinding BorderThickness}"
+												Background="{TemplateBinding Background}"
+												CornerRadius="5,5,0,0">
+                                                    <!--RenderMouseOver="{TemplateBinding IsMouseOver}"
+															  RenderFocused="{TemplateBinding IsKeyboardFocusWithin}"
+															  SnapsToDevicePixels="true">-->
+                                                    <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="false">
+                                                        <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </PasswordBox.Resources>
+                        </PasswordBox>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <Rectangle RenderTransformOrigin="1,0.5"  Width="63"  Height="25"  HorizontalAlignment="Left" VerticalAlignment="Stretch"  Style="{StaticResource Rect}">
+                            <Rectangle.Fill>
+                                <VisualBrush Visual="{Binding ElementName=passid}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Rectangle  RenderTransformOrigin="1,0.5" HorizontalAlignment="Left"  VerticalAlignment="Stretch" Height="25" Width="169" Style="{StaticResource Rect}">
+                            <Rectangle.Fill>
+                                <VisualBrush Visual="{Binding ElementName=Passwordtext}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <Button Content="登      录"  FontSize="16"
+								Foreground="#FFFFFFFF" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="235" Height="32" Click="Button_Click" Style="{DynamicResource ButtonStyle1}" IsDefault="True" Template="{DynamicResource GlassButton}" BorderThickness="0,0,0,1" SnapsToDevicePixels="True" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                            <Button.Resources>
+                                <Style x:Key="ButtonFocusVisual">
+                                    <Setter Property="Control.Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="Black" StrokeThickness="0" StrokeDashArray="1 2" />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                                <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#F3F3F3" Offset="0" />
+                                    <GradientStop Color="#EBEBEB" Offset="0.5" />
+                                    <GradientStop Color="#DDDDDD" Offset="0.5" />
+                                    <GradientStop Color="#CDCDCD" Offset="1" />
+                                </LinearGradientBrush>
+                                <SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070" />
+                                <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+                                    <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+                                    <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    <Setter Property="Padding" Value="1" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Chrome"
+												BorderBrush="{TemplateBinding BorderBrush}"
+												Background="{TemplateBinding Background}"
+												CornerRadius="0"
+												BorderThickness="0">
+                                                    <!--RenderMouseOver="{TemplateBinding IsMouseOver}"
+												RenderPressed="{TemplateBinding IsPressed}"
+												RenderDefaulted="{TemplateBinding IsDefaulted}"
+												SnapsToDevicePixels="true"-->
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+															  Margin="{TemplateBinding Padding}"
+															  RecognizesAccessKey="True"
+															  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+															  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter Property="BorderBrush"  Value="#FF06CFE9" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Grid>
+            <TextBlock  Grid.Row="3" TextWrapping="Wrap" Padding="6" Text="{x:Static res:Resources.Copyrightstring}" />
+        </Grid>
+    </Border>
+</Window>

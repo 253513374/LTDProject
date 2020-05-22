@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weitedianlan.Service", "Weitedianlan.Service\Weitedianlan.Service.csproj", "{9F13532D-379A-4934-B04E-4DD239802B29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weitedianlan.Model", "Weitedianlan.Model\Weitedianlan.Model.csproj", "{61E3AB9C-2BA6-46F9-9553-5B3774C33174}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weitedianlan.Web", "Weitedianlan.Web\Weitedianlan.Web.csproj", "{1583EE01-4052-489C-BE90-DB4C366E5B7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F13532D-379A-4934-B04E-4DD239802B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F13532D-379A-4934-B04E-4DD239802B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F13532D-379A-4934-B04E-4DD239802B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F13532D-379A-4934-B04E-4DD239802B29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61E3AB9C-2BA6-46F9-9553-5B3774C33174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61E3AB9C-2BA6-46F9-9553-5B3774C33174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61E3AB9C-2BA6-46F9-9553-5B3774C33174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61E3AB9C-2BA6-46F9-9553-5B3774C33174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6D49665A-208D-4604-8686-09DC13161E4B}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://qinxishi.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Weitedianlan.Model\\Weitedianlan.Model.csproj
+		SccProjectName1 = Weitedianlan.Model
+		SccLocalPath1 = Weitedianlan.Model
+		SccProjectUniqueName2 = Weitedianlan.Service\\Weitedianlan.Service.csproj
+		SccProjectName2 = Weitedianlan.Service
+		SccLocalPath2 = Weitedianlan.Service
+		SccProjectUniqueName3 = Weitedianlan.Web\\Weitedianlan.Web.csproj
+		SccProjectName3 = Weitedianlan.Web
+		SccLocalPath3 = Weitedianlan.Web
+	EndGlobalSection
+EndGlobal

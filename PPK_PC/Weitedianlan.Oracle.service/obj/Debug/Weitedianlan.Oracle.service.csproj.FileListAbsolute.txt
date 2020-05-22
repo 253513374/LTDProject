@@ -1,0 +1,17 @@
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.Oracle.service.dll.config
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.Oracle.service.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.Oracle.service.pdb
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.SqlServer.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Oracle.ManagedDataAccess.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Oracle.ManagedDataAccess.EntityFramework.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.model.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.model.pdb
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.xml
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.SqlServer.xml
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\zh-Hans\EntityFramework.resources.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\zh-Hans\EntityFramework.SqlServer.resources.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.csprojAssemblyReference.cache
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.csproj.CopyComplete
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.pdb

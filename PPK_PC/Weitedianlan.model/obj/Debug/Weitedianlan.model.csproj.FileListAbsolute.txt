@@ -1,0 +1,4 @@
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\bin\Debug\Weitedianlan.model.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\bin\Debug\Weitedianlan.model.pdb
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\obj\Debug\Weitedianlan.model.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\obj\Debug\Weitedianlan.model.pdb

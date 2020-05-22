@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+@*<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Weitedianlan.Web</title>
+
+        <environment include="Development">
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/css/site.css" />
+        </environment>
+        <environment exclude="Development">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        </environment>
+    </head>*@
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <LINK rel="Bookmark" href="/favicon.ico">
+    <LINK rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/js/html5.js"></script>
+    <script type="text/javascript" src="/js/respond.min.js"></script>
+    <script type="text/javascript" src="/js/PIE_IE678.js"></script>
+    <![endif]-->
+    <link href="/css/H-ui.css" rel="stylesheet" type="text/css" />
+    <link href="/css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="/font/font-awesome.min.css" />
+    <!--[if IE 7]>
+    <link href="/font/font-awesome-ie7.min.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/js/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>@ViewData["Title"] - Weitedianlan.Web</title>
+</head>
+
+<body>
+    @*<nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Weitedianlan.Web</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                        </ul>
+                    </div>
+            </div>
+        </nav>
+
+        <partial name="_CookieConsentPartial" />*@
+
+    @RenderBody()
+
+
+    @*<environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+            </script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>
+
+        @RenderSection("Scripts", required: false)*@
+</body>
+</html>
+
+
+@*<!DOCTYPE HTML>
+<html style="overflow-y:hidden;">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <LINK rel="Bookmark" href="/favicon.ico">
+    <LINK rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/js/html5.js"></script>
+    <script type="text/javascript" src="/js/respond.min.js"></script>
+    <script type="text/javascript" src="/js/PIE_IE678.js"></script>
+    <![endif]-->
+    <link href="/css/H-ui.css" rel="stylesheet" type="text/css" />
+    <link href="/css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" rel="stylesheet" href="/font/font-awesome.min.css" />
+    <!--[if IE 7]>
+    <link href="/font/font-awesome-ie7.min.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/js/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>@ViewData["Title"] - Weitedianlan.Web</title>
+</head>
+<body style="overflow:hidden">
+    <header class="Hui-header cl"> 
+        <a class="Hui-logo l"  title="超级管理员">超级管理员</a> 
+        <a class="Hui-logo-m l" title=""></a> 
+        @*<span class="Hui-userbox">
+             <span class="c-white">超级管理员</span>
+        </span>
+            <a aria-hidden="false" class="Hui-nav-toggle" id="nav-toggle" href="#"></a>
+        </header>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Weitedianlan.Web</a>
+            </div>
+        </div>
+     </nav>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2019 - Weitedianlan.Web</p>
+            </footer>
+        </div>
+        <script type="text/javascript" src="/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/Validform_v5.3.2_min.js"></script>
+        <script type="text/javascript" src="/layer/layer.min.js"></script>
+        <script type="text/javascript" src="/js/H-ui.js"></script>
+        <script type="text/javascript" src="/js/H-ui.admin.js"></script>
+        @RenderSection("Scripts", required: false)
+</body>
+</html>*@

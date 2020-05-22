@@ -1,0 +1,107 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Web\\Weitedianlan.WebCore.csproj": {}
+  },
+  "projects": {
+    "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj",
+        "projectName": "Weitedianlan.model",
+        "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj"
+      },
+      "frameworks": {
+        "net45": {}
+      }
+    },
+    "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.SqlServer.Service\\Weitedianlan.SqlServer.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.SqlServer.Service\\Weitedianlan.SqlServer.Service.csproj",
+        "projectName": "Weitedianlan.SqlServer.Service",
+        "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.SqlServer.Service\\Weitedianlan.SqlServer.Service.csproj",
+        "frameworks": {
+          "net45": {
+            "projectReferences": {
+              "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj": {
+                "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net45": {}
+      }
+    },
+    "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Web\\Weitedianlan.WebCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Web\\Weitedianlan.WebCore.csproj",
+        "projectName": "Weitedianlan.WebCore",
+        "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Web\\Weitedianlan.WebCore.csproj",
+        "packagesPath": "C:\\Users\\q4528\\.nuget\\packages\\",
+        "outputPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Web\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\q4528\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {
+              "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj": {
+                "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.model\\Weitedianlan.model.csproj"
+              },
+              "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.SqlServer.Service\\Weitedianlan.SqlServer.Service.csproj": {
+                "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.SqlServer.Service\\Weitedianlan.SqlServer.Service.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
+            "Microsoft.AspNetCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.1, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NETCore.App": {
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[2.1.9, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}

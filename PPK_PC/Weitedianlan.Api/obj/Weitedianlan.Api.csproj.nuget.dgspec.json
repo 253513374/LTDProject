@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Api\\Weitedianlan.Api.csproj": {}
+  },
+  "projects": {
+    "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Api\\Weitedianlan.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Api\\Weitedianlan.Api.csproj",
+        "projectName": "Weitedianlan.Api",
+        "projectPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Api\\Weitedianlan.Api.csproj",
+        "packagesPath": "C:\\Users\\q4528\\.nuget\\packages\\",
+        "outputPath": "F:\\Visual Studio 2015\\威特电缆\\PPK_PC\\Weitedianlan.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\q4528\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "Hprose": {
+              "target": "Package",
+              "version": "[1.5.7, )"
+            },
+            "Hprose.Client": {
+              "target": "Package",
+              "version": "[1.5.7, )"
+            },
+            "Json.Net": {
+              "target": "Package",
+              "version": "[1.0.16, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}

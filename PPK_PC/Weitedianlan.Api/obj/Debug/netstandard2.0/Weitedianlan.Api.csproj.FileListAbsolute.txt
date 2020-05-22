@@ -1,0 +1,9 @@
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\bin\Debug\netstandard2.0\Weitedianlan.Api.deps.json
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\bin\Debug\netstandard2.0\Weitedianlan.Api.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\bin\Debug\netstandard2.0\Weitedianlan.Api.pdb
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\obj\Debug\netstandard2.0\Weitedianlan.Api.csprojAssemblyReference.cache
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\obj\Debug\netstandard2.0\Weitedianlan.Api.csproj.CoreCompileInputs.cache
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\obj\Debug\netstandard2.0\Weitedianlan.Api.AssemblyInfoInputs.cache
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\obj\Debug\netstandard2.0\Weitedianlan.Api.AssemblyInfo.cs
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\obj\Debug\netstandard2.0\Weitedianlan.Api.dll
+F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Api\obj\Debug\netstandard2.0\Weitedianlan.Api.pdb

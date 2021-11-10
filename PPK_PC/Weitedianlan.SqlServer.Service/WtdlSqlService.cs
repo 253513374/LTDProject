@@ -172,8 +172,8 @@ namespace Weitedianlan.SqlServer.Service
 
         public ResponseModel AddAgent(AddAgent addAgent)
         {
-            var addAgentcode = DbEntities.tAgents.AsNoTracking().Where(o => o.AName.Trim()==addAgent.AName.Trim()).Select(s=>s.AID).FirstOrDefault();
-            if (addAgentcode == null)
+            var addAgentcode = DbEntities.tAgents.AsNoTracking().Where(o => o.AID.Trim()==addAgent.AID.Trim()).Select(s=>s.AID).ToList();
+            if (addAgentcode.Count==0  )
             {
                 var agent = new tAgent()
                 {

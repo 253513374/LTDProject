@@ -277,7 +277,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>35vN+8JqjiyqQuOwST+M43/vmYUseuOorr/jkJdl9/w=</dsig:DigestValue>
+        <dsig:DigestValue>HT1Id7LzvC6qYfODvHw7z21kZQeaEHl5jlFYGWCoI7Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -289,41 +289,41 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>PcjQBYk8Zj/rqCj9g42nwvL3UJq2BX1HKNNmIVyItJs=</dsig:DigestValue>
+        <dsig:DigestValue>ps7m879JYafQsdHPql5SKOEcirMaxm5N9Rvpl4zYiVQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Weitedianlan.SqlServer.Service.dll" size="51200">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Weitedianlan.SqlServer.Service.dll" size="51712">
       <assemblyIdentity name="Weitedianlan.SqlServer.Service" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>+URNQ2NKxW1+Fc5MTb74h80bRup3bcAq5uprNdA2BNg=</dsig:DigestValue>
+        <dsig:DigestValue>p7DMndp3Mp35goEPaA3ZBWzvWaqw4aRV8DPStFQqPxY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Weitedianlan.WinUI.exe" size="67552">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Weitedianlan.WinUI.exe" size="67072">
       <assemblyIdentity name="Weitedianlan.WinUI" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>P6wjC/p0maPb2ksIpP04S33OLJW+ynptVB35CfGijbM=</dsig:DigestValue>
+        <dsig:DigestValue>Hx2QKfhz9InTjM4yuoyMM5vX9qGwSr37jlzd7kt6HJE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="Weitedianlan.WinUI.exe.config" size="3492">
+  <file name="Weitedianlan.WinUI.exe.config" size="3493">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>VlpqLv1kq9+MigpyiC3DBJZjb4QgJRn65zA+MePrPbg=</dsig:DigestValue>
+      <dsig:DigestValue>Q/ychB5QYcWgtW7f5vlczQ7y2dS5qi2s/kUSjUkbwzE=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

@@ -4,3 +4,8 @@ F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\obj\Release\Weitedi
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\obj\Release\Weitedianlan.model.dll
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\obj\Release\Weitedianlan.model.pdb
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.model\obj\Release\Weitedianlan.model.csprojAssemblyReference.cache
+F:\Visual Studio 2015\威特电缆\253513374\WTJTProject\PPK_PC\Weitedianlan.model\bin\Release\Weitedianlan.model.dll
+F:\Visual Studio 2015\威特电缆\253513374\WTJTProject\PPK_PC\Weitedianlan.model\bin\Release\Weitedianlan.model.pdb
+F:\Visual Studio 2015\威特电缆\253513374\WTJTProject\PPK_PC\Weitedianlan.model\obj\Release\Weitedianlan.model.csproj.CoreCompileInputs.cache
+F:\Visual Studio 2015\威特电缆\253513374\WTJTProject\PPK_PC\Weitedianlan.model\obj\Release\Weitedianlan.model.dll
+F:\Visual Studio 2015\威特电缆\253513374\WTJTProject\PPK_PC\Weitedianlan.model\obj\Release\Weitedianlan.model.pdb

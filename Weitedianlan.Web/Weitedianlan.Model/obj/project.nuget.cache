@@ -1,16 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "LHM9ry7jZSR6E2YS/ua1ubHyar7JEzfyW1IkyqbgopL+JPyU5wOw/k0p0seXLZok4A+Cknzd7TTAvrhLr3TA3g==",
+  "dgSpecHash": "19Mt7pw4JSL5LidCcKW1Bq2bCMHkZhWRbbG9RPWVqKLV21mB3po/cwLT8US2h2vXw36AzedJvGLAKLx88CBTpQ==",
   "success": true,
-  "projectFilePath": "F:\\Visual Studio 2015\\威特电缆\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
+  "projectFilePath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.netcore.app\\2.2.0\\microsoft.netcore.app.2.2.0.nupkg.sha512",
-    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.netcore.dotnetapphost\\2.2.0\\microsoft.netcore.dotnetapphost.2.2.0.nupkg.sha512",
-    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.netcore.dotnethostpolicy\\2.2.0\\microsoft.netcore.dotnethostpolicy.2.2.0.nupkg.sha512",
-    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.netcore.dotnethostresolver\\2.2.0\\microsoft.netcore.dotnethostresolver.2.2.0.nupkg.sha512",
-    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.netcore.platforms\\2.2.0\\microsoft.netcore.platforms.2.2.0.nupkg.sha512",
-    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.netcore.targets\\2.0.0\\microsoft.netcore.targets.2.0.0.nupkg.sha512",
-    "C:\\Users\\q4528\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+    "C:\\Users\\q4528\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
+    "C:\\Users\\q4528\\.nuget\\packages\\mediatr\\11.1.0\\mediatr.11.1.0.nupkg.sha512",
+    "C:\\Users\\q4528\\.nuget\\packages\\mediatr.contracts\\1.0.1\\mediatr.contracts.1.0.1.nupkg.sha512",
+    "C:\\Users\\q4528\\.nuget\\packages\\mediatr.extensions.microsoft.dependencyinjection\\11.0.0\\mediatr.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
+    "C:\\Users\\q4528\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

@@ -1,0 +1,105 @@
+﻿
+@page "/outgoingordersmanage"
+@using Wtdl.Repository.Data
+
+@inject WLabelStorageRepository _labelStorageRepository
+@inject IDialogService DialogService
+
+@* 出库单管理页面 *@
+    <MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
+        <MudTable Items="labelStorages" Class="mud-table-responsive"
+              Filter="new Func<GroupByWLabelStorage,bool>(FilterFunc1)"
+                  Dense="true" Striped="true" Hover="true" Bordered="true">
+            <ToolBarContent>
+                <MudText Typo="Typo.h5">扫码出库数据</MudText>
+                <MudSpacer></MudSpacer>
+                <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>ID.</MudTh>
+                <MudTh>出库单号</MudTh>
+                <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x=>x.Count)" T="GroupByWLabelStorage">出库数量</MudTableSortLabel></MudTh>
+                <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x=>x.OrderNumbels)"  T="GroupByWLabelStorage">出库单时间</MudTableSortLabel></MudTh>
+                <MudTh>客户名称</MudTh>
+                <MudTh>功能操作</MudTh>
+            </HeaderContent>
+            <RowTemplate >
+                <MudTd DataLabel="ID.">@context.ID</MudTd>
+                <MudTd DataLabel="出库单号">@context.OrderNumbels</MudTd>
+                <MudTd DataLabel="出库数量">@context.Count</MudTd>
+                <MudTd DataLabel="出库单时间">@context.Time</MudTd>
+                <MudTd DataLabel="客户名称">@context.AgentName</MudTd>
+                <MudTd DataLabel="功能">
+                    <MudStack Row="true">
+                        <MudButton Style="Width: 80px" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnViewDetails(context.OrderNumbels))">详细数据</MudButton>
+
+
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager/>
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+@code {
+    
+    private List<GroupByWLabelStorage> labelStorages = new List<GroupByWLabelStorage>();
+
+    private string searchString;
+    private async Task OnViewDetails(string ordernumbels)
+    {
+        var parameters = new DialogParameters();
+
+    // parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
+        parameters.Add("ContentTitle", "详细信息");
+
+        parameters.Add("OrderNumbels", ordernumbels);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var resultdialog = await  DialogService.ShowAsync<OutViewDetailsDialog>("Confirm", parameters, options);
+
+        var result = await resultdialog.Result;
+        
+        if (!result.Canceled)
+        {
+           // Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
+        }
+        //throw new NotImplementedException();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        labelStorages = await _labelStorageRepository.GetLatest30DaysGroupByOrderTimeAsync();
+        return;// base.OnInitializedAsync();
+    }
+    private bool FilterFunc1(GroupByWLabelStorage element) => FilterFunc(element, searchString);
+
+    private bool FilterFunc(GroupByWLabelStorage element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.OrderNumbels is not null)
+        {
+            if (element.OrderNumbels.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        if (element.AgentName is not null)
+        {
+            if (element.AgentName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        if (element.Count>=0)
+        {
+            if (element.Count.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+       
+        //if (element.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        //    return true;
+        if ($"{element.OrderNumbels} {element.AgentName}".Contains(searchString))
+            return true;
+
+        return false;
+    }
+}

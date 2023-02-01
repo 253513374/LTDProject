@@ -1,0 +1,69 @@
+﻿@using FluentValidation
+
+<MudStack  Spacing="0" AlignItems="AlignItems.Stretch" Justify="Justify.Center">
+    <MudForm @ref="@FileMudForm" Model="@fileUpload" Validation=@FunValidation>
+        <MudFileUpload @bind-Files="fileUpload.File"  For="(() => fileUpload.File)" OnFilesChanged="OnUploadFiles" 
+                       SuppressOnChangeWhenInvalid="true" T="IBrowserFile" Hidden="false" Class="flex-1" InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20" InputStyle="opacity:0">
+            <ButtonTemplate Context="context1">
+                <MudPaper Height="100%" Width="100%" Outlined="true" Class="@DragClass">
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center">
+                        <MudImage Width="200" Height="200" ObjectFit="ObjectFit.Contain" Src="@ImageBase64" alt="选择上传图片" for="context1" />
+                    </MudStack>
+                </MudPaper>
+            </ButtonTemplate>
+        </MudFileUpload>
+    </MudForm>
+</MudStack>
+
+
+@code {
+
+
+    private  string DragClass = "relative rounded-lg border-2 border-dashed pa-2  mud-width-full mud-height-full z-10";
+    //private string DragClass = DefaultDragClass;
+
+    //图片上传相关
+   
+    public MudForm FileMudForm { set; get; }
+    
+    private FileModel fileUpload = new FileModel();
+
+    [Parameter]
+    public string ImageBase64 { set; get; }
+ 
+    [Parameter]
+    public EventCallback<string> OnImageFileCallback { get; set; }
+
+
+    /// <summary>
+    /// 绑定自定义验证类【AbstractValidator<FileUploadFluent>】
+    /// </summary>
+    [Parameter]
+    public Func<object, string, Task<IEnumerable<string>>>? FunValidation { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (FunValidation is null)
+        {
+            FunValidation = new ImageFileFluentValidator().ValidateValue;
+        }
+       
+    }
+    private async Task OnUploadFiles(InputFileChangeEventArgs arg)
+    {
+        using (var stream = arg.File.OpenReadStream(arg.File.Size))
+        {
+            using (var ms = new MemoryStream())
+            {
+                await stream.CopyToAsync(ms);
+                var fileBytes = ms.ToArray();
+                ImageBase64 = $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
+                await OnImageFileCallback.InvokeAsync(ImageBase64);
+            }
+        }
+        return ;
+    }
+
+   
+
+}

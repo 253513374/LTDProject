@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Weitedianlan.Model.Response;
-using Weitedianlan.Model.Entity;
 using Weitedianlan.Service;
+
 namespace Weitedianlan.Web.Controllers
 {
     public class QueryController : Controller
@@ -18,23 +13,21 @@ namespace Weitedianlan.Web.Controllers
         {
             _WLabelService = wLabelService;
         }
+
         // GET: Query
         public ActionResult Index()
         {
-            return View( new ResponseModel() { Code=400,Status="数据为空"});
+            return View(new ResponseModel() { Code = 400, Status = "数据为空" });
         }
 
-
-
         [HttpGet]
-        public ActionResult GetQuerys(string qrcodeid,string orderid)
+        public ActionResult GetQuerys(string qrcodeid, string orderid)
         {
             // Expression<Func<W_LabelStorage, bool>> wheres;
-            var querys = _WLabelService.GetQuerys(qrcodeid, orderid,out int total);
+            var querys = _WLabelService.GetQuerys(qrcodeid, orderid, out int total);
 
-            JsonResult json= Json(new { total = total, Data = querys.Data });
+            JsonResult json = Json(new { total = total, Data = querys.Data });
             return json;
-
         }
 
         // GET: Query/Details/5

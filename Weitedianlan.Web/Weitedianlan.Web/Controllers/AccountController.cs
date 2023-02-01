@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Weitedianlan.Service;
+using System;
 using Weitedianlan.Model.Entity;
+using Weitedianlan.Service;
 using Weitedianlan.Web.Application;
 
 namespace Weitedianlan.Web.Controllers
@@ -13,6 +10,7 @@ namespace Weitedianlan.Web.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
+
         public AccountController(IUserService userService)
         {
             _userService = userService;
@@ -22,6 +20,7 @@ namespace Weitedianlan.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(AccountModel model)
@@ -44,10 +43,11 @@ namespace Weitedianlan.Web.Controllers
             {
                 IsEssential = true,
                 Expires = DateTimeOffset.UtcNow.AddMinutes(30)
-            }) ;
-            
+            });
+
             return Redirect("/");
         }
+
         public IActionResult Logout()
         {
             HttpContext.Response.Cookies.Delete(ApplicationKeys.User_Cookie_Key);

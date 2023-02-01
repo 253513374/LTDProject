@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using Weitedianlan.Model.Response;
-
 using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Request;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+using Weitedianlan.Model.Response;
 
 namespace Weitedianlan.Service
 {
@@ -19,23 +15,23 @@ namespace Weitedianlan.Service
         public static List<WlabelCount> WlabelStatic;
 
         private Db _Db;
-        public WLabelService(Db db )
+
+        public WLabelService(Db db)
         {
             _Db = db;
             WlabelStatic = new List<WlabelCount>(1000);
         }
 
-
-        public ResponseModel GetWLabelServiceList( DateTime dateTime,string selectId="0", string datetimestr="")
+        public ResponseModel GetWLabelServiceList(DateTime dateTime, string selectId = "0", string datetimestr = "")
         {
             try
             {
-                DateTime DateTimeMax = DateTime.Now; 
-                if (datetimestr!="")
+                DateTime DateTimeMax = DateTime.Now;
+                if (datetimestr != "")
                 {
-                    if (datetimestr.Contains('/')) datetimestr=datetimestr.Replace('/', '-').Trim();
+                    if (datetimestr.Contains('/')) datetimestr = datetimestr.Replace('/', '-').Trim();
                     dateTime = DateTime.ParseExact(datetimestr, "yyyy-MM-dd", System.Globalization.CultureInfo.CurrentCulture);
-  
+
                     DateTimeMax = dateTime.Date.AddDays(int.Parse(selectId));
                     DateTimeMax = DateTimeMax.AddHours(23);
                     DateTimeMax = DateTimeMax.AddMinutes(59);
@@ -86,14 +82,12 @@ namespace Weitedianlan.Service
             {
                 return new ResponseModel()
                 {
-
                     Code = 404,
                     Status = ex.Message,
                     Data = new List<WlabelCount>()
                 };
             }
         }
-
 
         public ResponseModel GetDetails(string ordernumbel)
         {
@@ -102,7 +96,6 @@ namespace Weitedianlan.Service
             var Wcount = _Db.W_LabelStorage.FromSql(sql).ToList();
             //var Wcount = (from a in _Db.W_LabelStorage
             //           where a.OrderNumbels.Trim() == ordernumbel.Trim() select(new W_LabelStorage {
-
             //               ID = a.ID,
             //               OrderNumbels = a.OrderNumbels,
             //               OrderTime = a.OrderTime,
@@ -113,34 +106,36 @@ namespace Weitedianlan.Service
             //               Dealers = a.Dealers,
             //               ExtensionName = a.ExtensionName
             //           })).ToList();
-                     
-                if (Wcount!=null&& Wcount.Count>0)
-                {
-                    var re = new ResponseModel(){
-                            Code = 200,
-                            Status = "详细信息获取失败",
-                            Data = new List<W_LabelStorage>()};
 
-                    re.Data = Wcount;
-                    return re;
-                }
-                else
+            if (Wcount != null && Wcount.Count > 0)
+            {
+                var re = new ResponseModel()
                 {
-                    return new ResponseModel(){
-                            Code = 400,
-                            Status = "找不到相关信息，请刷新列表",
-                            Data = new List<WlabelCount>()
-                    };
-                }
+                    Code = 200,
+                    Status = "详细信息获取失败",
+                    Data = new List<W_LabelStorage>()
+                };
+
+                re.Data = Wcount;
+                return re;
+            }
+            else
+            {
+                return new ResponseModel()
+                {
+                    Code = 400,
+                    Status = "找不到相关信息，请刷新列表",
+                    Data = new List<WlabelCount>()
+                };
+            }
         }
-
 
         public ResponseModel GetQuerys(string qrcodeid, string orderid, out int total)
         {
             try
             {
                 var Wcount = new List<W_LabelStorage>(2000);
-               
+
                 if (!string.IsNullOrEmpty(qrcodeid))
                 {
                     string sqlqr = string.Format(@"SELECT w.ID, w.Adminaccount, w.Dealers, w.ExtensionName,w.ExtensionOrder, w.OrderNumbels, w.OrderTime, w.OutTime, w.OutType, w.QRCode FROM W_LabelStorage AS w WHERE w.QRCode = '{0}'", qrcodeid);
@@ -150,7 +145,6 @@ namespace Weitedianlan.Service
                     {
                         Code = 200,
                         Status = "查询成功"
-
                     };
                     response.Data = new List<W_LabelStorage>(3000);
                     response.Data = Wcount;
@@ -158,8 +152,6 @@ namespace Weitedianlan.Service
                     //var query = list.OrderByDescending(o => o.ID).ToList();
                     //response.Data = list.ToList();
                     return response;
-
-
                 }
                 if (!string.IsNullOrEmpty(orderid))
                 {
@@ -169,7 +161,6 @@ namespace Weitedianlan.Service
                     {
                         Code = 200,
                         Status = "查询成功"
-
                     };
                     response.Data = new List<W_LabelStorage>(3000);
                     response.Data = Wcount;
@@ -182,14 +173,14 @@ namespace Weitedianlan.Service
                 return new ResponseModel
                 {
                     Code = 400,
-                    Status ="没有查询条件",
+                    Status = "没有查询条件",
                     Data = new List<W_LabelStorage>()
                 };
             }
             catch (Exception ex)
             {
                 total = 0;
-                return  new ResponseModel
+                return new ResponseModel
                 {
                     Code = 404,
                     Status = ex.Message,

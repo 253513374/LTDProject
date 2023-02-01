@@ -1,0 +1,393 @@
+﻿@page "/fileuploadrecordmanage"
+@using System.Security.Cryptography
+@using System.Diagnostics
+@using Weitedianlan.Model.Enum
+
+
+@inject IWebHostEnvironment _env
+
+@inject FileUploadRecordRepository _fileUploadRecordRepository
+@inject VerificationCodeRepository _verificationCodeRepository
+@inject ILogger<FileUploadRecordManage> _logger
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+@*文件上传数据 管理页面*@
+    <MudPaper Height="400" Elevation="1">
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context">
+                    加载验证码文件
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+
+        @if (files != null)
+        {
+            <MudText Typo="@Typo.h6">文件数量：@files.Count() @(files.Count() == 1 ? "" : "s"):</MudText>
+            <MudList>
+                @foreach (var file in files)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                        <MudStack Row="true">
+                            <MudText Typo="Typo.h5">文件名称： @file.Name</MudText>
+                            <code>文件大小：@(file.Size / 1024) kb : @file.Size bytes</code>
+                            <MudText Color="Color.Success">@FileStatus</MudText>
+                        </MudStack>
+                        <MudStack Row="true" AlignItems="AlignItems.End" >
+                            <MudButton Variant="Variant.Text" IconSize="Size.Small" Size="Size.Small" Color="Color.Error" OnClick="@(s => OnDataImpDelete(file))" EndIcon="@Icons.Material.Filled.Delete">删除</MudButton>
+                            <MudFab Style="Width: 220px" IconSize="Size.Small" Size="Size.Small" Color="Color.Primary" OnClick="@(s => OnDataImp(file))" EndIcon="@Icons.Material.Filled.FileCopy" Label="上传文本文件"/>
+                            <MudProgressLinear Min="@MinProgress" Max="@MaxProgress" Color="Color.Primary" Value="@uploadedBytes"/>
+                        </MudStack>
+                    </MudListItem>
+                }
+            </MudList>
+        }
+    </MudPaper>
+
+
+    <MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
+        <MudTable Items="fileUploadRecords" Class="mud-table-responsive" Dense="true" Striped="true" Hover="true" Bordered="true">
+            <ToolBarContent>
+                <MudStack>
+                    
+                    <MudText Typo="Typo.caption" Color="Color.Warning">提示：表格中的删除功能，是删除表格记录（在数据库中）以及删除上传的文本文件，已经导入的数据在这里无法删除</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Dark">
+                        文件状态：
+                        [NotStarted：还未导入数据库],
+                        [Success：成功导入数据库],
+                        [Failed：导入数据库失败].
+                    </MudText>
+                </MudStack>
+            </ToolBarContent>
+            <ColGroup>
+                <col style="width: 40px;" />
+                <col style="width: 40px;"/>
+                <col style="width: 40px;" />
+                <col style="width: 40px;" />
+                <col style="width: 40px;" />
+                <col style="width: 160px;" />
+                <col style="width: 40px;" />
+                <col style="width: 40px;" />
+                <col style="width: 160px;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh>ID.</MudTh>
+                <MudTh>源文件名称</MudTh>
+                <MudTh>数据大小</MudTh>
+                <MudTh>文件大小</MudTh>
+                <MudTh>文件状态</MudTh>
+                <MudTh>文件SHA256</MudTh>
+                <MudTh>文件上传时间</MudTh>
+                <MudTh>文件上传人</MudTh>
+                <MudTh>功能操作</MudTh>
+            </HeaderContent>
+            <RowTemplate >
+                <MudTd DataLabel="ID.">@context.Id</MudTd>
+                <MudTd DataLabel="文件名称">@context.FileName</MudTd>
+                <MudTd DataLabel="导入数据量">@context.FileCount</MudTd>
+                <MudTd DataLabel="文件大小">@context.FileSize</MudTd>
+                <MudTd DataLabel="文件状态">@context.Status</MudTd>
+                <MudTd DataLabel="文件SHA256">@context.FileHash</MudTd>
+                <MudTd DataLabel="文件上传时间">@context.UploadTime</MudTd>
+                <MudTd DataLabel="文件上传人">@context.AdminUser</MudTd>
+
+                <MudTd DataLabel="功能">
+                    <MudStack Row="true">
+                    @if (context.Status!=ImportStatus.Success)
+                    {
+                        
+                    }
+                    <MudButton Disabled="@(context.Status==ImportStatus.Success?true:false)" Style="Width: 80px" Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnOverlay(context))">导入数据</MudButton>
+
+                        
+                    <MudButton Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => DeleteFileUploadRecord(context))">删除</MudButton>
+
+                    </MudStack>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+        <MudOverlay Visible="isVisible" DarkBackground="true" Absolute="true" AutoClose="isAutoClose">
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+
+                @if (isClicked)
+                {
+                    <MudProgressCircular Color="Color.Primary" Style="height: 70px; width: 70px;" Indeterminate="true"/>
+                    <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Success">@improtMsg</MudText>
+                }
+                else
+                {
+                    <MudFab  Style="Width:180px" IconSize="Size.Small" Size="Size.Small" Color="Color.Primary" OnClick="@(s =>OnImprotVCode())" EndIcon="@Icons.Material.Filled.ImportExport" Label="确认导入数据" />
+                }
+               
+            </MudStack>
+        </MudOverlay>
+    </MudPaper>
+
+
+
+@code {
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private double uploadedBytes { set; get; }
+    private double MinProgress { set; get; }
+    private double MaxProgress { set; get; }
+    private bool isVisible { set; get; } = false;
+    private bool isAutoClose { set; get; } = false;
+    
+    private string improtMsg { set; get; } = "正在导入数据，请稍后...";
+    private string FileStatus { set; get; } = "";
+    private bool isClicked = false;
+
+    private IEnumerable<FileUploadRecord> fileUploadRecords = new List<FileUploadRecord>();
+
+    private FileUploadRecord improRecord;
+
+    protected override async Task OnInitializedAsync()
+    {
+        fileUploadRecords = await _fileUploadRecordRepository.GetAllAsync();
+    }
+
+    private void UploadFiles(IBrowserFile file)
+    {
+        files.Add(file);
+        //TODO 上传文件到服务器
+    }
+
+    private async Task OnDataImp(IBrowserFile file)
+    {
+        MinProgress = 0.0;
+        MaxProgress = file.Size;
+        //判断文件夹是否存在，否则创建文件夹
+        var path = Path.Combine(_env.ContentRootPath, "UploadFiles");
+        if (File.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+            _logger.LogInformation($"文件夹路径不存在，创建文件夹:{path}");
+        }
+        else
+        {
+            _logger.LogInformation($"路径已经存在:{path}");
+        }
+
+        //生成文件路径
+        var filePath = Path.Combine(path, file.Name);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+            _logger.LogInformation($"文件已经存在，删除文件:{file.Name}");
+        }
+
+
+        var trustedFileName = $"{Path.GetRandomFileName()}{file.Name.Substring(file.Name.Length-4,4)}";
+        var wpath = Path.Combine(path, trustedFileName);
+
+        using (FileStream fileStream = new(wpath, FileMode.CreateNew))
+        {
+            using (var stream = file.OpenReadStream(file.Size))
+            {
+               //var hash256 =   ComputeFileHash(stream);
+          
+                var buffer = new byte[1024 * 10];//每次写入10kb数据,建议不大于30kb
+                var bytesRead = 0;
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                {
+                    uploadedBytes += bytesRead;
+
+                    await fileStream.WriteAsync(buffer, 0, bytesRead);//写入文件
+                }
+                
+            }
+        }
+
+        var hashfile= GlobalUtility.ComputeFileHash(wpath);
+        var re = await _fileUploadRecordRepository.ExistAsync(f => f.FileHash == hashfile);
+        if (re)
+        {
+           
+            Snackbar.Add($"{file.Name}已经上传，无需重复上传文本文件", Severity.Warning);
+            uploadedBytes = 0;
+            File.Delete(wpath);
+            return;
+        }
+
+        var result=await _fileUploadRecordRepository.AddAsync(new FileUploadRecord()
+        {
+                FileHash = GlobalUtility.ComputeFileHash(wpath),
+                FileName = file.Name,
+                FileName2 = trustedFileName,
+                FilePath = wpath,
+                FileSize = file.Size,
+                UploadTime = DateTime.Now,
+                AdminUser = "admin",
+                Status = ImportStatus.NotStarted
+        });
+        if (result > 0)
+        {
+            FileStatus = "上传完成";
+            fileUploadRecords = await _fileUploadRecordRepository.GetAllAsync();
+
+
+            _logger.LogInformation($"文件上传成功:{file.Name}");
+        }
+        else
+        {
+            _logger.LogInformation($"文件上传失败:{file.Name}");
+        }
+        //TODO 读取文件内容，导入数据
+        return;
+    }
+
+    ///// <summary>
+    ///// 计算文件哈希值
+    ///// </summary>
+    ///// <param name="filePath"></param>
+    ///// <returns></returns>
+    //private string ComputeFileHash(string filePath)
+    //{
+    //    using (var sha256 = SHA256.Create())
+    //    {
+    //        using (var stream = File.OpenRead(filePath))
+    //        {
+    //            var hash = sha256.ComputeHash(stream);
+    //            return BitConverter.ToString(hash).Replace("-", "").ToLower();
+    //        }
+    //    }
+    //}
+
+    //private string ComputeFileHash(Stream stream)
+    //{
+    //    using (var sha256 = SHA256.Create())
+    //    {
+
+    //        //stream.r
+    //        var hash = sha256.ComputeHash(stream);
+    //        return BitConverter.ToString(hash).Replace("-", "").ToLower();
+    //    }
+    //}
+
+
+    private async Task DeleteFileUploadRecord(FileUploadRecord context)
+    { 
+        bool? resultmsgBox = await DialogService.ShowMessageBox(
+        "警告", 
+        "是否确定删除，删除无法恢复！", 
+            yesText:"删除!", cancelText:"取消");
+
+        if (resultmsgBox.HasValue && resultmsgBox.Value)
+        {
+            var result = await _fileUploadRecordRepository.DeleteAsync(context);
+            if (result > 0)
+            {
+                Snackbar.Add($"删除文件{context.FileName}成功", Severity.Success);
+                fileUploadRecords = await _fileUploadRecordRepository.GetAllAsync();
+                 _logger.LogInformation($"文件删除成功:{context.FileName}");
+            }
+            else
+            {
+                Snackbar.Add($"删除文件{context.FileName}失败", Severity.Error);
+                _logger.LogInformation($"文件删除失败:{context.FileName}");
+            }
+        }
+    }
+
+
+    private Task OnOverlay(FileUploadRecord record)
+    {
+        isVisible = true;
+        isClicked = false;
+        improRecord = record;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    private async Task OnImprotVCode()
+    {
+        if (isClicked)
+        {
+            return;
+        }
+
+        isClicked = true;
+        
+        StateHasChanged();
+
+        if (improRecord.Status == ImportStatus.Success)
+        {
+            OnImprotVCodeSuccess();
+            return;
+        }
+
+       improtMsg = "正在导入数据，请稍后...";
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        var insertresult = await _verificationCodeRepository.BulkInsertAsync(improRecord.FilePath);
+        stopwatch.Stop();
+       // var elapsedTime = stopwatch.ElapsedMilliseconds;
+        if (insertresult.IsSuccess)
+        {
+            
+            _logger.LogInformation($"成功导入:{insertresult.SuccessCount} 数据");
+            _logger.LogInformation($"总共耗时:{stopwatch.ElapsedMilliseconds}毫秒");
+
+            improtMsg = $"{improRecord.FileName}成功导入:{insertresult.SuccessCount} 数据,总共耗时:{stopwatch.ElapsedMilliseconds}毫秒";
+
+            Snackbar.Add(improtMsg, Severity.Success, config =>
+            {
+                config.RequireInteraction = true;
+               
+            });
+            improRecord.FileCount = insertresult.SuccessCount;
+            improRecord.Status = ImportStatus.Success;
+            var result = await _fileUploadRecordRepository.UpdateAsync(improRecord);
+            if (result >0 )
+            {
+                fileUploadRecords = await _fileUploadRecordRepository.GetAllAsync();
+                _logger.LogInformation($"文件导入数据更新成功:{improRecord.FileHash}");
+            }
+        }
+        else
+        {
+            improtMsg = $"{improRecord.FileName}导入失败{insertresult.Message},总共耗时:{stopwatch.ElapsedMilliseconds}毫秒";
+            Snackbar.Add(improtMsg, Severity.Error, config =>
+            {
+                config.RequireInteraction = true;
+               
+            });
+        }
+        isClicked = false;
+        isAutoClose = true;
+        isVisible = false;
+        return;
+    }
+
+
+    private void OnImprotVCodeSuccess()
+    {
+        Snackbar.Add($"{improRecord.FileName}已经成功导入数据，无法重复导入数据", Severity.Warning, config =>
+        {
+            config.RequireInteraction = true;
+
+        });
+        isClicked = false;
+        isAutoClose = true;
+        isVisible = false;
+        StateHasChanged();
+        return;// Task.CompletedTask;
+    }
+
+    private Task OnDataImpDelete(IBrowserFile file)
+    {
+        files.Remove(file);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}
+

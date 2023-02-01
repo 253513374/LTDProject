@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Weitedianlan.Model.Request
+﻿namespace Weitedianlan.Model.Request
 {
     public class WlabelCount
     {
-
         /// <summary>
         /// 出库时间
         /// </summary>
         public string OutTime { get; set; }
 
-      
         public string Aname { get; set; }
 
         /// <summary>

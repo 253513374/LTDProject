@@ -1,5 +1,3 @@
-using System;
-
 namespace Weitedianlan.Web.Models
 {
     public class ErrorViewModel

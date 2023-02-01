@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Weitedianlan.Service;
-
 
 namespace Weitedianlan.Web.Controllers
 {
     public class AgentController : Controller
     {
-
         private AgentService AgentService;
 
-        public AgentController(AgentService agentService )
+        public AgentController(AgentService agentService)
         {
             this.AgentService = agentService;
         }
+
         // GET: Agent
         public ActionResult Index()
         {

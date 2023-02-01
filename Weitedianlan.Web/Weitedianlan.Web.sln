@@ -1,13 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28922.388
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weitedianlan.Service", "Weitedianlan.Service\Weitedianlan.Service.csproj", "{9F13532D-379A-4934-B04E-4DD239802B29}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weitedianlan.Model", "Weitedianlan.Model\Weitedianlan.Model.csproj", "{61E3AB9C-2BA6-46F9-9553-5B3774C33174}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weitedianlan.Web", "Weitedianlan.Web\Weitedianlan.Web.csproj", "{1583EE01-4052-489C-BE90-DB4C366E5B7C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Web.Api", "Wtdl.Web.Api\Wtdl.Web.Api.csproj", "{C59AF060-3EEF-46DA-9B01-532228399375}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61E3AB9C-2BA6-46F9-9553-5B3774C33174} = {61E3AB9C-2BA6-46F9-9553-5B3774C33174}
+		{84B86FF3-ED7E-4724-812D-9137CC83F296} = {84B86FF3-ED7E-4724-812D-9137CC83F296}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Repository", "Wtdl.Repository\Wtdl.Repository.csproj", "{84B86FF3-ED7E-4724-812D-9137CC83F296}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Admin", "Wtdl.Admin\Wtdl.Admin.csproj", "{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61E3AB9C-2BA6-46F9-9553-5B3774C33174} = {61E3AB9C-2BA6-46F9-9553-5B3774C33174}
+		{84B86FF3-ED7E-4724-812D-9137CC83F296} = {84B86FF3-ED7E-4724-812D-9137CC83F296}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,26 +41,23 @@ Global
 		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1583EE01-4052-489C-BE90-DB4C366E5B7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C59AF060-3EEF-46DA-9B01-532228399375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C59AF060-3EEF-46DA-9B01-532228399375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C59AF060-3EEF-46DA-9B01-532228399375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C59AF060-3EEF-46DA-9B01-532228399375}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84B86FF3-ED7E-4724-812D-9137CC83F296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84B86FF3-ED7E-4724-812D-9137CC83F296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84B86FF3-ED7E-4724-812D-9137CC83F296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84B86FF3-ED7E-4724-812D-9137CC83F296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D49665A-208D-4604-8686-09DC13161E4B}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://qinxishi.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Weitedianlan.Model\\Weitedianlan.Model.csproj
-		SccProjectName1 = Weitedianlan.Model
-		SccLocalPath1 = Weitedianlan.Model
-		SccProjectUniqueName2 = Weitedianlan.Service\\Weitedianlan.Service.csproj
-		SccProjectName2 = Weitedianlan.Service
-		SccLocalPath2 = Weitedianlan.Service
-		SccProjectUniqueName3 = Weitedianlan.Web\\Weitedianlan.Web.csproj
-		SccProjectName3 = Weitedianlan.Web
-		SccLocalPath3 = Weitedianlan.Web
 	EndGlobalSection
 EndGlobal

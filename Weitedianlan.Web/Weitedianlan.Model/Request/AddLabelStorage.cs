@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Weitedianlan.Model.Request
+﻿namespace Weitedianlan.Model.Request
 {
-    public  class AddLabelStorage
+    public class AddLabelStorage
     {
     }
 }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,11 +33,11 @@ namespace Weitedianlan.Web
             services.AddTransient<WLabelService>();
             services.AddTransient<Db>();
 
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();//用于获取请求上下文
             services.AddTransient<IUserService, UserService>();
-            services.AddMvc();
+            //services.AddMvc();  net core 2.2
 
+            services.AddControllers();//net 7
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -62,18 +56,30 @@ namespace Weitedianlan.Web
 
             ConfigApp.SetAppSetting(Configuration.GetSection("SqlContext"));
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            //   app.UseAuthentication();
+            //app.UseAuthorization();
+
+            app.UseEndpoints(endpoint =>
             {
-                routes.MapRoute(
+                // Endpoint.
+                endpoint.MapControllers();
+                endpoint.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
 
             ServiceLocator.Instance = app.ApplicationServices;
-
         }
     }
 }

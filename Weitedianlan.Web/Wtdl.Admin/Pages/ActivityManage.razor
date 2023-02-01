@@ -1,0 +1,67 @@
+﻿@page "/activitymanage"
+
+@inject IDialogService DialogService
+@inject LotteryActivityRepository LotteryActivityRepository
+
+@*活动管理页面*@
+
+
+<MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddActivity())">添加奖品</MudButton>
+
+@inject AgentRepository _agentRepository
+
+
+
+@*<MudDropContainer T="Participant" DraggingClass="mud-alert-text-warning" ItemDraggingClass="mud-alert-text-warning" Items="Participants" ItemsSelector="@((item,dropzone) => item.Identifier == dropzone)" NoDropClass="mud-border-error" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        <MudDropZone T="Participant" Identifier="客户信息" DraggingClass="mud-alert-text-info" ItemDraggingClass="mud-alert-text-info" Class="rounded-lg border-2 border-dashed mud-border-lines-default pa-6 ma-8">
+            <MudText Typo="Typo.h6" Class="mb-4">客户信息</MudText>
+        </MudDropZone>
+        <MudDropZone T="Participant" Identifier="参与活动人员" Class="rounded-lg border-2 border-dashed mud-border-lines-default pa-6 ma-8 flex-grow-1">
+            <MudText Typo="Typo.h6" Class="mb-4">参与活动人员</MudText>
+        </MudDropZone>
+    </ChildContent>
+    <ItemRenderer>
+        <div class="mud-elevation-25 pa-4 my-4">@context.PName</div>
+    </ItemRenderer>
+</MudDropContainer>*@
+
+
+@code {
+
+    private IEnumerable<LotteryActivity> Activities;
+   // private List<Participant> Participants = new();
+
+   // private List<Prize> prizes { set; get; } = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        //Participants = await _agentRepository.GetParticipantsAsync();
+        Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
+      //  return base.OnInitializedAsync();
+    }
+
+    protected async Task OnAddActivity()
+    {
+    // AddModal = true;
+        var parameters = new DialogParameters();
+
+    // parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
+        parameters.Add("ContentTitle", "建立新活动");
+    //parameters.Add("Color", Color.Error);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium,FullWidth = true};
+        var resultdialog = await DialogService.ShowAsync<AddActivityDialog>("Confirm", parameters, options);
+        var result = await resultdialog.Result;
+        
+        if (!result.Canceled)
+        {
+            Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
+        }
+    // _selectedPrize = new Prize();
+    }
+
+
+
+
+
+}

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Weitedianlan.Web.Application;
 
 namespace Weitedianlan.Web.Framework
@@ -12,7 +9,6 @@ namespace Weitedianlan.Web.Framework
     {
         public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
-
             if (string.IsNullOrEmpty(WebContext.AdminName))
             {
                 if (filterContext.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest")

@@ -1,0 +1,156 @@
+﻿@page "/prizemanage"
+
+@inject IDialogService DialogService
+
+@*奖品管理页面*@
+
+
+  
+    <MudTable Items="Prizes" Dense="true" Striped="true" 
+              Filter="new Func<Prize,bool>(FilterFunc1)" @bind-SelectedItem="selectedPrize"
+              Bordered="true" Hover="true">
+        <ToolBarContent>
+            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddPrize())">添加奖品</MudButton>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>奖品名称</MudTh>
+            <MudTh>奖品类型</MudTh>
+            <MudTh>奖品数量</MudTh>
+            <MudTh>固定金额</MudTh>
+            <MudTh>最小金额</MudTh>
+            <MudTh>最大金额</MudTh>
+            <MudTh>奖品描述</MudTh>
+            <MudTh>奖品图片</MudTh>
+            <MudTh>奖品状态</MudTh>
+            <MudTh>功能</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="prize">
+            <MudTd>@prize.Name</MudTd>
+            <MudTd>@prize.Type</MudTd>
+            <MudTd>@prize.Amount</MudTd>
+            <MudTd>@prize.CashValue</MudTd>
+            <MudTd>@prize.MinCashValue</MudTd>
+            <MudTd>@prize.MaxCashValue</MudTd>
+
+            <MudTd>@prize.Description</MudTd>
+            <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100" /></MudTd>
+            <MudTd>@(prize.IsActive?"启用":"禁用")</MudTd>
+            <MudTd>
+                <MudStack Row="true" Spacing="1">
+                    <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
+                    <MudButton Color="Color.Error" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnDeletePrize(prize))">删除</MudButton>
+
+                </MudStack>
+               </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+    <div class="d-flex flex-wrap mt-4">
+        <MudSpacer />
+        <div style="min-width:200px;">
+                <MudText Inline="true" Class="align-self-center">当前选择: @selectedPrize?.Name</MudText>
+        </div>
+    </div>
+
+
+
+@code {
+    private Prize selectedPrize = new Prize();
+    private IEnumerable<Prize> Prizes;
+    
+    private bool AddModal;
+    private bool EditModal;
+    private string ErrorMessage;
+    private string searchString;
+
+   // private MudTable _table;
+    PrizeFluentValidator FluentValidator = new PrizeFluentValidator();
+
+    [Inject]
+    private PrizeRepository _prizeRepository { set; get; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    //_prizeRepository = new PrizeRepository();
+      
+        Prizes = await _prizeRepository.GetLatestRecordsAsync();
+    }
+
+    protected async Task Delete(int id)
+    {
+        await _prizeRepository.DeleteByIdAsync(id);
+        Prizes = await _prizeRepository.GetAllAsync();
+    }
+
+    protected async Task OnAddPrize()
+    {
+       // AddModal = true;
+        var parameters = new DialogParameters();
+
+       // parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
+        parameters.Add("ContentTitle", "添加奖品");
+        //parameters.Add("Color", Color.Error);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium,FullWidth = true};
+        var resultdialog = await DialogService.ShowAsync<AddPrizeDialog>("Confirm", parameters, options);
+        var result = await resultdialog.Result;
+        
+        if (!result.Canceled)
+        {
+            Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
+        }
+       // _selectedPrize = new Prize();
+    }
+
+
+    private async Task OnEditPrize(Prize prize)
+    {
+        var parameters = new DialogParameters() { ["UpPrize"] = prize };
+
+    // parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
+        parameters.Add("ContentTitle", "编辑奖品");
+        //parameters.Add([], prize);
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var resultdialog = await  DialogService.ShowAsync<EditPrizeDialog>("Confirm", parameters, options);
+
+        var result = await resultdialog.Result;
+        
+        if (!result.Canceled)
+        {
+            Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
+        }
+    }
+
+    private async Task OnDeletePrize(Prize value)
+    {
+        //throw new NotImplementedException();
+        return;
+    }
+
+    private bool FilterFunc1(Prize element) => FilterFunc(element, searchString);
+
+    private bool FilterFunc(Prize element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name is not null)
+        {
+            if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+      
+        if (element.Description is not null)
+        {
+            if (element.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        //if ($"{element.} {element.Position} {element.Molar}".Contains(searchString))
+        //    return true;
+        return false;
+    }
+
+}

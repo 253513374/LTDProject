@@ -1,0 +1,62 @@
+﻿@inject WLabelStorageRepository _labelStorageRepository
+
+@*<h3>ViewDetailsDialog</h3>
+*@
+
+<MudDialog>
+<TitleContent>
+    <MudText Typo="Typo.h3">@ContentTitle</MudText>
+</TitleContent>
+    <DialogContent>
+        <MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
+            <MudTable Items="wlabelStorage" Class="mud-table-responsive" Dense="true" 
+                      SortLabel="Sort By" Striped="true" Hover="true" Bordered="true">
+
+                <HeaderContent>
+                    <MudTh>ID.</MudTh>
+                    <MudTh>出库单号</MudTh>
+                    <MudTh>防伪编码</MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<W_LabelStorage, object>(x=>x.OrderNumbels)" SortLabel="name_field" T="W_LabelStorage">出库单时间</MudTableSortLabel></MudTh>
+                    <MudTh>发货时间</MudTh>
+                    <MudTh>发货人</MudTh>
+                </HeaderContent>
+                <RowTemplate >
+                    <MudTd DataLabel="ID.">@context.ID</MudTd>
+                    <MudTd DataLabel="出库单号">@context.OrderNumbels</MudTd>
+                    <MudTd DataLabel="防伪编码">@context.QRCode</MudTd>
+                    <MudTd DataLabel="出库单时间">@context.OrderTime</MudTd>
+                    <MudTd DataLabel="发货时间">@context.OutTime</MudTd>
+                    <MudTd DataLabel="发货人">@context.Adminaccount</MudTd>
+          
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager/>
+                </PagerContent>
+            </MudTable>
+        </MudPaper>
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string ContentTitle { get; set; }
+
+   
+
+    [Parameter]
+    public string OrderNumbels { get; set; } = "";
+
+    public IEnumerable<W_LabelStorage> wlabelStorage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (OrderNumbels is not "")
+        {
+            wlabelStorage = await _labelStorageRepository.FindAsync(f => f.OrderNumbels == OrderNumbels);
+        }
+        return;
+    }
+
+}

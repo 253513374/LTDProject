@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Weitedianlan.Model.Entity
+﻿namespace Weitedianlan.Model.Entity
 {
     public class ErrorViewModel
     {

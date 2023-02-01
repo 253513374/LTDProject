@@ -12,17 +12,60 @@ namespace Weitedianlan.Model.Entity
     using System;
     using System.Collections.Generic;
     
-    public partial class W_LabelStorage
+    public partial class W_LabelStorage: IEntityBase
     {
+        /// <summary>
+        /// 主键
+        /// </summary>
         public int ID { get; set; }
+
+        /// <summary>
+        /// 二维码
+        /// </summary>
         public string QRCode { get; set; }
+
+        /// <summary>
+        /// 单号时间
+        /// </summary>
         public System.DateTime OrderTime { get; set; }
+
+        /// <summary>
+        /// 扫码出库时间
+        /// </summary>
         public System.DateTime OutTime { get; set; }
+
+        /// <summary>
+        /// 出库单编号
+        /// </summary>
         public string Dealers { get; set; }
+
+
+        /// <summary>
+        /// 扫码出库管理员
+        /// </summary>
         public string Adminaccount { get; set; }
+
+        /// <summary>
+        /// 出库类型
+        /// </summary>
         public string OutType { get; set; }
+
+        /// <summary>
+        /// 出库单编号
+        /// </summary>
         public string OrderNumbels { get; set; }
+
+
+        /// <summary>
+        /// 产品单位
+        /// </summary>
         public string ExtensionName { get; set; }
+
+        /// <summary>
+        /// 其他信息，如备注 
+        /// </summary>
         public string ExtensionOrder { get; set; }
+
+       // public virtual Agent Agent { get; set; }
     }
 }

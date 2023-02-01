@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Weitedianlan.Service
+﻿namespace Weitedianlan.Service
 {
     public interface IUserService
     {
@@ -15,6 +11,7 @@ namespace Weitedianlan.Service
         /// <param name="encryptKey"></param>
         /// <returns></returns>
         string LoginEncrypt(string encryptString, string encryptKey);
+
         /// <summary>
         /// 登录时使用的加密方法
         /// </summary>
@@ -22,6 +19,5 @@ namespace Weitedianlan.Service
         /// <param name="encryptKey"></param>
         /// <returns></returns>
         string LoginDecrypt(string decryptString, string encryptKey);
-
     }
 }

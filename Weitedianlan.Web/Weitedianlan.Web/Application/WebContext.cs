@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Weitedianlan.Service;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using Weitedianlan.Service;
 
 namespace Weitedianlan.Web.Application
 {
     public static class ServiceLocator
     {
         public static IServiceProvider Instance { get; set; }
+
         public static T GetService<T>() where T : class
         {
             return Instance.GetService<T>();
         }
-
     }
+
     public static class WebContext
     {
         public static string AdminName
@@ -26,7 +24,6 @@ namespace Weitedianlan.Web.Application
             {
                 //获取cookie
                 var hasCookie = ServiceLocator.GetService<IHttpContextAccessor>().HttpContext.Request.Cookies.TryGetValue(ApplicationKeys.User_Cookie_Key, out string encryptValue);
-                   
 
                 if (!hasCookie || string.IsNullOrEmpty(encryptValue))
                     return null;
@@ -34,14 +31,12 @@ namespace Weitedianlan.Web.Application
                 return adminName;
             }
         }
+
         public const string LoginUrl = "/Account/Login";
     }
 
-
-
     public static class ConfigApp
     {
-
         private static IConfigurationSection _appSection = null;
 
         public static string AppSetting(string key)
@@ -53,11 +48,11 @@ namespace Weitedianlan.Web.Application
             }
             return str;
         }
+
         public static void SetAppSetting(IConfigurationSection section)
         {
             _appSection = section;
         }
-
 
         public static string GetSite(string apiName)
         {

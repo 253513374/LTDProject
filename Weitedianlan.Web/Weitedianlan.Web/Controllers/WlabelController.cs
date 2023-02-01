@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using Weitedianlan.Model.Response;
 using Weitedianlan.Service;
 
@@ -11,25 +8,23 @@ namespace Weitedianlan.Web.Controllers
 {
     public class WlabelController : Controller
     {
-
-        DateTime DateTime { set; get; } = DateTime.Now.AddDays(-60).Date;
-
+        private DateTime DateTime { set; get; } = DateTime.Now.AddDays(-60).Date;
 
         private WLabelService WLabelService;
+
         public WlabelController(WLabelService wLabelService)
         {
             this.WLabelService = wLabelService;
         }
+
         // GET: Wlabel
         [HttpGet]
         public ActionResult Index()
         {
-
-            var response= WLabelService.GetWLabelServiceList(DateTime);
+            var response = WLabelService.GetWLabelServiceList(DateTime);
             return View(response);
         }
 
-       
         public ActionResult UserAdd()
         {
             return View();
@@ -38,22 +33,18 @@ namespace Weitedianlan.Web.Controllers
         // GET: Wlabel/Details/5
         public ActionResult Details(string id)
         {
-
-            
             if (id.Length < 0) return Json(new ResponseModel { Code = 0, Status = "单号为空" });
             var reponse = this.WLabelService.GetDetails(id);
             return View(reponse);
         }
 
-
         [HttpGet]
-        public ActionResult GetQuerys( string datetimestr,string selectId)
+        public ActionResult GetQuerys(string datetimestr, string selectId)
         {
-
             var response = this.WLabelService.GetWLabelServiceList(DateTime, selectId, datetimestr);
-            if(response.Code==200)
+            if (response.Code == 200)
             {
-                JsonResult json = Json(new { total = response.DataCount,qrcount=response.QrcodeDataCount , data = response.Data });
+                JsonResult json = Json(new { total = response.DataCount, qrcount = response.QrcodeDataCount, data = response.Data });
                 return json;
             }
             else
@@ -61,19 +52,17 @@ namespace Weitedianlan.Web.Controllers
                 return Json(new { });
             }
 
-         
             //if(datetimestr!="")
             //{
             //    DateTime dateTime = DateTime.ParseExact(datetimestr, "yyyyMMdd", System.Globalization.CultureInfo.CurrentCulture);
-
 
             //}
             //else
             //{
             //    return Json(new { });
             //}
-
         }
+
         // GET: Wlabel/Create
         public ActionResult Create()
         {

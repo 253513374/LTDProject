@@ -12,10 +12,9 @@ namespace Weitedianlan.Model.Entity
     using System;
     using System.Collections.Generic;
     
-    public partial class Agent
+    public  class Agent : IEntityBase
     {
-
-        public int ID { set; get; }
+        public int Id { get; set; }
         public string AID { get; set; }
         public string AName { get; set; }
         public string AProvince { get; set; }
@@ -24,6 +23,20 @@ namespace Weitedianlan.Model.Entity
         public string ATel { get; set; }
         public string APeople { get; set; }
         public string ABelong { get; set; }
-        public int AType { get; set; }
+        public int? AType { get; set; }
+        
+        public DateTime? datetiem { get; set; }
+
+        /// <summary>
+        /// 参加活动的ID
+        /// </summary>
+        public int LotteryActivityId { get; set; }
+        
+        /// <summary>
+        /// 参加活动信息
+        /// </summary>
+        public virtual LotteryActivity LotteryActivity { get; set; }
+
+        //  public virtual ICollection<W_LabelStorage> WLabelStorage { get; set; }
     }
 }

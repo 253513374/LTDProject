@@ -1,0 +1,29 @@
+﻿@page "/verificationcodemanage"
+
+
+@*校验码数据导入*@
+
+
+
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                      >
+                Upload Files
+            </MudButton>
+        </ButtonTemplate>
+</MudFileUpload>
+
+
+@code {
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private void UploadFiles(IBrowserFile file)
+    {
+        files.Add(file);
+        //TODO 上传文件到服务器
+    }
+}

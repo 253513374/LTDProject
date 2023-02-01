@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Weitedianlan.Model.Response
+﻿namespace Weitedianlan.Model.Response
 {
-     public class ResponseModel
+    public class ResponseModel
     {
-        public int  Code { set; get; }
+        public int Code { set; get; }
         public int DataCount { set; get; }
 
         public int QrcodeDataCount { set; get; }

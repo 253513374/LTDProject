@@ -1,0 +1,104 @@
+﻿
+
+@inject LotteryActivityRepository _ActivityRepository
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h3">@ContentTitle</MudText>
+    </TitleContent>
+    
+    <DialogContent>
+        <MudForm Model="AddlotteryActivity" @ref="@mudForm" Validation="@(ActivityValidator.ValidateValue)" ValidationDelay="0">
+            <MudStack Justify="Justify.FlexStart" Spacing="4">
+                <MudStack Row="true" Spacing="5">
+                    <MudPaper Width="70%" Elevation="0">
+                        <MudTextField Variant="Variant.Outlined" Label="活动名称" @bind-Value="AddlotteryActivity.Name" />
+                        <MudTextField Class="mt-5" Lines="5" Variant="Variant.Outlined" Label="活动描述" @bind-Value="AddlotteryActivity.Description" />
+                    </MudPaper>
+                    <MudPaper Width="30%" Elevation="0">
+                        <FileUpImageComponent @ref="@fileform" OnImageFileCallback="@UpFileImage" />
+                    </MudPaper>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudSwitch Label="立即激活活动" @bind-Checked="@AddlotteryActivity.IsActive" Color="Color.Primary" UnCheckedColor="Color.Dark" />
+                    <MudSwitch Label="允许重复中奖" @bind-Checked="AddlotteryActivity.AllowDuplicate" Color="Color.Primary" UnCheckedColor="Color.Dark" />
+                    <MudSwitch Label="允许多次中奖" @bind-Checked="AddlotteryActivity.AllowMultipleWinning" Color="Color.Primary" UnCheckedColor="Color.Dark" />
+                </MudStack>
+
+                <MudStack Row="true">
+                    <MudDatePicker Variant="Variant.Outlined" Label="活动开始时间" @bind-Value="AddlotteryActivity.StartTime" />
+                    <MudDatePicker Variant="Variant.Outlined" Label="活动结束时间" @bind-Value="AddlotteryActivity.EndTime" />
+                </MudStack>
+                <AddParticipantComponent RemoveOptionCallback="@RemoveOptionActive" AddOptionCallback="@AddOptionActive"></AddParticipantComponent>
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Class="my-5 mx-10" Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.End">
+            <MudButton Variant="Variant.Text" Color="Color.Dark" OnClick="@(()=>MudDialog.Cancel())">取消</MudButton>
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" OnClick="@(async ()=> await HandleValidSubmit())"  Color="Color.Primary">保存</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>
+
+
+
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string ContentTitle { get; set; }
+
+    private LotteryActivity AddlotteryActivity { get; set; } = new ();
+
+    private LotteryActivityValidator ActivityValidator = new();
+
+    private MudForm mudForm;
+    private FileUpImageComponent fileform;
+
+    private string ImageBase64 { set; get; }
+    //private List<Prize> prizes { set; get; } = new();
+
+    private async Task HandleValidSubmit()
+    {
+        await mudForm.Validate();
+        await fileform.FileMudForm.Validate();
+        if (mudForm.IsValid && fileform.FileMudForm.IsValid)
+        {
+            var result =  await _ActivityRepository.AddAsync(AddlotteryActivity);
+            if (result>0)
+            {
+                Snackbar.Add($"活动【 {AddlotteryActivity.Name} 】创建成功", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                Snackbar.Add($"活动【 {AddlotteryActivity.Name} 】创建失败", Severity.Error);
+            }
+           
+            return;
+        }
+    }
+
+    private Task UpFileImage(string arg)
+    {
+        ImageBase64 = arg;
+        return  Task.CompletedTask;
+    //throw new NotImplementedException();
+    }
+
+    private Task AddOptionActive(ActivityPrize arg)
+    {
+        AddlotteryActivity.Prizes.Add(arg);
+        return Task.CompletedTask;
+    }
+
+    private Task RemoveOptionActive(ActivityPrize arg)
+    {
+        AddlotteryActivity.Prizes.Remove(arg);
+        return Task.CompletedTask;
+    }
+
+}
+

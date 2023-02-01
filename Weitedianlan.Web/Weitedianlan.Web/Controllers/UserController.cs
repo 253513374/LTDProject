@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Response;
 using Weitedianlan.Service;
 
-
 namespace Weitedianlan.Web.Controllers
 {
     public class UserController : Controller
     {
-        private UserService  UserService;
+        private UserService UserService;
+
         public UserController(UserService userService)
         {
             UserService = userService;
         }
+
         // GET: User
         public ActionResult Index()
         {
@@ -39,15 +36,13 @@ namespace Weitedianlan.Web.Controllers
         [HttpPost]
         public JsonResult AddUser(User user)
         {
-
-           //var re= UserService.AddUser(user);
-           // if(re.Code==200)
-           // {
-           //     Json(new ResponseModel { Code = 0, Status = "请输入账号" });
-           // }
+            //var re= UserService.AddUser(user);
+            // if(re.Code==200)
+            // {
+            //     Json(new ResponseModel { Code = 0, Status = "请输入账号" });
+            // }
             return Json(UserService.AddUser(user));
         }
-
 
         [HttpPost]
         public JsonResult DeleteUsers(int id)

@@ -1,21 +1,20 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Response;
 
 namespace Weitedianlan.Service
 {
-    public  class UserService : IUserService
+    public class UserService : IUserService
     {
         private Db _Db;
+
         public UserService(Db db)
         {
             _Db = db;
         }
-
 
         /// <summary>
         /// 登录验证
@@ -25,9 +24,9 @@ namespace Weitedianlan.Service
         /// <returns></returns>
         public bool Login(string userName, string userPwd)
         {
-            var useraccount=_Db.User.AsNoTracking().Where(w => w.UserID.Trim() == userName.Trim()).FirstOrDefault(); ;
-            var pwd= SecurityHelper.Encrypt(userPwd);
-            if(pwd.Trim() == useraccount.PWD.Trim())
+            var useraccount = _Db.User.AsNoTracking().Where(w => w.UserID.Trim() == userName.Trim()).FirstOrDefault(); ;
+            var pwd = SecurityHelper.Encrypt(userPwd);
+            if (pwd.Trim() == useraccount.PWD.Trim())
             {
                 return true;
             }
@@ -36,7 +35,7 @@ namespace Weitedianlan.Service
                 return false;
             }
             //密码得加密啊
-           // return userName == "admin" && userPwd == "123456";
+            // return userName == "admin" && userPwd == "123456";
         }
 
         /// <summary>
@@ -54,28 +53,17 @@ namespace Weitedianlan.Service
                 response.Data = new List<User>();
 
                 response.Data = banners;
-                //foreach (var banner in banners)
-                //{
-                //    response.Data.Add(new tAgent
-                //    {
-                //        Id = banner.Id,
-                //        Image = banner.Image,
-                //        Url = banner.Url,
-                //        Remark = banner.Remark
-                //    });
-                //}
             }
             catch (Exception ex)
             {
-
-                return new ResponseModel() {
-
-                Code = 400,
-                Status = ex.Message,
-                Data = new List<User>()
-            };
+                return new ResponseModel()
+                {
+                    Code = 400,
+                    Status = ex.Message,
+                    Data = new List<User>()
+                };
             }
-           
+
             return response;
         }
 
@@ -89,9 +77,10 @@ namespace Weitedianlan.Service
             _Db.User.Add(banner);
             int i = _Db.SaveChanges();
             if (i > 0)
-                return new ResponseModel { Code = 200, Status = "AddUser添加成功"};
+                return new ResponseModel { Code = 200, Status = "AddUser添加成功" };
             return new ResponseModel { Code = 0, Status = "AddUser添加失败" };
         }
+
         /// <summary>
         /// 删除账号
         /// </summary>
@@ -100,7 +89,7 @@ namespace Weitedianlan.Service
             var user = _Db.User.Find(userId);
             if (user == null)
                 return new ResponseModel { Code = 0, Status = "账号不存在" };
-            if (user.UserID.Trim()== "admin")
+            if (user.UserID.Trim() == "admin")
             {
                 return new ResponseModel { Code = 0, Status = "账号无法删除" };
             }
@@ -122,6 +111,7 @@ namespace Weitedianlan.Service
             //return SecurityHelper.Encrypt(encryptString);
             return SecurityHelper.EncryptDES(encryptString, encryptKey);
         }
+
         /// <summary>
         /// 登录时使用的加密方法
         /// </summary>

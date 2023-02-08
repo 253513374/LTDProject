@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Data;
@@ -111,5 +112,23 @@ namespace Wtdl.Repository
                 return resultList;
             }
         }
+
+        public async Task<W_LabelStorage> GetWLabelStorageAsync(string qrcode)
+        {
+            try
+            {
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    return await context.WLabelStorages.AsNoTracking()
+                        .Where(w => w.QRCode == qrcode).FirstOrDefaultAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"GetWLabelStorageAsync:{e.Message}");
+                return null;
+            }
+        }
     }
+
 }

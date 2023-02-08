@@ -10,23 +10,24 @@ using System.Globalization;
 using System.Text;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Data;
+using Wtdl.Repository.Interface;
 using Wtdl.Repository.Tools;
 using Wtdl.Repository.Utility;
 
 namespace Wtdl.Repository
 {
-    public class VerificationCodeRepository
+    public class VerificationCodeRepository : RepositoryBase<VerificationCode>
     {
         private readonly IDbContextFactory<LotteryContext> _contextFactory;
 
-        private readonly ILogger<VerificationCodeRepository> _logger;
+        private readonly ILogger<VerificationCode> _logger;
         private readonly IMediator _mediator;
 
-        public VerificationCodeRepository(IDbContextFactory<LotteryContext> context, IMediator mediator, ILogger<VerificationCodeRepository> logger)
+        public VerificationCodeRepository(IDbContextFactory<LotteryContext> context, IMediator mediator, ILogger<VerificationCode> logger) : base(context, mediator, logger)
         {
             _contextFactory = context;
-            _logger = logger;
             _mediator = mediator;
+            _logger = logger;
         }
 
         private async Task<InsertResult> BulkInsertTask(List<VerificationCode> DataList)

@@ -48,9 +48,6 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -140,7 +137,7 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("LotteryActivityId")
+                    b.Property<int?>("LotteryActivityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("datetiem")
@@ -206,6 +203,9 @@ namespace Wtdl.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ActivityImage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AdminUser")
                         .HasColumnType("nvarchar(max)");
 
@@ -223,7 +223,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
@@ -232,7 +232,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
@@ -274,13 +274,16 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("ClaimTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Claimed")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<bool>("IsClaimed")
-                        .HasColumnType("bit");
+                    b.Property<string>("OpenId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrizeDescription")
                         .HasColumnType("nvarchar(max)");
@@ -392,6 +395,74 @@ namespace Wtdl.Repository.Migrations
                     b.HasIndex("LotteryActivityId");
 
                     b.ToTable("Prize", (string)null);
+                });
+
+            modelBuilder.Entity("Weitedianlan.Model.Entity.RedPacketRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("CashAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OpenId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QrCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VerificationCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RedPacketRecords");
+                });
+
+            modelBuilder.Entity("Weitedianlan.Model.Entity.ScanRedPacket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CashValue")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActivity")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxCashValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinCashValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RedPacketType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ScanRedPacketGuid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScanRedPackets");
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.User", b =>
@@ -523,9 +594,7 @@ namespace Wtdl.Repository.Migrations
                 {
                     b.HasOne("Weitedianlan.Model.Entity.LotteryActivity", "LotteryActivity")
                         .WithMany()
-                        .HasForeignKey("LotteryActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LotteryActivityId");
 
                     b.Navigation("LotteryActivity");
                 });

@@ -8,6 +8,9 @@ using Wtdl.Repository.Interface;
 
 namespace Wtdl.Repository
 {
+    /// <summary>
+    /// 抽奖活动数据仓储
+    /// </summary>
     public class LotteryActivityRepository : RepositoryBase<LotteryActivity>
     {
         private readonly IDbContextFactory<LotteryContext> _contextFactory;
@@ -38,6 +41,7 @@ namespace Wtdl.Repository
             using var context = _contextFactory.CreateDbContext();
             return await context.LotteryActivities.AsNoTracking()
                 .OrderByDescending(x => x.Id)
+                .Include(c => c.Prizes)
                 .Take(count)
                 .ToListAsync();
         }
@@ -98,13 +102,33 @@ namespace Wtdl.Repository
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<LotteryActivity>> GetLotteryActivityAsync(Expression<Func<LotteryActivity, bool>> expression)
+        /// <summary>
+        /// 返回符合查询条件的活动信息
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<LotteryActivity>> GetAllLotteryActivityAsync(Expression<Func<LotteryActivity, bool>> expression)
         {
             using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities
+            return await context.LotteryActivities.AsNoTracking()
                 .Where(expression)
                 .Include(x => x.Prizes)
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// 返回符合条件的一条信息
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public async Task<LotteryActivity> GetLotteryActivityAsync(Expression<Func<LotteryActivity, bool>> expression)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.LotteryActivities.AsNoTracking()
+                .Where(expression)
+                .Include(c => c.Prizes)
+                .OrderByDescending(o => o.CreateTime)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<LotteryActivity> GetLotteryActivityWithPrizesAsync(int id)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Weitedianlan.Model.Entity;
 
-namespace Wtdl.Repository.Tools
+namespace Wtdl.Repository.MediatRHandler
 {
     internal class FileRecordNotificationHandler : INotificationHandler<FileUploadRecord>
     {
@@ -19,7 +19,6 @@ namespace Wtdl.Repository.Tools
             {
                 File.Delete(record.FilePath);
                 Console.WriteLine($"成功删除文件:{record.FilePath}");
-                //_logger.LogInformation($"文件已经存在，删除文件:{file.Name}");
             }
 
             return Task.CompletedTask;

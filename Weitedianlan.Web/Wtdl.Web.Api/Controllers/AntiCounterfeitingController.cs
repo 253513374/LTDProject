@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Wtdl.Web.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AntiCounterfeitingController : ControllerBase
     {
@@ -16,9 +16,10 @@ namespace Wtdl.Web.Api.Controllers
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
+        [HttpGet(Name = "GetByCode")]
         public async Task<string> Get(string code)
         {
-            return "value";
+            return code;
         }
     }
 }

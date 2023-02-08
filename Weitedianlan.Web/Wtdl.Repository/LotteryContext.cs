@@ -28,6 +28,9 @@ namespace Wtdl.Repository
             modelBuilder.ApplyConfiguration(new PrizeConfig());
             modelBuilder.ApplyConfiguration(new VerificationCodeConfig());
             modelBuilder.ApplyConfiguration(new WLabelStorageConfig());
+            modelBuilder.ApplyConfiguration(new ScanRedPacketConfig());
+            modelBuilder.ApplyConfiguration(new RedPacketRecordConfig());
+            modelBuilder.ApplyConfiguration(new ActivityPrizeConfig());
             // modelBuilder.ApplyConfiguration(new UserConfig());
             //modelBuilder.Entity<W_LabelStorage>()
             //    .HasOne(p => p.Agent)
@@ -39,15 +42,34 @@ namespace Wtdl.Repository
             base.OnModelCreating(modelBuilder);
         }
 
+        /// <summary>
+        /// 抽奖活动
+        /// </summary>
         public DbSet<LotteryActivity> LotteryActivities { get; set; }//活动
+
+        /// <summary>
+        /// 奖品池
+        /// </summary>
         public DbSet<Prize> Prizes { get; set; }//奖品
 
+        /// <summary>
+        /// 抽奖记录
+        /// </summary>
         public DbSet<LotteryRecord> LotteryRecords { get; set; }//抽奖记录
 
+        /// <summary>
+        /// 客户表
+        /// </summary>
         public DbSet<Agent> Agents { get; set; }//代理商
 
+        /// <summary>
+        /// 出库单出库数据表
+        /// </summary>
         public DbSet<W_LabelStorage> WLabelStorages { get; set; }//标签存储
 
+        /// <summary>
+        /// 系统用户表
+        /// </summary>
         public DbSet<User> Users { get; set; }//用户
 
         /// <summary>
@@ -55,6 +77,19 @@ namespace Wtdl.Repository
         /// </summary>
         public DbSet<VerificationCode> VerificationCodes { get; set; }
 
+        /// <summary>
+        /// 验证码文件按上传记录
+        /// </summary>
         public DbSet<FileUploadRecord> FileUploadRecords { get; internal set; }
+
+        /// <summary>
+        /// 红包记录表
+        /// </summary>
+        public DbSet<RedPacketRecord> RedPacketRecords { get; internal set; }
+
+        /// <summary>
+        /// 红包配置表
+        /// </summary>
+        public DbSet<ScanRedPacket> ScanRedPackets { get; internal set; }
     }
 }

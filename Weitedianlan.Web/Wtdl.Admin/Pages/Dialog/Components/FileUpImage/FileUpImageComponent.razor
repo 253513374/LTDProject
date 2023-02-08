@@ -46,8 +46,10 @@
         if (FunValidation is null)
         {
             FunValidation = new ImageFileFluentValidator().ValidateValue;
+
+           
         }
-       
+        fileUpload.ImageBase64 = ImageBase64;
     }
     private async Task OnUploadFiles(InputFileChangeEventArgs arg)
     {

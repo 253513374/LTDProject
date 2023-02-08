@@ -63,6 +63,7 @@ namespace Wtdl.Repository.Utility
         {
             return new Prize()
             {
+                Id = activityPrize.Id,
                 ImageUrl = activityPrize.ImageUrl,
                 Name = activityPrize.Name,
                 Type = activityPrize.Type,

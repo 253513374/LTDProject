@@ -19,6 +19,8 @@ namespace Wtdl.Repository.EntityConfig
             builder.HasMany(p => p.Prizes)
                 .WithOne(l => l.LotteryActivity)
                 .HasForeignKey(p => p.LotteryActivityId);
+
+            builder.Ignore(g => g.ShowPrizes);
         }
     }
 }

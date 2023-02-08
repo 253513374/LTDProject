@@ -1,0 +1,108 @@
+﻿
+@page "/scanbyredpacketmanage"
+
+
+@inject ScanRedPacketRepository _redPacketRepository
+@inject ISnackbar Snackbar
+
+<MudStack AlignItems="AlignItems.Center" Justify="Justify.Center">
+    <MudCard Elevation="24">
+        <MudForm Model="@RedPacket" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Error"><b style="font-weight: 600">福</b></MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">现金红包</MudText>
+                    <MudText Typo="Typo.body2">扫码立即领取现金</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudSwitch @bind-Checked="@RedPacket.IsActivity" Color="Color.Info">@(RedPacket.IsActivity?"已启用":"已禁用")</MudSwitch>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardMedia Image="images/a红包.jpg" />
+            <MudCardContent>
+                <MudText Class="mb-2" Typo="Typo.h5">配置红包</MudText>
+                <MudStack Spacing="3">
+
+                    <MudSelect Variant="Variant.Outlined" Label="红包类型" @bind-Value="RedPacket.RedPacketType" For="() => RedPacket.RedPacketType">
+                        <MudSelectItem Value="RedPacketType.RANDOM">随机红包</MudSelectItem>
+                        <MudSelectItem Value="RedPacketType.AVERAGE">固定红包</MudSelectItem>
+                    </MudSelect>
+                    @if (RedPacket.RedPacketType == RedPacketType.AVERAGE)
+                    {
+                        <MudTextField @bind-Value="RedPacket.CashValue" For="() => RedPacket.CashValue" Label="单个红包金额"></MudTextField>
+                    }
+                    @if (RedPacket.RedPacketType == RedPacketType.RANDOM)
+                    {
+                        <MudStack Row="true" Spacing="3">
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MinCashValue" For="() => RedPacket.MinCashValue" Label="最小红包金额"></MudTextField>
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MaxCashValue" For="() => RedPacket.MaxCashValue" Label="最大红包金额"></MudTextField>
+                        </MudStack>
+                    }
+                </MudStack>
+
+            </MudCardContent>
+            <MudCardActions >
+                <MudIconButton OnClick="@(() => UpdateRedPacket())" Icon="@Icons.Material.Filled.Update" Color="Color.Primary"> 更新红包数据 </MudIconButton>
+                
+            </MudCardActions>
+        </MudForm>
+    </MudCard>
+</MudStack>
+
+@code {
+
+    private ScanRedPacket RedPacket = new ScanRedPacket();
+
+    private MudForm form { set; get; }
+
+    RedPacketValidator PacketValidator = new RedPacketValidator();
+
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
+    //    if (RedPacket is null)
+    //    {
+    //        RedPacket = new ScanRedPacket();
+    //        //await _redPacketRepository.AddScanRedPacketAsync(RedPacket);
+    //    }
+
+    //    return;
+
+    //}
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
+        
+       
+        return; //
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+   
+
+
+    private async Task UpdateRedPacket()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            var result = await _redPacketRepository.UpdateOrInsert(RedPacket);
+            if (result>0)
+            {
+                Snackbar.Add("扫码得现金红包配置更新成功", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("扫码得现金红包配置更新失败", Severity.Error);
+            }
+        }
+        return;
+    
+    }
+
+}

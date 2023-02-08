@@ -9,13 +9,15 @@ namespace Wtdl.Repository
     {
         public static IServiceCollection AddLotteryDbContext(this IServiceCollection services, string connectionString)
         {
-            services.AddScoped<PrizeRepository>();
-            services.AddScoped<LotteryActivityRepository>();
-            services.AddScoped<LotteryRecordRepository>();
-            services.AddScoped<VerificationCodeRepository>();
-            services.AddScoped<FileUploadRecordRepository>();
-            services.AddScoped<AgentRepository>();
-            services.AddScoped<WLabelStorageRepository>();
+            services.AddTransient<PrizeRepository>();
+            services.AddTransient<LotteryActivityRepository>();
+            services.AddTransient<LotteryRecordRepository>();
+            services.AddTransient<VerificationCodeRepository>();
+            services.AddTransient<FileUploadRecordRepository>();
+            services.AddTransient<AgentRepository>();
+            services.AddTransient<WLabelStorageRepository>();
+            services.AddTransient<RedPacketRecordRepository>();
+            services.AddScoped<ScanRedPacketRepository>();
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
 

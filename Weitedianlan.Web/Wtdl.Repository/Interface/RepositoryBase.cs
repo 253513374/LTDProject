@@ -47,6 +47,7 @@ namespace Wtdl.Repository.Interface
             if (result is not null && result.Count > 0)
             {
                 context.Set<T>().RemoveRange(result);
+                await _mediator.Publish(result[0]);
                 return await context.SaveChangesAsync();
             }
             else
@@ -78,18 +79,31 @@ namespace Wtdl.Repository.Interface
             //   return await context.FileUploadRecords.AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        ///// <summary>
-        ///// 返回最新的一条数据
-        ///// </summary>
-        ///// <param name="predicate"></param>
-        ///// <returns></returns>
-        //public virtual async Task<T> LastAsync(Expression<Func<T, bool>> expression)
-        //{
-        //    using (var context = _contextFactory.CreateDbContext())
-        //    {
-        //        return await context.Set<T>().AsNoTracking().OrderByDescending(expression).FirstOrDefaultAsync();
-        //    }
-        //}
+        /// <summary>
+        ///  查找符合条件的其中一条记录
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public virtual async Task<T> FindSingleAsync(Expression<Func<T, bool>> expression)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.Set<T>().AsNoTracking().FirstOrDefaultAsync(expression);
+            }
+        }
+
+        /// <summary>
+        /// 查询数据是否存在
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.Set<T>().AsNoTracking().AnyAsync(expression);
+            }
+        }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
@@ -112,7 +126,7 @@ namespace Wtdl.Repository.Interface
             using (var context = _contextFactory.CreateDbContext())
             {
                 context.Set<T>().Update(entity);
-
+                await _mediator.Publish(entity);
                 return await context.SaveChangesAsync();
             }
         }

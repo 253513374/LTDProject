@@ -4,19 +4,19 @@
 @inject IDialogService DialogService
 
 
-    <MudDropContainer T="Prize" DraggingClass="mud-alert-text-warning" ItemDraggingClass="mud-alert-text-warning" Items="Prizes" ItemsSelector="@((item,dropzone) => item.Identifier == dropzone)" NoDropClass="mud-border-error" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
-        <ChildContent>
-            <MudDropZone T="Prize" Identifier="Not Active" DraggingClass="mud-alert-text-info" ItemDraggingClass="mud-alert-text-info" Class="rounded-lg border-2 border-dashed mud-border-lines-default pa-6 ma-8">
-                <MudText Typo="Typo.h6" Class="mb-4">奖品池</MudText>
-            </MudDropZone>
-            <MudDropZone T="Prize" Identifier="Active" Class="rounded-lg border-2 border-dashed mud-border-lines-default pa-6 ma-8 flex-grow-1">
-                <MudText Typo="Typo.h6" Class="mb-4">参与活动奖品</MudText>
-            </MudDropZone>
-        </ChildContent>
-        <ItemRenderer>
-            <div class="mud-elevation-25 pa-4 my-4">@context.Name</div>
-        </ItemRenderer>
-    </MudDropContainer>
+<MudDropContainer  T="Prize" Items="Prizes" DraggingClass="mud-alert-text-warning" ItemDraggingClass="mud-alert-text-warning" ItemsSelector="@((item,dropzone) => item.Identifier == dropzone)" NoDropClass="mud-border-error" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        <MudDropZone T="Prize" OnlyZone="IsDisable" Identifier="Not Active" DraggingClass="mud-alert-text-info" ItemDraggingClass="mud-alert-text-info" Class="rounded-lg mud-alert-text-dark border-2 border-dashed mud-border-lines-default pa-6 ma-8">
+            <MudText Typo="Typo.h6" Class="mb-4">奖品池</MudText>
+        </MudDropZone>
+        <MudDropZone T="Prize" OnlyZone="IsDisable" Identifier="Active" Class="rounded-lg mud-alert-text-success border-2 border-dashed mud-border-lines-default pa-6 ma-8 flex-grow-1">
+            <MudText Typo="Typo.h6" Class="mb-4">参与活动奖品</MudText>
+        </MudDropZone>
+    </ChildContent>
+    <ItemRenderer>
+        <div class="mud-elevation-25 pa-4 my-4">@context.Name</div>
+    </ItemRenderer>
+</MudDropContainer>
 
 
 
@@ -31,6 +31,12 @@
     public EventCallback<ActivityPrize> RemoveOptionCallback { set; get; }
 
     private IEnumerable<Prize> Prizes;
+    
+    [Parameter]
+    public ICollection<ActivityPrize> ActivityPrizes { set; get; }
+
+    [Parameter]
+    public bool IsDisable { set; get; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,14 +47,22 @@
         {
             prize.Identifier = "Not Active";
         });
+        if (ActivityPrizes is not null)
+        {
+            var list = ActivityPrizes.ToList();
+            for (int i = 0; i < list.Count; i++)
+            {
+                Prizes.FirstOrDefault(f => f.Name == list[i].Name).Identifier = "Active";
+            }
+
+        }
         
     }
 
     private async Task  ItemUpdated(MudItemDropInfo<Prize> dropItem)
     {
-        dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
-        DialogOptions dialogOptions = new() { FullWidth = true,MaxWidth = MaxWidth.Small};
-
+        
+        DialogOptions dialogOptions = new() { CloseButton =true ,FullWidth = true,MaxWidth = MaxWidth.Small};
         var activityprize = GlobalUtility.MapperToActivityPrize(dropItem.Item);
         if (dropItem.DropzoneIdentifier == "Active")
         {
@@ -63,7 +77,7 @@
                 await AddOptionCallback.InvokeAsync(activityprize);
     // Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
             }
-            
+            dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
         }
 
         if (dropItem.DropzoneIdentifier == "Not Active")

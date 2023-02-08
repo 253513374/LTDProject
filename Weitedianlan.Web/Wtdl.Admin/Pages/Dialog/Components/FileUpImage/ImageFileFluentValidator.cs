@@ -10,7 +10,9 @@ namespace Wtdl.Admin.Pages.FluentValidator
         {
             // RuleFor(x => x.PrizeName).NotEmpty().WithMessage("奖品名称不能为空");
             RuleFor(x => x.File)
-                .NotEmpty().WithMessage("图片文件不能为空");
+                .NotEmpty().When(w => string.IsNullOrEmpty(w.ImageBase64)).WithMessage("图片文件不能为空");
+            RuleFor(x => x.ImageBase64)
+                .NotEmpty().When(w => w.File == null).WithMessage("图片文件不能为空");
 
             When(x => x.File != null,
                 () =>

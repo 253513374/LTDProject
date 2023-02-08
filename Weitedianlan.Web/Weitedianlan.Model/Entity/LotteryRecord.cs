@@ -22,6 +22,8 @@ namespace Weitedianlan.Model.Entity
         /// </summary>
         public string UserId { get; set; }// 用户ID
 
+        public string OpenId { get; set; }
+
         /// <summary>
         /// 用户名称
         /// </summary>
@@ -43,14 +45,14 @@ namespace Weitedianlan.Model.Entity
         public DateTime Time { get; set; }// 中奖时间
 
         /// <summary>
-        /// 是否已经领取
+        /// 领取奖品状态 是否已领取
         /// </summary>
-        public bool IsClaimed { get; set; }// 是否已领取
+        public ClaimedStatus Claimed { get; set; }
 
         /// <summary>
         /// 领取时间
         /// </summary>
-        public DateTime? ClaimTime { get; set; }// 领取时间
+        public DateTime? ClaimTime { get; set; }
 
         /// <summary>
         /// 活动ID

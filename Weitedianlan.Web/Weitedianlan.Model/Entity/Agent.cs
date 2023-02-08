@@ -17,12 +17,12 @@ namespace Weitedianlan.Model.Entity
         public int Id { get; set; }
         public string AID { get; set; }
         public string AName { get; set; }
-        public string AProvince { get; set; }
-        public string ACity { get; set; }
-        public string AAddr { get; set; }
-        public string ATel { get; set; }
-        public string APeople { get; set; }
-        public string ABelong { get; set; }
+        public string? AProvince { get; set; }
+        public string? ACity { get; set; }
+        public string? AAddr { get; set; }
+        public string? ATel { get; set; }
+        public string? APeople { get; set; }
+        public string? ABelong { get; set; }
         public int? AType { get; set; }
         
         public DateTime? datetiem { get; set; }
@@ -30,7 +30,7 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 参加活动的ID
         /// </summary>
-        public int LotteryActivityId { get; set; }
+        public int? LotteryActivityId { get; set; }
         
         /// <summary>
         /// 参加活动信息

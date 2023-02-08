@@ -1,0 +1,15 @@
+ExecptionMessage:MessageHandler中Execute()过程发生错误：E:\Visual Studio 2015\威特电缆\253513374\WTJTProject\Weitedianlan.Web\Wtdl.Mvc\Senparc.Weixin.MP.dll
+Senparc.NeuChar
+   at Senparc.NeuChar.MessageHandlers.MessageHandler`3.ExecuteAsync(CancellationToken cancellationToken)
+   at Senparc.NeuChar.MessageHandlers.MessageHandler`3.ExecuteAsync(CancellationToken cancellationToken)
+   at Wtdl.Mvc.Controllers.WeixinController.Post(PostModel postModel) in E:\Visual Studio 2015\威特电缆\253513374\WTJTProject\Weitedianlan.Web\Wtdl.Mvc\Controllers\WeixinController.cs:line 113
+========= InnerException =========
+E:\Visual Studio 2015\威特电缆\253513374\WTJTProject\Weitedianlan.Web\Wtdl.Mvc\Senparc.Weixin.MP.dll
+System.Diagnostics.FileVersionInfo
+   at System.Diagnostics.FileVersionInfo.GetVersionInfo(String fileName)
+   at Wtdl.Mvc.MessageHandlers.CustomMessageHandler.GetWelcomeInfo() in E:\Visual Studio 2015\威特电缆\253513374\WTJTProject\Weitedianlan.Web\Wtdl.Mvc\MessageHandlers\CustomMessageHandler_Events.cs:line 32
+   at Wtdl.Mvc.MessageHandlers.CustomMessageHandler.OnEvent_SubscribeRequestAsync(RequestMessageEvent_Subscribe requestMessage) in E:\Visual Studio 2015\威特电缆\253513374\WTJTProject\Weitedianlan.Web\Wtdl.Mvc\MessageHandlers\CustomMessageHandler_Events.cs:line 200
+   at Senparc.Weixin.MP.MessageHandlers.MessageHandler`1.OnEventRequestAsync(IRequestMessageEventBase requestMessage)
+   at Wtdl.Mvc.MessageHandlers.CustomMessageHandler.OnEventRequestAsync(IRequestMessageEventBase requestMessage) in E:\Visual Studio 2015\威特电缆\253513374\WTJTProject\Weitedianlan.Web\Wtdl.Mvc\MessageHandlers\CustomMessageHandler.cs:line 301
+   at Senparc.Weixin.MP.MessageHandlers.MessageHandler`1.BuildResponseMessageAsync(CancellationToken cancellationToken)
+   at Senparc.NeuChar.MessageHandlers.MessageHandler`3.ExecuteAsync(CancellationToken cancellationToken)

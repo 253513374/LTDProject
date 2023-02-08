@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Admin", "Wtdl.Admin\Wt
 		{84B86FF3-ED7E-4724-812D-9137CC83F296} = {84B86FF3-ED7E-4724-812D-9137CC83F296}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Mvc", "WebApplication3\Wtdl.Mvc.csproj", "{C2070977-2FF1-4409-B971-BDD8C272DF34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E462E2E-5D7D-463A-B397-0775B3E9A3C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

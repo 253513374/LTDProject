@@ -73,12 +73,17 @@
             if (!result.Canceled)
             {
                 activityprize.Amount = (int)result.Data;
-               
                 //添加中奖号码
-                activityprize.PrizeNumber = await GlobalUtility.GetRandomInt(activityprize.Probability);
+                activityprize.UniqueNumber = await GlobalUtility.GetRandomInt(activityprize.Probability);
+                dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
                 await AddOptionCallback.InvokeAsync(activityprize);
+                
             }
-            dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
+            else
+            {
+                dropItem.Item.Identifier = "Not Active"; //dropItem.DropzoneIdentifier;
+            }
+           
         }
 
         if (dropItem.DropzoneIdentifier == "Not Active")

@@ -6,7 +6,7 @@
 @inject ISnackbar Snackbar
 
 <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center">
-    <MudCard Elevation="24">
+    <MudCard Elevation="24" Style="width: 500px" >
         <MudForm Model="@RedPacket" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">
             <MudCardHeader>
                 <CardHeaderAvatar>
@@ -21,7 +21,7 @@
                 </CardHeaderActions>
             </MudCardHeader>
             <MudCardMedia Image="images/a红包.jpg" />
-            <MudCardContent>
+            <MudCardContent >
                 <MudText Class="mb-2" Typo="Typo.h5">配置红包</MudText>
                 <MudStack Spacing="3">
 
@@ -44,7 +44,7 @@
 
             </MudCardContent>
             <MudCardActions >
-                <MudIconButton OnClick="@(() => UpdateRedPacket())" Icon="@Icons.Material.Filled.Update" Color="Color.Primary"> 更新红包数据 </MudIconButton>
+                <MudFab OnClick="@(() => UpdateRedPacket())" Icon="@Icons.Material.Filled.Update" Color="Color.Primary" Label="更新红包数据">  </MudFab>
                 
             </MudCardActions>
         </MudForm>
@@ -60,18 +60,6 @@
     RedPacketValidator PacketValidator = new RedPacketValidator();
 
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
-    //    if (RedPacket is null)
-    //    {
-    //        RedPacket = new ScanRedPacket();
-    //        //await _redPacketRepository.AddScanRedPacketAsync(RedPacket);
-    //    }
-
-    //    return;
-
-    //}
 
     protected async override Task OnInitializedAsync()
     {

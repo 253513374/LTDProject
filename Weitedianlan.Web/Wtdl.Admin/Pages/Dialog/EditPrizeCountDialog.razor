@@ -9,17 +9,17 @@
         <MudNumericField HideSpinButtons="true" @bind-Value="PrizeCount" Label="请输入参加活动奖品的数量" Variant="Variant.Text" Min="1" Max="100" />
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="@(()=>MudDialog.Cancel())">Cancel</MudButton>
+        <MudButton OnClick="@(()=>MudDialog.Cancel())">取消</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">确定</MudButton>
     </DialogActions>
 </MudDialog>
 @code {
 
 
-    private bool visible;
+  
 
     
-    private int PrizeCount;
+    private int PrizeCount=1;
     // private void OpenDialog() => visible = true;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }

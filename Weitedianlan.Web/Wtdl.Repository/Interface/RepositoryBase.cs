@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using EFCore.BulkExtensions;
 using Wtdl.Repository.MediatRHandler.Events;
+using Wtdl.Repository.Utility;
 
 namespace Wtdl.Repository.Interface
 {
@@ -34,7 +35,7 @@ namespace Wtdl.Repository.Interface
                     TypeData = entity.GetType(),
                     CreateTime = DateTime.Now,
                     OperationType = OperationType.Insert,
-                    JsonData = $"AddAsync {entity.GetType().Name} {entity.ToString()}"
+                    JsonData = GlobalUtility.SerializeObject(entity)
                 });
                 return await context.SaveChangesAsync();
             }

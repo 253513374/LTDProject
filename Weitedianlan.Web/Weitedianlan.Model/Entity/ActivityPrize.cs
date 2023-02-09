@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Weitedianlan.Model.Enum;
 
@@ -18,14 +19,14 @@ namespace Weitedianlan.Model.Entity
         public int Id { get; set; }//奖品ID
 
         /// <summary>
-        /// 奖品唯一编号
-        /// </summary>
-        public string UniqueNumber { get; set; }
-
-        /// <summary>
         /// 中奖编号
         /// </summary>
-        public int PrizeNumber { get; set; }
+        public int UniqueNumber { get; set; }
+
+        /// <summary>
+        /// 奖品唯一编号
+        /// </summary>
+        public string PrizeNumber { get; set; }
 
         /// <summary>
         /// 奖品名称
@@ -55,6 +56,7 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 奖品图片
         /// </summary>
+        [JsonIgnore]
         public string ImageUrl { get; set; }//奖品图片
 
         /// <summary>
@@ -90,17 +92,17 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 金额
         /// </summary>
-        public decimal CashValue { get; set; }
+        public int CashValue { get; set; }
 
-        /// <summary>
-        /// 最小金额限制
-        /// </summary>
-        public decimal MinCashValue { get; set; } //新增最小金额属性
+        ///// <summary>
+        ///// 最小金额限制
+        ///// </summary>
+        //public int MinCashValue { get; set; } //新增最小金额属性
 
-        /// <summary>
-        /// 最大金额限制
-        /// </summary>
-        public decimal MaxCashValue { get; set; } //新增最大金额属性
+        ///// <summary>
+        ///// 最大金额限制
+        ///// </summary>
+        //public int MaxCashValue { get; set; } //新增最大金额属性
 
         /// <summary>
         /// 是否参加活动

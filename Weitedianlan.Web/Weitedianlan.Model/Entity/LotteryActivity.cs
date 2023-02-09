@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Weitedianlan.Model.Enum;
 
 namespace Weitedianlan.Model.Entity
@@ -12,9 +13,15 @@ namespace Weitedianlan.Model.Entity
         public LotteryActivity()
         {
             Prizes = new List<ActivityPrize>();
+            ActivityNumber = Guid.NewGuid().ToString().Replace("-", "");
         }
 
         public int Id { get; set; }
+
+        /// <summary>
+        /// 活动唯一编号
+        /// </summary>
+        public string ActivityNumber { get; set; }
 
         /// <summary>
         /// 活动名称
@@ -70,6 +77,7 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 活动图片
         /// </summary>
+        [JsonIgnore]
         public string ActivityImage { get; set; }
 
         /// <summary>

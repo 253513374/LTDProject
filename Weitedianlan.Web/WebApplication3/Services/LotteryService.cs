@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
 using Weitedianlan.Model.Entity;
+using Weitedianlan.Model.Enum;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 using Wtdl.Repository.Utility;
@@ -129,13 +130,12 @@ namespace Wtdl.Mvc.Services
 
             // 当前活动是否存在与活动是否处于激活状态
             var activity = await GetLotteryActivityAsync();
-            if (activity is null)
+            if (activity is not null)
             {
                 if (!activity.IsActive)
                 {
                     return false;
                 }
-                return false;
             }
 
             // 当前用户是否已经对标签序号抽过奖了
@@ -148,6 +148,18 @@ namespace Wtdl.Mvc.Services
             return true;
         }
 
+        private async Task RecordLotterySuccess(string openid, string qrcode, ActivityPrize prize)
+        {
+            await RecordLottery(openid, qrcode, prize, true);
+            return;
+        }
+
+        private async Task RecordLotteryFail(string openid, string qrcode, ActivityPrize prize)
+        {
+            await RecordLottery(openid, qrcode, prize, false);
+            return;
+        }
+
         /// <summary>
         /// 记录抽奖数据
         /// </summary>
@@ -155,17 +167,22 @@ namespace Wtdl.Mvc.Services
         /// <param name="qrcode"></param>
         /// <param name="prizeId"></param>
         /// <returns></returns>
-        private async Task RecordLottery(string openid, string qrcode, int prizeId)
+        private async Task RecordLottery(string openid, string qrcode, ActivityPrize prize, bool issuccess)
         {
-            var activity = await _lotteryActivityRepository.GetLotteryActivityAsync(a => a.IsActive == true);
-            ;
             var lotteryRecord = new LotteryRecord()
             {
-                ActivityId = activity.Id,
                 OpenId = openid,
-                PrizeId = prizeId,
+                Claimed = ClaimedStatus.NotClaimed,
                 QRCode = qrcode,
-                CreateTime = DateTime.Now,
+                ActivityNumber = prize.LotteryActivity.ActivityNumber,
+                ActivityName = prize.LotteryActivity.Name,
+                ActivityDescription = prize.LotteryActivity.Description,
+                Type = prize.Type,
+                Time = DateTime.Now,
+                PrizeNumber = prize.PrizeNumber,
+                PrizeName = prize.Name,
+                PrizeDescription = prize.Description,
+                CashValue = prize.CashValue,
             };
             await _lotteryRecordRepository.AddAsync(lotteryRecord);
         }
@@ -176,7 +193,7 @@ namespace Wtdl.Mvc.Services
         /// <param name="openid"></param>
         /// <param name="qrcode"></param>
         /// <returns></returns>
-        public async Task<LotteryViewModel> LotteryAsync(string openid, string qrcode)
+        public async Task<LotteryViewModel> GetLotteryResultAsync(string openid, string qrcode)
         {
             try
             {
@@ -193,22 +210,28 @@ namespace Wtdl.Mvc.Services
                 //根据奖品的中奖概率随机求得一个中奖数值号码
                 var randomPrizeNumber = await GlobalUtility.GetRandomInt(prize.Probability);
 
-                if (randomPrizeNumber == prize.PrizeNumber)
+                if (randomPrizeNumber == prize.UniqueNumber)
                 {
                     // 记录抽奖数据
-                    await RecordLottery(openid, qrcode, prize.Id);
+                    await RecordLotterySuccess(openid, qrcode, prize);
                     return new LotteryViewModel()
                     {
                         IsSuccess = true,
                         Msg = $"恭喜你抽中了奖品:{prize.Name}",
+                        PrizeType = prize.Type.ToString(),
+                        PrizeName = prize.Name,
+                        PrizeDescription = prize.Description,
+                        PrizeImage = prize.ImageUrl,
                     };
                 }
                 else
                 {
+                    await RecordLotteryFail(openid, qrcode, prize);
                     return new LotteryViewModel()
                     {
                         IsSuccess = false,
                         Msg = $"很遗憾没有中奖",
+                        PrizeType = prize.Type.ToString(),
                     };
                 }
             }

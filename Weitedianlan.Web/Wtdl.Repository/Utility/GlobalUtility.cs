@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Weitedianlan.Model.Entity;
@@ -17,6 +18,7 @@ namespace Wtdl.Repository.Utility
     {
         private static JsonSerializerOptions Options = new JsonSerializerOptions
         {
+            ReferenceHandler = ReferenceHandler.Preserve,
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
@@ -74,8 +76,6 @@ namespace Wtdl.Repository.Utility
                 ImageUrl = activityPrize.ImageUrl,
                 Name = activityPrize.Name,
                 Type = activityPrize.Type,
-                MaxCashValue = activityPrize.MaxCashValue,
-                MinCashValue = activityPrize.MinCashValue,
                 CashValue = activityPrize.CashValue,
                 Identifier = activityPrize.Identifier,
                 Amount = activityPrize.Amount,
@@ -83,15 +83,15 @@ namespace Wtdl.Repository.Utility
                 IsActive = activityPrize.IsActive,
                 CreateTime = activityPrize.CreateTime,
                 AdminUser = activityPrize.AdminUser,
-                LotteryActivityId = activityPrize.LotteryActivityId,
+                //LotteryActivityId = activityPrize.LotteryActivityId,
                 Description = activityPrize.Description,
-                EndTime = activityPrize.EndTime,
-                StartTime = activityPrize.StartTime,
+                //EndTime = activityPrize.EndTime,
+                //StartTime = activityPrize.StartTime,
                 IsJoinActivity = activityPrize.IsJoinActivity,
-                TotalLimit = activityPrize.TotalLimit,
-                UserLimit = activityPrize.UserLimit,
-                WinnerCount = activityPrize.WinnerCount,
-                LotteryActivity = activityPrize.LotteryActivity,
+                //TotalLimit = activityPrize.TotalLimit,
+                //UserLimit = activityPrize.UserLimit,
+                //WinnerCount = activityPrize.WinnerCount,
+                //LotteryActivity = activityPrize.LotteryActivity,
             };
         }
 
@@ -104,12 +104,10 @@ namespace Wtdl.Repository.Utility
         {
             return new ActivityPrize()
             {
-                UniqueNumber = prize.UniqueNumber,
+                // PrizeNumber = prize.UniqueNumber,
                 ImageUrl = prize.ImageUrl,
                 Name = prize.Name,
                 Type = prize.Type,
-                MaxCashValue = prize.MaxCashValue,
-                MinCashValue = prize.MinCashValue,
                 CashValue = prize.CashValue,
                 Identifier = prize.Identifier,
                 Amount = prize.Amount,
@@ -117,15 +115,15 @@ namespace Wtdl.Repository.Utility
                 IsActive = prize.IsActive,
                 CreateTime = prize.CreateTime,
                 AdminUser = prize.AdminUser,
-                LotteryActivityId = prize.LotteryActivityId,
+                // LotteryActivityId = prize.LotteryActivityId,
                 Description = prize.Description,
-                EndTime = prize.EndTime,
-                StartTime = prize.StartTime,
+                //EndTime = prize.EndTime,
+                //StartTime = prize.StartTime,
                 IsJoinActivity = prize.IsJoinActivity,
-                TotalLimit = prize.TotalLimit,
-                UserLimit = prize.UserLimit,
-                WinnerCount = prize.WinnerCount,
-                LotteryActivity = prize.LotteryActivity,
+                //TotalLimit = prize.TotalLimit,
+                //UserLimit = prize.UserLimit,
+                //WinnerCount = prize.WinnerCount,
+                //LotteryActivity = prize.LotteryActivity,
             };
         }
 
@@ -140,7 +138,7 @@ namespace Wtdl.Repository.Utility
         /// <param name="minimumValue">最小整数</param>
         /// <param name="maximumValue">最大整数</param>
         /// <returns>返回一个随机整数</returns>
-        public static Task<int> GetRandomInt(int minimumValue, int maximumValue)
+        private static Task<int> GetRandomInt(int minimumValue, int maximumValue)
         {
             RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
 
@@ -167,7 +165,7 @@ namespace Wtdl.Repository.Utility
             //求得概率的最大整数范围。
             int multiplier = (int)(1 / probability);
 
-            return await GetRandomInt(0, multiplier);
+            return await GetRandomInt(1, multiplier);
         }
     }
 }

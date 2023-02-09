@@ -19,8 +19,8 @@
             <MudTh>奖品类型</MudTh>
             <MudTh>奖品数量</MudTh>
             <MudTh>固定金额</MudTh>
-            <MudTh>最小金额</MudTh>
-            <MudTh>最大金额</MudTh>
+          @*  <MudTh>最小金额</MudTh>
+            <MudTh>最大金额</MudTh>*@
             <MudTh>奖品描述</MudTh>
             <MudTh>奖品图片</MudTh>
             <MudTh>奖品状态</MudTh>
@@ -31,8 +31,8 @@
             <MudTd>@prize.Type</MudTd>
             <MudTd>@prize.Amount</MudTd>
             <MudTd>@prize.CashValue</MudTd>
-            <MudTd>@prize.MinCashValue</MudTd>
-            <MudTd>@prize.MaxCashValue</MudTd>
+@*            <MudTd>@prize.MinCashValue</MudTd>
+            <MudTd>@prize.MaxCashValue</MudTd>*@
 
             <MudTd>@prize.Description</MudTd>
             <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100" /></MudTd>
@@ -62,9 +62,9 @@
     private Prize selectedPrize = new Prize();
     private IEnumerable<Prize> Prizes;
     
-    private bool AddModal;
-    private bool EditModal;
-    private string ErrorMessage;
+   
+    
+
     private string searchString;
 
    // private MudTable _table;

@@ -20,7 +20,7 @@ namespace Wtdl.Web.Api.Controllers
         }
 
         /// <summary>
-        /// 用于抽奖接口，正在开发
+        /// 用于抽奖接口
         /// </summary>
         /// <param name="openid">微信用户openid</param>
         /// <param name="code">防伪标签序号</param>
@@ -28,7 +28,7 @@ namespace Wtdl.Web.Api.Controllers
         [HttpGet]
         public async Task<LotteryViewModel> Get(string openid, string code)
         {
-            return new LotteryViewModel();
+            return await _lotteryService.GetLotteryResultAsync(openid, code);
         }
     }
 }

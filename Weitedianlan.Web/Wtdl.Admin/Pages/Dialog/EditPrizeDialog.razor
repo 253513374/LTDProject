@@ -19,21 +19,22 @@
 
                 <MudStack Row="true" Spacing="4">
                     <MudPaper Height="240" Width="70%" Elevation="0">
-                        <MudTextField Variant="Variant.Outlined" Label="奖品名称" @bind-Value="UpPrize.Name" For="() => UpPrize.Name"></MudTextField>
-                        <MudSelect Variant="Variant.Outlined" Label="奖品类型" @bind-Value="UpPrize.Type" For="() => UpPrize.Type">
-                            <MudSelectItem Value="PrizeType.Cash">现金红包</MudSelectItem>
-                            <MudSelectItem Value="PrizeType.Physical">实物奖品</MudSelectItem>
-                        </MudSelect>
-                        @if (UpPrize.Type == PrizeType.Cash)
-                        {
+                        <MudStack  Spacing="4">
+                            <MudTextField Variant="Variant.Outlined" Label="奖品名称" @bind-Value="UpPrize.Name" For="() => UpPrize.Name"></MudTextField>
+                            <MudSelect Variant="Variant.Outlined" Label="奖品类型" @bind-Value="UpPrize.Type" For="() => UpPrize.Type">
+                                <MudSelectItem Value="PrizeType.Cash">现金红包</MudSelectItem>
+                                <MudSelectItem Value="PrizeType.Physical">实物奖品</MudSelectItem>
+                            </MudSelect>
+                            @if (UpPrize.Type == PrizeType.Cash)
+                            {
 
-                            <MudTextField Variant="Variant.Outlined" Label="固定金额" @bind-Value="UpPrize.CashValue" For="() => UpPrize.CashValue"></MudTextField>
-                            <MudStack Row="true" Spacing="4">
-                                <MudTextField Variant="Variant.Outlined" HelperText="温馨提示，金额不可设置太大" Label="最小金额" @bind-Value="UpPrize.MinCashValue" For="() => UpPrize.MinCashValue"></MudTextField>
-                                <MudTextField Variant="Variant.Outlined" Label="最大金额" @bind-Value="UpPrize.MaxCashValue" For="() => UpPrize.MaxCashValue"></MudTextField>
-                            </MudStack>
-                        }
-
+                                <MudTextField Variant="Variant.Outlined" Label="固定金额" @bind-Value="UpPrize.CashValue" For="() => UpPrize.CashValue"></MudTextField>
+                               @* <MudStack Row="true" Spacing="4">
+                                    <MudTextField Variant="Variant.Outlined" HelperText="温馨提示，金额不可设置太大" Label="最小金额" @bind-Value="UpPrize.MinCashValue" For="() => UpPrize.MinCashValue"></MudTextField>
+                                    <MudTextField Variant="Variant.Outlined" Label="最大金额" @bind-Value="UpPrize.MaxCashValue" For="() => UpPrize.MaxCashValue"></MudTextField>
+                                </MudStack>*@
+                            }
+                        </MudStack>
                     </MudPaper>
                     <MudPaper Width="30%" Elevation="0">
                         <FileUpImageComponent @ref="@fileform" ImageBase64 ="@UpPrize.ImageUrl" OnImageFileCallback="@UpFileImage" />
@@ -44,7 +45,7 @@
                     <MudSwitch @bind-Checked="UpPrize.IsActive" Color="Color.Error" For="() => UpPrize.IsActive"> 奖品:@(UpPrize.IsActive ? "启用" : "禁用")</MudSwitch>
                     </MudStack>
                     <MudStack Row="true" Spacing="5">
-                        <MudTextField Variant="Variant.Outlined" Label="奖品数量" @bind-Value="UpPrize.Amount" For="() => UpPrize.Amount"></MudTextField>
+                       @* <MudTextField Variant="Variant.Outlined" Label="奖品数量" @bind-Value="UpPrize.Amount" For="() => UpPrize.Amount"></MudTextField>*@
                         <MudTextField Variant="Variant.Outlined" Label="中奖概率" @bind-Value="UpPrize.Probability" For="() => UpPrize.Probability"></MudTextField>
                     </MudStack>
                     <MudTextField Lines="3" Variant="Variant.Outlined" Label="奖品详细描述" @bind-Value="UpPrize.Description" For="() => UpPrize.Description"></MudTextField>

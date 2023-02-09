@@ -83,6 +83,10 @@
         await fileform.FileMudForm.Validate();
         if (form.IsValid && fileform.FileMudForm.IsValid)
         {
+            if (UpActivityPrize.UniqueNumber == 0)
+            {
+                UpActivityPrize.UniqueNumber = await GlobalUtility.GetRandomInt(UpActivityPrize.Probability);
+            }
             MudDialog.Close(DialogResult.Ok(UpActivityPrize));
           
         }

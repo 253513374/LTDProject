@@ -20,30 +20,30 @@ namespace Wtdl.Repository.MediatRHandler
             _Logger = logger;
         }
 
-        public async Task Handle(LoggerEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(LoggerEvent loggerEvent, CancellationToken cancellationToken)
         {
             //在这里处理通知。例如，您可以发送电子邮件或记录事件
 
-            var loggermsg =
-                $"{notification.CreateTime}接收到{notification.TypeData.ToString()}通知,{notification.OperationType.ToString()} 处理, {notification.JsonData}";
-            await LogAsync(loggermsg);
+            await LogAsync(loggerEvent);
             return;
         }
 
-        public async Task LogAsync(string message)
+        public async Task LogAsync(LoggerEvent loggerEvent)
         {
-            _Logger.LogInformation(message);
+            var loggermsg =
+                $"[{loggerEvent.CreateTime}]接收到[{loggerEvent.TypeData.Name}]->{loggerEvent.OperationType.ToString()} 数据[{loggerEvent.JsonData}]";
+            _Logger.LogInformation(loggermsg);
             var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            var fileName = $"log_{DateTime.Now:yyyy-MM-dd}.txt";
+            var fileName = $"{loggerEvent.TypeData.Name}_log_{DateTime.Now:yyyy-MM-dd}.txt";
             var path = Path.Combine(directory, fileName);
             using (var writer = File.AppendText(path))
             {
-                await writer.WriteLineAsync($"{DateTime.Now}: {message}");
+                await writer.WriteLineAsync($"{loggermsg}");
             }
         }
     }

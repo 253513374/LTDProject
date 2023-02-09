@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Weitedianlan.Model.Entity;
+using Weitedianlan.Model.Enum;
 
 namespace Wtdl.Repository.EntityConfig
 {
@@ -22,6 +23,12 @@ namespace Wtdl.Repository.EntityConfig
             builder.Property(x => x.CashValue).IsRequired();
             builder.Property(x => x.MinCashValue).IsRequired();
             builder.Property(x => x.MaxCashValue).IsRequired();
+
+            builder.Property(p => p.RedPacketType)
+                .HasConversion(
+                    v => (int)v,
+                    x => (RedPacketType)x
+                );
         }
     }
 }

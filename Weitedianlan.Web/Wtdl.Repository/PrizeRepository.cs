@@ -114,11 +114,11 @@ namespace Wtdl.Repository
         /// 返回参加指定活动的奖品
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Prize>> GetJoinActivity(int Activityid)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.Prizes.AsNoTracking()
-                .Where(w => w.LotteryActivityId == Activityid).ToListAsync();
-        }
+        //public async Task<IEnumerable<Prize>> GetJoinActivity(int Activityid)
+        //{
+        //    using var context = _contextFactory.CreateDbContext();
+        //    return await context.Prizes.AsNoTracking()
+        //        .Where(w => w.LotteryActivityId == Activityid).ToListAsync();
+        //}
     }
 }

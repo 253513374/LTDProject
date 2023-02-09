@@ -1,7 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
 using Weitedianlan.Model.Entity;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
+using Wtdl.Repository.Utility;
 
 namespace Wtdl.Mvc.Services
 {
@@ -18,7 +20,7 @@ namespace Wtdl.Mvc.Services
 
         public LotteryService(LotteryActivityRepository lotteryActivityRepository,
             LotteryRecordRepository recordRepository,
-              VerificationCodeRepository verificationCodeRepository,
+            VerificationCodeRepository verificationCodeRepository,
             ILogger<LotteryService> logger)
         {
             _lotteryActivityRepository = lotteryActivityRepository;
@@ -66,6 +68,7 @@ namespace Wtdl.Mvc.Services
                             Id = prize.Id,
                         });
                     }
+
                     return view;
                 }
 
@@ -79,39 +82,141 @@ namespace Wtdl.Mvc.Services
         }
 
         /// <summary>
-        /// 使用RNGCryptoServiceProvider 生成安全随机数
+        /// 随机抽取一个奖品
         /// </summary>
-        /// <param name="minimumValue"></param>
-        /// <param name="maximumValue"></param>
+        /// <param name="openid"></param>
+        /// <param name="qrcode"></param>
         /// <returns></returns>
-        private Task<int> GetInt(int minimumValue, int maximumValue)
-        {
-            RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
-
-            uint scale = uint.MaxValue;
-            while (scale == uint.MaxValue)
-            {
-                byte[] fourBytes = new byte[4];
-                _rng.GetBytes(fourBytes);
-
-                scale = BitConverter.ToUInt32(fourBytes, 0);
-            }
-
-            return Task.FromResult((int)(minimumValue + (maximumValue - minimumValue + 1) *
-                (scale / (double)uint.MaxValue)));
-        }
-
         private async Task<PrizeViewModel> LuckyPrize(string openid, string qrcode)
         {
-            var activity = await GetLotteryActivityAsync();
+            ; ;
 
-            double minProbability = 0.0;
-            foreach (var VARIABLE in activity.Prizes)
-            {
-                Math.MinMagnitude(minProbability, VARIABLE.Probability);
-            }
+            //  var selectPrize = GetRandomPrize(activity);
 
             return new PrizeViewModel();
+        }
+
+        /// <summary>
+        /// 随机抽取一个奖品
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        private async Task<ActivityPrize> GetRandomPrize()
+        {
+            var activity = await _lotteryActivityRepository.GetLotteryActivityAsync(a => a.IsActive == true);
+            var arr = activity.Prizes.Select(s => s.Id).ToArray();
+
+            Random random = new Random();
+            int index = random.Next(0, arr.Length);
+
+            return activity.Prizes.ToList()[index];
+        }
+
+        /// <summary>
+        /// 抽奖之前验证用户与标签序号是否有抽奖资格
+        /// </summary>
+        /// <param name="openid"></param>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        private async Task<bool> VerifyLottery(string openid, string qrcode)
+        {
+            // 标签序号是否存在
+            var verificationCode = await _verificationCodeRepository.AnyAsync(a => a.AntiForgeryCode == qrcode);
+            if (!verificationCode)
+            {
+                return false;
+            }
+
+            // 当前活动是否存在与活动是否处于激活状态
+            var activity = await GetLotteryActivityAsync();
+            if (activity is null)
+            {
+                if (!activity.IsActive)
+                {
+                    return false;
+                }
+                return false;
+            }
+
+            // 当前用户是否已经对标签序号抽过奖了
+            var lotteryRecord = await _lotteryRecordRepository.AnyQRCodeRecordsAsync(openid, qrcode);
+            if (lotteryRecord)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 记录抽奖数据
+        /// </summary>
+        /// <param name="openid"></param>
+        /// <param name="qrcode"></param>
+        /// <param name="prizeId"></param>
+        /// <returns></returns>
+        private async Task RecordLottery(string openid, string qrcode, int prizeId)
+        {
+            var activity = await _lotteryActivityRepository.GetLotteryActivityAsync(a => a.IsActive == true);
+            ;
+            var lotteryRecord = new LotteryRecord()
+            {
+                ActivityId = activity.Id,
+                OpenId = openid,
+                PrizeId = prizeId,
+                QRCode = qrcode,
+                CreateTime = DateTime.Now,
+            };
+            await _lotteryRecordRepository.AddAsync(lotteryRecord);
+        }
+
+        /// <summary>
+        /// 抽奖
+        /// </summary>
+        /// <param name="openid"></param>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        public async Task<LotteryViewModel> LotteryAsync(string openid, string qrcode)
+        {
+            try
+            {
+                // var verify = await VerifyLottery(openid, qrcode // 验证是否有抽奖资格
+                var verify = await VerifyLottery(openid, qrcode);
+                if (!verify)
+                {
+                    return new LotteryViewModel() { Msg = "没有抽奖资格" };
+                }
+
+                // 随机抽取一个参加活动的奖品
+                var prize = await GetRandomPrize();
+
+                //根据奖品的中奖概率随机求得一个中奖数值号码
+                var randomPrizeNumber = await GlobalUtility.GetRandomInt(prize.Probability);
+
+                if (randomPrizeNumber == prize.PrizeNumber)
+                {
+                    // 记录抽奖数据
+                    await RecordLottery(openid, qrcode, prize.Id);
+                    return new LotteryViewModel()
+                    {
+                        IsSuccess = true,
+                        Msg = $"恭喜你抽中了奖品:{prize.Name}",
+                    };
+                }
+                else
+                {
+                    return new LotteryViewModel()
+                    {
+                        IsSuccess = false,
+                        Msg = $"很遗憾没有中奖",
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"服务器错误：{e}");
+                return new LotteryViewModel() { Msg = $"服务器错误：{e.Message}" };
+            }
         }
     }
 }

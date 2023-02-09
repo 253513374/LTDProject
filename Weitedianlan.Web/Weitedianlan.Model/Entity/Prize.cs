@@ -8,10 +8,20 @@ namespace Weitedianlan.Model.Entity
     /// </summary>
     public class Prize : IEntityBase
     {
+        public Prize()
+        {
+            UniqueNumber = Guid.NewGuid().ToString().Replace("_", "");
+        }
+
         /// <summary>
-        /// 奖品编号。
+        /// 主键
         /// </summary>
-        public int Id { get; set; }//奖品ID
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 奖品唯一编号
+        /// </summary>
+        public string UniqueNumber { get; set; }
 
         /// <summary>
         /// 奖品名称

@@ -18,6 +18,16 @@ namespace Weitedianlan.Model.Entity
         public int Id { get; set; }//奖品ID
 
         /// <summary>
+        /// 奖品唯一编号
+        /// </summary>
+        public string UniqueNumber { get; set; }
+
+        /// <summary>
+        /// 中奖编号
+        /// </summary>
+        public int PrizeNumber { get; set; }
+
+        /// <summary>
         /// 奖品名称
         /// </summary>
         public string Name { get; set; }//奖品名称

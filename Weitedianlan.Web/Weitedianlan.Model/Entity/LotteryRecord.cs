@@ -57,7 +57,7 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 活动ID
         /// </summary>
-        public string ActivityId { get; set; }
+        public int ActivityId { get; set; }
 
         /// <summary>
         /// 活动名称

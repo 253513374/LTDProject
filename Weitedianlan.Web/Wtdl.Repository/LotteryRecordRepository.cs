@@ -85,12 +85,12 @@ namespace Wtdl.Repository
         }
 
         /// <summary>
-        /// 校验一个人只能中一次奖，不能多次中奖
+        /// 一个人只能扫一枚标签抽奖。
         /// </summary>
-        /// <param name="qrcode"></param>
-        /// <param name="openid"></param>
+        /// <param name="openid">微信用户openid</param>
+        /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
-        public async Task<bool> AnyQRCodeRecordsAsync(string qrcode, string openid)
+        public async Task<bool> AnyQRCodeRecordsAsync(string openid, string qrcode)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
@@ -99,5 +99,9 @@ namespace Wtdl.Repository
         }
 
         // public async Task<bool> Any
+        public async Task GetLotteryRecordAsync(Func<LotteryRecord, bool> func)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

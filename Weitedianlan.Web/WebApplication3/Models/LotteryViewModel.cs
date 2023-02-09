@@ -8,7 +8,7 @@
         /// <summary>
         /// 抽奖状态
         /// </summary>
-        public string status { get; set; }
+        public bool IsSuccess { get; set; }
 
         /// <summary>
         /// 抽奖信息

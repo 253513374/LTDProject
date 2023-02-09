@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Interface;
 using Wtdl.Repository.MediatRHandler.Events;
+using Wtdl.Repository.Utility;
 
 namespace Wtdl.Repository
 {
@@ -20,11 +21,6 @@ namespace Wtdl.Repository
 
         private readonly ILogger<ScanRedPacket> _logger;
         private readonly IMediator _mediator;
-
-        private JsonSerializerOptions Options = new JsonSerializerOptions
-        {
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
 
         public ScanRedPacketRepository(IDbContextFactory<LotteryContext> context, IMediator mediator,
                 ILogger<ScanRedPacket> logger) : base(context, mediator, logger)
@@ -38,12 +34,9 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var count = context.ScanRedPackets.Count();
                 if (context.ScanRedPackets.Any())
                 {
                     return await context.ScanRedPackets.FirstOrDefaultAsync();//.Result.FirstOrDefaultAsync();
-
-                    //return ob.LastOrDefault();
                 }
                 else
                 {
@@ -68,7 +61,7 @@ namespace Wtdl.Repository
                         await _mediator.Publish(new LoggerEvent()
                         {
                             TypeData = redPacket.GetType(),
-                            JsonData = JsonSerializer.Serialize(redPacket, Options),
+                            JsonData = GlobalUtility.SerializeObject(redPacket),
                             OperationType = OperationType.Update
                         });
                         return s;
@@ -86,7 +79,7 @@ namespace Wtdl.Repository
                         await _mediator.Publish(new LoggerEvent()
                         {
                             TypeData = redPacket.GetType(),
-                            JsonData = JsonSerializer.Serialize(redPacket, Options),
+                            JsonData = GlobalUtility.SerializeObject(redPacket),
                             OperationType = OperationType.Insert
                         });
                         return s;

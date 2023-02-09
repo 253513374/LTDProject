@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Weitedianlan.Model.Entity;
@@ -13,6 +15,11 @@ namespace Wtdl.Repository.Utility
 {
     public static class GlobalUtility
     {
+        private static JsonSerializerOptions Options = new JsonSerializerOptions
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+
         /// <summary>
         /// 计算文件哈希值
         /// </summary>
@@ -97,6 +104,7 @@ namespace Wtdl.Repository.Utility
         {
             return new ActivityPrize()
             {
+                UniqueNumber = prize.UniqueNumber,
                 ImageUrl = prize.ImageUrl,
                 Name = prize.Name,
                 Type = prize.Type,
@@ -119,6 +127,47 @@ namespace Wtdl.Repository.Utility
                 WinnerCount = prize.WinnerCount,
                 LotteryActivity = prize.LotteryActivity,
             };
+        }
+
+        public static string SerializeObject(object obj)
+        {
+            return JsonSerializer.Serialize(obj, Options);
+        }
+
+        /// <summary>
+        /// 使用RNGCryptoServiceProvider 生成安全随机数
+        /// </summary>
+        /// <param name="minimumValue">最小整数</param>
+        /// <param name="maximumValue">最大整数</param>
+        /// <returns>返回一个随机整数</returns>
+        public static Task<int> GetRandomInt(int minimumValue, int maximumValue)
+        {
+            RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
+
+            uint scale = uint.MaxValue;
+            while (scale == uint.MaxValue)
+            {
+                byte[] fourBytes = new byte[4];
+                _rng.GetBytes(fourBytes);
+
+                scale = BitConverter.ToUInt32(fourBytes, 0);
+            }
+
+            return Task.FromResult((int)(minimumValue + (maximumValue - minimumValue + 1) *
+                (scale / (double)uint.MaxValue)));
+        }
+
+        /// <summary>
+        /// 返回概率范围区间内的随机整数
+        /// </summary>
+        /// <param name="probability"></param>
+        /// <returns></returns>
+        public static async Task<int> GetRandomInt(double probability)
+        {
+            //求得概率的最大整数范围。
+            int multiplier = (int)(1 / probability);
+
+            return await GetRandomInt(0, multiplier);
         }
     }
 }

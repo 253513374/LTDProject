@@ -9,10 +9,9 @@ namespace Weitedianlan.Model.Entity
 {
     public class ScanRedPacket : IEntityBase
     {
-
         public ScanRedPacket()
         {
-            ScanRedPacketGuid = new Guid().ToString().Replace("_", ""); //设置数据库中只有一条数据
+            ScanRedPacketGuid = Guid.NewGuid().ToString().Replace("_", ""); //设置数据库中只有一条数据
         }
 
         public string ScanRedPacketGuid { get; set; }

@@ -28,10 +28,10 @@
                         {
 
                             <MudTextField Variant="Variant.Outlined" Label="固定金额" @bind-Value="UpActivityPrize.CashValue" For="() => UpActivityPrize.CashValue"></MudTextField>
-                            <MudStack Row="true" Spacing="4">
+                     @*       <MudStack Row="true" Spacing="4">
                                 <MudTextField Variant="Variant.Outlined" HelperText="温馨提示，金额不可设置太大" Label="最小金额" @bind-Value="UpActivityPrize.MinCashValue" For="() => UpActivityPrize.MinCashValue"></MudTextField>
                                 <MudTextField Variant="Variant.Outlined" Label="最大金额" @bind-Value="UpActivityPrize.MaxCashValue" For="() => UpActivityPrize.MaxCashValue"></MudTextField>
-                            </MudStack>
+                            </MudStack>*@
                         }
 
                     </MudPaper>
@@ -72,10 +72,8 @@
     public string? UploadedFile { get; set; }
     private MudForm form;
     private FileUpImageComponent fileform;
-    private ActivityPrizeFluentValidator FluentValidator = new ActivityPrizeFluentValidator();
-    //private FileUploadFluentValidator UploadFluentValidator = new FileUploadFluentValidator();
+    private ActivityPrizeFluentValidator FluentValidator = new();
 
-    //void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 
     private async Task HandleValidSubmit()

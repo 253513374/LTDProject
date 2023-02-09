@@ -1,10 +1,13 @@
 ﻿using System.Linq.Expressions;
+using EFCore.BulkExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Enum;
 using Wtdl.Repository.Interface;
+using Wtdl.Repository.MediatRHandler.Events;
+using Wtdl.Repository.Utility;
 
 namespace Wtdl.Repository
 {
@@ -85,7 +88,21 @@ namespace Wtdl.Repository
 
             entity.Status = status;
             context.LotteryActivities.Update(entity);
-            return await context.SaveChangesAsync() > 0;
+            var updateint = await context.SaveChangesAsync();
+            if (updateint > 0)
+            {
+                await _mediator.Publish(new LoggerEvent()
+                {
+                    TypeData = entity.GetType(),
+                    JsonData = GlobalUtility.SerializeObject(entity),
+                    OperationType = OperationType.Insert
+                });
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>

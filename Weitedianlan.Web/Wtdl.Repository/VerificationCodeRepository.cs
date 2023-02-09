@@ -114,8 +114,6 @@ namespace Wtdl.Repository
                     {
                         var filehash = GlobalUtility.ComputeFileHash(filePath);
 
-                        // csv.Context.TypeConverterCache.AddConverter<string>(new VCodeDefaultValueConverter(filehash));
-
                         csv.Context.RegisterClassMap(new VCodeCsvHelperMap(filehash));
 
                         var vcodeList = csv.GetRecords<VerificationCode>().ToList();
@@ -130,6 +128,20 @@ namespace Wtdl.Repository
 
                 return new InsertResult { IsSuccess = false, Message = e.Message.ToString() };
                 // throw;
+            }
+        }
+
+        /// <summary>
+        /// 验证码与标签序号是否对应
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task<bool> AnyAsync(string qrcode, string code)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.VerificationCodes.AnyAsync(x => x.AntiForgeryCode == qrcode && x.VCode == code);
             }
         }
     }

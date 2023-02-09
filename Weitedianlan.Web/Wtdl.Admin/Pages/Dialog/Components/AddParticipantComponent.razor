@@ -74,8 +74,9 @@
             {
                 activityprize.Amount = (int)result.Data;
                
+                //添加中奖号码
+                activityprize.PrizeNumber = await GlobalUtility.GetRandomInt(activityprize.Probability);
                 await AddOptionCallback.InvokeAsync(activityprize);
-    // Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
             }
             dropItem.Item.Identifier = dropItem.DropzoneIdentifier;
         }

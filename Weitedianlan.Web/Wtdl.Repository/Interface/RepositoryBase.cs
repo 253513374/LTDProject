@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
+using EFCore.BulkExtensions;
+using Wtdl.Repository.MediatRHandler.Events;
 
 namespace Wtdl.Repository.Interface
 {
@@ -27,6 +29,13 @@ namespace Wtdl.Repository.Interface
             {
                 await context.Set<T>().AddAsync(entity);
 
+                await _mediator.Publish(new LoggerEvent()
+                {
+                    TypeData = entity.GetType(),
+                    CreateTime = DateTime.Now,
+                    OperationType = OperationType.Insert,
+                    JsonData = $"AddAsync {entity.GetType().Name} {entity.ToString()}"
+                });
                 return await context.SaveChangesAsync();
             }
         }

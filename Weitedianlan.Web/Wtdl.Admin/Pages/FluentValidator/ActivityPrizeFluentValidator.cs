@@ -26,22 +26,22 @@ namespace Wtdl.Admin.Pages.FluentValidator
                 .WithMessage("固定金额必须小于50")
                 .When(w => w.Type == PrizeType.Cash);
 
-            RuleFor(x => x.MinCashValue).GreaterThan(0)
-                .WithMessage("最小金额必须大于0")
-                .When(w => w.Type == PrizeType.Cash);
-            RuleFor(x => x.MinCashValue).LessThan(l => l.MaxCashValue)
-                .WithMessage("最小金额必须小于最大金额")
-                .When(w => w.Type == PrizeType.Cash);
+            //RuleFor(x => x.MinCashValue).GreaterThan(0)
+            //    .WithMessage("最小金额必须大于0")
+            //    .When(w => w.Type == PrizeType.Cash);
+            //RuleFor(x => x.MinCashValue).LessThan(l => l.MaxCashValue)
+            //    .WithMessage("最小金额必须小于最大金额")
+            //    .When(w => w.Type == PrizeType.Cash);
 
-            RuleFor(x => x.MaxCashValue).GreaterThan(0)
-                .WithMessage("最大金额必须大于0")
-                .When(w => w.Type == PrizeType.Cash);
-            RuleFor(x => x.MaxCashValue).LessThan(50)
-                .WithMessage("最大金额必须小于50")
-                .When(w => w.Type == PrizeType.Cash);
-            RuleFor(x => x.MaxCashValue).GreaterThan(g => g.MinCashValue)
-                .WithMessage("最大金额必须大于最小金额")
-                .When(w => w.Type == PrizeType.Cash);
+            //RuleFor(x => x.MaxCashValue).GreaterThan(0)
+            //    .WithMessage("最大金额必须大于0")
+            //    .When(w => w.Type == PrizeType.Cash);
+            //RuleFor(x => x.MaxCashValue).LessThan(50)
+            //    .WithMessage("最大金额必须小于50")
+            //    .When(w => w.Type == PrizeType.Cash);
+            //RuleFor(x => x.MaxCashValue).GreaterThan(g => g.MinCashValue)
+            //    .WithMessage("最大金额必须大于最小金额")
+            //    .When(w => w.Type == PrizeType.Cash);
         }
 
         //private async Task<bool> IsUniqueAsync(string email)

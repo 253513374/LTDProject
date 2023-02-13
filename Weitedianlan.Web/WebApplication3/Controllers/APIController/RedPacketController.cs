@@ -20,7 +20,7 @@ namespace Wtdl.Mvc.Controllers.APIController
         }
 
         /// <summary>
-        /// 第二次输入验证码领取红包，正在开发
+        /// 第二次输入验证码领取红包
         /// </summary>
         /// <param name="openid">微信用户openid</param>
         /// <param name="qrcode">标签序号</param>
@@ -34,7 +34,7 @@ namespace Wtdl.Mvc.Controllers.APIController
         }
 
         /// <summary>
-        /// 第一次二维码领取红包，正在开发
+        /// 第一次二维码领取红包
         /// </summary>
         /// <param name="openid">微信用户openid</param>
         /// <param name="qrcode">标签序号</param>
@@ -52,7 +52,7 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <param name="openid">微信用户openid</param>
         /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
-        [HttpGet("Status")]
+        [HttpGet("GetRedPackStatus")]
         public async Task<IActionResult> Get(string openid, string qrcode)
         {
             await _scanByRedPacketService.AnyFirstRedPacket(qrcode);

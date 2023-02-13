@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Wtdl.Repository.MediatRHandler.Events;
+using Wtdl.Repository.Tools;
 
 namespace Wtdl.Repository
 {
@@ -18,7 +21,7 @@ namespace Wtdl.Repository
             services.AddTransient<WLabelStorageRepository>();
             services.AddTransient<RedPacketRecordRepository>();
             services.AddScoped<ScanRedPacketRepository>();
-
+            services.AddScoped<EmailSender>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
 #if DEBUG

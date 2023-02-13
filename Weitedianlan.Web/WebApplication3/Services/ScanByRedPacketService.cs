@@ -7,10 +7,12 @@ using Senparc.Weixin.TenPay.V3;
 using Weitedianlan.Model.Entity;
 using System.Net.Sockets;
 using System.Net;
+using MediatR;
 using Senparc.Weixin.Helpers;
 using Weitedianlan.Model.Enum;
 using Wtdl.Repository.Utility;
 using Senparc.Weixin.TenPay.V2;
+using Wtdl.Repository.MediatRHandler.Events;
 
 namespace Wtdl.Mvc.Services
 {
@@ -26,6 +28,8 @@ namespace Wtdl.Mvc.Services
 
         private static TenPayV3Info _tenPayV3Info;
 
+        private readonly IMediator _mediator;
+
         /// <summary>
         /// 本机IP，局域网IP
         /// </summary>
@@ -34,13 +38,14 @@ namespace Wtdl.Mvc.Services
         public ScanByRedPacketService(RedPacketRecordRepository redPacketRecordRepository,
             VerificationCodeRepository verificationCodeRepository,
             ScanRedPacketRepository redPacketRepository,
-            WLabelStorageRepository wLabelStorage)
+            WLabelStorageRepository wLabelStorage,
+             IMediator mediator)
         {
             _redPacketRecordRepository = redPacketRecordRepository;
             _verificationCodeRepository = verificationCodeRepository;
             _redPacketRepository = redPacketRepository;
             _wLabelStorageRepository = wLabelStorage;
-
+            _mediator = mediator;
             //_localIPAddress = GetIp();
             var host = Dns.GetHostEntry(Dns.GetHostName());
             _localIPAddress = host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToString();
@@ -323,6 +328,8 @@ namespace Wtdl.Mvc.Services
 
             if (sendNormalRedPackResult.ReturnCodeSuccess)
             {
+                var msg = $"{sendNormalRedPackResult.err_code}:{sendNormalRedPackResult.err_code_des}";
+
                 if (sendNormalRedPackResult.ResultCodeSuccess)
                 {
                     //红包发放成功
@@ -346,98 +353,119 @@ namespace Wtdl.Mvc.Services
                     //保存红包发放记录
                     var addresult = await _redPacketRecordRepository.AddAsync(packeresult);
                 }
-                else if (sendNormalRedPackResult.result_code == "NOTENOUGH")
+                else
                 {
+                    //"账号余额不足，请到商户平台充值后再重试";
                     returnresult.IsSuccess = false;
-                    returnresult.Message = "余额不足";
-                }
-                else if (sendNormalRedPackResult.result_code == "SYSTEMERROR")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "系统繁忙，请稍后再试,使用原单号调用接口，查询发放结果";
-                }
-                else if (sendNormalRedPackResult.result_code == "SIGN_ERROR")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "参数签名结果不正确";
-                }
-                else if (sendNormalRedPackResult.result_code == "XML_ERROR")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "输入xml参数格式错误,请求参数未按指引进行填写";
-                }
-                else if (sendNormalRedPackResult.result_code == "FATAL_ERROR")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "openid和原始单参数不一致";
-                }
-                else if (sendNormalRedPackResult.result_code == "FREQ_LIMIT")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "超过频率限制，请稍后再试";
-                }
-                else if (sendNormalRedPackResult.result_code == "SENDAMOUNT_LIMIT")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "商户号今日发放金额超过限制";
-                }
-                else if (sendNormalRedPackResult.result_code == "MONEY_LIMIT")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "发送红包金额不在限制范围内";
-                }
-                else if (sendNormalRedPackResult.result_code == "CA_ERROR")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "商户API证书校验出错";
-                }
-                else if (sendNormalRedPackResult.result_code == "PARAM_ERROR")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message =
-                        $"{sendNormalRedPackResult.err_code}:{sendNormalRedPackResult.err_code_des}";
-                }
-                else if (sendNormalRedPackResult.result_code == "SENDNUM_LIMIT")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "该用户今日领取红包个数超过限制";
-                }
-                else if (sendNormalRedPackResult.result_code == "SEND_FAILED")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "红包发放失败,请更换单号再重试";
-                }
-                else if (sendNormalRedPackResult.result_code == "API_METHOD_CLOSED")
-                {
-                    //请求接口失败
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "你的商户号API发放方式已关闭，请联系管理员在商户平台开启";
-                }
-                else if (sendNormalRedPackResult.result_code == "PROCESSING")
-                {
-                    //请求接口失败
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "请求已受理，请稍后使用原单号调用接口查询发放结果";
-                }
-                else if (sendNormalRedPackResult.result_code == "RCVDAMOUNT_LIMIT")
-                {
-                    //请求接口失败
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "该用户今日领取红包总金额超过您在微信支付商户平台配置的上限。";
-                }
-                else if (sendNormalRedPackResult.result_code == "PAYER_ACCOUNT_ABNORMAL")
-                {
-                    returnresult.IsSuccess = false;
-                    returnresult.Message = "商户号被处罚、冻结";
-                }
+                    returnresult.Message = msg;
 
-                //return OK(SerializerHelper.GetJsonString(sendNormalRedPackResult));
-                //发放红包
-                // return returnresult;
+                    if (sendNormalRedPackResult.err_code == "NOTENOUGH")
+                    {
+                        await _mediator.Publish(new SendEmailEvent()
+                        {
+                            Title = "扫码领微信红包活动重要通知",
+                            Content = $"微信红包活动：{msg}，请及时充值。",
+                            Email = ""
+                        });
+                    }
+
+                    if (sendNormalRedPackResult.err_code == "SIGN_ERROR")
+                    {
+                        await _mediator.Publish(new SendEmailEvent()
+                        {
+                            Title = "扫码领微信红包活动重要通知",
+                            Content = $"微信红包活动：{msg}.",
+                            Email = ""
+                        });
+                    }
+                }
+                //else if (sendNormalRedPackResult.result_code == "SYSTEMERROR")
+                //{
+                //    // "系统繁忙，请稍后再试,使用原单号调用接口，查询发放结果";
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = msg;
+                //}
+                //else if (sendNormalRedPackResult.result_code == "SIGN_ERROR")
+                //{
+                //    // "参数签名结果不正确";
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = msg;
+                //}
+                //else if (sendNormalRedPackResult.result_code == "XML_ERROR")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "输入xml参数格式错误,请求参数未按指引进行填写";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "FATAL_ERROR")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "openid和原始单参数不一致";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "FREQ_LIMIT")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "超过频率限制，请稍后再试";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "SENDAMOUNT_LIMIT")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "商户号今日发放金额超过限制";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "MONEY_LIMIT")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "发送红包金额不在限制范围内";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "CA_ERROR")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "商户API证书校验出错";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "PARAM_ERROR")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message =
+                //        $"{sendNormalRedPackResult.err_code}:{sendNormalRedPackResult.err_code_des}";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "SENDNUM_LIMIT")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "今日领取红包个数超过限制";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "SEND_FAILED")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "红包发放失败,请更换单号再重试";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "API_METHOD_CLOSED")
+                //{
+                //    //请求接口失败
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "你的商户号API发放方式已关闭，请联系管理员在商户平台开启";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "PROCESSING")
+                //{
+                //    //请求接口失败
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "请求已受理，请稍后使用原单号调用接口查询发放结果";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "RCVDAMOUNT_LIMIT")
+                //{
+                //    //请求接口失败
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "该用户今日领取红包总金额超过您在微信支付商户平台配置的上限。";
+                //}
+                //else if (sendNormalRedPackResult.result_code == "PAYER_ACCOUNT_ABNORMAL")
+                //{
+                //    returnresult.IsSuccess = false;
+                //    returnresult.Message = "商户号被处罚、冻结";
+                //}
             }
-
-            returnresult.IsSuccess = false;
-            returnresult.Message = $"{sendNormalRedPackResult.err_code}:{sendNormalRedPackResult.err_code_des}";
+            else
+            {
+                returnresult.IsSuccess = false;
+                returnresult.Message = $"通信错误：{sendNormalRedPackResult.return_code}:{sendNormalRedPackResult.return_msg}";
+            }
 
             return returnresult;
         }

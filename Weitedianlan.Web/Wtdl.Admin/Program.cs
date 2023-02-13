@@ -10,6 +10,7 @@ using Wtdl.Admin.Data;
 using Wtdl.Repository;
 using MediatR;
 using MudBlazor;
+using Wtdl.Repository.MediatRHandler.Events;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -25,6 +26,7 @@ try
     //builder.Configuration.GetConnectionString("LotteryDbConnection")
     var connectionString = builder.Configuration.GetConnectionString("LotteryDbConnection");
     builder.Services.AddLotteryDbContext(connectionString);
+    builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
     // Add services to the container.
     StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);

@@ -1,4 +1,6 @@
 ﻿@page "/prizemanage"
+@using MediatR
+@using Wtdl.Repository.MediatRHandler.Events
 
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -70,9 +72,9 @@
 @code {
     private Prize selectedPrize = new Prize();
     private IEnumerable<Prize> Prizes;
-    
-   
-    
+
+
+    [Inject] private IMediator mediator { set; get; }
 
     private string searchString;
 
@@ -97,6 +99,13 @@
 
     protected async Task OnAddPrize()
     {
+
+       await  mediator.Publish(new SendEmailEvent()
+       {
+           Title = "测试邮件",
+           Content = "邮件内容",
+           Email = "253513374@qq.com"
+       });
        // AddModal = true;
         var parameters = new DialogParameters();
 

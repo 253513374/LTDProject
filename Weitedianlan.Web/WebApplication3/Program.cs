@@ -11,6 +11,7 @@ using Wtdl.Mvc.Services;
 using Wtdl.Repository;
 using System.Reflection;
 using Senparc.Weixin.TenPay;
+using Wtdl.Repository.MediatRHandler.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +84,7 @@ builder.Services.AddLotteryDbContext(connectionString);
 builder.Services.AddScoped<LotteryService>();//注入抽奖服务
 builder.Services.AddScoped<SearchByCodeService>();//注入抽奖服务
 builder.Services.AddScoped<ScanByRedPacketService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 var app = builder.Build();
 

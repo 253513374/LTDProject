@@ -15,8 +15,8 @@ namespace Wtdl.Repository.Tools
         public VCodeCsvHelperMap(string filehash)
         {
             Map(m => m.Id).Ignore();
-            Map(m => m.AntiForgeryCode).Index(0).TypeConverter<VCodeConverter>();
-            Map(m => m.VCode).Index(1);
+            Map(m => m.QRCode).Index(0).TypeConverter<VCodeConverter>();
+            Map(m => m.Captcha).Index(1);
             Map(m => m.FileHash).TypeConverter(new VCodeDefaultValueConverter(filehash));
         }
     }

@@ -46,12 +46,12 @@ namespace Wtdl.Repository
         /// <param name="qrcode">标签序号</param>
         /// <param name="code">验证码</param>
         /// <returns></returns>
-        public async Task<bool> AnyAsync(string qrcode, string code)
-        {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.RedPacketRecords.AnyAsync(x => x.QrCode == qrcode && x.VerificationCode == code);
-            }
-        }
+        //public async Task<bool> AnyAsync( )
+        //{
+        //    using (var context = _contextFactory.CreateDbContext())
+        //    {
+        //        return await context.RedPacketRecords.AnyAsync();
+        //    }
+        //}
     }
 }

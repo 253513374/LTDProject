@@ -92,6 +92,7 @@ namespace Wtdl.Mvc.MessageHandlers
                 .Keyword("OPENID", () =>
                 {
                     var openId = requestMessage.FromUserName;//获取OpenId
+                    //var appId = "65_uuMQDqnMKzW8pZ25sgdqnZ6ymig3_WWwMNRd3G3z4lcp0JaVbjQPKhmqu-BcGUjFxBc3WLSretLP6SU7ztuAm4vm54X3cCE2BimdsC4EY8ETmetLfwFT9bBvM0QWSWjAIASOS";
                     var userInfo = Senparc.Weixin.MP.AdvancedAPIs.UserApi.Info(appId, openId, Language.zh_CN);
 
                     defaultResponseMessage.Content = string.Format(

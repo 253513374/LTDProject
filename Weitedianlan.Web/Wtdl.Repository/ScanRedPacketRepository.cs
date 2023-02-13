@@ -15,6 +15,9 @@ using Wtdl.Repository.Utility;
 
 namespace Wtdl.Repository
 {
+    /// <summary>
+    /// 现金红包配置
+    /// </summary>
     public class ScanRedPacketRepository : RepositoryBase<ScanRedPacket>
     {
         private readonly IDbContextFactory<LotteryContext> _contextFactory;
@@ -36,11 +39,30 @@ namespace Wtdl.Repository
             {
                 if (context.ScanRedPackets.Any())
                 {
-                    return await context.ScanRedPackets.FirstOrDefaultAsync();//.Result.FirstOrDefaultAsync();
+                    return await context.ScanRedPackets.AsNoTracking().FirstOrDefaultAsync();//.Result.FirstOrDefaultAsync();
                 }
                 else
                 {
                     return new ScanRedPacket();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 判断红包活动是否激活
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> AnyRedPacketActiveAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                if (context.ScanRedPackets.Any())
+                {
+                    return await context.ScanRedPackets.Select(s => s.IsActivity).FirstOrDefaultAsync();//.Result.FirstOrDefaultAsync();
+                }
+                else
+                {
+                    return false;
                 }
             }
         }

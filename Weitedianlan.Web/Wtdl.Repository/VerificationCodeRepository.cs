@@ -59,7 +59,7 @@ namespace Wtdl.Repository
                         //        transaction.Commit();
                         stopwatch.Stop();
 
-                        _logger.LogInformation($"TASK-[{index}]:数据成功写入数据库{chunk.Count}:{chunk.Last().AntiForgeryCode} 耗时：{stopwatch.ElapsedMilliseconds}毫秒");
+                        _logger.LogInformation($"TASK-[{index}]:数据成功写入数据库{chunk.Count}:{chunk.Last().QRCode} 耗时：{stopwatch.ElapsedMilliseconds}毫秒");
                     }
                 }, i, TaskCreationOptions.LongRunning));
             }
@@ -137,11 +137,11 @@ namespace Wtdl.Repository
         /// <param name="qrcode"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async Task<bool> AnyAsync(string qrcode, string code)
+        public async Task<bool> AnyAsync(string qrcode, string captcha)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.VerificationCodes.AnyAsync(x => x.AntiForgeryCode == qrcode && x.VCode == code);
+                return await context.VerificationCodes.AnyAsync(x => x.QRCode == qrcode && x.Captcha == captcha);
             }
         }
     }

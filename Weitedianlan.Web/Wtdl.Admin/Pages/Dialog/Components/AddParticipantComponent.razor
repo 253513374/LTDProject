@@ -41,7 +41,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        Prizes = await _PrizeRepository.FindAsync(f => f.IsJoinActivity == false);
+        Prizes = await _PrizeRepository.FindAsync(f => f.IsActive == true);
         
         Parallel.ForEach(Prizes, prize =>
         {

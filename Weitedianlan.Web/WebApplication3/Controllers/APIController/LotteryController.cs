@@ -26,7 +26,7 @@ namespace Wtdl.Web.Api.Controllers
         /// <param name="code">防伪标签序号</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<LotteryViewModel> Get(string openid, string code)
+        public async Task<LotteryResult> Get(string openid, string code)
         {
             return await _lotteryService.GetLotteryResultAsync(openid, code);
         }

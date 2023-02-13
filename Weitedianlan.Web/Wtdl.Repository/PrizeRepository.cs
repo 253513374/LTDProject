@@ -76,12 +76,12 @@ namespace Wtdl.Repository
         /// 返回所有参加活动的奖品
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Prize>> GetJoinActivity()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.Prizes.AsNoTracking()
-                .Where(w => w.IsJoinActivity == true).ToListAsync();
-        }
+        //public async Task<IEnumerable<Prize>> GetActivePrizes()
+        //{
+        //    using var context = _contextFactory.CreateDbContext();
+        //    return await context.Prizes.AsNoTracking()
+        //        .Where(w => w.IsActive == true).ToListAsync();
+        //}
 
         /// <summary>
         /// 返回能参加活动的奖品列表，这个方法给属性Identifier赋值默认值

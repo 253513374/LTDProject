@@ -66,6 +66,11 @@ namespace Wtdl.Repository.Interface
             }
         }
 
+        /// <summary>
+        /// 数据存在返回true,否则返回false
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public virtual async Task<bool> ExistAsync(Expression<Func<T, bool>> expression)
         {
             using (var context = _contextFactory.CreateDbContext())

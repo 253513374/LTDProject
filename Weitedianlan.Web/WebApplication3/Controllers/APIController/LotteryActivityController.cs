@@ -32,7 +32,7 @@ namespace Wtdl.Web.Api.Controllers
         /// <param name="qrcode">标签序号</param>
         /// <returns>返回ActivityViewModel JSON对象</returns>
         [HttpGet]
-        public async Task<ActivityViewModel> GetLotteryActivity(string qrcode = "")
+        public async Task<ActivityResult> GetLotteryActivity(string qrcode = "")
         {
             _logger.LogInformation("收到访问信息:LotteryActivityController.GetLotteryActivity");
 

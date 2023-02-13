@@ -5,7 +5,7 @@
 @inject ScanRedPacketRepository _redPacketRepository
 @inject ISnackbar Snackbar
 
-<MudStack AlignItems="AlignItems.Center" Justify="Justify.Center">
+<MudStack >
     <MudCard Elevation="24" Style="width: 500px" >
         <MudForm Model="@RedPacket" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">
             <MudCardHeader>
@@ -13,21 +13,29 @@
                     <MudAvatar Color="Color.Error"><b style="font-weight: 600">福</b></MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.body1">现金红包</MudText>
-                    <MudText Typo="Typo.body2">扫码立即领取现金</MudText>
+                    <MudText Typo="Typo.body1">扫码立即领取现金</MudText>
+                    <MudTextField @bind-Value="RedPacket.ActivityName" For="() => RedPacket.ActivityName" Label="活动名称">活动名称</MudTextField>
                 </CardHeaderContent>
                 <CardHeaderActions>
                     <MudSwitch @bind-Checked="@RedPacket.IsActivity" Color="Color.Info">@(RedPacket.IsActivity?"已启用":"已禁用")</MudSwitch>
                 </CardHeaderActions>
             </MudCardHeader>
-            <MudCardMedia Image="images/a红包.jpg" />
-            <MudCardContent >
-                <MudText Class="mb-2" Typo="Typo.h5">配置红包</MudText>
+            <MudCardMedia Image="images/a红包.jpg" Height="200" />
+            <MudCardContent  >
+                <MudStack Row="true" Reverse="false">
+                    <MudText Class="mb-2" Typo="Typo.h5">配置红包</MudText>
+                    <MudSpacer></MudSpacer>
+                    <MudSwitch  @bind-Checked="@RedPacket.IsSubscribe" Color="Color.Success">关注公众号才能领取红包</MudSwitch>    
+                </MudStack>
+                   
                 <MudStack Spacing="3">
 
-                    <MudSelect Variant="Variant.Outlined" Label="红包类型" @bind-Value="RedPacket.RedPacketType" For="() => RedPacket.RedPacketType">
-                        <MudSelectItem Value="RedPacketType.RANDOM">随机红包</MudSelectItem>
+                        <MudTextField @bind-Value="RedPacket.SenderName" For="() => RedPacket.SenderName" Label="发放红包人员名称"></MudTextField>
+                        <MudTextField @bind-Value="RedPacket.WishingWord" For="() => RedPacket.WishingWord" Label="红包祝福语"></MudTextField>
+                    <MudSelect Variant="Variant.Text" Label="红包类型" @bind-Value="RedPacket.RedPacketType" For="() => RedPacket.RedPacketType">
+                       
                         <MudSelectItem Value="RedPacketType.AVERAGE">固定红包</MudSelectItem>
+                        <MudSelectItem Value="RedPacketType.RANDOM">随机红包</MudSelectItem>
                     </MudSelect>
                     @if (RedPacket.RedPacketType == RedPacketType.AVERAGE)
                     {
@@ -44,7 +52,7 @@
 
             </MudCardContent>
             <MudCardActions >
-                <MudFab OnClick="@(() => UpdateRedPacket())" Icon="@Icons.Material.Filled.Update" Color="Color.Primary" Label="更新红包数据">  </MudFab>
+                <MudButton Variant="Variant.Filled" OnClick="@(() => UpdateRedPacket())" StartIcon="@Icons.Material.Filled.Update" Color="Color.Primary" FullWidth="true"> 配置立即生效</MudButton>
                 
             </MudCardActions>
         </MudForm>
@@ -63,12 +71,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-
         RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
-        
-       
-        return; //
-        //return base.OnAfterRenderAsync(firstRender);
     }
 
    

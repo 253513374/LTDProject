@@ -58,13 +58,16 @@ namespace Wtdl.Web.Api.Controllers
         }
 
         /// <summary>
-        /// 微信后台验证地址（使用Get），微信后台的“接口配置信息”的Url填写如：http://sdk.weixin.senparc.com/weixin
+        /// 微信后台验证地址（使用Get），
+        /// 微信后台的“接口配置信息”的Url填写如：http://sdk.weixin.senparc.com/weixin
+        /// 特别注意：如果您是使用 WebApi，某些情况下可能需要对复杂类型进行标记才能自动填充，
+        /// 否则也可以拆散成单个的参数，如：
         /// </summary>
         [HttpGet]
         [ActionName("Index")]
-        public ActionResult Get(PostModel postModel, string echostr)
+        public ActionResult Get(string signature, string timestamp, string nonce, string echostr)
         {
-            if (CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, Token))
+            if (CheckSignature.Check(signature, timestamp, nonce, Token))
             {
                 //Response.ContentType = "application/json";
                 return Content(echostr, "application/json", Encoding.UTF8); //返回随机字符串则表示验证通过
@@ -72,7 +75,7 @@ namespace Wtdl.Web.Api.Controllers
             else
             {
                 // Response.ContentType = "application/json";
-                return Content("failed:" + postModel.Signature + "," + CheckSignature.GetSignature(postModel.Timestamp, postModel.Nonce, Token) + "。" +
+                return Content("failed:" + signature + "," + CheckSignature.GetSignature(timestamp, nonce, Token) + "。" +
                     "如果你在浏览器中看到这句话，说明此地址可以被作为微信公众账号后台的Url，请注意保持Token一致。", MediaTypeHeaderValue.Parse("application/json"));
             }
         }

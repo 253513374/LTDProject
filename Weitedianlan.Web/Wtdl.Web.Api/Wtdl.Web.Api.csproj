@@ -16,6 +16,7 @@
     <PackageReference Include="Senparc.Weixin.MP" Version="16.18.10.6" />
     <PackageReference Include="Senparc.Weixin.MP.Middleware" Version="0.8.5.7" />
     <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.12.5.7" />
+    <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.6.8.13" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

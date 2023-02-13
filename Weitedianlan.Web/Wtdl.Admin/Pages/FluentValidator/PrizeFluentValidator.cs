@@ -10,9 +10,9 @@ namespace Wtdl.Admin.Pages.FluentValidator
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("奖品名称不能为空");
             RuleFor(x => x.Name).Length(1, 20).WithMessage("奖品名称长度不能超过20个字符");
-            RuleFor(x => x.Amount).NotEmpty().WithMessage("奖品数量不能为空");
-            RuleFor(x => x.Amount).GreaterThan(0).WithMessage("奖品数量必须大于0");
-            RuleFor(x => x.Amount).LessThan(100000).WithMessage("奖品数量必须小于100000");
+            //RuleFor(x => x.Amount).NotEmpty().WithMessage("奖品数量不能为空");
+            //RuleFor(x => x.Amount).GreaterThan(0).WithMessage("奖品数量必须大于0");
+            //RuleFor(x => x.Amount).LessThan(100000).WithMessage("奖品数量必须小于100000");
             RuleFor(x => x.Probability).NotEmpty().WithMessage("奖品中奖概率不能为空");
             RuleFor(x => x.Probability).GreaterThan(0).WithMessage("奖品中奖概率必须大于0");
             RuleFor(x => x.Probability).LessThan(100).WithMessage("奖品中奖概率必须小于100");

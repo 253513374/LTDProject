@@ -7,6 +7,9 @@ using Weitedianlan.Model.Enum;
 
 namespace Weitedianlan.Model.Entity
 {
+    /// <summary>
+    /// 扫码得红包配置类
+    /// </summary>
     public class ScanRedPacket : IEntityBase
     {
         public ScanRedPacket()
@@ -19,9 +22,29 @@ namespace Weitedianlan.Model.Entity
         public int Id { get; set; }
 
         /// <summary>
+        /// 活动名称
+        /// </summary>
+        public string ActivityName { get; set; }
+
+        /// <summary>
+        /// 发放红包人名称,商户名称
+        /// </summary>
+        public string SenderName { get; set; }
+
+        /// <summary>
+        /// 红包祝福语句
+        /// </summary>
+        public string WishingWord { get; set; }
+
+        /// <summary>
         /// 是否启用现金红包
         /// </summary>
         public bool IsActivity { get; set; }
+
+        /// <summary>
+        /// 订阅
+        /// </summary>
+        public bool IsSubscribe { get; set; }
 
         /// <summary>
         /// 红包类型

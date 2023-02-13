@@ -15,13 +15,13 @@ namespace Weitedianlan.Model.Entity
         /// 防伪编码
         /// </summary>
         [Index(0)]
-        public string AntiForgeryCode { get; set; }
+        public string QRCode { get; set; }
 
         /// <summary>
         /// 4位验证码
         /// </summary>
         [Index(1)]
-        public string VCode { get; set; }
+        public string Captcha { get; set; }
 
         public string FileHash { get; set; }
     }

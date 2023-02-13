@@ -10,7 +10,7 @@ namespace Weitedianlan.Model.Entity
     {
         public Prize()
         {
-            UniqueNumber = Guid.NewGuid().ToString().Replace("_", "");
+            PrizeNumber = Guid.NewGuid().ToString().Replace("_", "");
         }
 
         /// <summary>
@@ -19,9 +19,14 @@ namespace Weitedianlan.Model.Entity
         public int Id { get; set; }
 
         /// <summary>
-        /// 奖品唯一编号
+        /// 中奖号码
         /// </summary>
         public string UniqueNumber { get; set; }
+
+        /// <summary>
+        /// 奖品唯一编号
+        /// </summary>
+        public string PrizeNumber { get; set; }
 
         /// <summary>
         /// 奖品名称
@@ -36,7 +41,7 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 奖品数量
         /// </summary>
-        public int Amount { get; set; }//奖品数量
+       // public int Amount { get; set; }//奖品数量
 
         /// <summary>
         /// 中奖概率

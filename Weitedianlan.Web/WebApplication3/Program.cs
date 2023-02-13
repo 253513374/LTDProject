@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Wtdl.Mvc.Services;
 using Wtdl.Repository;
 using System.Reflection;
+using Senparc.Weixin.TenPay;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +82,7 @@ builder.Services.AddLotteryDbContext(connectionString);
 
 builder.Services.AddScoped<LotteryService>();//注入抽奖服务
 builder.Services.AddScoped<SearchByCodeService>();//注入抽奖服务
+builder.Services.AddScoped<ScanByRedPacketService>();
 
 var app = builder.Build();
 
@@ -96,7 +98,8 @@ var registerService = app.UseSenparcWeixin(app.Environment,
     (register, weixinSetting) =>
     {
         //注册公众号信息（可以执行多次，注册多个公众号）
-        register.RegisterMpAccount(weixinSetting, "【盛派网络小助手】公众号");
+        register.RegisterMpAccount(weixinSetting, "【威特电缆】公众号");
+        register.RegisterTenpayV3(weixinSetting, "【威特电缆】微信支付（V2）");
     });
 
 #endregion 启用微信配置

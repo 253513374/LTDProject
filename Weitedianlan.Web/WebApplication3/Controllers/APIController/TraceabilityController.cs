@@ -30,11 +30,11 @@ namespace Wtdl.Mvc.Controllers.APIController
         ///
         /// </returns>
         [HttpGet]
-        public async Task<OutStorageViewModel> Get(string qrcode)
+        public async Task<OutStorageResult> Get(string qrcode)
         {
             if (string.IsNullOrEmpty(qrcode))
             {
-                return new OutStorageViewModel() { Status = false, Msg = "查询标签序号不能为空" };
+                return new OutStorageResult() { Status = false, Msg = "查询标签序号不能为空" };
             }
 
             qrcode = qrcode.Trim();

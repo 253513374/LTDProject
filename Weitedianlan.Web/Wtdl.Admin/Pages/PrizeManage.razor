@@ -1,6 +1,7 @@
 ﻿@page "/prizemanage"
 
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 @*奖品管理页面*@
 
@@ -15,35 +16,43 @@
             <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
+            <MudTh></MudTh>
             <MudTh>奖品名称</MudTh>
             <MudTh>奖品类型</MudTh>
-            <MudTh>奖品数量</MudTh>
+            @*  <MudTh>奖品数量</MudTh>*@
             <MudTh>固定金额</MudTh>
-          @*  <MudTh>最小金额</MudTh>
+            @*  <MudTh>最小金额</MudTh>
             <MudTh>最大金额</MudTh>*@
             <MudTh>奖品描述</MudTh>
             <MudTh>奖品图片</MudTh>
-            <MudTh>奖品状态</MudTh>
             <MudTh>功能</MudTh>
         </HeaderContent>
         <RowTemplate Context="prize">
+            
+            <MudTd>
+            @*<MudSwitch T="context" CheckedChanged="@OnCheckedChanged(prize)" Color="Color.Primary">bool?:@(prize.IsActive ? "启用" : "禁用")</MudSwitch>*@
+@*            <MudToggleIconButton Toggled="@prize.IsActive" ToggledChanged="OnToggledChanged"
+                                 Icon="@Icons.Material.Filled.Lock" Color="@Color.Error" Title="关闭" 
+                                 ToggledIcon="@Icons.Material.Filled.LockOpen" ToggledColor="@Color.Success" ToggledTitle="启用" />*@
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnToggledChanged(prize))">@(prize.IsActive ? "已激活" : "未激活")</MudButton>
+            </MudTd>
             <MudTd>@prize.Name</MudTd>
             <MudTd>@prize.Type</MudTd>
-            <MudTd>@prize.Amount</MudTd>
+            @*   <MudTd>@prize.Amount</MudTd>*@
             <MudTd>@prize.CashValue</MudTd>
-@*            <MudTd>@prize.MinCashValue</MudTd>
+            @*            <MudTd>@prize.MinCashValue</MudTd>
             <MudTd>@prize.MaxCashValue</MudTd>*@
 
             <MudTd>@prize.Description</MudTd>
-            <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100" /></MudTd>
-            <MudTd>@(prize.IsActive?"启用":"禁用")</MudTd>
+            <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100"/></MudTd>
+
             <MudTd>
                 <MudStack Row="true" Spacing="1">
                     <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
                     <MudButton Color="Color.Error" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnDeletePrize(prize))">删除</MudButton>
 
                 </MudStack>
-               </MudTd>
+            </MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager />
@@ -151,6 +160,24 @@
         //if ($"{element.} {element.Position} {element.Molar}".Contains(searchString))
         //    return true;
         return false;
+    }
+
+
+    private async Task OnToggledChanged(Prize arg)
+    {
+        arg.IsActive = !arg.IsActive;
+
+        var result = await _prizeRepository.UpdateAsync(arg);
+
+        if (result>0)
+        {
+            Snackbar.Add($"{arg.Name}更新成功", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add($"{arg.Name}更新失败", Severity.Error);
+        }
+       // throw new NotImplementedException();
     }
 
 }

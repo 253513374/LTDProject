@@ -35,7 +35,7 @@ namespace Wtdl.Mvc.Services
         /// </summary>
         /// <param name="openid"></param>
         /// <returns></returns>
-        public async Task<ActivityViewModel> GetLotteryActivityAsync()
+        public async Task<ActivityResult> GetLotteryActivityAsync()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Wtdl.Mvc.Services
 
                 if (result is not null)
                 {
-                    var view = new ActivityViewModel()
+                    var view = new ActivityResult()
                     {
                         IsSuccess = true,
                         Name = result.Name,
@@ -60,7 +60,7 @@ namespace Wtdl.Mvc.Services
                     for (int i = 0; i < prizeList.Count; i++)
                     {
                         var prize = prizeList[i];
-                        view.Prizes.Add(new PrizeViewModel()
+                        view.Prizes.Add(new PrizeResult()
                         {
                             Probability = prize.Probability,
                             ImageUrl = prize.ImageUrl,
@@ -73,12 +73,12 @@ namespace Wtdl.Mvc.Services
                     return view;
                 }
 
-                return new ActivityViewModel() { Msg = "没有活动" };
+                return new ActivityResult() { Msg = "没有活动" };
             }
             catch (Exception e)
             {
                 _logger.LogError($"服务器错误：{e}");
-                return new ActivityViewModel() { Msg = $"服务器错误：{e.Message}" };
+                return new ActivityResult() { Msg = $"服务器错误：{e.Message}" };
             }
         }
 
@@ -88,13 +88,13 @@ namespace Wtdl.Mvc.Services
         /// <param name="openid"></param>
         /// <param name="qrcode"></param>
         /// <returns></returns>
-        private async Task<PrizeViewModel> LuckyPrize(string openid, string qrcode)
+        private async Task<PrizeResult> LuckyPrize(string openid, string qrcode)
         {
             ; ;
 
             //  var selectPrize = GetRandomPrize(activity);
 
-            return new PrizeViewModel();
+            return new PrizeResult();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Wtdl.Mvc.Services
         private async Task<bool> VerifyLottery(string openid, string qrcode)
         {
             // 标签序号是否存在
-            var verificationCode = await _verificationCodeRepository.AnyAsync(a => a.AntiForgeryCode == qrcode);
+            var verificationCode = await _verificationCodeRepository.AnyAsync(a => a.QRCode == qrcode);
             if (!verificationCode)
             {
                 return false;
@@ -193,7 +193,7 @@ namespace Wtdl.Mvc.Services
         /// <param name="openid"></param>
         /// <param name="qrcode"></param>
         /// <returns></returns>
-        public async Task<LotteryViewModel> GetLotteryResultAsync(string openid, string qrcode)
+        public async Task<LotteryResult> GetLotteryResultAsync(string openid, string qrcode)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace Wtdl.Mvc.Services
                 var verify = await VerifyLottery(openid, qrcode);
                 if (!verify)
                 {
-                    return new LotteryViewModel() { Msg = "没有抽奖资格" };
+                    return new LotteryResult() { Msg = "没有抽奖资格" };
                 }
 
                 // 随机抽取一个参加活动的奖品
@@ -214,7 +214,7 @@ namespace Wtdl.Mvc.Services
                 {
                     // 记录抽奖数据
                     await RecordLotterySuccess(openid, qrcode, prize);
-                    return new LotteryViewModel()
+                    return new LotteryResult()
                     {
                         IsSuccess = true,
                         Msg = $"恭喜你抽中了奖品:{prize.Name}",
@@ -227,7 +227,7 @@ namespace Wtdl.Mvc.Services
                 else
                 {
                     await RecordLotteryFail(openid, qrcode, prize);
-                    return new LotteryViewModel()
+                    return new LotteryResult()
                     {
                         IsSuccess = false,
                         Msg = $"很遗憾没有中奖",
@@ -238,7 +238,7 @@ namespace Wtdl.Mvc.Services
             catch (Exception e)
             {
                 _logger.LogError($"服务器错误：{e}");
-                return new LotteryViewModel() { Msg = $"服务器错误：{e.Message}" };
+                return new LotteryResult() { Msg = $"服务器错误：{e.Message}" };
             }
         }
     }

@@ -111,7 +111,7 @@ namespace Wtdl.Mvc.Services
             return Task.FromResult(retXml);
         }
 
-        public async Task<OutStorageViewModel> GetWLabelStorageAsync(string qrcode)
+        public async Task<OutStorageResult> GetWLabelStorageAsync(string qrcode)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace Wtdl.Mvc.Services
                 {
                     var outqrcode = await _agentRepository.FindSingleAgentAsync(wqrcode.Dealers.Trim());
 
-                    return new OutStorageViewModel()
+                    return new OutStorageResult()
                     {
                         Status = true,
                         AgentName = outqrcode.AName.Trim(),
@@ -131,7 +131,7 @@ namespace Wtdl.Mvc.Services
                 }
                 else
                 {
-                    return new OutStorageViewModel()
+                    return new OutStorageResult()
                     {
                         Status = false,
                         Msg = "查询不到标签，标签还未出库"

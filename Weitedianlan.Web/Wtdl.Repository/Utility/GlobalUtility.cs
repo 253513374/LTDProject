@@ -78,7 +78,7 @@ namespace Wtdl.Repository.Utility
                 Type = activityPrize.Type,
                 CashValue = activityPrize.CashValue,
                 Identifier = activityPrize.Identifier,
-                Amount = activityPrize.Amount,
+                //Amount = activityPrize.Amount,
                 Probability = activityPrize.Probability,
                 IsActive = activityPrize.IsActive,
                 CreateTime = activityPrize.CreateTime,
@@ -110,7 +110,7 @@ namespace Wtdl.Repository.Utility
                 Type = prize.Type,
                 CashValue = prize.CashValue,
                 Identifier = prize.Identifier,
-                Amount = prize.Amount,
+                //Amount = prize.Amount,
                 Probability = prize.Probability,
                 IsActive = prize.IsActive,
                 CreateTime = prize.CreateTime,
@@ -138,7 +138,7 @@ namespace Wtdl.Repository.Utility
         /// <param name="minimumValue">最小整数</param>
         /// <param name="maximumValue">最大整数</param>
         /// <returns>返回一个随机整数</returns>
-        private static Task<int> GetRandomInt(int minimumValue, int maximumValue)
+        public static Task<int> GetRandomInt(int minimumValue, int maximumValue)
         {
             RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
 

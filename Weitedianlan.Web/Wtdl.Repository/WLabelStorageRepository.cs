@@ -129,6 +129,29 @@ namespace Wtdl.Repository
                 return null;
             }
         }
-    }
 
+        /// <summary>
+        /// 验证二维码标签能否参加活动或者参加扫码领现金红包，
+        /// 标签出库时间没有超过24小时，不能参加活动
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> AnyRedPacket(string qrcode)
+        {
+            DateTime now = DateTime.Now;
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var outtime = await context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.QRCode == qrcode)
+                    .Select(s => s.OutTime)
+                    .FirstOrDefaultAsync();
+                outtime = outtime.AddHours(24);
+                //判断两个时间的大小
+                if (DateTime.Compare(now, outtime) > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
 }

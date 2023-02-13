@@ -12,8 +12,8 @@ namespace Wtdl.Repository.EntityConfig
             builder.Property(p => p.Id)//设置属性为自增长
                 .ValueGeneratedOnAdd();
 
-            builder.Property(p => p.AntiForgeryCode).HasMaxLength(20);
-            builder.HasIndex(p => p.AntiForgeryCode).IsUnique();//设置索引
+            builder.Property(p => p.QRCode).HasMaxLength(20);
+            builder.HasIndex(p => p.QRCode).IsUnique();//设置索引
 
             builder.Property(p => p.CreateTime).HasDefaultValueSql("GETDATE()"); ;//设置默认值
         }

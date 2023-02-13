@@ -35,6 +35,7 @@ namespace Wtdl.Mvc.MessageHandlers
                 ? "-"
                 : string.Format("{0}.{1}.{2}", fileVersionInfo.FileMajorPart, fileVersionInfo.FileMinorPart, fileVersionInfo.FileBuildPart);
 
+            return string.Format("欢迎关注威特五金电缆公司公众号");
             return string.Format(
 @"欢迎关注【Senparc.Weixin 微信公众平台SDK】，当前运行版本：v{0}。
 您可以发送【文字】【位置】【图片】【语音】【文件】等不同类型的信息，查看不同格式的回复。
@@ -81,8 +82,7 @@ QQ群：377815480
 
 【订阅】     测试“一次性订阅消息”接口
 
-【SP】 测试 ServiceProvider
-",
+【SP】 测试 ServiceProvider",
                 version);
         }
 

@@ -141,7 +141,7 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 var outtime = await context.WLabelStorages.AsNoTracking()
-                    .Where(w => w.QRCode == qrcode)
+                    .Where(w => w.QRCode.Trim() == qrcode.Trim())
                     .Select(s => s.OutTime)
                     .FirstOrDefaultAsync();
                 outtime = outtime.AddHours(24);

@@ -15,3 +15,21 @@ F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.csproj.CopyComplete
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.dll
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.Oracle.service.dll.config
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.Oracle.service.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.Oracle.service.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.SqlServer.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Oracle.ManagedDataAccess.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Oracle.ManagedDataAccess.EntityFramework.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.model.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\Weitedianlan.model.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\EntityFramework.SqlServer.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\zh-Hans\EntityFramework.resources.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\bin\Debug\zh-Hans\EntityFramework.SqlServer.resources.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.csproj.AssemblyReference.cache
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.csproj.CoreCompileInputs.cache
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.csproj.CopyComplete
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.Oracle.service\obj\Debug\Weitedianlan.Oracle.service.pdb

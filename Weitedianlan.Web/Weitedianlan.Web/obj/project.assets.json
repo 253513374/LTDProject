@@ -10178,11 +10178,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\Weitedianlan.Web.csproj",
+      "projectUniqueName": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\Weitedianlan.Web.csproj",
       "projectName": "Weitedianlan.Web",
-      "projectPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\Weitedianlan.Web.csproj",
+      "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\Weitedianlan.Web.csproj",
       "packagesPath": "C:\\Users\\q4528\\.nuget\\packages\\",
-      "outputPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\obj\\",
+      "outputPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -10204,11 +10204,11 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj": {
-              "projectPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj"
+            "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj": {
+              "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj"
             },
-            "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj": {
-              "projectPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj"
+            "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj": {
+              "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj"
             }
           }
         }

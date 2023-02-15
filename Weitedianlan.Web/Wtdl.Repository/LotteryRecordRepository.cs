@@ -50,7 +50,20 @@ namespace Wtdl.Repository
         /// </summary>
         /// <param name="openid"></param>
         /// <returns></returns>
-        public async Task<bool> AnyRecordsAsync(string openid)
+        public async Task<bool> AnyLotterysAsync(string openid)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.LotteryRecords.AsNoTracking().AnyAsync(x => x.OpenId == openid);
+            }
+        }
+
+        /// <summary>
+        /// 返回用户的所有抽奖记录列表
+        /// </summary>
+        /// <param name="openid">微信用户openid</param>
+        /// <returns></returns>
+        public async Task<bool> GetLotteryRecordsAsync(string openid)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
@@ -102,6 +115,19 @@ namespace Wtdl.Repository
         public async Task GetLotteryRecordAsync(Func<LotteryRecord, bool> func)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 获取最新的前1000条记录
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<IEnumerable<LotteryRecord>> GetLatestLotteryRecordsAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.LotteryRecords.AsNoTracking().OrderByDescending(x => x.CreateTime).Take(1000).ToListAsync();
+            }
         }
     }
 }

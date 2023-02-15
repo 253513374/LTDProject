@@ -1,6 +1,121 @@
 ﻿@page "/receiveredpackmanage"
-<h3>ReceiveRedPackManage</h3>
+
+
+
+@inject RedPacketRecordRepository _PacketRecordRepository
+
+
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<RedPacketRecord>>>(ServerReload))"
+          Dense="true" Striped="true" @ref="@mtable">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">红包领取记录</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>OpenId</MudTh>
+        <MudTh>订单号</MudTh>
+        <MudTh>标签序号</MudTh>
+        <MudTh>验证码</MudTh>
+        <MudTh>红包金额</MudTh>
+        <MudTh>发放时间</MudTh>
+        @*      <MudTh>奖品描述</MudTh>
+        <MudTh>奖品图片</MudTh>
+        <MudTh>功能</MudTh>*@
+    </HeaderContent>
+    <RowTemplate Context="prize">
+
+        @*       <MudTd>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnToggledChanged(prize))">@(prize.IsActive ? "已激活" : "未激活")</MudButton>
+        </MudTd>*@
+        <MudTd>@prize.ReOpenId</MudTd>
+        <MudTd>@prize.MchbillNo</MudTd>
+        <MudTd>@prize.QrCode</MudTd>
+        <MudTd>@prize.Captcha</MudTd>
+        <MudTd>@prize.TotalAmount</MudTd>
+        <MudTd>@prize.IssueTime</MudTd>
+
+        @*          <MudTd>
+        <MudStack Row="true" Spacing="1">
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnDeletePrize(prize))">删除</MudButton>
+
+        </MudStack>
+        </MudTd>*@
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
 @code {
 
+    private IEnumerable<RedPacketRecord> PacketRecords { set; get; }
+
+    private MudTable<RedPacketRecord> mtable;
+    //private MudTable<Element> table;
+    private string searchString = null;
+    private int redPacketRecordCunt;
+
+
+    //protected async override Task OnInitializedAsync()
+    //{
+    //    PacketRecords = await _PacketRecordRepository.GetAllAsync();
+    //   // return base.OnInitializedAsync();
+    //}
+
+    private async Task<TableData<RedPacketRecord>> ServerReload(TableState state)
+    {
+        var datalist = await _PacketRecordRepository.GetAllAsync();
+        datalist = datalist.Where(element =>
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.ReOpenId.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (element.Captcha.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (element.QrCode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (element.TotalAmount.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+
+            if ($"{element.ReOpenId} {element.Captcha} {element.QrCode}".Contains(searchString))
+                return true;
+            return false;
+        }).ToArray();
+        redPacketRecordCunt = datalist.Count();
+        switch (state.SortLabel)
+        {
+            case "QrCode":
+                datalist = datalist.OrderByDirection(state.SortDirection, o => o.QrCode);
+                break;
+            case "CreateTime":
+                datalist = datalist.OrderByDirection(state.SortDirection, o => o.CreateTime);
+                break;
+            case "CashAmount":
+                datalist = datalist.OrderByDirection(state.SortDirection, o => o.CashAmount);
+                break;
+            case "MchbillNo":
+                datalist = datalist.OrderByDirection(state.SortDirection, o => o.MchbillNo);
+                break;
+            case "mass_field":
+                break;
+        }
+
+        PacketRecords = datalist.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        return new TableData<RedPacketRecord>() { TotalItems = redPacketRecordCunt, Items = PacketRecords };
+        //throw new NotImplementedException();
+    }
+    private Task OnSearch(string text)
+    {
+        searchString = text;
+        mtable.ReloadServerData();
+        return Task.CompletedTask;
+    }
 }

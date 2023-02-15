@@ -21,6 +21,7 @@ namespace Wtdl.Repository
             services.AddTransient<WLabelStorageRepository>();
             services.AddTransient<RedPacketRecordRepository>();
             services.AddScoped<ScanRedPacketRepository>();
+            services.AddScoped<ActivityPrizeRepository>();
             services.AddScoped<EmailSender>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
 

@@ -1,7 +1,98 @@
 ﻿@page "/lotteryrecordmanage"
 
-<h3>LotteryRecordManage</h3>
+
+@inject LotteryRecordRepository _LotteryRecordRepository
+
+
+
+<MudTable Items="lotteryRecords" Dense="true" Striped="true"
+          Filter="new Func<LotteryRecord,bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
+          Bordered="true" Hover="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">抽奖记录数据</MudText>
+        @* <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddPrize())">添加奖品</MudButton>*@
+        <MudSpacer/>
+        <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>OpenId</MudTh>
+        <MudTh>标签序号</MudTh>
+        <MudTh>抽奖时间</MudTh>
+        <MudTh>抽奖状态</MudTh>
+        <MudTh>活动名称</MudTh>
+        <MudTh>奖品名称</MudTh>
+        <MudTh>领奖状态</MudTh>
+    </HeaderContent>
+    <RowTemplate >
+        <MudTd>@context.OpenId</MudTd>
+        <MudTd>@context.QRCode</MudTd>
+
+        <MudTd>@context.Time</MudTd>
+        <MudTd>
+
+            <MudAvatar Variant="Variant.Outlined" Color="Color.Info">
+                @if (context.IsSuccessPrize)
+                {
+                            <MudIcon Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.CardGiftcard" />
+                }
+                else
+                {
+                            <MudIcon Color="Color.Dark" Size="Size.Small"  Icon="@Icons.Material.Filled.DoNotDisturb" />
+                }
+
+            </MudAvatar>
+        </MudTd>
+        <MudTd>@context.ActivityName</MudTd>
+        <MudTd>@context.PrizeName</MudTd>
+        <MudTd>@context.Claimed</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+    @*    <PagerContent>
+        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
+    </PagerContent>*@
+</MudTable>
 
 @code {
+
+    // private MudTable<LotteryRecord> _table;
+    private IEnumerable<LotteryRecord> lotteryRecords;
+
+    private LotteryRecord selectedLotteryRecord;
+
+    private string searchString = "";
+
+    private bool FilterFunc1(LotteryRecord record) => FilterFunc(record, searchString);
+
+
+    private bool FilterFunc(LotteryRecord record, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (record.QRCode?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.OpenId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.PrizeName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.ActivityName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.ActivityDescription?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (record.PrizeDescription?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if ($"{record.QRCode}{record.PrizeDescription}{record.OpenId}{record.PrizeName}{record.ActivityName} {record.ActivityDescription}".Contains(searchString))
+            return true;
+
+        return false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        lotteryRecords = await _LotteryRecordRepository.GetLatestLotteryRecordsAsync();
+    }
+
 
 }

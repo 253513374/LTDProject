@@ -12,3 +12,18 @@ F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Deb
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.csproj.CopyComplete
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.dll
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.dll.config
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\EntityFramework.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\JetBrains.Annotations.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.model.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.model.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\EntityFramework.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\JetBrains.Annotations.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\zh-Hans\EntityFramework.resources.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.csproj.AssemblyReference.cache
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.csproj.CoreCompileInputs.cache
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.csproj.CopyComplete
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.pdb

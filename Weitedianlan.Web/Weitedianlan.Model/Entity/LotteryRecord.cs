@@ -22,6 +22,9 @@ namespace Weitedianlan.Model.Entity
         /// </summary>
         public int Id { get; set; }// ID
 
+        /// <summary>
+        /// 是否中奖
+        /// </summary>
         public bool IsSuccessPrize { get; set; }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace Weitedianlan.Model.Entity
         public string UserPhoneNumber { get; set; }
 
         /// <summary>
-        /// 中奖时间
+        /// 抽奖时间
         /// </summary>
         public DateTime Time { get; set; }
 

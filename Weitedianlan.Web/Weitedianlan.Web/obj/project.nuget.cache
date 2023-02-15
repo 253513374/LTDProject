@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AWr2Wear1mAmx5pgOAB/jPWAvPRZfDntsZ+rXAkY30HJwLhC0o50F3EYqyqBAgpjgpU0hz0rXya75YOy6BpRow==",
+  "dgSpecHash": "CCXy8JFfyvWWn3l/k9F0NgZVNAiHTADmxMHVMJ68Zvz9G9wOjWM128g+3xB519X+zrTBKDyJ3rSwW69ZJ/kinQ==",
   "success": true,
-  "projectFilePath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\Weitedianlan.Web.csproj",
+  "projectFilePath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Web\\Weitedianlan.Web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\q4528\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
     "C:\\Users\\q4528\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

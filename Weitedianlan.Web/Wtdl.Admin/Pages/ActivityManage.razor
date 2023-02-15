@@ -10,14 +10,14 @@
 
 
 <MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
-    
+
     <MudTable Items="Activities" CanCancelEdit="false">
         <ToolBarContent>
             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddActivity())">创建活动</MudButton>
             <MudSpacer></MudSpacer>
             <MudTextField @bind-Value="searchString" Placeholder="请输入查询关键字..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
-        
+
         <HeaderContent>
             <MudTh>操作</MudTh>
             <MudTh>活动名称</MudTh>
@@ -30,25 +30,25 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="操作">
-                <MudButton  Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditActivity(context))">@(context.IsActive?"已激活":"未激活")</MudButton>
-            </MudTd>
-            <MudTd DataLabel="活动名称">@context.Name</MudTd>
-            <MudTd DataLabel="活动描述">@context.Description</MudTd>
-            <MudTd DataLabel="活动状态">@context.Status</MudTd>
-            <MudTd DataLabel="开始时间">@context.StartTime</MudTd>
-            <MudTd DataLabel="结束时间">@context.EndTime</MudTd>
-            <MudTd DataLabel="创建时间">@context.CreateTime</MudTd>
-            <MudTd DataLabel="操作">
-                <MudStack Row="true" Spacing="1">
-                    <MudButton Style="Width: 120px" Variant="Variant.Outlined" Color="Color.Info" Size="Size.Small" OnClick="@(() => ShowBtnPress(context))">显示奖品信息</MudButton>
-                    <MudButton Style="Width: 80px" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditActivityPress(context))">编辑活动</MudButton>
-                </MudStack>
-            </MudTd>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditActivity(context))">@(context.IsActive ? "已激活" : "未激活")</MudButton>
+                </MudTd>
+                <MudTd DataLabel="活动名称">@context.Name</MudTd>
+                <MudTd DataLabel="活动描述">@context.Description</MudTd>
+                <MudTd DataLabel="活动状态">@context.Status</MudTd>
+                <MudTd DataLabel="开始时间">@context.StartTime</MudTd>
+                <MudTd DataLabel="结束时间">@context.EndTime</MudTd>
+                <MudTd DataLabel="创建时间">@context.CreateTime</MudTd>
+                <MudTd DataLabel="操作">
+                    <MudStack Row="true" Spacing="1">
+                        <MudButton Style="Width: 120px" Variant="Variant.Outlined" Color="Color.Info" Size="Size.Small" OnClick="@(() => ShowBtnPress(context))">显示奖品信息</MudButton>
+                        <MudButton Style="Width: 80px" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditActivityPress(context))">编辑活动</MudButton>
+                    </MudStack>
+                </MudTd>
 
-        </RowTemplate>
-        
-        <ChildRowContent>
-            @if (context.ShowPrizes)
+            </RowTemplate>
+
+            <ChildRowContent>
+                @if (context.ShowPrizes)
             {
                 <MudTr>
                     <td colspan="6">
@@ -85,18 +85,18 @@
                                                 </MudStack>
                                             </MudTd>
                                         </RowTemplate>
-                                     
+
                                     </MudTable>
-                            </MudCardContent>
-                        </MudCard>
-                    </td>
-                </MudTr>
+                                </MudCardContent>
+                            </MudCard>
+                        </td>
+                    </MudTr>
             }
         </ChildRowContent>
         <PagerContent>
             <MudTablePager />
         </PagerContent>
-        
+
 
     </MudTable>
 </MudPaper>
@@ -126,7 +126,7 @@
         // parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
         parameters.Add("ContentTitle", "建立新活动");
         //parameters.Add("Color", Color.Error);
-        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium,FullWidth = true};
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
         var resultdialog = await DialogService.ShowAsync<AddActivityDialog>("Confirm", parameters, options);
         var result = await resultdialog.Result;
 
@@ -161,8 +161,8 @@
 
             upprize = resultPrize;
 
-            var insertresult =  await LotteryActivityRepository.UpdateAsync(up);
-            if (insertresult>0)
+            var insertresult = await LotteryActivityRepository.UpdateAsync(up);
+            if (insertresult > 0)
             {
                 // up = await LotteryActivityRepository.GetByIdAsync(up.Id);
 
@@ -180,7 +180,7 @@
     {
         var parameters = new DialogParameters() { ["UplotteryActivity"] = value };
         parameters.Add("ContentTitle", "编辑活动");
-        parameters.Add("IsDisable", true);
+        parameters.Add("IsDisable", false);
 
 
         var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
@@ -195,7 +195,7 @@
         // throw new NotImplementedException();
     }
 
-    private async  Task EditActivity(LotteryActivity context)
+    private async Task EditActivity(LotteryActivity context)
     {
         context.IsActive = !context.IsActive;
         var insertresult = await LotteryActivityRepository.UpdateAsync(context);

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZaO/2ZGl/pDs2T3l7Q/J7mB+LtFvvrJpPKNlTuBL1GuF2bO+TRZMeBXUOCKvMQqihrEbIRB4zn4QD8zuwwsteA==",
+  "dgSpecHash": "sZBYTc576g4Zhfc0smcwzxnZsR3d/eTu5U9MW5MnxfFTaVDn+CSwvihG2tKw2Ny6bNlYw4117Ca/NxlpnGlaAg==",
   "success": true,
-  "projectFilePath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
+  "projectFilePath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\q4528\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
     "C:\\Users\\q4528\\.nuget\\packages\\mediatr\\11.1.0\\mediatr.11.1.0.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj": {}
+    "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj": {}
   },
   "projects": {
-    "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj": {
+    "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
+        "projectUniqueName": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
         "projectName": "Weitedianlan.Model",
-        "projectPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
+        "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
         "packagesPath": "C:\\Users\\q4528\\.nuget\\packages\\",
-        "outputPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\obj\\",
+        "outputPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -78,14 +78,14 @@
         }
       }
     },
-    "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj": {
+    "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj",
+        "projectUniqueName": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj",
         "projectName": "Weitedianlan.Service",
-        "projectPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj",
+        "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\Weitedianlan.Service.csproj",
         "packagesPath": "C:\\Users\\q4528\\.nuget\\packages\\",
-        "outputPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\obj\\",
+        "outputPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -107,8 +107,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj": {
-                "projectPath": "E:\\Visual Studio 2015\\威特电缆\\253513374\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj"
+              "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj": {
+                "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj"
               }
             }
           }

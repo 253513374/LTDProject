@@ -296,7 +296,7 @@ namespace Wtdl.Mvc.Services
             }
 
             //验证标签序号是否导入
-            var validation = await _verificationCodeRepository.AnyAsync(a => a.QRCode == qrcode);
+            var validation = await _verificationCodeRepository.ExistAsync(a => a.QRCode.Contains(qrcode));
             if (!validation)
             {
                 return new VerifyResult

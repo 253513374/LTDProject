@@ -51,6 +51,15 @@ namespace Wtdl.Mvc.Controllers.APIController
                     Message = "参数错误,请检查参数。"
                 };
             }
+
+            if (qrcode.Length != 12)
+            {
+                return new RedPacketResult()
+                {
+                    Code = 400,
+                    Message = "参数错误,请检查参数。"
+                };
+            }
             return await _scanByRedPacketService.GrantCaptchaRedPackets(openid, qrcode, captcha);
             // return Ok(result);
         }

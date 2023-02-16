@@ -27,4 +27,8 @@
     <ProjectReference Include="..\Wtdl.Repository\Wtdl.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+
 </Project>

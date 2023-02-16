@@ -27,7 +27,8 @@ namespace Wtdl.Mvc.Services
         private readonly WLabelStorageRepository _wLabelStorageRepository;
 
         //private readonly IDistributedCache _distributedCache;
-        //private readonly IDatabase _database;
+        private readonly IDatabase _database;
+
         private string appId = Config.SenparcWeixinSetting.WeixinAppId;
 
         private string appSecret = Config.SenparcWeixinSetting.WeixinAppSecret;
@@ -54,7 +55,7 @@ namespace Wtdl.Mvc.Services
             _redPacketRepository = redPacketRepository;
             _wLabelStorageRepository = wLabelStorage;
             //_distributedCache = distributedCache;
-            //_database = connectionMultiplexer.GetDatabase();
+            _database = connectionMultiplexer.GetDatabase();
             _mediator = mediator;
             //_localIPAddress = GetIp();
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -73,6 +74,52 @@ namespace Wtdl.Mvc.Services
                         TenPayV3InfoCollection.Data[key];
                 }
                 return _tenPayV3Info;
+            }
+        }
+
+        /// <summary>
+        /// 验证产品是否已经扫码出库，并且已经出库超过指定间隔时间
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        private async Task<VerifyResult> VerifyOut(string qrcode)
+        {
+            //抽奖限制：出库24小时才能抽奖
+            var qrcodekey = qrcode.Substring(0, 4);
+            var offset = qrcode.Substring(4, 7);
+
+            //获取出库状态 偏移量的位置为 1,说明已经出库
+            var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
+            if (bitValue)
+            {
+                //获取出库数据是否超过24小时
+                var value = await _database.StringGetAsync(qrcode);
+                if (value.HasValue)
+                {
+                    // key 存在，说明还没有超过24小时,继续处理
+                    return new VerifyResult()
+                    {
+                        IsSuccess = false,
+                        Message = "标签已经扫码出库，但是还没有到抽奖时间",
+                    };
+                }
+                else
+                {
+                    return new VerifyResult()
+                    {
+                        IsSuccess = true,
+                        Message = "标签已经扫码出库，但是还没有到抽奖时间",
+                    };
+                }
+            }
+            else
+            {
+                // 偏移量的位置值为 0，说明数据还没有出库
+                return new VerifyResult()
+                {
+                    IsSuccess = false,
+                    Message = "标签还没有扫码出库，无法参与活动",
+                };
             }
         }
 
@@ -163,38 +210,11 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyCaptchaRedPacket(string openid, string qrcode, string captcha)
         {
-            ////抽奖限制：出库24小时才能抽奖
-            //var qrcodekey = qrcode.Substring(0, 4);
-            //var offset = qrcode.Substring(4, 7);
-
-            //var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
-            //if (bitValue)
-            //{
-            //    // 偏移量的位置为 1,说明已经出库
-            //    var value = await _database.StringGetAsync(qrcode);
-            //    if (value.HasValue)
-            //    {
-            //        // key 存在，说明还没有超过24小时,继续处理
-            //        return new VerifyResult()
-            //        {
-            //            IsSuccess = false,
-            //            Message = "还没有到活动时间",
-            //        };
-            //    }
-            //    else
-            //    {
-            //        // key 不存在，说明出库已经超过24小时，做相应的处理
-            //    }
-            //}
-            //else
-            //{
-            //    // 偏移量的位置值为 0，说明数据还没有出库
-            //    return new VerifyResult()
-            //    {
-            //        IsSuccess = false,
-            //        Message = "数据还没出库",
-            //    };
-            //}
+            var value = await VerifyOut(qrcode);
+            if (!value.IsSuccess)
+            {
+                return value;
+            }
 
             var active = await _redPacketRepository.AnyRedPacketActiveAsync();
             if (!active)
@@ -216,17 +236,6 @@ namespace Wtdl.Mvc.Services
                     Message = "标签序号或者验证码错误"
                 };
             }
-
-            ////验证标签序号是否扫码出库
-            //var validationout = await _wLabelStorageRepository.AnyRedPacket(qrcode);
-            //if (!validationout)
-            //{
-            //    return new VerifyResult
-            //    {
-            //        IsSuccess = false,
-            //        Message = "标签序号还未扫码出库。"
-            //    };
-            //}
 
             //一枚标签验证码只能领取一次红包
             var reslut = await _redPacketRecordRepository.ExistAsync(a => a.Captcha == captcha);
@@ -270,38 +279,12 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyQRCodeRedPacket(string openid, string qrcode)
         {
-            ////抽奖限制：出库24小时才能抽奖
-            //var qrcodekey = qrcode.Substring(0, 4);
-            //var offset = qrcode.Substring(4, 7);
+            var value = await VerifyOut(qrcode);
+            if (!value.IsSuccess)
+            {
+                return value;
+            }
 
-            //var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
-            //if (bitValue)
-            //{
-            //    // 偏移量的位置为 1,说明已经出库
-            //    var value = await _database.StringGetAsync(qrcode);
-            //    if (value.HasValue)
-            //    {
-            //        // key 存在，说明还没有超过24小时,继续处理
-            //        return new VerifyResult()
-            //        {
-            //            IsSuccess = false,
-            //            Message = "还没有到活动时间",
-            //        };
-            //    }
-            //    else
-            //    {
-            //        // key 不存在，说明出库已经超过24小时，做相应的处理
-            //    }
-            //}
-            //else
-            //{
-            //    // 偏移量的位置值为 0，说明数据还没有出库
-            //    return new VerifyResult()
-            //    {
-            //        IsSuccess = false,
-            //        Message = "数据还没出库",
-            //    };
-            //}
             var active = await _redPacketRepository.AnyRedPacketActiveAsync();
             if (!active)
             {
@@ -322,16 +305,16 @@ namespace Wtdl.Mvc.Services
                     Message = "标签序号没有导入数据"
                 };
             }
-            //验证标签序号是否扫码出库
-            var validationout = await _wLabelStorageRepository.AnyRedPacket(qrcode);
-            if (!validationout)
-            {
-                return new VerifyResult
-                {
-                    IsSuccess = false,
-                    Message = "标签序号还未扫码出库。"
-                };
-            }
+            ////验证标签序号是否扫码出库
+            //var validationout = await _wLabelStorageRepository.AnyRedPacket(qrcode);
+            //if (!validationout)
+            //{
+            //    return new VerifyResult
+            //    {
+            //        IsSuccess = false,
+            //        Message = "标签序号还未扫码出库。"
+            //    };
+            //}
 
             //一枚二维码标签序号只能领取一次红包
             var reslut = await _redPacketRecordRepository.ExistAsync(a => a.QrCode == qrcode);

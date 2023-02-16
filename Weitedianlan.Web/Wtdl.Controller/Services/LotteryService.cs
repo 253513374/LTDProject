@@ -20,7 +20,6 @@ namespace Wtdl.Mvc.Services
         private readonly LotteryRecordRepository _lotteryRecordRepository;
         private readonly VerificationCodeRepository _verificationCodeRepository;
         private readonly ActivityPrizeRepository _activityPrizeRepository;
-        private readonly IDistributedCache _distributedCache;
         private readonly IDatabase _database;
         private readonly ILogger<LotteryService> _logger;
 
@@ -185,13 +184,11 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyLottery(string openid, string qrcode, string prizenumber)
         {
-
-            
-             var value= await VerifyOut(qrcode);
-             if (!value.IsSuccess)
-             {
-                 return value;
-             }
+            var value = await VerifyOut(qrcode);
+            if (!value.IsSuccess)
+            {
+                return value;
+            }
 
             var activityPrize = await _activityPrizeRepository.ExistAsync(a => a.PrizeNumber == prizenumber);
             if (!activityPrize)
@@ -220,8 +217,6 @@ namespace Wtdl.Mvc.Services
             {
                 return new VerifyResult() { IsSuccess = false, Message = "当前用户已经对标签序号抽过奖了" };
             }
-
-            
 
             return new VerifyResult() { IsSuccess = true, Message = "" };
         }

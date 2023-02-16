@@ -153,3 +153,6 @@ E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\System.Numerics.V
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\System.Threading.Channels.xml
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\System.Threading.Tasks.Extensions.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\MahApps.Metro.IconPacks.Core.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\MahApps.Metro.IconPacks.Core.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.WinUI\bin\Debug\MahApps.Metro.IconPacks.Core.xml

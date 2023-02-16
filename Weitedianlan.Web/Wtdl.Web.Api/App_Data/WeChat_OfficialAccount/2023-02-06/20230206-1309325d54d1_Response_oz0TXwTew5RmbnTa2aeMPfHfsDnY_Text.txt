@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<xml>
-  <ToUserName><![CDATA[gh_cebf33eb604f]]></ToUserName>
-<FromUserName><![CDATA[oz0TXwTew5RmbnTa2aeMPfHfsDnY]]></FromUserName>
-<CreateTime>1675660171</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[NIH]]></Content>
-<MsgId>23989685670595459</MsgId>
-</xml>

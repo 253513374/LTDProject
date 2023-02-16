@@ -29,6 +29,14 @@ namespace Wtdl.Web.Api.Controllers
         [HttpGet]
         public async Task<LotteryResult> Get(string openid, string code, string prizennumber)
         {
+            if (string.IsNullOrEmpty(openid) || string.IsNullOrEmpty(code) || string.IsNullOrEmpty(prizennumber))
+            {
+                return new LotteryResult
+                {
+                    IsSuccess = false,
+                    Message = "参数错误。"
+                };
+            }
             return await _lotteryService.GetLotteryResultAsync(openid, code, prizennumber);
         }
     }

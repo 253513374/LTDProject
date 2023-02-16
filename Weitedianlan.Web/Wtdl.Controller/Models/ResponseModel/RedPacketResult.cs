@@ -12,9 +12,7 @@
         /// </summary>
         public string Message { get; set; }
 
-        /// <summary>
-        /// 领取红包的金额
-        /// </summary>
-        public string CashAmount { get; set; }
+        public int Code { get; set; }
+        public string TotalAmount { get; set; }
     }
 }

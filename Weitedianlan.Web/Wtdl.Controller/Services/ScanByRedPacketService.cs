@@ -12,7 +12,10 @@ using Senparc.Weixin.Helpers;
 using Weitedianlan.Model.Enum;
 using Wtdl.Repository.Utility;
 using Senparc.Weixin.TenPay.V2;
+using StackExchange.Redis;
+using Wtdl.Controller.Models.ResponseModel;
 using Wtdl.Repository.MediatRHandler.Events;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Wtdl.Mvc.Services
 {
@@ -23,7 +26,10 @@ namespace Wtdl.Mvc.Services
         private readonly ScanRedPacketRepository _redPacketRepository;
         private readonly WLabelStorageRepository _wLabelStorageRepository;
 
+        //private readonly IDistributedCache _distributedCache;
+        //private readonly IDatabase _database;
         private string appId = Config.SenparcWeixinSetting.WeixinAppId;
+
         private string appSecret = Config.SenparcWeixinSetting.WeixinAppSecret;
 
         private static TenPayV3Info _tenPayV3Info;
@@ -39,12 +45,16 @@ namespace Wtdl.Mvc.Services
             VerificationCodeRepository verificationCodeRepository,
             ScanRedPacketRepository redPacketRepository,
             WLabelStorageRepository wLabelStorage,
+            IDistributedCache distributedCache,
+            IConnectionMultiplexer connectionMultiplexer,
              IMediator mediator)
         {
             _redPacketRecordRepository = redPacketRecordRepository;
             _verificationCodeRepository = verificationCodeRepository;
             _redPacketRepository = redPacketRepository;
             _wLabelStorageRepository = wLabelStorage;
+            //_distributedCache = distributedCache;
+            //_database = connectionMultiplexer.GetDatabase();
             _mediator = mediator;
             //_localIPAddress = GetIp();
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -153,6 +163,39 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyCaptchaRedPacket(string openid, string qrcode, string captcha)
         {
+            ////抽奖限制：出库24小时才能抽奖
+            //var qrcodekey = qrcode.Substring(0, 4);
+            //var offset = qrcode.Substring(4, 7);
+
+            //var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
+            //if (bitValue)
+            //{
+            //    // 偏移量的位置为 1,说明已经出库
+            //    var value = await _database.StringGetAsync(qrcode);
+            //    if (value.HasValue)
+            //    {
+            //        // key 存在，说明还没有超过24小时,继续处理
+            //        return new VerifyResult()
+            //        {
+            //            IsSuccess = false,
+            //            Message = "还没有到活动时间",
+            //        };
+            //    }
+            //    else
+            //    {
+            //        // key 不存在，说明出库已经超过24小时，做相应的处理
+            //    }
+            //}
+            //else
+            //{
+            //    // 偏移量的位置值为 0，说明数据还没有出库
+            //    return new VerifyResult()
+            //    {
+            //        IsSuccess = false,
+            //        Message = "数据还没出库",
+            //    };
+            //}
+
             var active = await _redPacketRepository.AnyRedPacketActiveAsync();
             if (!active)
             {
@@ -174,16 +217,16 @@ namespace Wtdl.Mvc.Services
                 };
             }
 
-            //验证标签序号是否扫码出库
-            var validationout = await _wLabelStorageRepository.AnyRedPacket(qrcode);
-            if (!validationout)
-            {
-                return new VerifyResult
-                {
-                    IsSuccess = false,
-                    Message = "标签序号还未扫码出库。"
-                };
-            }
+            ////验证标签序号是否扫码出库
+            //var validationout = await _wLabelStorageRepository.AnyRedPacket(qrcode);
+            //if (!validationout)
+            //{
+            //    return new VerifyResult
+            //    {
+            //        IsSuccess = false,
+            //        Message = "标签序号还未扫码出库。"
+            //    };
+            //}
 
             //一枚标签验证码只能领取一次红包
             var reslut = await _redPacketRecordRepository.ExistAsync(a => a.Captcha == captcha);
@@ -227,6 +270,38 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyQRCodeRedPacket(string openid, string qrcode)
         {
+            ////抽奖限制：出库24小时才能抽奖
+            //var qrcodekey = qrcode.Substring(0, 4);
+            //var offset = qrcode.Substring(4, 7);
+
+            //var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
+            //if (bitValue)
+            //{
+            //    // 偏移量的位置为 1,说明已经出库
+            //    var value = await _database.StringGetAsync(qrcode);
+            //    if (value.HasValue)
+            //    {
+            //        // key 存在，说明还没有超过24小时,继续处理
+            //        return new VerifyResult()
+            //        {
+            //            IsSuccess = false,
+            //            Message = "还没有到活动时间",
+            //        };
+            //    }
+            //    else
+            //    {
+            //        // key 不存在，说明出库已经超过24小时，做相应的处理
+            //    }
+            //}
+            //else
+            //{
+            //    // 偏移量的位置值为 0，说明数据还没有出库
+            //    return new VerifyResult()
+            //    {
+            //        IsSuccess = false,
+            //        Message = "数据还没出库",
+            //    };
+            //}
             var active = await _redPacketRepository.AnyRedPacketActiveAsync();
             if (!active)
             {
@@ -296,9 +371,28 @@ namespace Wtdl.Mvc.Services
         /// </summary>
         /// <param name="qrcode"></param>
         /// <returns></returns>
-        public async Task<bool> AnyFirstRedPacket(string qrcode)
+        public async Task<RedStatusResult> AnyFirstRedPacket(string qrcode)
         {
-            return await _redPacketRecordRepository.ExistAsync(a => a.QrCode == qrcode);
+            var list = await _redPacketRecordRepository.FindAsync(a => a.QrCode == qrcode);
+
+            if (list is null || list.Count() == 0)
+            {
+                //第一次领取红包
+                return new RedStatusResult() { IsSuccess = true, StuteCode = "QRCODE" };
+            }
+
+            if (list.Count() == 1)
+            {
+                //第二次领取红包
+                return new RedStatusResult() { IsSuccess = true, StuteCode = "CAPTCHA" };
+            }
+
+            //if (list.Count() == 2)
+            //{
+            //    //不能再领取红包
+            //    return new RedStatusResult() { IsSuccess = false, StuteCode = "NOT" };
+            //}
+            return new RedStatusResult() { IsSuccess = false, StuteCode = "NOT" };
         }
 
         private async Task<RedPacketResult> SendRedPackAsync(WXRedPackRequest request)
@@ -334,7 +428,7 @@ namespace Wtdl.Mvc.Services
                     //红包发放成功
                     returnresult.IsSuccess = true;
                     returnresult.Message = "红包发放成功";
-                    returnresult.CashAmount = sendNormalRedPackResult.total_amount;
+                    returnresult.TotalAmount = sendNormalRedPackResult.total_amount;
                     var packeresult = new RedPacketRecord
                     {
                         MchbillNo = sendNormalRedPackResult.mch_billno,

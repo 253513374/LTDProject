@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Caching.Distributed;
+using Senparc.Weixin.TenPay.V2;
+using StackExchange.Redis;
 using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Enum;
 using Wtdl.Mvc.Models;
@@ -17,14 +20,20 @@ namespace Wtdl.Mvc.Services
         private readonly LotteryRecordRepository _lotteryRecordRepository;
         private readonly VerificationCodeRepository _verificationCodeRepository;
         private readonly ActivityPrizeRepository _activityPrizeRepository;
+        private readonly IDistributedCache _distributedCache;
+        private readonly IDatabase _database;
         private readonly ILogger<LotteryService> _logger;
 
         public LotteryService(LotteryActivityRepository lotteryActivityRepository,
             LotteryRecordRepository recordRepository,
             VerificationCodeRepository verificationCodeRepository,
             ActivityPrizeRepository repository,
-            ILogger<LotteryService> logger)
+            //IDistributedCache distributedCache,
+            IConnectionMultiplexer connectionMultiplexer,
+        ILogger<LotteryService> logger)
         {
+            //  _distributedCache = distributedCache;
+            _database = connectionMultiplexer.GetDatabase();
             _activityPrizeRepository = repository;
             _lotteryActivityRepository = lotteryActivityRepository;
             _lotteryRecordRepository = recordRepository;
@@ -90,14 +99,14 @@ namespace Wtdl.Mvc.Services
         /// <param name="openid"></param>
         /// <param name="qrcode"></param>
         /// <returns></returns>
-        private async Task<PrizeResult> LuckyPrize(string openid, string qrcode)
-        {
-            ; ;
+        //private async Task<PrizeResult> LuckyPrize(string openid, string qrcode)
+        //{
+        //    ; ;
 
-            //  var selectPrize = GetRandomPrize(activity);
+        //    //  var selectPrize = GetRandomPrize(activity);
 
-            return new PrizeResult();
-        }
+        //    return new PrizeResult();
+        //}
 
         /// <summary>
         /// 随机抽取一个奖品
@@ -123,6 +132,52 @@ namespace Wtdl.Mvc.Services
         }
 
         /// <summary>
+        /// 验证产品是否已经扫码出库，并且已经出库超过指定间隔时间
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        private async Task<VerifyResult> VerifyOut(string qrcode)
+        {
+            //抽奖限制：出库24小时才能抽奖
+            var qrcodekey = qrcode.Substring(0, 4);
+            var offset = qrcode.Substring(4, 7);
+
+            //获取出库状态 偏移量的位置为 1,说明已经出库
+            var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
+            if (bitValue)
+            {
+                //获取出库数据是否超过24小时
+                var value = await _database.StringGetAsync(qrcode);
+                if (value.HasValue)
+                {
+                    // key 存在，说明还没有超过24小时,继续处理
+                    return new VerifyResult()
+                    {
+                        IsSuccess = false,
+                        Message = "标签已经扫码出库，但是还没有到抽奖时间",
+                    };
+                }
+                else
+                {
+                    return new VerifyResult()
+                    {
+                        IsSuccess = true,
+                        Message = "标签已经扫码出库，但是还没有到抽奖时间",
+                    };
+                }
+            }
+            else
+            {
+                // 偏移量的位置值为 0，说明数据还没有出库
+                return new VerifyResult()
+                {
+                    IsSuccess = false,
+                    Message = "标签还没有扫码出库，无法参与活动",
+                };
+            }
+        }
+
+        /// <summary>
         /// 抽奖之前验证用户与标签序号是否有抽奖资格
         /// </summary>
         /// <param name="openid"></param>
@@ -130,12 +185,14 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyLottery(string openid, string qrcode, string prizenumber)
         {
-            // 标签序号是否存在
-            //var verificationCode = await _verificationCodeRepository.AnyAsync(a => a.QRCode == qrcode);
-            //if (!verificationCode)
-            //{
-            //    return new VerifyResult() { IsSuccess = false, Message = "标签序号不存在" };
-            //}
+
+            
+             var value= await VerifyOut(qrcode);
+             if (!value.IsSuccess)
+             {
+                 return value;
+             }
+
             var activityPrize = await _activityPrizeRepository.ExistAsync(a => a.PrizeNumber == prizenumber);
             if (!activityPrize)
             {
@@ -164,7 +221,7 @@ namespace Wtdl.Mvc.Services
                 return new VerifyResult() { IsSuccess = false, Message = "当前用户已经对标签序号抽过奖了" };
             }
 
-            //抽奖限制：出库24小时才能抽奖
+            
 
             return new VerifyResult() { IsSuccess = true, Message = "" };
         }
@@ -257,7 +314,7 @@ namespace Wtdl.Mvc.Services
                     return new LotteryResult()
                     {
                         IsSuccess = false,
-                        Message = $"很遗憾没有中奖",
+                        Message = $"很遗憾！没有中奖。",
                         PrizeType = prize.Type.ToString(),
                     };
                 }

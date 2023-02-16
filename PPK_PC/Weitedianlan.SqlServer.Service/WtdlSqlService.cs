@@ -12,18 +12,18 @@ namespace Weitedianlan.SqlServer.Service
 {
     public class WtdlSqlService
     {
-
         public static User _usernnfo = new User();
         private WTDLEntityStrings DbEntities { set; get; }
-        public WtdlSqlService(WTDLEntityStrings wTDLEntities) {
 
+        public WtdlSqlService(WTDLEntityStrings wTDLEntities)
+        {
             DbEntities = wTDLEntities;
         }
 
         public string GetAgentId(string agentname)
         {
-            var tAgentID = DbEntities.tAgents.AsNoTracking().Where(o => o.AName.Contains(agentname)).Select(s=>s.AID).FirstOrDefault();
-            if(tAgentID != null)
+            var tAgentID = DbEntities.tAgents.AsNoTracking().Where(o => o.AName.Contains(agentname)).Select(s => s.AID).FirstOrDefault();
+            if (tAgentID != null)
             {
                 return tAgentID.ToString();
             }
@@ -53,9 +53,8 @@ namespace Weitedianlan.SqlServer.Service
         /// </summary>
         /// <param name="addtLabelx"></param>
         /// <returns></returns>
-        public  tLabelsxModel AddtLabelX(AddtLabelx addtLabelx)
+        public async Task<tLabelsxModel> AddtLabelX(AddtLabelx addtLabelx)
         {
-
             tLabelsxModel tLabelsxModel = new tLabelsxModel();
             var tlabelx = new W_LabelStorage()
             {
@@ -76,10 +75,12 @@ namespace Weitedianlan.SqlServer.Service
                 //    return AddtLabelsxModel(tlabelx, addtLabelx, 200, "重复发货");
                 //}
 
-                DbEntities.W_LabelStorage.Add(tlabelx);
-                int i = DbEntities.SaveChanges();
+                DbEntities.W_LabelStorages.Add(tlabelx);
+                int i = await DbEntities.SaveChangesAsync();
                 if (i > 0)
                 {
+                    var s = DbEntities.SetOrderStatusAsync(addtLabelx.QRCode);
+                    var ss = DbEntities.SetRedPacketAsync(addtLabelx.QRCode);
                     return AddtLabelsxModel(tlabelx, addtLabelx, 200, "出库成功");
                 }
                 else
@@ -89,12 +90,12 @@ namespace Weitedianlan.SqlServer.Service
             }
             catch (Exception ex)
             {
-                string strinfo= ex.InnerException.InnerException.Message;
-                return AddtLabelsxModel(tlabelx, addtLabelx,404,"系统错误",strinfo);
+                string strinfo = ex.InnerException.InnerException.Message;
+                return AddtLabelsxModel(tlabelx, addtLabelx, 404, "系统错误", strinfo);
             }
         }
 
-        public tLabelsxModel AddtLabelsxModel(W_LabelStorage w_LabelStorage, AddtLabelx addtLabelx,int ResulCode, string ResultStatus, string Errorinfo="")
+        public tLabelsxModel AddtLabelsxModel(W_LabelStorage w_LabelStorage, AddtLabelx addtLabelx, int ResulCode, string ResultStatus, string Errorinfo = "")
         {
             tLabelsxModel tLabelsxModel = new tLabelsxModel();
             tLabelsxModel.QRCode = addtLabelx.QRCode;
@@ -109,11 +110,10 @@ namespace Weitedianlan.SqlServer.Service
 
         public bool DeeletetLabelX(tLabelsxModel addtLabelx)
         {
-
-            var w_LabelStorage = DbEntities.W_LabelStorage.Local.FirstOrDefault(x=>x.QRCode.Contains(addtLabelx.QRCode));
+            var w_LabelStorage = DbEntities.W_LabelStorages.Local.FirstOrDefault(x => x.QRCode.Contains(addtLabelx.QRCode));
             if (w_LabelStorage != null)
             {
-                return DbEntities.W_LabelStorage.Local.Remove(addtLabelx.tLabels_X);
+                return DbEntities.W_LabelStorages.Local.Remove(addtLabelx.tLabels_X);
             }
             else
             {
@@ -121,21 +121,20 @@ namespace Weitedianlan.SqlServer.Service
             }
         }
 
-
         /// <summary>
         /// 记录已经完成得出库单
         /// </summary>
-        public  async void AddOrder(W_OrderTable orderTable)
+        public async void AddOrder(W_OrderTable orderTable)
         {
             try
             {
                 if (orderTable != null)
                 {
-                    W_OrderTable w_OrderTable= DbEntities.W_OrderTable.AsNoTracking().Where(w=>w.OrderId.Trim().Contains(orderTable.OrderId.Trim())).FirstOrDefault();
+                    W_OrderTable w_OrderTable = DbEntities.W_OrderTables.AsNoTracking().Where(w => w.OrderId.Trim().Contains(orderTable.OrderId.Trim())).FirstOrDefault();
 
-                    if(w_OrderTable==null)
+                    if (w_OrderTable == null)
                     {
-                        DbEntities.W_OrderTable.Add(orderTable);
+                        DbEntities.W_OrderTables.Add(orderTable);
                         int ret = await DbEntities.SaveChangesAsync();
                     }
 
@@ -153,27 +152,22 @@ namespace Weitedianlan.SqlServer.Service
                 //    return new ResponseModel { code = 404, result = "单号数据为空", data = null };
                 //}
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
-
-              //  throw;
+                //  throw;
             }
             //你的代码
-           
-            
         }
 
-        public  List<W_OrderTable> FilterOrder()
+        public List<W_OrderTable> FilterOrder()
         {
-
-           return DbEntities.W_OrderTable.AsNoTracking().Where(w => w.FinishTime > DateTime.Now.AddDays(-7)).ToList();
-
+            return DbEntities.W_OrderTables.AsNoTracking().Where(w => w.FinishTime > DateTime.Now.AddDays(-7)).ToList();
         }
 
         public ResponseModel AddAgent(AddAgent addAgent)
         {
-            var addAgentcode = DbEntities.tAgents.AsNoTracking().Where(o => o.AID.Trim()==addAgent.AID.Trim()).Select(s=>s.AID).ToList();
-            if (addAgentcode.Count==0  )
+            var addAgentcode = DbEntities.tAgents.AsNoTracking().Where(o => o.AID.Trim() == addAgent.AID.Trim()).Select(s => s.AID).ToList();
+            if (addAgentcode.Count == 0)
             {
                 var agent = new tAgent()
                 {
@@ -197,62 +191,57 @@ namespace Weitedianlan.SqlServer.Service
             {
                 return new ResponseModel { code = 0, result = "已经存在" };
             }
-           
         }
+
         /// <summary>
         /// 删除tLabelX   用于退货操作
         /// </summary>
         public SendBackMode DeletetLabelX(string tLabelxId)
         {
+            //var tLabelxcode = DbEntities.W_LabelStorages.AsNoTracking().Where(o => o.QRCode == tLabelxId||o.OrderNumbels.Trim()== tLabelxId.Trim()).FirstOrDefault();
 
-            //var tLabelxcode = DbEntities.W_LabelStorage.AsNoTracking().Where(o => o.QRCode == tLabelxId||o.OrderNumbels.Trim()== tLabelxId.Trim()).FirstOrDefault();
-
-            var tLabelxcode = DbEntities.W_LabelStorage.Where(o => o.QRCode == tLabelxId || o.OrderNumbels == tLabelxId).ToList();
+            var tLabelxcode = DbEntities.W_LabelStorages.Where(o => o.QRCode == tLabelxId || o.OrderNumbels == tLabelxId).ToList();
 
             try
             {
-              
-                if (tLabelxcode != null && tLabelxcode.Count==0)
+                if (tLabelxcode != null && tLabelxcode.Count == 0)
                 {
                     return new SendBackMode { QrCode = tLabelxId, ReCount = "0", ResulCode = 0, ResultStatus = "还未发货" };
                 }
-                DbEntities.W_LabelStorage.RemoveRange(tLabelxcode);
+                DbEntities.W_LabelStorages.RemoveRange(tLabelxcode);
                 int i = DbEntities.SaveChanges();
                 if (i > 0)
-                    return new SendBackMode { QrCode = tLabelxId, ReCount= i.ToString(), ResulCode = 200, ResultStatus = "退货成功" };
+                    return new SendBackMode { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 200, ResultStatus = "退货成功" };
                 return new SendBackMode { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 400, ResultStatus = "退货失败" };
             }
             catch (Exception ex)
             {
                 string strinfo = "AddtLabelX()：\n" + ex.InnerException;
-                return new SendBackMode { QrCode = tLabelxId, ReCount = "0", ResulCode = 404, ResultStatus = "系统错误", Errorinfo= strinfo};
+                return new SendBackMode { QrCode = tLabelxId, ReCount = "0", ResulCode = 404, ResultStatus = "系统错误", Errorinfo = strinfo };
             }
-                        
-          
         }
 
-        public bool DeeleteSendBackMode(SendBackMode  sendBackMode)
+        public bool DeeleteSendBackMode(SendBackMode sendBackMode)
         {
-            //var tLabelxcode = DbEntities.W_LabelStorage.Local.Where(o => o.QRCode == sendBackMode.QrCode).FirstOrDefault();
+            //var tLabelxcode = DbEntities.W_LabelStorages.Local.Where(o => o.QRCode == sendBackMode.QrCode).FirstOrDefault();
             //if(tLabelxcode!=null)
             //{
-            //    return DbEntities.W_LabelStorage.Local.Remove(tLabelxcode);
+            //    return DbEntities.W_LabelStorages.Local.Remove(tLabelxcode);
             //}
             //else
             //{
-                return false;
+            return false;
             //}
         }
 
         /// <summary>
         /// 获取tLabelX  出库单实际已经出库数量集合
         /// </summary>
-        public ResponseModel GettLabelXList(string beingTime,string ordernumbel="")
+        public ResponseModel GettLabelXList(string beingTime, string ordernumbel = "")
         {
-
             // DateTime dateTime = DateTime.Now.AddDays(-30);
             string Commandtext = "";
-            if (ordernumbel!="")
+            if (ordernumbel != "")
             {
                 Commandtext = string.Format(@"select OrderNumbels ,count(OrderNumbels) as OrderCount from W_LabelStorage where OutTime> '{0}' and OrderNumbels='{1}'  GROUP BY  OrderNumbels", beingTime, ordernumbel);
             }
@@ -260,10 +249,10 @@ namespace Weitedianlan.SqlServer.Service
             {
                 Commandtext = string.Format(@"select OrderNumbels ,count(OrderNumbels) as OrderCount from W_LabelStorage where OutTime> '{0}'  GROUP BY  OrderNumbels", beingTime);
             }
-          
-            var Ordercounts= DbEntities.Database.SqlQuery<tLabels_OrderCount>(Commandtext).ToList();
 
-          //  var banners = DbEntities.tLabels_X.Where(w=>w.OrderNumbels,w).ToList().OrderByDescending(c => c.fhDate1);
+            var Ordercounts = DbEntities.Database.SqlQuery<tLabels_OrderCount>(Commandtext).ToList();
+
+            //  var banners = DbEntities.tLabels_X.Where(w=>w.OrderNumbels,w).ToList().OrderByDescending(c => c.fhDate1);
             var response = new ResponseModel();
             response.code = 200;
             response.result = "Labels集合获取成功";
@@ -274,21 +263,21 @@ namespace Weitedianlan.SqlServer.Service
             return response;
         }
 
-
-
         public User UserLoging(LoginData loginData)
         {
             //string.Format("select a.AType from tUser u join tAgent a on u.AgentID = a.AID  where UserID='{0}' and PWD='{1}'", loginData.Username, new DataEnCode().Encrypt(loginData.Password));
 
+            //var users = DbEntities.Users.ToArray();
+
             var redb = DbEntities.Users.AsNoTracking().Where(w => w.UserID == loginData.Username).FirstOrDefault();
 
-            if(redb!=null)
+            if (redb != null)
             {
                 string enstr = new DataEnCode().Encrypt(loginData.Password);
-              //  string destr = new DataEnCode().Decrypt(redb.PWD);
+                //  string destr = new DataEnCode().Decrypt(redb.PWD);
                 if (redb.PWD.Trim() == enstr.Trim())
                 {
-                    return _usernnfo=redb;// loginData.Username;
+                    return _usernnfo = redb;// loginData.Username;
                 }
                 return null;
             }
@@ -301,21 +290,18 @@ namespace Weitedianlan.SqlServer.Service
         public ResponseModel GetOrdersFinish(string beingDatePickers)
         {
             DateTime dateTime = DateTime.Now.AddDays(-7);
-            List<W_OrderTable> listfinish = null;//DbEntities.W_OrderTable.AsNoTracking().Where(T=>T.FinishTime> dateTime).ToList();
+            List<W_OrderTable> listfinish = null;//DbEntities.W_OrderTables.AsNoTracking().Where(T=>T.FinishTime> dateTime).ToList();
             var response = new ResponseModel();
             if (listfinish != null)
             {
-              
                 response.code = 200;
                 response.result = "Labels集合获取成功";
                 response.data = new List<W_OrderTable>();
 
                 response.data = listfinish;
-              
             }
             else
             {
-              
                 response.code = 400;
                 response.result = "完成出库单集合获取失败";
             }
@@ -324,4 +310,3 @@ namespace Weitedianlan.SqlServer.Service
         }
     }
 }
-

@@ -12,6 +12,8 @@ using Wtdl.Repository;
 using System.Reflection;
 using Senparc.Weixin.TenPay;
 using Wtdl.Repository.MediatRHandler.Events;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +76,22 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
+var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
+//builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
+
+//builder.Services.AddStackExchangeRedisCache(options =>
+//{
+//    options.Configuration = redisconnectionString;
+//    // options.InstanceName = "MyRedisCache";
+//});
+// 添加缓存服务
+//builder.Services.AddDistributedRedisCache(options =>
+//{
+//    options.Configuration = "redis-server:6379";
+//    options.InstanceName = "SampleInstance";
+//});
+builder.Services.AddResponseCaching();
 builder.Services.AddMemoryCache();
 ////Senparc.Weixin 注册（必须）
 builder.Services.AddSenparcWeixinServices(builder.Configuration);
@@ -122,6 +140,10 @@ else
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "抽奖系统 API 接口");
     });
 }
+
+// 配置 Redis 中间件
+
+app.UseResponseCaching();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

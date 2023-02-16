@@ -12,7 +12,6 @@ F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Deb
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.csproj.CopyComplete
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.dll
 F:\Visual Studio 2015\威特电缆\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.pdb
-E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.dll.config
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.dll
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.pdb
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\EntityFramework.dll
@@ -27,3 +26,27 @@ E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weite
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.csproj.CopyComplete
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.dll
 E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\obj\Debug\Weitedianlan.SqlServer.Service.pdb
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\EntityFramework.SqlServer.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\EntityFramework.SqlServer.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\zh-Hans\EntityFramework.SqlServer.resources.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Weitedianlan.SqlServer.Service.dll.config
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Pipelines.Sockets.Unofficial.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\StackExchange.Redis.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Buffers.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.IO.Pipelines.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Memory.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Numerics.Vectors.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Threading.Channels.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Threading.Tasks.Extensions.dll
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\Pipelines.Sockets.Unofficial.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\StackExchange.Redis.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Buffers.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.IO.Pipelines.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Memory.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Numerics.Vectors.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Threading.Channels.xml
+E:\ProjectCode\WTJTProject\PPK_PC\Weitedianlan.SqlServer.Service\bin\Debug\System.Threading.Tasks.Extensions.xml

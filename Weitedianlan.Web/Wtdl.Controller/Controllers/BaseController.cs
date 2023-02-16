@@ -4,7 +4,7 @@ using Senparc.Weixin.Entities;
 
 namespace Wtdl.Mvc.Controllers
 {
-    public class BaseController : Controller
+    public class BaseController : Microsoft.AspNetCore.Mvc.Controller
     {
         protected string AppId
         {

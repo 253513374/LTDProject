@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Internal;
+using StackExchange.Redis;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
@@ -151,6 +153,157 @@ namespace Wtdl.Repository
                     return true;
                 }
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 按年分组统计数量
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<List<YMDGroupByCount>> GetYearGroupByListAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .GroupBy(x => new { x.OrderTime.Year })
+                    .Select(g => new YMDGroupByCount()
+                    {
+                        Year = g.Key.Year.ToString(),
+                        Count = g.Count(),
+                    })
+                    .OrderBy(o => o.Year).ToListAsync();
+
+                return groupedData;
+            }
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 按年月分组统计数量
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<object>> GetYearMGroupByListAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .GroupBy(x => new { x.OrderTime.Year, x.OrderTime.Month })
+                    .Select(g => new YMDGroupByCount()
+                    {
+                        Year = g.Key.Year.ToString(),
+                        Month = g.Key.Month.ToString(),
+                        Count = g.Count(),
+                    })
+                    .OrderByDescending(o => o.Year).ToListAsync();
+                return groupedData;
+            }
+        }
+
+        /// <summary>
+        /// 按年月分组统计数量
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<YMDGroupByCount>> GetYearMonthGroupByListAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .GroupBy(x => new { x.OrderTime.Year, x.OrderTime.Month })
+                    .Select(g => new YMDGroupByCount()
+                    {
+                        Year = g.Key.Year.ToString(),
+                        Month = g.Key.Month.ToString(),
+                        // OrderNumbels = g.Key.OrderNumbels,
+                        Count = g.Count(),
+                    })
+                    .OrderByDescending(o => o.Year).ToListAsync();
+                return groupedData;
+            }
+        }
+
+        /// <summary>
+        /// 按年月日分组统计出库数量
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<YMDGroupByCount>> GetYMDGroupByListAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .GroupBy(x => new { x.OrderTime.Year, x.OrderTime.Month, x.OrderTime.Day })
+                    .Select(g => new YMDGroupByCount()
+                    {
+                        Year = g.Key.Year.ToString(),
+                        Month = g.Key.Month.ToString(),
+                        Day = g.Key.Day.ToString(),
+                        Count = g.Count(),
+                    })
+                    .OrderByDescending(o => o.Year).ToListAsync();
+                return groupedData;
+            }
+        }
+
+        //按年月分组统计订单号的数量
+        public async Task<IEnumerable<YMDGroupByCount>> GetYMOrderListAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .GroupBy(x => new { x.OrderTime.Year, x.OrderTime.Month, x.OrderNumbels })
+                    .Select(g => new YMDGroupByCount()
+                    {
+                        Year = g.Key.Year.ToString(),
+                        Month = g.Key.Month.ToString(),
+
+                        OrderNumbels = g.Key.OrderNumbels,
+                        Count = g.Count(),
+                    })
+                    .OrderByDescending(o => o.Year).ToListAsync();
+                return groupedData;
+            }
+        }
+
+        //返回当天的出库数量
+        public async Task<int> GetTodayOutCountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
+                    .CountAsync();
+                return groupedData;
+            }
+        }
+
+        //返回当天订单数量
+        public async Task<int> GetTodayOrderCountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
+                    .GroupBy(g => g.OrderNumbels)
+                    .CountAsync();
+                return groupedData;
+            }
+        }
+
+        /// <summary>
+        /// 返回按月份与年份查询的二维码出库数据
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public async Task<string[]> GetMonthGroupByQRCodeListAsync(int year, int month)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.OrderTime.Year == year && w.OrderTime.Month == month)
+                    .Select(s => s.QRCode)
+                    .ToArrayAsync();
+                return groupedData;
             }
         }
     }

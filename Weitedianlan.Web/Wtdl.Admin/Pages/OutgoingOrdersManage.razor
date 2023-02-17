@@ -5,10 +5,20 @@
 @inject WLabelStorageRepository _labelStorageRepository
 @inject IDialogService DialogService
 
+
+@if (labelStorages is null)
+{
+
+    <MudSkeletonComponent></MudSkeletonComponent>
+}
+else
+{
+
+
 @* 出库单管理页面 *@
     <MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
         <MudTable Items="labelStorages" Class="mud-table-responsive"
-              Filter="new Func<GroupByWLabelStorage,bool>(FilterFunc1)"
+                  Filter="new Func<GroupByWLabelStorage, bool>(FilterFunc1)"
                   Dense="true" Striped="true" Hover="true" Bordered="true">
             <ToolBarContent>
                 <MudText Typo="Typo.h5">扫码出库数据</MudText>
@@ -18,8 +28,8 @@
             <HeaderContent>
                 <MudTh>ID.</MudTh>
                 <MudTh>出库单号</MudTh>
-                <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x=>x.Count)" T="GroupByWLabelStorage">出库数量</MudTableSortLabel></MudTh>
-                <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x=>x.OrderNumbels)"  T="GroupByWLabelStorage">出库单时间</MudTableSortLabel></MudTh>
+                <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x => x.Count)" T="GroupByWLabelStorage">出库数量</MudTableSortLabel></MudTh>
+                <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x => x.OrderNumbels)" T="GroupByWLabelStorage">出库单时间</MudTableSortLabel></MudTh>
                 <MudTh>客户名称</MudTh>
                 <MudTh>功能操作</MudTh>
             </HeaderContent>
@@ -40,9 +50,10 @@
             </PagerContent>
         </MudTable>
     </MudPaper>
+}
 @code {
     
-    private List<GroupByWLabelStorage> labelStorages = new List<GroupByWLabelStorage>();
+    private List<GroupByWLabelStorage> labelStorages;
 
     private string searchString;
     private async Task OnViewDetails(string ordernumbels)

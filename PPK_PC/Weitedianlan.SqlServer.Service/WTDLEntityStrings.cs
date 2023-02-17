@@ -40,8 +40,9 @@ namespace Weitedianlan.SqlServer.Service
         public virtual DbSet<W_LabelStorage> W_LabelStorages { get; set; }
         public virtual DbSet<W_OrderTable> W_OrderTables { get; set; }
         public virtual DbSet<tAgent> tAgents { get; set; }
-        public virtual DbSet<tLabels_Re> tLabels_Res { get; set; }
-        public virtual DbSet<tLabels_X> tLabels_Xs { get; set; }
+        //public virtual DbSet<tLabels_Re> tLabels_Res { get; set; }
+
+        // public virtual DbSet<tLabels_X> tLabels_Xs { get; set; }
 
         /// <summary>
         /// »º´æ³ö¿â×´Ì¬

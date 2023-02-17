@@ -10,7 +10,10 @@ using Wtdl.Admin.Data;
 using Wtdl.Repository;
 using MediatR;
 using MudBlazor;
+using Quartz;
 using Wtdl.Repository.MediatRHandler.Events;
+using StackExchange.Redis;
+using Wtdl.Admin.BackgroundTask;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -30,6 +33,23 @@ try
 
     // Add services to the container.
     StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
+
+    builder.Services.AddQuartz(q =>
+    {
+        q.UseMicrosoftDependencyInjectionJobFactory();
+
+        q.AddJob<LoadStockOutCacheJob>(j => j.WithIdentity("MyJob"));
+        q.AddTrigger(t => t
+            .WithIdentity("MyJobTrigger")
+            .ForJob("MyJob")
+            .WithCronSchedule("0 0/50 * * * ?")); // 每隔 1 分钟执行一次
+    });
+
+    builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+    var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
+    builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
+    //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 
     builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
     // Add services to the container.

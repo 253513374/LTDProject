@@ -3,57 +3,65 @@
 
 @inject LotteryRecordRepository _LotteryRecordRepository
 
+@if (lotteryRecords is null)
+{
+
+    <MudSkeletonComponent></MudSkeletonComponent>
+}
+else
+{
 
 
-<MudTable Items="lotteryRecords" Dense="true" Striped="true"
-          Filter="new Func<LotteryRecord,bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
-          Bordered="true" Hover="true">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">抽奖记录数据</MudText>
-        @* <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddPrize())">添加奖品</MudButton>*@
-        <MudSpacer/>
-        <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>OpenId</MudTh>
-        <MudTh>标签序号</MudTh>
-        <MudTh>抽奖时间</MudTh>
-        <MudTh>抽奖状态</MudTh>
-        <MudTh>活动名称</MudTh>
-        <MudTh>奖品名称</MudTh>
-        <MudTh>领奖状态</MudTh>
-    </HeaderContent>
-    <RowTemplate >
-        <MudTd>@context.OpenId</MudTd>
-        <MudTd>@context.QRCode</MudTd>
 
-        <MudTd>@context.Time</MudTd>
-        <MudTd>
+    <MudTable Items="lotteryRecords" Dense="true" Striped="true"
+              Filter="new Func<LotteryRecord, bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
+              Bordered="true" Hover="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">抽奖记录数据</MudText>
+            @* <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddPrize())">添加奖品</MudButton>*@
+            <MudSpacer/>
+            <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>OpenId</MudTh>
+            <MudTh>标签序号</MudTh>
+            <MudTh>抽奖时间</MudTh>
+            <MudTh>抽奖状态</MudTh>
+            <MudTh>活动名称</MudTh>
+            <MudTh>奖品名称</MudTh>
+            <MudTh>领奖状态</MudTh>
+        </HeaderContent>
+        <RowTemplate >
+            <MudTd>@context.OpenId</MudTd>
+            <MudTd>@context.QRCode</MudTd>
 
-            <MudAvatar Variant="Variant.Outlined" Color="Color.Info">
-                @if (context.IsSuccessPrize)
-                {
-                            <MudIcon Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.CardGiftcard" />
-                }
-                else
-                {
-                            <MudIcon Color="Color.Dark" Size="Size.Small"  Icon="@Icons.Material.Filled.DoNotDisturb" />
-                }
+            <MudTd>@context.Time</MudTd>
+            <MudTd>
 
-            </MudAvatar>
-        </MudTd>
-        <MudTd>@context.ActivityName</MudTd>
-        <MudTd>@context.PrizeName</MudTd>
-        <MudTd>@context.Claimed</MudTd>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-    @*    <PagerContent>
+                <MudAvatar Variant="Variant.Outlined" Color="Color.Info">
+                    @if (context.IsSuccessPrize)
+                    {
+                        <MudIcon Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.CardGiftcard"/>
+                    }
+                    else
+                    {
+                        <MudIcon Color="Color.Dark" Size="Size.Small" Icon="@Icons.Material.Filled.DoNotDisturb"/>
+                    }
+
+                </MudAvatar>
+            </MudTd>
+            <MudTd>@context.ActivityName</MudTd>
+            <MudTd>@context.PrizeName</MudTd>
+            <MudTd>@context.Claimed</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+        @*    <PagerContent>
         <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
     </PagerContent>*@
-</MudTable>
-
+    </MudTable>
+}
 @code {
 
     // private MudTable<LotteryRecord> _table;

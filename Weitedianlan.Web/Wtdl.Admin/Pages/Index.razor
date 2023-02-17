@@ -1,7 +1,119 @@
 ﻿@page "/"
+@using Wtdl.Repository.Data
 
-<PageTitle>Index</PageTitle>
+
+@inject LotteryRecordRepository _LotteryRecordRepository
+@inject WLabelStorageRepository _WLabelStorageRepository
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" >
+            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div style="width: 100%">
+                <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
+                    
+                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@TitleText </MudText>
+                </MudStack>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
+                <MudText Typo="Typo.h5">@AllYearCount</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" >
+            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div style="width: 100%">
+                <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
+                    
+                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@TitleText </MudText>
+                </MudStack>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
+                <MudText Typo="Typo.h5">@AllYearCount</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" >
+            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div style="width: 100%">
+                <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
+                    
+                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@TitleText </MudText>
+                </MudStack>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
+                <MudText Typo="Typo.h5">@AllYearCount</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12">
+        <MudPaper Elevation="2" Class="pa-4" >
+            <MudText Typo="Typo.h6"> 年销量分析图表 </MudText>
+            @if (GroupByCounts is not null)
+            {
+                <MudChart ChartType="ChartType.Line" ChartSeries="@YearSeries" XAxisLabels="@YearXAxisLabels" Width="100%" Height="350px">
+                    @*<CustomGraphics>
+                        <style>
+                            .heavy { font: bold 30px Helvetica; }
+                            .Rrrrr { font: italic 40px Helvetica; fill: rgb(62,44,221); }
+                        </style>
+                        <text x="80" y="35" class="heavy">I Love</text>
+                        <text x="105" y="70" class="Rrrrr">年销量分析表</text>
+                    </CustomGraphics>*@
+                </MudChart>
+            }
+            else
+            {
+                <MudSkeletonComponent></MudSkeletonComponent>
+            }
+          
+           
+        </MudPaper>
+    </MudItem>
+@*    <MudItem xs="12" sm="12" md="12">
+        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudText Typo="Typo.h6"> 年份订单总量对比 </MudText>
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@YearSeries" XAxisLabels="@YearXAxisLabels" Width="100%" Height="350px">
+                <CustomGraphics>
+                    <style>
+                        .heavy { font: bold 30px Helvetica; }
+                        .Rrrrr { font: italic 40px Helvetica; fill: rgb(62,44,221); }
+                    </style>
+                    <text x="80" y="35" class="heavy">I Love</text>
+                    <text x="105" y="70" class="Rrrrr">往年数据</text>
+                </CustomGraphics>
+            </MudChart>
+        </MudPaper>
+    </MudItem>*@
+</MudGrid>
+@*<PageTitle>Index</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
 <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
 <MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+*@
+@code
+{
+    private string TitleText;
+
+    private List<YMDGroupByCount> GroupByCounts;
+
+    private double AllYearCount { set; get; }
+
+    
+
+    List<ChartSeries> YearSeries = new List<ChartSeries>();
+    string[] YearXAxisLabels = { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
+
+    protected async override Task OnInitializedAsync()
+    {
+        GroupByCounts = await _WLabelStorageRepository.GetYearGroupByListAsync();
+        GroupByCounts = GroupByCounts.Where(w => Int32.Parse(w.Year) >= 2016 && Int32.Parse(w.Year) < 2023).ToList();
+        
+        YearXAxisLabels = GroupByCounts.Select(s => s.Year).ToArray();
+        YearSeries.Add(new ChartSeries() { Name = "年销量分析图表", Data = GroupByCounts.Select(x => x.Count).ToArray() });
+
+
+        AllYearCount = GroupByCounts.Sum(s => s.Count);
+        TitleText = $"{YearXAxisLabels[0]}-{YearXAxisLabels[YearXAxisLabels.Length-1]}";
+    }
+}

@@ -14,6 +14,15 @@ using Quartz;
 using Wtdl.Repository.MediatRHandler.Events;
 using StackExchange.Redis;
 using Wtdl.Admin.BackgroundTask;
+using Microsoft.EntityFrameworkCore;
+using Wtdl.Admin.Authenticated;
+using Wtdl.Admin.Authenticated.IdentityModel;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -31,6 +40,21 @@ try
     builder.Services.AddLotteryDbContext(connectionString);
     builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
+    builder.Services.AddDbContextFactory<CustomIdentityDbContext>(options =>
+        options.UseSqlServer(connectionString));
+
+    builder.Services.AddIdentity<WtdlUser, WtdlRole>(options =>
+    {
+        options.Password.RequiredLength = 6;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.User.RequireUniqueEmail = true;
+        options.User.AllowedUserNameCharacters = null;
+    }).AddEntityFrameworkStores<CustomIdentityDbContext>();
+
+    //  builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     // Add services to the container.
     StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
@@ -69,6 +93,35 @@ try
         config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
     });
 
+    builder.Services.AddScoped<AccountService>();
+    builder.Services.AddSingleton<CustomAuthenticationService>();
+    builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+    builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+    // builder.Services.AddHttpContextAccessor();
+    //builder.Services.AddAuthorizationCore();
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        // options.RequireAuthenticatedSignIn = false; // ÉèÖÃÎª false
+        // options.DefaultScheme = "Cookies";
+    });
+
+    //    .AddCookie(options =>
+    //{
+    //    options.LoginPath = "/login";
+    //    options.LogoutPath = "/logout";
+    //    options.AccessDeniedPath = "/accessdenied";
+    //    options.SlidingExpiration = true;
+    //});
+
+    //builder.Services.AddAuthorization(options =>
+    //{
+    //    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+    //        .RequireAuthenticatedUser()
+    //        .Build();
+    //});
     //builder.Services.AddSingleton<IWebHostEnvironment, we>();
 
     var app = builder.Build();
@@ -86,6 +139,9 @@ try
     app.UseStaticFiles();
 
     app.UseRouting();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapBlazorHub();
     app.MapFallbackToPage("/_Host");

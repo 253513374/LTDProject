@@ -1,0 +1,14 @@
+﻿
+
+
+<MudStack Spacing="1" Class="my-8 " AlignItems="AlignItems.Start">
+    <MudText Align="Align.Start" Typo="Typo.h4" Color="Color.Primary" Class="mb-2">@Title</MudText>
+    <MudText Align="Align.Start" Color="Color.Surface" Class="mb-4">@Description</MudText>
+</MudStack>
+
+
+@code
+{
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Description { get; set; }
+}

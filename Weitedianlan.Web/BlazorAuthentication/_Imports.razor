@@ -1,0 +1,23 @@
+﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using BlazorAuthentication
+@using BlazorAuthentication.Shared
+
+@using BlazorAuthentication.Pages.Authentication
+
+@using MudBlazor
+
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IAuthorizationService _authorizationService
+@inject ISnackbar _snackBar
+@inject IDialogService _dialogService
+@inject IJSRuntime _jsRuntime

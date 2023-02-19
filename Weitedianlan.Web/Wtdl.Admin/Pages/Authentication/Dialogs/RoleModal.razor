@@ -1,0 +1,115 @@
+﻿@using Wtdl.Admin.Pages.Authentication.ViewModel
+
+
+
+<EditForm Model="@aoleModel" OnValidSubmit="SaveAsync">
+   
+    <MudDialog>
+        <TitleContent>
+            @{
+                switch (ationtype)
+                {
+                    case AtionType.Create:
+                        <MudText Typo="Typo.h6">
+                            <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                            添加角色
+                        </MudText>
+                    break;
+                        case AtionType.Update:
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Update" Class="mr-3 mb-n1" />
+                                更新角色
+                            </MudText>
+                        break;
+                }
+            
+            }
+        </TitleContent>
+        <DialogContent>
+            <MudTextField For="@(() => aoleModel.Id)" @bind-Value="aoleModel.Id" Label="角色ID" Disabled />
+            <MudTextField For="@(() => aoleModel.Name)" @bind-Value="aoleModel.Name" Label="角色名称" />
+            <MudTextField For="@(() => aoleModel.Description)" @bind-Value="aoleModel.Description" Label="角色描述" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="@(() => MudDialog.Cancel())">取消</MudButton>
+            @{
+                ///按操作类型选择功能
+                switch (ationtype)
+                {
+                    case AtionType.Create:
+
+                        <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit"  Color="Color.Success">保存角色</MudButton>
+                        break;
+                    case AtionType.Update:
+                        <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit"  Color="Color.Secondary">更新角色</MudButton>
+                        break;
+           
+                }
+            }
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+                
+@code
+{
+    [Parameter]
+    public WtdlRole aoleModel { get; set; } = new();
+
+
+    [Parameter]
+    public AtionType ationtype { get; set; } 
+
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+   // [Parameter] public string RoleId { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authen { get; set; }
+
+
+    [Inject] private AccountService Service { get; set; }
+
+    private async Task SaveAsync(EditContext arg)
+    {
+        var usrename = authen.Result.User.Identity.Name;
+        var role = arg.Model as WtdlRole;
+        switch (ationtype)
+        {
+            case AtionType.Create:
+
+                role.CreatedOn = DateTime.Now;
+                role.CreatedBy = usrename;
+               var result= await  Service.AddRoleAsync(role);
+                if (result)
+                {
+                    _snackBar.Add($"角色{role.Name} 添加成功 ", Severity.Success);
+
+                    MudDialog.Close(DialogResult.Ok(role));
+                }
+                else
+                {
+                    _snackBar.Add($"角色{role.Name} 添加失败 ", Severity.Error);
+                }
+
+                break;
+            case AtionType.Update:
+
+                role.LastModifiedOn = DateTime.Now;
+                role.LastModifiedBy = usrename;
+                var upresult= await  Service.UpdateRoleAsync(role);
+                if (upresult)
+                {
+                    _snackBar.Add($"角色{role.Name} 更新成功 ", Severity.Success);
+                    MudDialog.Close(DialogResult.Ok(role));
+                }
+                else
+                {
+                    _snackBar.Add($"角色{role.Name} 更新失败 ", Severity.Error);
+                }
+                break;
+                
+        }
+    }
+}

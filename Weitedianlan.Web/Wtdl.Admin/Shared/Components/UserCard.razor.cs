@@ -1,6 +1,10 @@
 ﻿//using BlazorHero.CleanArchitecture.Client.Extensions;
+
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Authorization;
+using Wtdl.Admin.Authenticated;
 
 namespace Wtdl.Admin.Shared.Components
 {
@@ -12,8 +16,11 @@ namespace Wtdl.Admin.Shared.Components
         private string Email { get; set; }
         private char FirstLetterOfName { get; set; }
 
-        [Parameter]
-        public string ImageDataUrl { get; set; }
+        [Parameter] public string ImageDataUrl { get; set; }
+
+        [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+        [Inject] private CustomAuthenticationService Service { set; get; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -26,21 +33,27 @@ namespace Wtdl.Admin.Shared.Components
         private async Task LoadDataAsync()
         {
             //  var state = await _stateProvider.GetAuthenticationStateAsync();
-            // var user = state.User;
+            var user = authenticationStateTask.Result.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                this.Email = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                this.FirstName = user.Identity.Name;
+                this.SecondName = "";
+                if (this.FirstName.Length > 0)
+                {
+                    FirstLetterOfName = FirstName[0];
+                }
 
-            this.Email = "253513374@qq.com";//user.GetEmail().Replace(".com", string.Empty);
-            this.FirstName = "天行者";//user.GetFirstNme();
-            this.SecondName = "";//user.GetLastName();
-            if (this.FirstName.Length > 0)
-            {
-                FirstLetterOfName = FirstName[0];
+                // var UserId = user.GetUserId();
+                var imageResponse = ""; //await _localStorage.GetItemAsync<string>(StorageConstants.Local.UserImageURL);
+                if (!string.IsNullOrEmpty(imageResponse))
+                {
+                    ImageDataUrl = imageResponse;
+                }
+
+                StateHasChanged();
             }
-            // var UserId = user.GetUserId();
-            var imageResponse = "";//await _localStorage.GetItemAsync<string>(StorageConstants.Local.UserImageURL);
-            if (!string.IsNullOrEmpty(imageResponse))
-            {
-                ImageDataUrl = imageResponse;
-            }
+
             StateHasChanged();
         }
     }

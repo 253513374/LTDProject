@@ -5,6 +5,8 @@
 @inject ScanRedPacketRepository _redPacketRepository
 @inject ISnackbar Snackbar
 
+<MudPageTitle Title="现金红包" Description="扫码得现金红包配置"></MudPageTitle>
+
 <MudStack >
     <MudCard Elevation="24" Style="width: 500px" >
         <MudForm Model="@RedPacket" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">

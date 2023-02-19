@@ -309,11 +309,8 @@ namespace Wtdl.Mvc.Services
             //var validationout = await _wLabelStorageRepository.AnyRedPacket(qrcode);
             //if (!validationout)
             //{
-            //    return new VerifyResult
-            //    {
-            //        IsSuccess = false,
-            //        Message = "标签序号还未扫码出库。"
-            //    };
+            //    return new VerifyResult { IsSuccess = false, Message = "标签序号没有扫码出库" };
+            //
             //}
 
             //一枚二维码标签序号只能领取一次红包

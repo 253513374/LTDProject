@@ -1,0 +1,53 @@
+﻿@page "/login"
+
+
+@layout MainLayout
+@attribute [AllowAnonymous]
+
+
+<form id="account" method="post">
+
+    <MudForm  Model="_tokenModel" @ref="@mudForm" Validation="@(_fluentValidationValidator.ValidateValue)" ValidationDelay="0">
+        <MudGrid >
+
+            <MudItem xs="12">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceAround">
+                    <MudImage Src="/images/homelog.png" Width="120"></MudImage>
+                    <MudText Typo="Typo.h5"> SCAN SYSTEM LOGIN</MudText>
+                </MudStack>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"
+                              @bind-Value="_tokenModel.UserName" For="@(()=>_tokenModel.UserName)" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Password" Variant="Variant.Outlined"
+                              @bind-Value="_tokenModel.Password"For="@(()=>_tokenModel.Password)"
+                              InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility"/>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-space-between align-center">
+                <MudCheckBox @bind-Checked="@_tokenModel.RememberMe" T="bool" Label="记住账户" Color="Color.Primary" Class="ml-n1"/>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-center">
+                <MudButton OnClick="@SubmitAsync" Variant="Variant.Filled" Disabled="false" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Sign In</MudButton>
+            </MudItem>
+            
+            <MudItem xs="12" Class="mb-0 mt-3 pb-0" >
+                <MudStack Row="false" Spacing="0" Justify="Justify.FlexStart">
+                    <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption"> © 2023 hwpt.top aliyun.com </MudText>
+                    <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">琼ICP备2020003165号 公安备案: 46010502000375号</MudText>
+                </MudStack>
+               
+            </MudItem>
+      
+
+        </MudGrid>
+
+    </MudForm>
+    
+    <div>
+        <MudButton Link="@($"Identity/Account/Login?Email={_tokenModel.UserName}&Password={_tokenModel.Password}&RememberMeEmail={_tokenModel.RememberMe}")" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Disabled="false" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Sign In</MudButton>
+
+    </div>
+</form>
+

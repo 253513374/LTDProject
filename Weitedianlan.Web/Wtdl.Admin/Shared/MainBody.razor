@@ -1,0 +1,73 @@
+﻿@using System.Security.Claims
+
+
+
+<AuthorizeView>
+    <MudAppBar Elevation="25">
+        <MudAvatar Image="images/homelog.png" Size="Size.Medium" Variant="Variant.Text" />
+        <MudText Typo="Typo.h6" Class="ml-4" Style="font-weight: 700">扫码溯源系统</MudText>
+        <MudToolBar DisableGutters="true">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
+        </MudToolBar>
+        <MudSpacer />
+        <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+            <ActivatorContent>
+                @if (string.IsNullOrEmpty(imageDataUrl))
+                {
+                    <MudAvatar Color="Color.Secondary">@context.User.Identity.Name</MudAvatar>
+                }
+                else
+                {
+                    <MudAvatar Image="@imageDataUrl" Color="Color.Secondary"></MudAvatar>
+                }
+            </ActivatorContent>
+
+            <ChildContent>
+                <UserCard Class="mt-n2" />
+                <MudDivider Class="mb-2" />
+                <MudListItem Text="账号" Href="/account" Icon="@Icons.Material.Outlined.Person" />
+                <MudListItem Text="注销" Icon="@Icons.Material.Filled.Logout" OnClick="LogOutAsync" />
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Always">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-18">
+            @* <CascadingValue Value="hubConnection">
+               
+            </CascadingValue>*@
+            @ChildContent
+        </MudContainer>
+    </MudMainContent>
+</AuthorizeView>
+@code {
+
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    bool _drawerOpen = true;
+
+    [Inject] private CustomAuthenticationService Service { set; get; }
+    
+    private string imageDataUrl { set; get; }
+    
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+
+    /// <summary>
+    /// 注销登录
+    /// </summary>
+    /// <returns></returns>
+    public Task LogOutAsync()
+    {
+        Service.CurrentUser = new ClaimsPrincipal(new ClaimsIdentity());
+        return Task.CompletedTask;
+    }
+}

@@ -13,16 +13,33 @@
 
 @using Microsoft.AspNetCore.Components
 @using Weitedianlan.Model.Entity
-@using Wtdl.Repository
-@using Wtdl.Admin.Pages.Dialog
 
 @using Weitedianlan.Model.Enum
+
+
 @using Wtdl.Admin.Pages.FluentValidator
 @using Wtdl.Admin.Data
 @using Wtdl.Repository.Utility
 @using Wtdl.Admin.Pages.Dialog.Components
 @using Wtdl.Admin.Pages.Dialog.Components.FileUpImage
+@using Wtdl.Repository
+@using Wtdl.Admin.Pages.Dialog
 
+
+@using Wtdl.Admin.Pages.Authentication
 @using Wtdl.Admin.Components
 @using Wtdl.Admin.Shared.Components
 @using MediatR
+@using Wtdl.Admin.Authenticated
+@using Wtdl.Admin.Pages.Authentication.Dialogs
+@using Wtdl.Admin.Authenticated.IdentityModel
+
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IAuthorizationService _authorizationService
+@inject ISnackbar _snackBar
+@inject IDialogService _dialogService
+@inject IJSRuntime _jsRuntime
+

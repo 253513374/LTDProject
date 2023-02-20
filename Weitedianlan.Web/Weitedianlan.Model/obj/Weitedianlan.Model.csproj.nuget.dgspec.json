@@ -56,6 +56,14 @@
             "MediatR.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[11.0.0, )"
+            },
+            "Pipelines.Sockets.Unofficial": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.6.0, )"
             }
           },
           "imports": [

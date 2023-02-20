@@ -14,7 +14,13 @@
             <ActivatorContent>
                 @if (string.IsNullOrEmpty(imageDataUrl))
                 {
-                    <MudAvatar Color="Color.Secondary">@context.User.Identity.Name</MudAvatar>
+                    if (@context.User.Identity.Name.Length>0)
+                    {
+
+                        var username = @context.User.Identity.Name.Trim()[0];//.ToString()[0];
+                        <MudAvatar Color="Color.Secondary">@username</MudAvatar>
+                    }
+                    
                 }
                 else
                 {
@@ -67,7 +73,7 @@
     /// <returns></returns>
     public Task LogOutAsync()
     {
-        Service.CurrentUser = new ClaimsPrincipal(new ClaimsIdentity());
+        Service.LogOut();
         return Task.CompletedTask;
     }
 }

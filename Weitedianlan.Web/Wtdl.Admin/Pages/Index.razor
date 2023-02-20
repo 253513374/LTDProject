@@ -11,12 +11,12 @@
 
 <MudGrid>
     <MudItem xs="12" sm="6" md="4">
-        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" >
+        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4" >
             <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
             <div style="width: 100%">
                 <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
                     
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@TitleText </MudText>
+                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@CountTitleText </MudText>
                 </MudStack>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
                 <MudText Typo="Typo.h5">@AllYearCount</MudText>
@@ -24,46 +24,38 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
-        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" >
+        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4" >
             <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
             <div style="width: 100%">
                 <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
                     
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@TitleText </MudText>
+                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@CountTitleText </MudText>
                 </MudStack>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
-                <MudText Typo="Typo.h5">@AllYearCount</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总订单量</MudText>
+                <MudText Typo="Typo.h5">@OrderCount</MudText>
             </div>
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="4">
-        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" >
+        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4" >
             <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
             <div style="width: 100%">
                 <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
                     
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@TitleText </MudText>
+                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@CountTitleText </MudText>
                 </MudStack>
                 <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
                 <MudText Typo="Typo.h5">@AllYearCount</MudText>
             </div>
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="12" md="12">
-        <MudPaper Elevation="2" Class="pa-4" >
+    <MudItem xs="12" sm="12" md="6">
+        <MudPaper Elevation="4" Class="pa-4"  >
             <MudText Typo="Typo.h6"> 年销量分析图表 </MudText>
-            @if (GroupByCounts is not null)
+            @if (isgetyear)
             {
                 <MudChart ChartType="ChartType.Line" ChartSeries="@YearSeries" XAxisLabels="@YearXAxisLabels" Width="100%" Height="350px">
-                    @*<CustomGraphics>
-                        <style>
-                            .heavy { font: bold 30px Helvetica; }
-                            .Rrrrr { font: italic 40px Helvetica; fill: rgb(62,44,221); }
-                        </style>
-                        <text x="80" y="35" class="heavy">I Love</text>
-                        <text x="105" y="70" class="Rrrrr">年销量分析表</text>
-                    </CustomGraphics>*@
-                </MudChart>
+            </MudChart>
             }
             else
             {
@@ -73,21 +65,21 @@
            
         </MudPaper>
     </MudItem>
-@*    <MudItem xs="12" sm="12" md="12">
-        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+    <MudItem xs="12" sm="12" md="6">
+        <MudPaper Elevation="4" Class="pa-4">
             <MudText Typo="Typo.h6"> 年份订单总量对比 </MudText>
-            <MudChart ChartType="ChartType.Bar" ChartSeries="@YearSeries" XAxisLabels="@YearXAxisLabels" Width="100%" Height="350px">
-                <CustomGraphics>
-                    <style>
-                        .heavy { font: bold 30px Helvetica; }
-                        .Rrrrr { font: italic 40px Helvetica; fill: rgb(62,44,221); }
-                    </style>
-                    <text x="80" y="35" class="heavy">I Love</text>
-                    <text x="105" y="70" class="Rrrrr">往年数据</text>
-                </CustomGraphics>
-            </MudChart>
+            @if (isgetorder)
+            {
+                <MudChart ChartType="ChartType.Line" ChartSeries="@OrderSeries" XAxisLabels="@OrderXAxisLabels" Width="100%" Height="350px">
+                </MudChart>
+            }
+            else
+            {
+                <MudSkeletonComponent></MudSkeletonComponent>
+            }
+           
         </MudPaper>
-    </MudItem>*@
+    </MudItem>
 </MudGrid>
 @*<PageTitle>Index</PageTitle>
 
@@ -97,27 +89,63 @@
 *@
 @code
 {
-    private string TitleText;
 
-    private List<YMDGroupByCount> GroupByCounts;
+    private int Year = DateTime.Now.Year;
+    private int Month = DateTime.Now.Month;
 
-    private double AllYearCount { set; get; }
-
+    private bool isgetyear = false;
+    private bool isgetorder = false;
     
-
+    private string CountTitleText;
+   // private List<YMDGroupByCount> GroupByCounts;
+    private double AllYearCount { set; get; }
     List<ChartSeries> YearSeries = new List<ChartSeries>();
     string[] YearXAxisLabels = { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
 
+
+    private double OrderCount{ set; get; }
+    List<ChartSeries> OrderSeries = new List<ChartSeries>();
+    string[] OrderXAxisLabels = new[]{""};
+
+  
+    
     protected async override Task OnInitializedAsync()
     {
-        GroupByCounts = await _WLabelStorageRepository.GetYearGroupByListAsync();
-        GroupByCounts = GroupByCounts.Where(w => Int32.Parse(w.Year) >= 2016 && Int32.Parse(w.Year) < 2023).ToList();
-        
+       await GetAllYearCountAsync();
+        await GetOrderNumberAsync();
+    }
+
+
+    private  async Task GetAllYearCountAsync()
+    {
+       
+       var GroupByCounts = await _WLabelStorageRepository.GetYearGroupByListAsync();
+        GroupByCounts = GroupByCounts.Where(w => Int32.Parse(w.Year) >= 2016 && Int32.Parse(w.Year) < Year).ToList();
+
         YearXAxisLabels = GroupByCounts.Select(s => s.Year).ToArray();
         YearSeries.Add(new ChartSeries() { Name = "年销量分析图表", Data = GroupByCounts.Select(x => x.Count).ToArray() });
 
 
         AllYearCount = GroupByCounts.Sum(s => s.Count);
-        TitleText = $"{YearXAxisLabels[0]}-{YearXAxisLabels[YearXAxisLabels.Length-1]}";
+        CountTitleText = $"{YearXAxisLabels[0]}-{YearXAxisLabels[YearXAxisLabels.Length - 1]}";
+
+        isgetyear = true;
     }
+    
+    /// <summary>
+    /// 获取订单总数
+    /// </summary>
+    private async Task GetOrderNumberAsync()
+    {
+        var glist = await _WLabelStorageRepository.GetGroupByOrderNumbelsAsync(DateTime.Now.Year);
+
+       
+        OrderCount = glist.Sum(s => s.Count);
+        OrderXAxisLabels = glist.Select(s => s.Year.ToString()).ToArray();
+
+        OrderSeries.Add(new ChartSeries() { Name = "年份订单总量对比", Data = glist.Select(x => x.Count).ToArray() });
+
+        isgetorder = true;
+    }
+    
 }

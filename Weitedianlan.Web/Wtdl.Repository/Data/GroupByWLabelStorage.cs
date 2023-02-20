@@ -8,7 +8,12 @@
         public string ID { set; get; }
         public string OrderNumbels { set; get; }
 
-        public int Count { set; get; }
+        /// <summary>
+        /// 年份
+        /// </summary>
+        public int Year { set; get; }
+
+        public double Count { set; get; }
 
         public string AgentName { set; get; }
 

@@ -1,0 +1,117 @@
+﻿
+
+
+<MudForm Model="@wtdlUser" @ref="@mudForm"  Validation="@(UserValidator.ValidateValue)" ValidationDelay="0">
+
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.VerifiedUser" Class="mr-3 mb-n1" />
+                注册账号
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+           
+            <MudStack Spacing="1">
+                
+                <MudTextField For="() => wtdlUser.UserName" InputType="InputType.Text" @bind-Value="wtdlUser.UserName" Label="用户名"></MudTextField>
+                
+                <MudTextField For="() => wtdlUser.PhoneNumber" InputType="InputType.Telephone" @bind-Value="wtdlUser.PhoneNumber" Label="手机号"></MudTextField>
+               
+                <MudTextField For="() => wtdlUser.Email" InputType ="InputType.Email"  @bind-Value="wtdlUser.Email" Label="邮箱"></MudTextField>
+                <MudTextField For="@(() => wtdlUser.Password)" InputType="@_passwordInput" Adornment="Adornment.End" 
+                              AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" @bind-Value="wtdlUser.Password" Label="密码" />
+                <MudTextField For="@(() => wtdlUser.ConfirmPassword)" InputType="InputType.Password" @bind-Value="wtdlUser.ConfirmPassword" Label="确认密码" />
+                
+                <MudCheckBox @bind-Checked="@wtdlUser.IsActive" Label="激活账号" Color="Color.Primary"></MudCheckBox>
+
+            </MudStack>
+            
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" OnClick="@(s=>MudDialog.Cancel())">取消</MudButton>
+            <MudButton Variant="Variant.Filled" OnClick="SubmitAsync" Color="Color.Primary">注册</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
+@code{
+
+    private RegistersUser wtdlUser { set; get; } = new();
+
+    private RegistersUserValidator UserValidator = new();
+
+    [Parameter]
+    public AtionType ationtype { get; set; } 
+
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+    // [Parameter] public string RoleId { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authen { get; set; }
+
+
+    [Inject] private AccountService Service { get; set; }
+    
+
+    private MudForm mudForm;
+   
+    private bool _passwordVisibility;
+    private InputType _passwordInput = InputType.Password;
+    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+
+    private void TogglePasswordVisibility()
+    {
+        if (_passwordVisibility)
+        {
+            _passwordVisibility = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _passwordVisibility = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        await mudForm.Validate();
+        if (mudForm.IsValid)
+        {
+            var adminuser = authen.Result.User.Identity.Name;
+            
+            var register = mudForm.Model as RegistersUser;
+            var user = Activator.CreateInstance<WtdlUser>();
+            user.UserName = register.UserName;
+            user.Email = register.Email;
+            user.PhoneNumber = register.PhoneNumber;
+            user.IsActive = register.IsActive;
+            user.CreatedBy = adminuser;
+
+          var result=await  Service.CreateUserAsync(user, register.Password);
+
+            if (result)
+            {
+                _snackBar.Add("注册成功", Severity.Success);
+
+                MudDialog.Close(DialogResult.Ok(user));
+            }
+            else
+            {
+                _snackBar.Add("注册失败", Severity.Success);
+            }
+
+           
+        }
+        //throw new NotImplementedException();
+    }
+}

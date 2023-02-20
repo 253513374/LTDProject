@@ -1,0 +1,85 @@
+﻿@page "/user-profile/{Id}"
+
+
+
+<MudPageTitle Title="@Title" Description="@Description" />
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid>
+        <AuthorizeView Roles="@BaseRole.Aministrator">
+            <MudItem xs="12" sm="12" md="12">
+                <MudCard Elevation="25">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Administrator 设置</MudText>
+                            <MudText Typo="Typo.body2">这个页面只有超级管理员能显示</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent Class="pa-46" Style="padding:26px!important">
+                        <MudGrid>
+                            <MudCheckBox @bind-Checked="@_active" Label="激活" Color="Color.Primary"></MudCheckBox>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="ToggleUserStatus" ButtonType="ButtonType.Submit">保存</MudButton>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </AuthorizeView>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>个人资料</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        @if (!string.IsNullOrEmpty(@ImageDataUrl))
+                        {
+                            <MudAvatar Image="@ImageDataUrl" Style="height:250px; width:250px;"> </MudAvatar>
+                        }
+                        else
+                        {
+                            <MudAvatar Color="Color.Secondary" Style="height:250px; width:250px;">@_firstLetterOfName</MudAvatar>
+                        }
+                    </div>
+                    <MudText Typo="Typo.h6" Align="Align.Center"> @_userName</MudText>
+                    <MudText Align="Align.Center">@_email</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>个人公开资料</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="用户名" Variant="Variant.Text">@_userName</MudField>
+                        </MudItem>
+                       
+                        <MudItem xs="12" md="6">
+                            <MudField Label="手机号码" Variant="Variant.Text">@_phoneNumber</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="邮箱" Variant="Variant.Text">@_email</MudField>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+}
+
+@code
+{
+[Parameter] public string Id { get; set; }
+[Parameter] public string Title { get; set; }
+[Parameter] public string Description { get; set; }
+}

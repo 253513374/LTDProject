@@ -8,6 +8,7 @@ using StackExchange.Redis;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
+using System.Linq;
 
 namespace Wtdl.Repository
 {
@@ -73,6 +74,44 @@ namespace Wtdl.Repository
                         .OrderByDescending(o => o.Time).ToListAsync();
 
                     return resultList;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return new List<GroupByWLabelStorage>();
+                //re  throw;
+            }
+        }
+
+        /// <summary>
+        /// 统计W_LabelStorage 表中，每年的OrderNumbels总量
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<List<GroupByWLabelStorage>> GetGroupByOrderNumbelsAsync(int Year)
+        {
+            try
+            {
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    ///分组统计年订单数
+                    var graupbylist = await context.WLabelStorages
+                        .GroupBy(x => new { x.OrderNumbels, x.OrderTime.Year })
+                        .Select(g => new GroupByWLabelStorage()
+                        {
+                            OrderNumbels = g.Key.OrderNumbels,
+                            Year = g.Key.Year,
+                            Count = g.Count(),
+                        }).ToListAsync();
+
+                    var listGroupBy = graupbylist.GroupBy(g => g.Year).Select(s => new GroupByWLabelStorage
+                    {
+                        Year = s.Key,
+                        Count = s.Count(),
+                    }).ToList();
+
+                    return listGroupBy.Where(w => w.Year >= 2016 && w.Year < Year).ToList();
                 }
             }
             catch (Exception e)

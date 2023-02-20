@@ -21,5 +21,17 @@ namespace Wtdl.Admin.Authenticated
                 }
             }
         }
+
+        public Task LogOut()
+        {
+            CurrentUser = new ClaimsPrincipal(new ClaimsIdentity());
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> LogIn(List<Claim> claims)
+        {
+            CurrentUser = new ClaimsPrincipal(new ClaimsIdentity(claims, "CustomAuthentication"));
+            return Task.FromResult(true);
+        }
     }
 }

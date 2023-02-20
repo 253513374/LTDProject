@@ -1,5 +1,196 @@
-﻿<h3>User</h3>
+﻿@page "/identity/users"
 
-@code {
+<MudPageTitle Title="账户" Description="账户管理"></MudPageTitle>
+@if (WtdlUsers is null)
+{
+    <MudSkeletonComponent></MudSkeletonComponent>
+}
+else
+{
+    <MudTable Hover="true" Elevation="25" Items="WtdlUsers" Filter="new Func<WtdlUser, bool>(Search)">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => InvokeModal(new WtdlUser()))" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">新建角色</MudButton>
+                <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetUsersAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">重新加载</MudButton>
+            </div>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="角色查询" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
 
+        </ToolBarContent>
+        <HeaderContent>
+            @*<MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.Id)">Id</MudTableSortLabel></MudTh>*@
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.UserName)">用户名</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.Email)">邮箱</MudTableSortLabel></MudTh>
+
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.PhoneNumber)">手机号</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.CreatedOn)">注册时间</MudTableSortLabel></MudTh>
+
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.CreatedBy)">注册人</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.LastModifiedOn)">最后修改时间</MudTableSortLabel></MudTh>
+
+            <MudTh><MudTableSortLabel SortBy="new Func<WtdlUser, object>(x => x.LastModifiedBy)">最后修改人</MudTableSortLabel></MudTh>
+            <MudTh> 激活  </MudTh>
+            <MudTh Style="text-align:right">动作</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+         @*   <MudTd DataLabel="Id">@context.Id</MudTd>*@
+            <MudTd DataLabel="UserName">
+                <MudHighlighter Text="@context.UserName" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Email">
+                <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="PhoneNumber">
+                <MudHighlighter Text="@context.PhoneNumber" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="CreatedOn">
+                @context.CreatedOn
+            </MudTd>
+            <MudTd DataLabel="CreatedBy">
+                <MudHighlighter Text="@context.CreatedBy" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="LastModifiedOn">
+                @context.LastModifiedOn
+            </MudTd> 
+            <MudTd DataLabel="LastModifiedBy">
+                <MudHighlighter Text="@context.LastModifiedBy" HighlightedText="@_searchString" />
+            </MudTd>
+          
+            <MudTd DataLabel="LastModifiedBy">
+                <MudCheckBox ReadOnly @bind-Checked="@context.IsActive" Color="@(context.IsActive.Value?Color.Success:Color.Dark)"></MudCheckBox>
+            </MudTd>
+            <MudTd DataLabel="Actions" Style="text-align: right;width: 120px;">
+                
+                <MudMenu  Label="动作" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary" Direction="Direction.Left" OffsetX="true">
+                    <MudMenuItem OnClick="(()=>ManageRoles(context.Id, context.Email))">角色管理</MudMenuItem>
+                    
+                    <MudMenuItem OnClick="(()=>ViewProfile(context.Id))">编辑资料</MudMenuItem>
+                </MudMenu>
+
+            </MudTd>
+        </RowTemplate>
+
+        <PagerContent>
+            @*   <TablePager />*@
+        </PagerContent>
+    </MudTable>
+}
+@*    <FooterContent>
+            <MudSwitch @bind-Checked="@_dense" Color="Color.Secondary" Style="margin-left: 5px;">@_localizer["Dense"]</MudSwitch>
+            <MudSwitch @bind-Checked="@_striped" Color="Color.Tertiary" Style="margin-left: 5px;">@_localizer["Striped"]</MudSwitch>
+            <MudSwitch @bind-Checked="@_bordered" Color="Color.Warning" Style="margin-left: 5px;">@_localizer["Bordered"]</MudSwitch>
+        </FooterContent>*@
+
+@code
+{
+
+    bool _canViewRoleClaims = true;
+    bool _canEditRoles = true;
+    bool _canDeleteRoles = true;
+    private string _searchString;
+    private Task _localizer;
+
+    private List<WtdlUser> WtdlUsers { set; get; } = new List<WtdlUser>();
+
+    [Inject] private AccountService Service { set; get; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUsersAsync();
+    }
+
+    private async Task GetUsersAsync()
+    {
+        var response = await Service.GetAllUserAsync();
+        if (response.IsSuccess)
+        {
+            WtdlUsers = response.Data;
+        }
+        else
+        {
+            _snackBar.Add(response.Message, Severity.Error);
+        }
+    }
+
+
+
+    private async Task InvokeModal(WtdlUser user)
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+        var dialog = _dialogService.Show<RegisterUserModal>("注册账号", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await GetUsersAsync();
+        }
+
+        
+  
+    }
+
+    private bool Search(WtdlUser role)
+    {
+        if (string.IsNullOrWhiteSpace(_searchString)) return true;
+        if (role.UserName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return true;
+        }
+        if (role.Email?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return true;
+        }
+        if (role.PhoneNumber?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return true;
+        }
+        
+        return false;
+    }
+
+    private Task ManagePermissions(string contextId)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    /// <summary>
+    /// 删除用户
+    /// </summary>
+    /// <param name="contextId"></param>
+    /// <returns></returns>
+    private async Task Delete(WtdlUser user)
+    {
+        var deleteresult = await Service.DeleteUserAsync(user);
+
+        if (deleteresult)
+        {
+
+            WtdlUsers.Remove(user);
+            _snackBar.Add($"角色{user.UserName} 删除成功 ", Severity.Success);
+
+        }
+        else
+        {
+            _snackBar.Add($"角色{user.UserName} 删除失败 ", Severity.Error);
+        }
+
+        StateHasChanged();
+        return;
+
+    }
+
+    private void ManageRoles(string userId, string email)
+    {
+       // if (email == "admin@wt.com") _snackBar.Add("不允许删除超级管理员", Severity.Error);
+        _navigationManager.NavigateTo($"/identity/user-roles/{userId}");
+    }
+
+    private void ViewProfile(string userId)
+    {
+        _navigationManager.NavigateTo($"/user-profile/{userId}");
+    }
+    
 }

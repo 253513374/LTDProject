@@ -41,13 +41,112 @@ namespace Wtdl.Admin.Authenticated
         }
 
         /// <summary>
+        /// 删除角色
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<bool> DeleteUserAsync(WtdlUser uesr)
+        {
+            var result = await userManager.DeleteAsync(uesr);
+
+            return result.Succeeded;
+            // throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// 返回所有用户信息
         /// </summary>
         /// <returns></returns>
-        public async Task<List<WtdlUser>> GetAllUserAsync()
+        public async Task<BaseResponse<List<WtdlUser>>> GetAllUserAsync()
         {
             var user = await userManager.Users.ToListAsync();
-            return user;
+            return BaseResponse<List<WtdlUser>>.Success(user);
+        }
+
+        /// <summary>
+        /// 返回指定账号信息
+        /// </summary>
+        /// <param name="claimsPrincipal"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<WtdlUser> GetUserAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            return await userManager.GetUserAsync(claimsPrincipal);//etUserAsync(claimsPrincipal);
+            //throw new NotImplementedException();
+        }
+
+        public async Task<WtdlUser> GetUserByIdAsync(string userid)
+        {
+            return await userManager.FindByIdAsync(userid);
+        }
+
+        /// <summary>
+        /// 返回指定账号所属角色信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<List<UserRoleModel>> GetRolesByUserIdAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            var userrole = await roleManager.Roles.ToListAsync();
+
+            List<UserRoleModel> roleModels = new();
+            for (int i = 0; i < userrole.Count(); i++)
+            {
+                if (await userManager.IsInRoleAsync(user, userrole[i].Name))
+                {
+                    roleModels.Add(new UserRoleModel()
+                    {
+                        RoleName = userrole[i].Name,
+                        RoleDescription = userrole[i].Description,
+                        Selected = true,
+                    });
+                    // userrole[i].IsSelected = true;
+                }
+                else
+                {
+                    roleModels.Add(new UserRoleModel()
+                    {
+                        RoleName = userrole[i].Name,
+                        RoleDescription = userrole[i].Description,
+                        Selected = false,
+                    });
+                }
+                //await roleManager.Roles.ToListAsync()
+            }
+
+            return roleModels;
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 更新指定账号所属角色信息
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<IdentityResult> UpdateUserByRolesAsync(UpdateUserRoles request)
+        {
+            var user = await userManager.FindByIdAsync(request.UserId);
+            var userrole = await roleManager.Roles.ToListAsync();
+
+            for (int i = 0; i < userrole.Count(); i++)
+            {
+                if (await userManager.IsInRoleAsync(user, userrole[i].Name))
+                {
+                    await userManager.RemoveFromRoleAsync(user, userrole[i].Name);
+                }
+            }
+            var uproles = request.UserRoles.Where(w => w.Selected).Select(s => s.RoleName);
+            if (uproles is null && uproles.Count() == 0)
+            {
+                return IdentityResult.Failed(new IdentityError() { Code = "1", Description = "未选择角色" });
+            }
+
+            //IEnumerable<UserRoleModel> enumerable = uproles.AsEnumerable();
+            return await userManager.AddToRolesAsync(user, uproles);
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -83,9 +182,14 @@ namespace Wtdl.Admin.Authenticated
             }
             var result = await userManager.CheckPasswordAsync(user, model.Password);
 
-            if (result)
+            if (!result)
             {
                 return SignInWResult.Failure("密码不正确");
+            }
+
+            if (!user.IsActive.Value)
+            {
+                return SignInWResult.Failure("账号没有激活");
             }
 
             var roleclaims = await GetClaimsAsync(user);
@@ -114,7 +218,7 @@ namespace Wtdl.Admin.Authenticated
                 new(ClaimTypes.NameIdentifier, user.Id),
                 new(ClaimTypes.Email, user.Email),
                 new(ClaimTypes.Name, user.UserName),
-                new(ClaimTypes.Surname, user.LastName),
+                new(ClaimTypes.Surname, user.LastName??string.Empty),
                 new(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
             };
             if (userClaims is not null)
@@ -168,6 +272,38 @@ namespace Wtdl.Admin.Authenticated
         {
             var result = await roleManager.CreateAsync(role);
             return result.Succeeded;
+        }
+
+        public async Task<IdentityResult> UpdateAsync(WtdlUser user)
+        {
+            var result = await userManager.UpdateAsync(user);
+            return result;
+            // throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 更新用户密码
+        /// </summary>
+        /// <param name="passwordModel"></param>
+        /// <returns></returns>
+        public async Task<IdentityResult> ChangePasswordAsync(UpdatePassword passwordModel)
+        {
+            var user = await userManager.GetUserAsync(passwordModel.User);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "用户不存在" });
+            }
+            return await userManager.ChangePasswordAsync(user, passwordModel.CurrentPassword, passwordModel.Password);
+            // return result;
+        }
+
+        public async Task<IdentityResult> UpdateUserStatusAsync(bool active, string id)
+        {
+            //根据ID 查找用户信息
+            var user = await userManager.FindByIdAsync(id);
+            user.IsActive = active;
+            ///更新用户
+            return await userManager.UpdateAsync(user);
         }
     }
 }

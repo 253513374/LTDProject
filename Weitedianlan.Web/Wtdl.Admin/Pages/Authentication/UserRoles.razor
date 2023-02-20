@@ -1,0 +1,45 @@
+﻿@page "/identity/user-roles/{Id}"
+@*@attribute [Authorize(Policy = Permissions.Roles.View)]
+@inject Microsoft.Extensions.Localization.IStringLocalizer<UserRoles> _localizer
+@using BlazorHero.CleanArchitecture.Application.Responses.Identity
+@using Microsoft.AspNetCore.Components*@
+
+<MudPageTitle Title="@Title" Description="@Description" />
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable Hover="true" Elevation="25" Items="UserRolesList" Dense="@_dense" Bordered="@_bordered" Striped="@_striped" Filter="new Func<UserRoleModel, bool>(Search)" @bind-userRole="_userRole">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="SaveAsync" ButtonType="ButtonType.Submit">更新用户角色</MudButton>
+            </div>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Immediate="true" FullWidth=false Placeholder="查询用户角色" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserRoleModel, object>(x => x.RoleName)">用户角色</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserRoleModel, object>(x => x.RoleDescription)">用户描述</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserRoleModel, object>(x => x.Selected)">状态</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="角色名称">
+                <MudHighlighter Text="@context.RoleName" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="角色描述">
+                <MudHighlighter Text="@context.RoleDescription" HighlightedText="@_searchString" />
+            </MudTd>
+            <MudTd DataLabel="Role"><MudCheckBox @bind-Checked="@context.Selected"  Color="Color.Secondary"></MudCheckBox></MudTd>
+        </RowTemplate>
+        <FooterContent>
+            <MudSwitch @bind-Checked="@_dense" Color="Color.Secondary" Style="margin-left: 5px;">紧密</MudSwitch>
+            <MudSwitch @bind-Checked="@_striped" Color="Color.Tertiary" Style="margin-left: 5px;">条纹</MudSwitch>
+            <MudSwitch @bind-Checked="@_bordered" Color="Color.Warning" Style="margin-left: 5px;">边框</MudSwitch>
+        </FooterContent>
+        <PagerContent>
+          
+        </PagerContent>
+    </MudTable>
+}

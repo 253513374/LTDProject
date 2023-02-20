@@ -12,6 +12,7 @@
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
     <PackageReference Include="Microsoft.DotNet.Scaffolding.Shared" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>

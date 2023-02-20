@@ -97,6 +97,16 @@ else
 
     private async Task InvokeModal(WtdlRole role ,AtionType ationType =AtionType.Create)
     {
+
+        if (role is not null)
+        {
+            if (role.Name == BaseRole.Aministrator || role.Name == BaseRole.Basic)
+            {
+                _snackBar.Add($"角色{role.Name} 不允许编辑 ", Severity.Warning);
+                return;
+            }
+        }
+
         var parameters = new DialogParameters();
         parameters.Add(nameof(RoleModal.ationtype), ationType);
         switch (ationType)
@@ -150,6 +160,13 @@ else
     /// <returns></returns>
     private async Task Delete(WtdlRole  role)
     {
+
+        if (role.Name == BaseRole.Aministrator || role.Name == BaseRole.Basic)
+        {
+            _snackBar.Add($"角色{role.Name} 不允许删除 ", Severity.Warning);
+            return;
+        }
+
         var deleteresult = await Service.DeleteRoleAsync(role);
 
         if (deleteresult)

@@ -9,8 +9,7 @@
 
 <MudForm Model="_tokenModel" @ref="@mudForm" Validation="@(_fluentValidationValidator.ValidateValue)" ValidationDelay="0">
 
-
-<MudGrid >
+    <MudGrid >
 
         <MudItem xs="12">
             <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceAround">
@@ -31,7 +30,17 @@
             <MudCheckBox @bind-Checked="@_tokenModel.RememberMe" T="bool" Label="记住账户" Color="Color.Primary" Class="ml-n1"/>
         </MudItem>
         <MudItem xs="12" Class="d-flex justify-center">
-            <MudButton OnClick="@SignInAsync" Variant="Variant.Filled" Disabled="false" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">Sign In</MudButton>
+            <MudButton OnClick="@SignInAsync" Variant="Variant.Filled" Disabled="false" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">
+                @if (processing)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">loging...</MudText>
+                }
+                else
+                {
+                    <MudText>Sign In</MudText>
+                }
+            </MudButton>
         </MudItem>
         
         <MudItem xs="12" Class="mb-0 mt-3 pb-0" >
@@ -54,7 +63,15 @@
     [Inject] private AccountService accountService { set; get; }
 
     [Inject] private CustomAuthenticationService  Service { set; get; }
+
+    private FluentValidationValidator _fluentValidationValidator = new FluentValidationValidator();
+
+    //  private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
+    private LoginModel _tokenModel = new();
+
+    private MudForm mudForm;
     
+    private bool processing = false;
     
     private async Task SignInAsync()
     {
@@ -62,36 +79,60 @@
 
         if (mudForm.IsValid)
         {
+
+            processing = true;
+
+            await Task.Delay(1000);
             var model = mudForm.Model as LoginModel;
 
-            //new[]
-            //{
-            //    new Claim(ClaimTypes.Name, emailAddress),
-            //}
+            
             var result = await accountService.LoginUserAsync(model);
 
             if (result.Succeeded)
             {
-                var currentUser = Service.CurrentUser;
+                //var currentUser = Service.CurrentUser;
 
-                var identity = new ClaimsIdentity(result.Claims,
-                    "Custom Authentication");
+                //var identity = new ClaimsIdentity(result.Claims,
+                //    "Custom Authentication");
 
-                var newUser = new ClaimsPrincipal(identity);
+                //var newUser = new ClaimsPrincipal(identity);
 
-                Service.CurrentUser = newUser;
+                Service.LogIn(result.Claims);
                 _snackBar.Add("欢迎使用系统，", Severity.Success);
                 return;
             }
             else
             {
-               // mudForm.SetError(result.Message);
+                _snackBar.Add($"登录失败，{result.Error}", Severity.Error);
             }
+
+            
+            processing = false;
         }
     }
 
     private void SignIn()
     {
        
+    }
+
+    private bool _passwordVisibility;
+    private InputType _passwordInput = InputType.Password;
+    private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    private void TogglePasswordVisibility()
+    {
+        if (_passwordVisibility)
+        {
+            _passwordVisibility = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _passwordVisibility = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
     }
 }

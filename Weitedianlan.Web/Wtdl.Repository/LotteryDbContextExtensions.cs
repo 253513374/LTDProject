@@ -23,6 +23,8 @@ namespace Wtdl.Repository
             services.AddScoped<ScanRedPacketRepository>();
             services.AddScoped<ActivityPrizeRepository>();
             services.AddScoped<EmailSender>();
+            services.AddScoped<OutStorageRepository>();
+
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
 #if DEBUG

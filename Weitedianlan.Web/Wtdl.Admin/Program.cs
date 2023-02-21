@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Radzen;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -40,9 +41,11 @@ try
     builder.Services.AddLotteryDbContext(connectionString);
     builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
+    //注入认证授权数据库IdentityDbContext
+    var identitydbcontext = builder.Configuration.GetConnectionString("IdentityDbContext");
     builder.Services.AddDbContextFactory<CustomIdentityDbContext>(options =>
-        options.UseSqlServer(connectionString));
-
+        options.UseSqlServer(identitydbcontext));
+    //注入Identity 认证授权，启用CustomIdentityDbContext数据库
     builder.Services.AddIdentity<WtdlUser, WtdlRole>(options =>
     {
         options.Password.RequiredLength = 6;
@@ -80,6 +83,12 @@ try
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
     builder.Services.AddSingleton<WeatherForecastService>();
+
+    builder.Services.AddScoped<Radzen.DialogService>();
+    builder.Services.AddScoped<NotificationService>();
+    builder.Services.AddScoped<TooltipService>();
+    builder.Services.AddScoped<ContextMenuService>();
+
     builder.Services.AddMudServices(config =>
     {
         // config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
@@ -90,7 +99,7 @@ try
         config.SnackbarConfiguration.VisibleStateDuration = 10000;
         config.SnackbarConfiguration.HideTransitionDuration = 500;
         config.SnackbarConfiguration.ShowTransitionDuration = 500;
-        config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+        config.SnackbarConfiguration.SnackbarVariant = MudBlazor.Variant.Filled;
     });
 
     builder.Services.AddScoped<AccountService>();

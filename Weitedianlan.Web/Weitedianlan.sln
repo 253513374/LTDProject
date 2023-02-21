@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Admin", "Wtdl.Admin\Wt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Controller", "Wtdl.Controller\Wtdl.Controller.csproj", "{C2070977-2FF1-4409-B971-BDD8C272DF34}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Model.Identity", "Wtdl.Model.Identity\Wtdl.Model.Identity.csproj", "{946C37AA-1757-4685-ADDF-15EBC89513C0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,14 +55,6 @@ Global
 		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Release|x64.ActiveCfg = Release|Any CPU
 		{C2070977-2FF1-4409-B971-BDD8C272DF34}.Release|x64.Build.0 = Release|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Debug|x64.Build.0 = Debug|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Release|x64.ActiveCfg = Release|Any CPU
-		{946C37AA-1757-4685-ADDF-15EBC89513C0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

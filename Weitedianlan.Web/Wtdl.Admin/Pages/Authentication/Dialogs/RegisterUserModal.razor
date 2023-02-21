@@ -99,7 +99,7 @@
 
           var result=await  Service.CreateUserAsync(user, register.Password);
 
-            if (result)
+            if (result.Succeeded)
             {
                 _snackBar.Add("注册成功", Severity.Success);
 
@@ -107,7 +107,11 @@
             }
             else
             {
-                _snackBar.Add("注册失败", Severity.Success);
+                foreach (var identityError in result.Errors)
+                {
+                    _snackBar.Add($"注册失败:{identityError.Description}", Severity.Error);
+                }
+             //  _snackBar.Add("注册失败", Severity.Error);
             }
 
            

@@ -10,7 +10,7 @@ else
     <MudTable Hover="true" Elevation="25" Items="WtdlUsers" Filter="new Func<WtdlUser, bool>(Search)">
         <ToolBarContent>
             <div class="justify-center mud-text-align-center">
-                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => InvokeModal(new WtdlUser()))" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">新建角色</MudButton>
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => InvokeModal(new WtdlUser()))" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">新建账号</MudButton>
                 <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetUsersAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">重新加载</MudButton>
             </div>
             <MudSpacer />

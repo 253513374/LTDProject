@@ -13,6 +13,8 @@ namespace Wtdl.Repository.EntityConfig
     {
         public override void Configure(EntityTypeBuilder<ActivityPrize> builder)
         {
+            builder.ToTable("ActivityPrize");
+
             builder.HasKey(p => p.Id);//设置主键
             builder.Property(p => p.Id)//设置属性为自增长
                 .ValueGeneratedOnAdd();

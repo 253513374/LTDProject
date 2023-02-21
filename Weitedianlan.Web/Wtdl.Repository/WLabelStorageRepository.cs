@@ -9,6 +9,8 @@ using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
 using System.Linq;
+using EFCore.BulkExtensions;
+using Weitedianlan.Model.Entity.Analysis;
 
 namespace Wtdl.Repository
 {
@@ -97,13 +99,17 @@ namespace Wtdl.Repository
                 {
                     ///分组统计年订单数
                     var graupbylist = await context.WLabelStorages
-                        .GroupBy(x => new { x.OrderNumbels, x.OrderTime.Year })
-                        .Select(g => new GroupByWLabelStorage()
+                        .GroupBy(x => new { x.OrderNumbels, x.OrderTime.Year, x.OrderTime.Month })
+                        .Select(g => new OutStorageAnalysis()
                         {
                             OrderNumbels = g.Key.OrderNumbels,
+                            Month = g.Key.Month,
                             Year = g.Key.Year,
                             Count = g.Count(),
                         }).ToListAsync();
+
+                    context.BulkInsert(graupbylist);
+                    context.SaveChanges();
 
                     var listGroupBy = graupbylist.GroupBy(g => g.Year).Select(s => new GroupByWLabelStorage
                     {

@@ -11,10 +11,11 @@ namespace Wtdl.Admin.Pages.Authentication.Fluent
         public UpdatePasswordValidator()
         {
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("密码不能为空")
-                .Equal(x => x.ConfirmPassword).WithMessage("两次密码输入不一致");
+                .NotEmpty().WithMessage("密码不能为空");
+
             RuleFor(x => x.ConfirmPassword)
-                .NotEmpty().WithMessage("确认密码不能为空");
+                .NotEmpty().WithMessage("确认密码不能为空")
+                .Equal(x => x.Password).WithMessage("两次密码输入不一致");
 
             RuleFor(x => x.CurrentPassword)
                 .NotEmpty().WithMessage("密码不能为空");

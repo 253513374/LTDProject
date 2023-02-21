@@ -153,36 +153,42 @@ else
     }
 
 
-    /// <summary>
-    /// 删除角色
-    /// </summary>
-    /// <param name="contextId"></param>
-    /// <returns></returns>
-    private async Task Delete(WtdlRole  role)
-    {
 
+    private async Task Delete(WtdlRole role)
+    {
         if (role.Name == BaseRole.Aministrator || role.Name == BaseRole.Basic)
         {
             _snackBar.Add($"角色{role.Name} 不允许删除 ", Severity.Warning);
             return;
         }
-
-        var deleteresult = await Service.DeleteRoleAsync(role);
-
-        if (deleteresult)
+        string deleteContent = $"确定是否需要删除这个角色{role.Name}? ID:{role.Id}";
+        var parameters = new DialogParameters
         {
+            {nameof(DeleteConfirmation.ContentText), deleteContent}
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+        var dialog = _dialogService.Show<DeleteConfirmation>("删除", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var deleteresult = await Service.DeleteRoleAsync(role);
 
-            WtdlRoles.Remove(role);
-            _snackBar.Add($"角色{role.Name} 删除成功 ", Severity.Success);
+            if (deleteresult)
+            {
+
+                WtdlRoles.Remove(role);
+                _snackBar.Add($"角色{role.Name} 删除成功 ", Severity.Success);
             
-        }
-        else
-        {
-            _snackBar.Add($"角色{role.Name} 删除失败 ", Severity.Error);
-        }
+            }
+            else
+            {
+                _snackBar.Add($"角色{role.Name} 删除失败 ", Severity.Error);
+            }
 
-        StateHasChanged();
-        return;
-        
+            StateHasChanged();
+            return;
+        }
     }
+
+
 }

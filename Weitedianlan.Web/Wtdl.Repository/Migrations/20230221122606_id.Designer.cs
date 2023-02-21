@@ -12,15 +12,15 @@ using Wtdl.Repository;
 namespace Wtdl.Repository.Migrations
 {
     [DbContext(typeof(LotteryContext))]
-    [Migration("20230211064017_db10")]
-    partial class db10
+    [Migration("20230221122606_id")]
+    partial class id
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -48,9 +48,6 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -72,11 +69,10 @@ namespace Wtdl.Repository.Migrations
                     b.Property<double>("Probability")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalLimit")
-                        .HasColumnType("int");
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -84,17 +80,14 @@ namespace Wtdl.Repository.Migrations
                     b.Property<int>("UniqueNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserLimit")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WinnerCount")
+                    b.Property<int>("Unredeemed")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LotteryActivityId");
 
-                    b.ToTable("ActivityPrize");
+                    b.ToTable("ActivityPrize", (string)null);
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.Agent", b =>
@@ -151,6 +144,31 @@ namespace Wtdl.Repository.Migrations
                     b.HasIndex("LotteryActivityId");
 
                     b.ToTable("tAgent", (string)null);
+                });
+
+            modelBuilder.Entity("Weitedianlan.Model.Entity.Analysis.OutStorageAnalysis", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Count")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderNumbels")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutStorage", "Analysis");
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.FileUploadRecord", b =>
@@ -394,19 +412,46 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("AdminUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Captcha")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("CashAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OpenId")
+                    b.Property<DateTime>("IssueTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MchId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MchbillNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NonceStr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaySign")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QrCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VerificationCode")
+                    b.Property<string>("ReOpenId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReceiveTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SendListid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TotalAmount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WxAppId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -421,6 +466,9 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivityName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AdminUser")
                         .HasColumnType("nvarchar(max)");
@@ -447,6 +495,12 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ScanRedPacketGuid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WishingWord")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -496,9 +550,8 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("AdminUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AntiForgeryCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("Captcha")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
@@ -508,14 +561,15 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("FileHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("VCode")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("QRCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AntiForgeryCode")
+                    b.HasIndex("QRCode")
                         .IsUnique()
-                        .HasFilter("[AntiForgeryCode] IS NOT NULL");
+                        .HasFilter("[QRCode] IS NOT NULL");
 
                     b.ToTable("VerificationCodes");
                 });

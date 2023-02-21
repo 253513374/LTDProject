@@ -15,7 +15,7 @@ namespace Wtdl.Admin.Pages.Authentication
         // private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
 
         private char _firstLetterOfName;
-        private readonly WtdlUser _profileModel = new();
+        private WtdlUser _profileModel = new();
 
         public string UserId { get; set; }
 
@@ -60,7 +60,8 @@ namespace Wtdl.Admin.Pages.Authentication
             //_profileModel.LastName = user.GetLastName();
             //_profileModel.PhoneNumber = user.GetPhoneNumber();
             UserId = user.Identity.Name;
-            var data = await Service.GetUserAsync(user);
+
+            var data = _profileModel = await Service.GetUserAsync(user);
             if (data is not null)
             {
                 ImageDataUrl = data.Avatar;

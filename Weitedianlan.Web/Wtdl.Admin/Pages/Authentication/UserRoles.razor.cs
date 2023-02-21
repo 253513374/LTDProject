@@ -20,7 +20,7 @@ namespace Wtdl.Admin.Pages.Authentication
         [Parameter] public string Title { get; set; }
         [Parameter] public string Description { get; set; }
         public List<UserRoleModel> UserRolesList { get; set; } = new();
-        public List<UserRoleModel> UserRolesListMark { get; set; } = new();
+        public bool UserRolesListMark { get; set; } = false;
 
         private UserRoleModel _userRole = new();
         private string _searchString = "";
@@ -54,7 +54,13 @@ namespace Wtdl.Admin.Pages.Authentication
                 Title = $"{user.UserName} 的角色";
                 Description = $"管理 {user.UserName} 的 角色";
                 UserRolesList = await service.GetRolesByUserIdAsync(user.Id);
-                UserRolesListMark.AddRange(UserRolesList);
+
+                var userrole = UserRolesList.SingleOrDefault(s => s.RoleName.Contains(BaseRole.Aministrator));
+
+                if (userrole is not null)
+                {
+                    UserRolesListMark = userrole.Selected;
+                }
             }
 
             _loaded = true;
@@ -62,11 +68,11 @@ namespace Wtdl.Admin.Pages.Authentication
 
         private async Task SaveAsync()
         {
-            var oldrole = UserRolesListMark.FirstOrDefault(f => f.RoleName.Contains(BaseRole.Aministrator));
-
+            // var oldrole = UserRolesListMark.FirstOrDefault(f => f.RoleName.Contains(BaseRole.Aministrator));
             var newrole = UserRolesList.FirstOrDefault(f => f.RoleName.Contains(BaseRole.Aministrator));
-            if (oldrole.Selected != newrole.Selected)
+            if (UserRolesListMark != newrole.Selected)
             {
+                //  newrole
                 _snackBar.Add("不允许添加或删除管理员角色");
                 return;
             }

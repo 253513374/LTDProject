@@ -31,7 +31,12 @@ else
             <MudTd DataLabel="角色描述">
                 <MudHighlighter Text="@context.RoleDescription" HighlightedText="@_searchString" />
             </MudTd>
-            <MudTd DataLabel="Role"><MudCheckBox @bind-Checked="@context.Selected"  Color="Color.Secondary"></MudCheckBox></MudTd>
+            <MudTd DataLabel="Role">
+
+                <MudCheckBox @bind-Checked="@context.Selected" ReadOnly="@(context.RoleName.Contains(BaseRole.Aministrator)?true:false)" Color="Color.Secondary">
+
+                </MudCheckBox>
+            </MudTd>
         </RowTemplate>
         <FooterContent>
             <MudSwitch @bind-Checked="@_dense" Color="Color.Secondary" Style="margin-left: 5px;">紧密</MudSwitch>

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Weitedianlan.Model.Entity;
+using Weitedianlan.Model.Entity.Analysis;
 using Wtdl.Repository.EntityConfig;
+using Wtdl.Repository.EntityConfig.Analysis;
 
 namespace Wtdl.Repository
 {
@@ -31,6 +33,8 @@ namespace Wtdl.Repository
             modelBuilder.ApplyConfiguration(new ScanRedPacketConfig());
             modelBuilder.ApplyConfiguration(new RedPacketRecordConfig());
             modelBuilder.ApplyConfiguration(new ActivityPrizeConfig());
+
+            modelBuilder.ApplyConfiguration(new OutAnalysisConfig());
             // modelBuilder.ApplyConfiguration(new UserConfig());
             //modelBuilder.Entity<W_LabelStorage>()
             //    .HasOne(p => p.Agent)
@@ -41,6 +45,8 @@ namespace Wtdl.Repository
 
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<OutStorageAnalysis> OutStorageAnalyses { get; set; }
 
         /// <summary>
         /// 抽奖活动

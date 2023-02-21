@@ -1,28 +1,33 @@
 ﻿
 
-<MudForm Model="@_passwordModel" Validation="@(_fluentValidationValidator.ValidateValue)" >
+<MudStack Row="true" Justify="Justify.Center" >
+    <MudPaper Elevation="0" Width="500">
+        <MudForm Model="@_passwordModel" @ref="@mudForm"  Validation="@(_fluentValidationValidator.ValidateValue)">
   
-    <MudCard Elevation="25">
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText>更改密码</MudText>
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudGrid>
-                <MudItem xs="12" md="6">
-                    <MudTextField T="string" @bind-Value="_passwordModel.Password" For="@(() => _passwordModel.Password)" Label="密码" Variant="Variant.Outlined" InputType="_newPasswordInput" Adornment="Adornment.End" AdornmentIcon="@_newPasswordInputIcon" OnAdornmentClick="@(() => TogglePasswordVisibility(true))" />
-                </MudItem>
-                <MudItem xs="12" md="6">
-                    <MudTextField T="string" @bind-Value="_passwordModel.ConfirmPassword" For="@(() => _passwordModel.ConfirmPassword)" Label="密码确认" Variant="Variant.Outlined" InputType="_newPasswordInput" Adornment="Adornment.End" AdornmentIcon="@_newPasswordInputIcon" OnAdornmentClick="@(() => TogglePasswordVisibility(true))" />
-                </MudItem>
-                <MudItem xs="12">
-                    <MudTextField T="string" @bind-Value="_passwordModel.CurrentPassword" For="@(() => _passwordModel.CurrentPassword)" Label="当前密码" Variant="Variant.Outlined" InputType="_currentPasswordInput" Adornment="Adornment.End" AdornmentIcon="@_currentPasswordInputIcon" OnAdornmentClick="@(() => TogglePasswordVisibility(false))" />
-                </MudItem>
-            </MudGrid>
-        </MudCardContent>
-        <MudCardActions Class="pb-4 pl-4">
-            <MudButton Variant="Variant.Filled"  Color="Color.Primary" ButtonType="ButtonType.Submit" Class="ml-auto">更改密码</MudButton>
-        </MudCardActions>
-    </MudCard>
-</MudForm>
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>更改密码</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudTextField T="string" @bind-Value="_passwordModel.Password" For="@(() => _passwordModel.Password)" Label="新密码" Variant="Variant.Outlined" InputType="_newPasswordInput" Adornment="Adornment.End" AdornmentIcon="@_newPasswordInputIcon" OnAdornmentClick="@(() => TogglePasswordVisibility(true))" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField T="string" @bind-Value="_passwordModel.ConfirmPassword" For="@(() => _passwordModel.ConfirmPassword)" Label="新密码确认" Variant="Variant.Outlined" InputType="_newPasswordInput" Adornment="Adornment.End" AdornmentIcon="@_newPasswordInputIcon" OnAdornmentClick="@(() => TogglePasswordVisibility(true))" />
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField T="string" @bind-Value="_passwordModel.CurrentPassword" For="@(() => _passwordModel.CurrentPassword)" Label="当前密码" Variant="Variant.Outlined" InputType="_currentPasswordInput" Adornment="Adornment.End" AdornmentIcon="@_currentPasswordInputIcon" OnAdornmentClick="@(() => TogglePasswordVisibility(false))" />
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+                <MudCardActions Class="pb-4 pl-4">
+                    <MudButton Variant="Variant.Filled" OnClick="ChangePasswordAsync" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="ml-auto">更改密码</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudForm>
+    </MudPaper>
+
+</MudStack>

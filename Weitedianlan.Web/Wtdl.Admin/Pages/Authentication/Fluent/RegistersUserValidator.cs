@@ -20,10 +20,11 @@ namespace Wtdl.Admin.Pages.Authentication.Fluent
             RuleFor(r => r.UserName).NotEmpty().WithMessage("用户名不能为空");
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("密码不能为空")
-                .Equal(x => x.ConfirmPassword).WithMessage("两次密码输入不一致");
+                .NotEmpty().WithMessage("密码不能为空");
+
             RuleFor(x => x.ConfirmPassword)
-                .NotEmpty().WithMessage("确认密码不能为空");
+                .NotEmpty().WithMessage("确认密码不能为空")
+                .Equal(x => x.ConfirmPassword).WithMessage("两次密码输入不一致");
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

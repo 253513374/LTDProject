@@ -7,23 +7,28 @@ using Weitedianlan.Model.Enum;
 
 namespace Weitedianlan.Model.Entity.Analysis
 {
-    public class CountAnalysis
+    public class OutStorageAnalysis
     {
-        public int Id { get; set; }
+        public int Id { set; get; }
 
         /// <summary>
         /// 年份
         /// </summary>
-        public int Year { get; set; }
+        public int Year { set; get; }
 
         /// <summary>
-        /// 年出库总量
+        /// 月份
         /// </summary>
-        public int Count { get; set; }
+        public int Month { set; get; }
 
         /// <summary>
-        /// 统计类型
+        /// 订单号
         /// </summary>
-        public AnalysisType Type { get; set; }
+        public string OrderNumbels { set; get; }
+
+        /// <summary>
+        /// 订单号数量
+        /// </summary>
+        public double Count { set; get; }
     }
 }

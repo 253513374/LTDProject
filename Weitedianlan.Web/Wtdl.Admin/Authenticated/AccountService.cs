@@ -34,10 +34,10 @@ namespace Wtdl.Admin.Authenticated
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public async Task<bool> CreateUserAsync(WtdlUser user, string password)
+        public async Task<IdentityResult> CreateUserAsync(WtdlUser user, string password)
         {
             var result = await userManager.CreateAsync(user, password);
-            return result.Succeeded;
+            return result;
         }
 
         /// <summary>
@@ -169,8 +169,51 @@ namespace Wtdl.Admin.Authenticated
             return roles.ToList();
         }
 
+        /// <summary>
+        /// 登录信息验证
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task<SignInWResult> LoginUserAsync(LoginModel model)
         {
+#if DEBUG
+            try
+            {
+                //生成默认账号与默认角色
+                var defuluser = await userManager.FindByEmailAsync("admin@wt.com");
+                if (defuluser is null)
+                {
+                    var createuser = Activator.CreateInstance<WtdlUser>();
+                    createuser.UserName = "admin";
+                    createuser.Email = "admin@wt.com";
+                    createuser.CreatedOn = DateTime.Now;
+                    createuser.CreatedBy = "t";
+                    createuser.IsActive = true;
+
+                    await userManager.CreateAsync(createuser);
+                    //设置默认密码
+                    await userManager.AddPasswordAsync(createuser, "88888888");
+
+                    var createrole = Activator.CreateInstance<WtdlRole>();
+                    {
+                        createrole.Name = BaseRole.Aministrator;
+                        createrole.Description = "超级管理员角色，拥有系统最高权限，不可删除";
+                        createrole.CreatedOn = DateTime.Now;
+                        createrole.CreatedBy = "t";
+                    };
+                    await roleManager.CreateAsync(createrole);
+
+                    //用户添加角色
+                    await userManager.AddToRoleAsync(createuser, BaseRole.Aministrator);
+                }
+            }
+            catch (Exception e)
+            {
+                return SignInWResult.Failure(e.Message);
+            }
+
+#endif
+
             // using var dbContext = dbContextFactory.CreateDbContext();
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName || u.Email == model.UserName || u.PhoneNumber == model.UserName);
 
@@ -293,7 +336,16 @@ namespace Wtdl.Admin.Authenticated
             {
                 return IdentityResult.Failed(new IdentityError { Description = "用户不存在" });
             }
-            return await userManager.ChangePasswordAsync(user, passwordModel.CurrentPassword, passwordModel.Password);
+
+            //校验密码
+            var result = await userManager.CheckPasswordAsync(user, passwordModel.ConfirmPassword);
+
+            if (result)
+            {
+                return await userManager.ChangePasswordAsync(user, passwordModel.CurrentPassword, passwordModel.Password);
+            }
+
+            return IdentityResult.Failed(new IdentityError { Description = "密码不正确" });
             // return result;
         }
 

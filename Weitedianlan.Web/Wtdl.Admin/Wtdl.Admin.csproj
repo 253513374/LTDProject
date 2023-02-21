@@ -20,6 +20,7 @@
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="6.1.7" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.7.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.90" />
   </ItemGroup>

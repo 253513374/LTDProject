@@ -38,6 +38,8 @@
 @using Wtdl.Admin.Pages.Authentication.ViewModel
 
 
+@using Radzen
+
 @attribute [Authorize]
 
 @inject NavigationManager _navigationManager
@@ -46,3 +48,7 @@
 @inject IDialogService _dialogService
 @inject IJSRuntime _jsRuntime
 
+@using Variant = MudBlazor.Variant;
+@using ButtonType = MudBlazor.ButtonType;
+@using AlignItems = MudBlazor.AlignItems;
+@using DialogOptions = MudBlazor.DialogOptions

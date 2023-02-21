@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MudBlazor;
 using Wtdl.Admin.Authenticated;
+using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Pages.Authentication.Fluent;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
 
@@ -9,7 +11,7 @@ namespace Wtdl.Admin.Pages.Authentication
 {
     public partial class Security
     {
-        private UpdatePasswordValidator _fluentValidationValidator;
+        private UpdatePasswordValidator _fluentValidationValidator = new();
 
         //private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
         private readonly UpdatePassword _passwordModel = new();
@@ -19,24 +21,31 @@ namespace Wtdl.Admin.Pages.Authentication
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
+        private MudForm mudForm;
+
         private async Task ChangePasswordAsync()
         {
-            var user = AuthenticationStateTask.Result.User;
+            await mudForm.Validate();
+            if (mudForm.IsValid)
+            {
+                var usermodel = mudForm.Model as UpdatePassword;
+                var user = AuthenticationStateTask.Result.User;
 
-            _passwordModel.User = user;
-            var response = await Service.ChangePasswordAsync(_passwordModel);
-            if (response.Succeeded)
-            {
-                _snackBar.Add("密码更新成功", Severity.Success);
-                _passwordModel.Password = string.Empty;
-                _passwordModel.ConfirmPassword = string.Empty;
-                _passwordModel.CurrentPassword = string.Empty;
-            }
-            else
-            {
-                foreach (var error in response.Errors)
+                _passwordModel.User = user;
+                var response = await Service.ChangePasswordAsync(usermodel);
+                if (response.Succeeded)
                 {
-                    _snackBar.Add(error.Description, Severity.Error);
+                    _snackBar.Add("密码更新成功", Severity.Success);
+                    _passwordModel.Password = string.Empty;
+                    _passwordModel.ConfirmPassword = string.Empty;
+                    _passwordModel.CurrentPassword = string.Empty;
+                }
+                else
+                {
+                    foreach (var error in response.Errors)
+                    {
+                        _snackBar.Add(error.Description, Severity.Error);
+                    }
                 }
             }
         }

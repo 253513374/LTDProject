@@ -8,177 +8,233 @@
 @inject LotteryRecordRepository _LotteryRecordRepository
 @inject WLabelStorageRepository _WLabelStorageRepository
 @inject OutStorageRepository _outStorageRepository
+@inject RedPacketRecordRepository _redPacketRecordRepository
+
 
 
 <MudPageTitle Title="数据面板" Description="系统数据分析统计"></MudPageTitle>
-<MudStack Row="true">
-    <MudPaper Elevation="2"  Style="background-color: deepskyblue " Class="mud-paper-1 bg-opacity-50 bg-info">
-        <MudCard>
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem xs="12" sm="12" md="12" lg="12">
-                        <MudText Typo="Typo.h6">抽奖人数</MudText>
-                    </MudItem>
-                    <MudItem xs="12" sm="12" md="12" lg="12">
-                        <MudText Typo="Typo.h4">Count</MudText>
-                    </MudItem>
-                </MudGrid>
-            </MudCardContent>
-        </MudCard>
-    </MudPaper>
-</MudStack>
 
-<MudGrid>
-    <MudItem xs="12" sm="6" md="4" lg="3">
-       
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="3">
-        <MudPaper Elevation="2" Class="mud-paper-1">
-            <MudCard>
-                <MudCardContent>
-                    <MudGrid>
-                        <MudItem xs="12" sm="12" md="12" lg="12">
-                            <MudText Typo="Typo.h6">红包发放金额</MudText>
-                        </MudItem>
-                        <MudItem xs="12" sm="12" md="12" lg="12">
-                            <MudText Typo="Typo.h4">Count</MudText>
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4" lg="3">
-        <MudPaper Elevation="2" Class="mud-paper-1">
-            <MudCard>
-                <MudCardContent>
-                    <MudGrid>
-                        <MudItem xs="12" sm="12" md="12" lg="12">
-                            <MudText Typo="Typo.h6">活动数量</MudText>
-                        </MudItem>
-                        <MudItem xs="12" sm="12" md="12" lg="12"></MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+    <MudGrid >
+        <MudItem xs="12" sm="12" md="6">
+            <MudGrid >
+                <MudItem style="display: flex; justify-content: center; align-items: center" xs="12" sm="12" md="6">
+                    <MudPaper Style="width:220px;height:220px" Class="ma-5 pa-12 d-flex flex-column align-stretch align-content-center justify-center border-2  mud-border-primary rounded-circle">
+                        <div style="display: flex; justify-content: center; align-items: end">
+                            <MudIcon Style="Width: 54px; height: 54px;" Icon="@Icons.Material.Filled.Attractions" Color="Color.Primary"></MudIcon>
+                        </div>
+                        <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mud-text-secondary  mb-n1">抽奖信息</MudText>
+                    <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">0</MudText>
+                            <MudText Typo="Typo.caption">抽奖</MudText>
+                        </MudStack>
+                    <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">0</MudText>
+                            <MudText Typo="Typo.caption">中奖</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem style="display: flex; justify-content: center; align-items: center" xs="12" sm="12" md="6">
+                <MudPaper Style="width:220px;height:220px" Class="ma-5 pa-12 d-flex flex-column align-stretch align-content-center justify-center border-2  mud-border-primary rounded-circle">
+                        <div style="display: flex; justify-content: center; align-items: end">
+                            <MudIcon Style="Width: 54px; height: 54px;" Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary"></MudIcon>
+                        </div>
+                        <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mud-text-secondary  mb-n1">红包信息</MudText>
+
+                        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">0</MudText>
+                            <MudText Typo="Typo.caption">发放</MudText>
+                        </MudStack>
+                    <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@TotalAmountSum</MudText>
+                            <MudText Typo="Typo.caption">总额</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="6" Style="display: flex;align-items: center" Justify="Justify.Center">
+            <MudGrid >
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.ShoppingCartCheckout" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            @* <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
+                        <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@CountTitleText </MudText>
+                        </MudStack>*@
+                            <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今日出货量</MudText>
+                            <MudText Typo="Typo.h5"></MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Warehouse" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今年出货量</MudText>
+                            <MudText Typo="Typo.h5"></MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.HouseSiding" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            <MudStack Class="mr-5" Row="true"   AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+                                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
+                                <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@RadzenChartTitleText </MudText>
+                            </MudStack>
+                           
+                            <MudText Typo="Typo.h5">@AllYearCount</MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.DocumentScanner" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            <MudStack Class="mr-5" Row="true"   AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+                                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总订单量</MudText>
+                                <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@RadzenChartTitleText </MudText>
+                            </MudStack>
+                           
+                            <MudText Typo="Typo.h5">@OrderCount</MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
 
 
-<MudGrid >
-    <MudItem xs="12" sm="12" md="2">
-        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4" >
-            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
-            <div style="width: 100%">
-               @* <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2" >
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@CountTitleText </MudText>
-                </MudStack>*@
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今日出货量</MudText>
-                <MudText Typo="Typo.h5"></MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="12" md="2">
-        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
-            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
-            <div style="width: 100%">
-               @* <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2">
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@CountTitleText </MudText>
-                </MudStack>*@
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今年出货量</MudText>
-                <MudText Typo="Typo.h5"></MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="2">
-        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
-            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
-            <div style="width: 100%">
-                <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2">
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@RadzenChartTitleText </MudText>
-                </MudStack>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
-                <MudText Typo="Typo.h5">@AllYearCount</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="2">
-        <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
-            <MudIcon Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
-            <div style="width: 100%">
-                <MudStack Row="true" Justify="Justify.SpaceAround" Spacing="2">
-                    <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@RadzenChartTitleText </MudText>
-                </MudStack>
-                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总订单量</MudText>
-                <MudText Typo="Typo.h5">@OrderCount</MudText>
-            </div>
-        </MudPaper>
-    </MudItem>
+@*<MudHidden Breakpoint="Breakpoint.Xs">
+    <MudGrid>
+        <MudItem xs="12" sm="12" md="6">
+
+            <MudGrid>
+                <MudItem style="display: flex; justify-content: center; align-items: center" xs="12" sm="12" md="6">
+                    <MudPaper Style="width:200px;height: 200px" Class="ma-5 pa-12 d-flex flex-column align-stretch align-content-center justify-center border-2  mud-border-primary rounded-circle">
+                        <div style="display: flex; justify-content: center; align-items: end">
+                            <MudIcon Style="Width: 72px; height: 72px;" Icon="@Icons.Material.Filled.Attractions" Color="Color.Primary"></MudIcon>
+                        </div>
+                        <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mud-text-secondary  mb-n1">抽奖信息</MudText>
+                        <MudStack Row="true">
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true"> 0  </MudText>
+                            <MudText Typo="Typo.caption">抽奖</MudText>
+                        </MudStack>
+                        <MudStack Row="true">
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true"> 0 </MudText>
+                            <MudText Typo="Typo.caption">中奖</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem style="display: flex; justify-content: center; align-items: center" xs="12" sm="12" md="6">
+                    <MudPaper Style="width:200px;height: 200px" Class="ma-5 pa-12 d-flex flex-column align-stretch align-content-center justify-center border-2  mud-border-primary rounded-circle">
+                        <div style="display: flex; justify-content: center; align-items: end">
+                            <MudIcon Style="Width: 72px; height: 72px;" Icon="@Icons.Material.Filled.ViewCarousel" Color="Color.Primary"></MudIcon>
+                        </div>
+                        <MudText Typo="Typo.h5" Align="Align.Center" Inline="true">红包信息</MudText>
+                        <MudText Typo="Typo.h3" Align="Align.Center" Inline="true">个数：@RedPacketCount</MudText>
+                        <MudText Typo="Typo.h3" Align="Align.Center" Inline="true">总和：@TotalAmountSum</MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="6" Style="display: flex;align-items: center" Justify="Justify.Center">
+            <MudGrid>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.ShoppingCartCheckout" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                           
+                            <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今日出货量</MudText>
+                            <MudText Typo="Typo.h5"></MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Warehouse" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今年出货量</MudText>
+                            <MudText Typo="Typo.h5"></MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.HouseSiding" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            <MudStack Class="mr-5" Row="true"   AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+                                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总出货量</MudText>
+                                <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@RadzenChartTitleText </MudText>
+                            </MudStack>
+                            <MudText Typo="Typo.h5">@AllYearCount</MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6">
+                    <MudPaper Elevation="20" Class="d-flex flex-row pt-6 pb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.DocumentScanner" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
+                        <div style="width: 100%">
+                            <MudStack Class="mr-5" Row="true"   AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+                                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">总订单量</MudText>
+                                <MudText Typo="Typo.caption" Align="Align.End" Class="mud-text-secondary mb-n1">@RadzenChartTitleText </MudText>
+                            </MudStack>
+                          
+                            <MudText Typo="Typo.h5">@OrderCount</MudText>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</MudHidden>
+*@
+<MudStack Class="my-12 " >
     @if (isgetyear)
     {
-        <MudItem xs="12" sm="12" md="12">
-            <MudPaper Elevation="4" Class="pa-8">
-                <MudText Typo="Typo.h6"> 年销量分析图表 </MudText>
-              
-                    <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem" >
-                        <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
-                        <RadzenLabel Text="平滑" For="smooth" Style="margin-right: 1rem;"/>
-                        <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
-                        <RadzenLabel Text="数据标签" For="dataLabels" />
-                    </RadzenCard>
-                    <RadzenChart>
-                        <RadzenAreaSeries Smooth="@smooth" Data="@GroupByYearCounts" CategoryProperty="Year" Title="@RadzenChartTitleText" ValueProperty="Count" RenderingOrder="1">
-                            <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                            <RadzenGridLines Visible="true" />
-                            <RadzenLegend Position="LegendPosition.Top" />
-                        </RadzenAreaSeries>
-                    
-                        @*   <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth" />
-                            <RadzenValueAxis Formatter="@FormatAsUSD">
-                            <RadzenGridLines Visible="true" />
-                            <RadzenAxisTitle Text="Revenue in USD" />
-                        </RadzenValueAxis>*@
-                    </RadzenChart>
-              
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudText Typo="Typo.h6"> 年销量分析图表 </MudText>
 
-
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="12" md="12">
-            <MudPaper Elevation="4" Class="pa-8">
-                <MudText Typo="Typo.h6"> 年份订单总量对比 </MudText>
-               
-                <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
-                    <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
-                    <RadzenLabel Text="平滑" For="smooth" Style="margin-right: 1rem;" />
+            <MudPaper Height="45" Elevation="2" Class="w-100 mb-4"  Style="display: flex; align-items: center; gap: 0.5rem">
+                <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                <RadzenLabel Text="平滑" For="smooth" Style="margin-right: 1rem;" />
                 <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
-                    <RadzenLabel Text="数据标签" For="dataLabels" />
-                </RadzenCard>
-                <RadzenChart>
-                @*    <RadzenAreaSeries Smooth="@smooth" Data="@GroupByYearCounts" CategoryProperty="Year" Title="@RadzenChartTitleText" ValueProperty="Count" RenderingOrder="1">
-                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                    </RadzenAreaSeries>*@
-                    <RadzenAreaSeries Smooth="@smooth" Data="@GroupByYearOrders" CategoryProperty="Year" Title="@RadzenChartTitleText" LineType="LineType.Dashed" ValueProperty="Count">
-                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
-                        <RadzenGridLines Visible="true" />
-                        <RadzenLegend Position="LegendPosition.Top" />
-                    </RadzenAreaSeries>
-                    @*   <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth" />
-                <RadzenValueAxis Formatter="@FormatAsUSD">
-                <RadzenGridLines Visible="true" />
-                <RadzenAxisTitle Text="Revenue in USD" />
-                </RadzenValueAxis>*@
-                </RadzenChart>
-               
-
+                <RadzenLabel Text="数据标签" For="dataLabels" />
             </MudPaper>
-            </MudItem>
+            <RadzenChart>
+                <RadzenAreaSeries Smooth="@smooth" Data="@GroupByYearCounts" CategoryProperty="Year" Title="@RadzenChartTitleText" ValueProperty="Count" RenderingOrder="1">
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                    <RadzenGridLines Visible="true" />
+                    <RadzenLegend Position="LegendPosition.Top" />
+                </RadzenAreaSeries>
+            </RadzenChart>
+        </MudPaper>
+        <MudPaper Elevation="0" Class="pa-8">
+            <MudText Typo="Typo.h6"> 年份订单总量对比 </MudText>
+
+            <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+                <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                <RadzenLabel Text="平滑" For="smooth" Style="margin-right: 1rem;" />
+                <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                <RadzenLabel Text="数据标签" For="dataLabels" />
+            </RadzenCard>
+            <RadzenChart>
+                <RadzenAreaSeries Smooth="@smooth" Data="@GroupByYearOrders" CategoryProperty="Year" Title="@RadzenChartTitleText" LineType="LineType.Dashed" ValueProperty="Count">
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                    <RadzenGridLines Visible="true" />
+                    <RadzenLegend Position="LegendPosition.Top" />
+                </RadzenAreaSeries>
+            </RadzenChart>
+        </MudPaper>
     }
     else
     {
         <MudSkeletonComponent></MudSkeletonComponent>
     }
-</MudGrid>
+</MudStack>
+
+
 @*<PageTitle>Index</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
@@ -197,6 +253,11 @@
     
     private double AllYearCount { set; get; }
     private double OrderCount{ set; get; }
+
+    private int LotteryCount { set; get; }
+    private int RedPacketCount { set; get; }
+    private decimal TotalAmountSum { get; set; }
+    
     List<ChartSeries> OrderSeries = new();
 
 
@@ -213,6 +274,10 @@
 
     private  async Task GetAllYearCountAsync()
     {
+        LotteryCount = await _LotteryRecordRepository.GetLotteryRecordsCountAsync();
+        RedPacketCount = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync(); 
+        TotalAmountSum = await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
+      
        
         GroupByYearOrders = await _outStorageRepository.GetGrapByYearAndOrderAsync();
 

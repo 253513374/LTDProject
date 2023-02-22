@@ -129,5 +129,14 @@ namespace Wtdl.Repository
                 return await context.LotteryRecords.AsNoTracking().OrderByDescending(x => x.CreateTime).Take(1000).ToListAsync();
             }
         }
+
+        ///返回总数量
+        public async Task<int> GetLotteryRecordsCountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.LotteryRecords.AsNoTracking().CountAsync();
+            }
+        }
     }
 }

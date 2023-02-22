@@ -161,7 +161,7 @@ else
             _snackBar.Add($"角色{role.Name} 不允许删除 ", Severity.Warning);
             return;
         }
-        string deleteContent = $"确定是否需要删除这个角色{role.Name}? ID:{role.Id}";
+        string deleteContent = $"确定是否需要删除这个角色[{role.Name}]? ID:{role.Id}";
         var parameters = new DialogParameters
         {
             {nameof(DeleteConfirmation.ContentText), deleteContent}

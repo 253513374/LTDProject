@@ -53,5 +53,26 @@ namespace Wtdl.Repository
         //        return await context.RedPacketRecords.AnyAsync();
         //    }
         //}
+
+        ///返回红包发放次数
+        public async Task<int> GetRedPacketRecordsCountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.CountAsync();
+            }
+            //   throw new NotImplementedException();
+        }
+
+        ///返回红包发放总金额,把分转成元
+
+        public async Task<decimal> GetRedPacketRecordsTotalAmountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.SumAsync(x => Convert.ToInt32(x.TotalAmount)) / 100;
+            }
+            //   throw new NotImplementedException();
+        }
     }
 }

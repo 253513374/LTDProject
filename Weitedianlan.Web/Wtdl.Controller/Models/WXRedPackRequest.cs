@@ -35,7 +35,7 @@ namespace Wtdl.Mvc.Models
         public string iP { set; get; }
 
         /// <summary>
-        /// 付款金额
+        /// 付款金额 单位分
         /// </summary>
         public int redPackAmount { set; get; }
 

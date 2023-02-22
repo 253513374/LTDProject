@@ -90,13 +90,6 @@
 
             if (result.Succeeded)
             {
-                //var currentUser = Service.CurrentUser;
-
-                //var identity = new ClaimsIdentity(result.Claims,
-                //    "Custom Authentication");
-
-                //var newUser = new ClaimsPrincipal(identity);
-
                 Service.LogIn(result.Claims);
                 _snackBar.Add("欢迎使用系统，", Severity.Success);
                 return;
@@ -105,15 +98,8 @@
             {
                 _snackBar.Add($"登录失败，{result.Error}", Severity.Error);
             }
-
-            
             processing = false;
         }
-    }
-
-    private void SignIn()
-    {
-       
     }
 
     private bool _passwordVisibility;

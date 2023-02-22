@@ -28,7 +28,7 @@ else
                 <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <HeaderContent>
-                <MudTh>ID.</MudTh>
+              
                 <MudTh>出库单号</MudTh>
                 <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x => x.Count)" T="GroupByWLabelStorage">出库数量</MudTableSortLabel></MudTh>
                 <MudTh> <MudTableSortLabel SortBy="new Func<GroupByWLabelStorage, object>(x => x.OrderNumbels)" T="GroupByWLabelStorage">出库单时间</MudTableSortLabel></MudTh>
@@ -36,7 +36,7 @@ else
                 <MudTh>功能操作</MudTh>
             </HeaderContent>
             <RowTemplate >
-                <MudTd DataLabel="ID.">@context.ID</MudTd>
+               
                 <MudTd DataLabel="出库单号">@context.OrderNumbels</MudTd>
                 <MudTd DataLabel="出库数量">@context.Count</MudTd>
                 <MudTd DataLabel="出库单时间">@context.Time</MudTd>

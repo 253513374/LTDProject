@@ -5,12 +5,12 @@
 <AuthorizeView>
     <MudAppBar Elevation="25">
         <MudAvatar Image="images/homelog.png" Size="Size.Medium" Variant="Variant.Text" />
-        <MudText Typo="Typo.h6" Class="ml-4" Style="font-weight: 700">扫码溯源系统</MudText>
+        <MudText Typo="Typo.h6" Class="ml-4"><strong>扫码溯源系统</strong></MudText>
         <MudToolBar DisableGutters="true">
             <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
         </MudToolBar>
         <MudSpacer />
-        <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+        <MudMenu TransformOrigin="Origin.BottomLeft" Dense="true" Class="mt-1 ml-4">
             <ActivatorContent>
                 @if (string.IsNullOrEmpty(imageDataUrl))
                 {
@@ -57,7 +57,7 @@
 
     bool _drawerOpen = true;
 
-    [Inject] private CustomAuthenticationService Service { set; get; }
+  
     
     private string imageDataUrl { set; get; }
     
@@ -73,7 +73,19 @@
     /// <returns></returns>
     public Task LogOutAsync()
     {
-        Service.LogOut();
+        var parameters = new DialogParameters
+        {
+            {nameof(Logout.ContentText), $"确认注销当前登录账号吗?"},
+            {nameof(Logout.ButtonText), $"注销"},
+            {nameof(Logout.Color), Color.Error},
+         //   {nameof(Logout.CurrentUserId), CurrentUserId},
+           // {nameof(Logout.HubConnection), hubConnection}
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        _dialogService.Show<Logout>("注销", parameters, options);
+       
         return Task.CompletedTask;
     }
 }

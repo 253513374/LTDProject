@@ -103,7 +103,7 @@ try
     });
 
     builder.Services.AddScoped<AccountService>();
-    builder.Services.AddSingleton<CustomAuthenticationService>();
+    builder.Services.AddScoped<CustomAuthenticationService>();
     builder.Services.AddScoped<CustomAuthenticationStateProvider>();
     builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
     // builder.Services.AddHttpContextAccessor();

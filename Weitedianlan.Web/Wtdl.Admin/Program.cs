@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Radzen;
+using Wtdl.Admin.Authenticated.Services;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -69,7 +70,7 @@ try
         q.AddTrigger(t => t
             .WithIdentity("MyJobTrigger")
             .ForJob("MyJob")
-            .WithCronSchedule("0 0/50 * * * ?")); // 每隔 1 分钟执行一次
+            .WithCronSchedule("0 0 0 1 1 ?")); // 没年1月1日
     });
 
     builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -103,6 +104,7 @@ try
     });
 
     builder.Services.AddScoped<AccountService>();
+    builder.Services.AddScoped<RoleClaimService>();
     builder.Services.AddScoped<CustomAuthenticationService>();
     builder.Services.AddScoped<CustomAuthenticationStateProvider>();
     builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
@@ -115,6 +117,14 @@ try
         options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         // options.RequireAuthenticatedSignIn = false; // 设置为 false
         // options.DefaultScheme = "Cookies";
+    });
+
+    builder.Services.AddAuthorization(options =>
+    {
+        // options.a.AuthorizePage("/CustomUnauthorized");
+        RegisterPermissionClaims(options);
+        //options.AddPolicy("Admin", policy =>
+        //    policy.RequireRole("admin"));
     });
 
     //    .AddCookie(options =>
@@ -164,4 +174,17 @@ catch (Exception ex)
 finally
 {
     Log.CloseAndFlush();
+}
+
+static void RegisterPermissionClaims(AuthorizationOptions options)
+{
+    foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
+    {
+        var propertyValue = prop.GetValue(null);
+        Console.WriteLine(propertyValue.ToString());
+        if (propertyValue is not null)
+        {
+            options.AddPolicy(propertyValue.ToString(), policy => policy.RequireClaim(CustomClaimTypes.Permission, propertyValue.ToString()));
+        }
+    }
 }

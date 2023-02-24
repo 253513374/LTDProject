@@ -1,4 +1,6 @@
-﻿namespace Wtdl.Admin.Pages.Authentication.ViewModel
+﻿using System.Security.Claims;
+
+namespace Wtdl.Admin.Pages.Authentication.ViewModel
 {
     public class BaseResponse<T>
     {
@@ -34,5 +36,15 @@
                 Data = default
             };
         }
+
+        //internal static List<Claim> Success(IList<Claim> roles)
+        //{
+        //    return new BaseResponse<T>
+        //    {
+        //        IsSuccess = false,
+        //        Message = "Success",
+        //        Data = roles
+        //    };
+        //}
     }
 }

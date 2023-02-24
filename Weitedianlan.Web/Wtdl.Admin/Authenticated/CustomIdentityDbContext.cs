@@ -39,6 +39,8 @@ namespace Wtdl.Admin.Authenticated
                 .WithMany(r => r.RoleClaims)
                 .HasForeignKey(rp => rp.RoleId)
                 .IsRequired();
+
+                b.Property(p => p.CreatedOn).HasDefaultValue(DateTime.Now);
             });
             builder.Entity<IdentityUserClaim<string>>(entity =>
             {

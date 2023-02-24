@@ -59,6 +59,10 @@
     private MudForm mudForm;
     private FileUpImageComponent fileform;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    
+
     private string ImageBase64 { set; get; }
     //private List<Prize> prizes { set; get; } = new();
 

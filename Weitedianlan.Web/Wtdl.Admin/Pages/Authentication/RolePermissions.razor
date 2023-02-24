@@ -1,0 +1,77 @@
+﻿@page "/identity/role-permissions/{Id}"
+@*@using BlazorHero.CleanArchitecture.Application.Responses.Identity
+@inject Microsoft.Extensions.Localization.IStringLocalizer<RolePermissions> _localizer
+@attribute [Authorize(Policy = Permissions.RoleClaims.View)]*@
+
+<MudPageTitle Title="管理权限" Description="@Description" />
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTabs Position="Position.Left" MinimumTabWidth="120px" Elevation="25" Rounded="true" 
+            Centered="false" ApplyEffectsToContainer="true" AlwaysShowScrollButtons="true">
+        @foreach (var group in GroupedRoleClaims.Keys)
+        {
+            var selectedRoleClaimsInGroup = GroupedRoleClaims[group].Where(c => c.Selected).ToList();
+            var allRoleClaimsInGroup = GroupedRoleClaims[group].ToList();
+
+            <MudTabPanel Text="@group"  BadgeData="@($"{selectedRoleClaimsInGroup.Count}/{allRoleClaimsInGroup.Count}")"
+                        Style="padding-right: 43px;" BadgeColor="@GetGroupBadgeColor(selectedRoleClaimsInGroup.Count, allRoleClaimsInGroup.Count)">
+                <ChildContent>
+                    <MudTable   Hover="true" Elevation="25" Items="@allRoleClaimsInGroup" Dense="@_dense" Bordered="@_bordered" Striped="@_striped"
+                      Filter="new Func<RoleClaimModel, bool>(Search)"   @bind-SelectedItem="_selectedItem">
+                    <ToolBarContent>
+                        <div class="justify-center mud-text-align-center">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="SaveAsync" ButtonType="ButtonType.Submit">更新角色权限</MudButton>
+                        </div>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="_searchString" Immediate="true" FullWidth=false Placeholder="搜索权限" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh><MudTableSortLabel SortBy="new Func<RoleClaimModel, object>(x => x.Type)">权限类型</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<RoleClaimModel, object>(x => x.Value)">权限名称</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<RoleClaimModel, object>(x => x.Description)">详细描述</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<RoleClaimModel, object>(x => x.Selected)">状态</MudTableSortLabel></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="权限类型">@context.Type</MudTd>
+                        <MudTd DataLabel="权限名称">
+                            <MudHighlighter Text="@context.Value" HighlightedText="@_searchString" />
+                        </MudTd>
+                        <MudTd DataLabel="权限描述">
+                            <MudHighlighter Text="@context.Description" HighlightedText="@_searchString" />
+                        </MudTd>
+                        <MudTd DataLabel="状态"><MudCheckBox @bind-Checked="@context.Selected"  Color="Color.Secondary" /></MudTd>
+                    </RowTemplate>
+                    <RowEditingTemplate>
+                        <MudTd DataLabel="权限类型">@context.Type</MudTd>
+                        <MudTd DataLabel="权限名称">@context.Value</MudTd>
+                        <MudTd DataLabel="权限描述">
+                                <MudTextField @bind-Value="@context.Description" Margin="Margin.Dense" Disabled="@(!context.Selected)" HelperText="@($"{(context.Selected ? "在这里您可以对当前角色的此权限发表评论" : "只有在选择权限时才会被保存")}")" />
+                            @*@if (_canEditRolePermissions)
+                            {
+                               
+                            }
+                            else
+                            {
+                                @context.Description
+                            }*@
+                        </MudTd>
+                        <MudTd DataLabel="状态"><MudCheckBox @bind-Checked="@context.Selected"  Color="Color.Secondary" /></MudTd>
+                    </RowEditingTemplate>
+                    <FooterContent>
+                        <MudSwitch @bind-Checked="@_dense" Color="Color.Secondary" Style="margin-left: 5px;">紧密</MudSwitch>
+                        <MudSwitch @bind-Checked="@_striped" Color="Color.Tertiary" Style="margin-left: 5px;">条纹</MudSwitch>
+                        <MudSwitch @bind-Checked="@_bordered" Color="Color.Warning" Style="margin-left: 5px;">边框</MudSwitch>
+                    </FooterContent>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+                </ChildContent>
+            </MudTabPanel>
+        }
+    </MudTabs>
+}

@@ -45,7 +45,10 @@ namespace Weitedianlan.Model.Entity
         public DateTime? EndTime { get; set; }
 
         /// <summary>
-        /// 活动状态
+        /// 未开始 NotStarted,
+        /// 进行中 InProgress,
+        /// 已结束 Ended,
+        /// 启用或者禁用 Active
         /// </summary>
         public ActivityStatus Status { get; set; }
 

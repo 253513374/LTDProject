@@ -1,5 +1,8 @@
 ﻿@page "/identity/users"
 
+@attribute [Authorize(Policy = Permissions.Users.View)]
+
+
 <MudPageTitle Title="账户" Description="账户管理"></MudPageTitle>
 @if (WtdlUsers is null)
 {
@@ -61,7 +64,7 @@ else
             </MudTd>
             <MudTd DataLabel="Actions" Style="text-align: right;width: 120px;">
                 
-                <MudMenu  Label="动作" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary" Direction="Direction.Left" OffsetX="true">
+                <MudMenu  Label="动作" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary" TransformOrigin="Origin.TopLeft" >
                     <MudMenuItem OnClick="(()=>ManageRoles(context.Id, context.Email))">角色管理</MudMenuItem>
                     
                     <MudMenuItem OnClick="(()=>ViewProfile(context.Id))">编辑资料</MudMenuItem>

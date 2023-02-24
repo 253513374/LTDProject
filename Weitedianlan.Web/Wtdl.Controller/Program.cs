@@ -100,8 +100,8 @@ var connectionString = builder.Configuration.GetConnectionString("LotteryDbConne
 builder.Services.AddLotteryDbContext(connectionString);
 
 builder.Services.AddScoped<LotteryService>();//注入抽奖服务
-builder.Services.AddScoped<SearchByCodeService>();//注入抽奖服务
-builder.Services.AddScoped<ScanByRedPacketService>();
+builder.Services.AddScoped<SearchByCodeService>();//注入防伪溯源服务
+builder.Services.AddScoped<ScanByRedPacketService>();//注入红包服务
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 var app = builder.Build();
@@ -131,15 +131,13 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-else
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        //c.SwaggerEndpoint("/swagger/v1/swagger.json", "微信H5后台API");
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "抽奖系统 API 接口");
-    });
-}
+    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "微信H5后台API");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "抽奖系统 API 接口");
+});
 
 // 配置 Redis 中间件
 

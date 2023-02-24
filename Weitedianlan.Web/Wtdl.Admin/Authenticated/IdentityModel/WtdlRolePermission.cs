@@ -7,27 +7,27 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         /// <summary>
         /// 权限描述
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// 权限分组名称
         /// </summary>
-        public string Group { get; set; }
+        public string? Group { get; set; }
 
         /// <summary>
         /// 权限创建人
         /// </summary>
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         /// <summary>
         /// 权限创建时间
         /// </summary>
-        public DateTime CreatedOn { get; set; }
+        public DateTime? CreatedOn { get; set; }
 
         /// <summary>
         /// 权限最后修改人
         /// </summary>
-        public string LastModifiedBy { get; set; }
+        public string? LastModifiedBy { get; set; }
 
         /// <summary>
         /// 权限最后修改时间

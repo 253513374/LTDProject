@@ -12,6 +12,8 @@ namespace Wtdl.Admin.Authenticated
     public class AccountService
     {
         private readonly UserManager<WtdlUser> userManager;
+        // private readonly RoleCl
+
         private readonly RoleManager<WtdlRole> roleManager;
         private readonly SignInManager<WtdlUser> signInManager;
 
@@ -163,10 +165,23 @@ namespace Wtdl.Admin.Authenticated
         /// 返回角色所属权限
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Claim>> GetRolePermissionAsync(WtdlRole role)
+        public async Task<BaseResponse<IList<Claim>>> GetRolePermissionAsync(string roleid)
         {
+            ///根据角色ID 返回角色信息
+            var role = await roleManager.FindByIdAsync(roleid);
             var roles = await roleManager.GetClaimsAsync(role);
-            return roles.ToList();
+
+            RolePermission rolePermission = new RolePermission();
+
+            rolePermission.RoleId = role.Id;
+            rolePermission.RoleName = role.Name;
+
+            foreach (var item in roles)
+            {
+                rolePermission.RoleClaims.Add(new RoleClaimModel() { });
+            }
+
+            return BaseResponse<IList<Claim>>.Success(roles);
         }
 
         /// <summary>
@@ -356,6 +371,11 @@ namespace Wtdl.Admin.Authenticated
             user.IsActive = active;
             ///更新用户
             return await userManager.UpdateAsync(user);
+        }
+
+        public async Task<IdentityResult> UpdateRolePermission(RolePermission model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

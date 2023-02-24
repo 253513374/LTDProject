@@ -2,6 +2,8 @@
 @using Wtdl.Admin.Pages.Authentication.ViewModel
 
 
+@attribute [Authorize(Policy = Permissions.Roles.View)]
+
 <style>
     .mud-table-container {
         overflow: auto;
@@ -41,7 +43,7 @@ else
             </MudTd>
             <MudTd DataLabel="Actions" Style="text-align: right">
             
-                    <MudMenu Label="动作" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary" Direction="Direction.Left" OffsetX="true">
+                    <MudMenu Label="动作" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary" TransformOrigin="Origin.TopLeft" >
                         <MudMenuItem @onclick="@(() => ManagePermissions(@context.Id))">管理权限</MudMenuItem>
                         <MudMenuItem @onclick="@(() => InvokeModal(@context,AtionType.Update))">编辑</MudMenuItem>
                         <MudMenuItem @onclick="@(() => Delete(@context))">删除</MudMenuItem>
@@ -111,13 +113,13 @@ else
         parameters.Add(nameof(RoleModal.ationtype), ationType);
         switch (ationType)
         {
-           
-                case AtionType.Update:
-                   // var  _role = WtdlRoles.FirstOrDefault(c => c.Id == id);
+
+            case AtionType.Update:
+                // var  _role = WtdlRoles.FirstOrDefault(c => c.Id == id);
                 if (role != null)
-                    {
-                        parameters.Add(nameof(RoleModal.aoleModel), role);
-                    }
+                {
+                    parameters.Add(nameof(RoleModal.aoleModel), role);
+                }
                 break;
         }
 
@@ -127,7 +129,7 @@ else
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-           // var add result.Data as WtdlRole;
+            // var add result.Data as WtdlRole;
             await GetRolesAsync();
 
         }
@@ -147,9 +149,12 @@ else
         return false;
     }
 
-    private Task ManagePermissions(string contextId)
+    private Task ManagePermissions(string roleId)
     {
-        throw new NotImplementedException();
+        _navigationManager.NavigateTo($"/identity/role-permissions/{roleId}");
+
+        return Task.CompletedTask;
+        // throw new NotImplementedException();
     }
 
 

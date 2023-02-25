@@ -19,4 +19,8 @@
     <PackageReference Include="Quartz" Version="3.6.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entity\Authenticated\" />
+  </ItemGroup>
+
 </Project>

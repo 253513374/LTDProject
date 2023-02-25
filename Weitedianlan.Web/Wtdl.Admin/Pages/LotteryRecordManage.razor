@@ -1,6 +1,6 @@
 ﻿@page "/lotteryrecordmanage"
 
-
+@attribute [Authorize(Policy = Permissions.Lotterys.LotteryRecrodView)]
 @inject LotteryRecordRepository _LotteryRecordRepository
 
 

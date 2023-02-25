@@ -1,7 +1,7 @@
 ﻿@page "/receiveredpackmanage"
 
 
-
+@attribute [Authorize(Policy = Permissions.RedPackets.RedPacketGiveOutView)]
 @inject RedPacketRecordRepository _PacketRecordRepository
 
 

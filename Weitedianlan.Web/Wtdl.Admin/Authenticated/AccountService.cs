@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using System.Security.Claims;
 using Wtdl.Admin.Authenticated.IdentityModel;
+using Wtdl.Admin.Authenticated.Services;
 using Wtdl.Admin.Pages.Authentication;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
 
@@ -17,14 +18,18 @@ namespace Wtdl.Admin.Authenticated
         private readonly RoleManager<WtdlRole> roleManager;
         private readonly SignInManager<WtdlUser> signInManager;
 
+        private readonly RoleClaimService roleClaimService;
+
         // private readonly CustomAuthenticationStateProvider authentication;
         private readonly IDbContextFactory<CustomIdentityDbContext> dbContextFactory;
 
         public AccountService(UserManager<WtdlUser> _userManager,
             RoleManager<WtdlRole> _roleManager,
             SignInManager<WtdlUser> _signInManager,
-        IDbContextFactory<CustomIdentityDbContext> _dbContextFactory)
+        IDbContextFactory<CustomIdentityDbContext> _dbContextFactory,
+        RoleClaimService claimService)
         {
+            roleClaimService = claimService;
             userManager = _userManager;
             roleManager = _roleManager;
             dbContextFactory = _dbContextFactory;
@@ -220,6 +225,16 @@ namespace Wtdl.Admin.Authenticated
 
                     //用户添加角色
                     await userManager.AddToRoleAsync(createuser, BaseRole.Aministrator);
+
+                    List<RoleClaimModel> roleClaims = new();
+                    roleClaims.GetAllPermissions();
+
+                    var addrole = await roleManager.FindByNameAsync(BaseRole.Aministrator);
+                    foreach (var item in roleClaims)
+                    {
+                        await roleManager.AddPermissionClaim(addrole, item.Value);
+                    }
+                    //  await roleManager.AddClaimAsync();
                 }
             }
             catch (Exception e)

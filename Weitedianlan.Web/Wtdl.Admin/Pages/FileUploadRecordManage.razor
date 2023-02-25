@@ -3,6 +3,7 @@
 @using System.Diagnostics
 @using Weitedianlan.Model.Enum
 
+@attribute [Authorize(Policy = Permissions.TxtImports.TxtImportView)]
 
 @inject IWebHostEnvironment _env
 

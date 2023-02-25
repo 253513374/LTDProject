@@ -2,6 +2,9 @@
 @page "/outgoingordersmanage"
 @using Wtdl.Repository.Data
 
+
+@attribute [Authorize(Policy = Permissions.ScanOuts.ScanOutView)]
+
 @inject WLabelStorageRepository _labelStorageRepository
 @inject IDialogService DialogService
 

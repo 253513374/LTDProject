@@ -35,7 +35,7 @@ namespace Wtdl.Repository
             modelBuilder.ApplyConfiguration(new ActivityPrizeConfig());
 
             modelBuilder.ApplyConfiguration(new OutAnalysisConfig());
-            // modelBuilder.ApplyConfiguration(new UserConfig());
+            modelBuilder.ApplyConfiguration(new UserConfig());
             //modelBuilder.Entity<W_LabelStorage>()
             //    .HasOne(p => p.Agent)
             //    .WithMany(b => b.WLabelStorage)

@@ -7,54 +7,65 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudForm Model="_tokenModel" @ref="@mudForm" Validation="@(_fluentValidationValidator.ValidateValue)" ValidationDelay="0">
+@if (showLoginView)
+{
+    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mt-16 pt-16"> 
+        <MudText Typo="Typo.h2">没有访问权限</MudText>
+        <MudText Typo="Typo.button">请联系管理员分配权限</MudText>
+    </MudStack>
+}
+else
+{
+    <MudForm Model="_tokenModel" @ref="@mudForm" Validation="@(_fluentValidationValidator.ValidateValue)" ValidationDelay="0">
 
-    <MudGrid >
+        <MudGrid>
 
-        <MudItem xs="12">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceAround">
-                <MudImage Src="/images/homelog.png" Width="120"></MudImage>
-                <MudText Typo="Typo.h5"> SCAN SYSTEM LOGIN</MudText>
-            </MudStack>
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"
+            <MudItem xs="12">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceAround">
+                    <MudImage Src="/images/homelog.png" Width="120"></MudImage>
+                    <MudText Typo="Typo.h5"> SCAN SYSTEM LOGIN</MudText>
+                </MudStack>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField T="string" Label="E-mail" Variant="Variant.Outlined"
                           @bind-Value="_tokenModel.UserName" For="@(()=>_tokenModel.UserName)" />
-        </MudItem>
-        <MudItem xs="12">
-            <MudTextField Label="Password" Variant="Variant.Outlined"
-                          @bind-Value="_tokenModel.Password"For="@(()=>_tokenModel.Password)"
-                          InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility"/>
-        </MudItem>
-        <MudItem xs="12" Class="d-flex justify-space-between align-center">
-            <MudCheckBox @bind-Checked="@_tokenModel.RememberMe" T="bool" Label="记住账户" Color="Color.Primary" Class="ml-n1"/>
-        </MudItem>
-        <MudItem xs="12" Class="d-flex justify-center">
-            <MudButton OnClick="@SignInAsync" Variant="Variant.Filled" Disabled="false" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">
-                @if (processing)
-                {
-                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
-                    <MudText Class="ms-2">loging...</MudText>
-                }
-                else
-                {
-                    <MudText>Sign In</MudText>
-                }
-            </MudButton>
-        </MudItem>
-        
-        <MudItem xs="12" Class="mb-0 mt-3 pb-0" >
-            <MudStack Row="false" Spacing="0" Justify="Justify.FlexStart">
-                <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption"> © 2023 hwpt.top aliyun.com </MudText>
-                <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">琼ICP备2020003165号 公安备案: 46010502000375号</MudText>
-            </MudStack>
-           
-        </MudItem>
-  
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Password" Variant="Variant.Outlined"
+                          @bind-Value="_tokenModel.Password" For="@(()=>_tokenModel.Password)"
+                          InputType="@_passwordInput" Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-space-between align-center">
+                <MudCheckBox @bind-Checked="@_tokenModel.RememberMe" T="bool" Label="记住账户" Color="Color.Primary" Class="ml-n1" />
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-center">
+                <MudButton OnClick="@SignInAsync" Variant="Variant.Filled" Disabled="false" Color="Color.Primary" Size="Size.Large" Style="width: 100%;">
+                    @if (processing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">loging...</MudText>
+                    }
+                    else
+                    {
+                        <MudText>Sign In</MudText>
+                    }
+                </MudButton>
+            </MudItem>
 
-</MudGrid>
+            <MudItem xs="12" Class="mb-0 mt-3 pb-0">
+                <MudStack Row="false" Spacing="0" Justify="Justify.FlexStart">
+                    <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption"> © 2023 hwpt.top aliyun.com </MudText>
+                    <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">琼ICP备2020003165号 公安备案: 46010502000375号</MudText>
+                </MudStack>
 
-</MudForm>
+            </MudItem>
+
+
+        </MudGrid>
+
+    </MudForm>
+
+}
 
 
 @code
@@ -66,13 +77,33 @@
 
     private FluentValidationValidator _fluentValidationValidator = new FluentValidationValidator();
 
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState{ set; get; }
     //  private bool Validated => _fluentValidationValidator.Validate(options => { options.IncludeAllRuleSets(); });
     private LoginModel _tokenModel = new();
 
     private MudForm mudForm;
-    
+
     private bool processing = false;
-    
+
+
+    private bool showLoginView = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        showLoginView = false;
+        var state = authenticationState.Result.User.Identity;
+        if(state is not null)
+        {
+            showLoginView = state.IsAuthenticated;
+            
+        }
+      //  var claim = Service.CurrentUser;
+        return base.OnInitializedAsync();
+    }
+
+
     private async Task SignInAsync()
     {
         await mudForm.Validate();

@@ -2,6 +2,8 @@
 @page "/scanbyredpacketmanage"
 
 
+@attribute [Authorize(Policy = Permissions.RedPackets.RedPacketConfigView)]
+
 @inject ScanRedPacketRepository _redPacketRepository
 @inject ISnackbar Snackbar
 

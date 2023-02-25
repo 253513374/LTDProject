@@ -11,9 +11,9 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         [Description("红包管理权限")]
         public static class RedPackets
         {
-            public const string View = "Permissions.RedPacket.View";
-            public const string Create = "Permissions.RedPacket.Create";
-            public const string Edit = "Permissions.RedPacket.Edit";
+            public const string RedPacketRecrodView = "Permissions.RedPacket.RedPacketRecrodView";
+            public const string RedPacketConfigView = "Permissions.RedPacket.RedPacketConfigView";
+            public const string RedPacketGiveOutView = "Permissions.RedPacket.RedPacketGiveOutView";
             //public const string Delete = "Permissions.RedPacket.Delete";
             //public const string Export = "Permissions.RedPacket.Export";
             //public const string Search = "Permissions.RedPacket.Search";
@@ -23,9 +23,9 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         [Description("扫码出库权限")]
         public static class ScanOuts
         {
-            public const string View = "Permissions.ScanOutView.View";
-            public const string Create = "Permissions.ScanOutView.Create";
-            public const string Edit = "Permissions.ScanOutView.Edit";
+            public const string ScanOutView = "Permissions.ScanOutView.ScanOutView";
+            //public const string Create = "Permissions.ScanOutView.Create";
+            //public const string Edit = "Permissions.ScanOutView.Edit";
             //public const string Delete = "Permissions.RedPacket.Delete";
             //public const string Export = "Permissions.RedPacket.Export";
             //public const string Search = "Permissions.RedPacket.Search";
@@ -35,10 +35,10 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         [Description("抽奖权限")]
         public static class Lotterys
         {
-            public const string View = "Permissions.Lotterys.View";
-            public const string Create = "Permissions.Lotterys.Create";
-            public const string Edit = "Permissions.Lotterys.Edit";
-            public const string Delete = "Permissions.Lotterys.Delete";
+            public const string LotteryRecrodView = "Permissions.Lotterys.LotteryRecrodView";
+            public const string LotteryActivityView = "Permissions.Lotterys.LotteryActivityView";
+            public const string LotteryPrizeView = "Permissions.Lotterys.LotteryPrizeView";
+
             //public const string Export = "Permissions.Lotterys.Export";
             //public const string Search = "Permissions.Lotterys.Search";
             //public const string Import = "Permissions.Lotterys.Import";
@@ -48,7 +48,7 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         [Description("txt文本数据导入")]
         public static class TxtImports
         {
-            public const string View = "Permissions.TxtImports.View";
+            public const string TxtImportView = "Permissions.TxtImports.TxtImport";
             //public const string Create = "Permissions.Documents.Create";
             //public const string Edit = "Permissions.Documents.Edit";
             //public const string Delete = "Permissions.Documents.Delete";
@@ -123,8 +123,8 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         public static class RoleClaims
         {
             public const string View = "Permissions.RoleClaims.View";
-            public const string Create = "Permissions.RoleClaims.Create";
-            public const string Edit = "Permissions.RoleClaims.Edit";
+            //public const string Create = "Permissions.RoleClaims.Create";
+            //public const string Edit = "Permissions.RoleClaims.Edit";
             //public const string Delete = "Permissions.RoleClaims.Delete";
             //public const string Search = "Permissions.RoleClaims.Search";
         }
@@ -146,7 +146,7 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
         //}
 
         [DisplayName("Dashboards")]
-        [Description("Dashboards Permissions")]
+        [Description("数据显示面板")]
         public static class Dashboards
         {
             public const string View = "Permissions.Dashboards.View";

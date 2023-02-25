@@ -1,5 +1,8 @@
 ﻿@page "/activitymanage"
 
+@attribute [Authorize(Policy = Permissions.Lotterys.LotteryActivityView)]
+
+
 @inject IDialogService DialogService
 @inject LotteryActivityRepository LotteryActivityRepository
 @inject AgentRepository _agentRepository
@@ -10,6 +13,14 @@
 @*活动管理页面*@
 
 <MudPageTitle Title="活动管理" Description="活动状态管理，只能有一个活动生效"></MudPageTitle>
+
+@if (Activities is null)
+{
+
+    <MudSkeletonComponent></MudSkeletonComponent>
+}
+else
+{
 
 <MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
 
@@ -102,7 +113,7 @@
 
     </MudTable>
 </MudPaper>
-
+}
 
 
 

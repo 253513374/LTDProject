@@ -32,6 +32,6 @@ namespace Weitedianlan.SqlServer.Service
         public string AgentID { get; set; }
         public int Flag { get; set; }
 
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
     }
 }

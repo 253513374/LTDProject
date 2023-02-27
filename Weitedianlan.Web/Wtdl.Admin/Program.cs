@@ -6,6 +6,7 @@ using MudBlazor.Services;
 using Serilog;
 using Serilog.Formatting.Json;
 using System.Reflection;
+using System.Text;
 using Wtdl.Admin.Data;
 using Wtdl.Repository;
 using MediatR;
@@ -20,11 +21,15 @@ using Wtdl.Admin.Authenticated.IdentityModel;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Radzen;
 using Wtdl.Admin.Authenticated.Services;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.IdentityModel.Tokens;
+using Wtdl.Admin.SignalRHub;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -79,11 +84,19 @@ try
     builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
     //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 
-    builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
     // Add services to the container.
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
+    builder.Services.AddControllers();
+    builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<WeatherForecastService>();
+    builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+    builder.Services.AddSignalR();
+    builder.Services.AddResponseCompression(opts =>
+    {
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+            new[] { "application/octet-stream" });
+    });
 
     builder.Services.AddScoped<Radzen.DialogService>();
     builder.Services.AddScoped<NotificationService>();
@@ -110,14 +123,29 @@ try
     builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
     // builder.Services.AddHttpContextAccessor();
     //builder.Services.AddAuthorizationCore();
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        // options.RequireAuthenticatedSignIn = false; // 设置为 false
-        // options.DefaultScheme = "Cookies";
-    });
+    //builder.Services.AddAuthentication(options =>
+    //{
+    //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    //});
+    // 添加身份验证和授权服务
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
+                ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)),
+            };
+        });
 
     builder.Services.AddAuthorization(options =>
     {
@@ -127,24 +155,9 @@ try
         //    policy.RequireRole("admin"));
     });
 
-    //    .AddCookie(options =>
-    //{
-    //    options.LoginPath = "/login";
-    //    options.LogoutPath = "/logout";
-    //    options.AccessDeniedPath = "/accessdenied";
-    //    options.SlidingExpiration = true;
-    //});
-
-    //builder.Services.AddAuthorization(options =>
-    //{
-    //    options.DefaultPolicy = new AuthorizationPolicyBuilder()
-    //        .RequireAuthenticatedUser()
-    //        .Build();
-    //});
-    //builder.Services.AddSingleton<IWebHostEnvironment, we>();
-
     var app = builder.Build();
 
+    app.UseResponseCompression();
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
@@ -154,16 +167,17 @@ try
     }
 
     app.UseHttpsRedirection();
-
     app.UseStaticFiles();
-
     app.UseRouting();
-
     app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapBlazorHub();
+    app.MapControllers();
+    app.MapHub<APPHub>("/apphub");
     app.MapFallbackToPage("/_Host");
+
+    //  endpoints.MapHub<AuthHub>("/authhub");
 
     app.Run();
 }

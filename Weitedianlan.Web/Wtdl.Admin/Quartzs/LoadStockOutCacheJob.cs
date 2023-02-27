@@ -2,7 +2,7 @@
 using StackExchange.Redis;
 using Wtdl.Repository;
 
-namespace Wtdl.Admin.BackgroundTask
+namespace Wtdl.Admin.Quartzs
 {
     [DisallowConcurrentExecution]
     public class LoadStockOutCacheJob : IJob

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Authenticated.Services;
 using Wtdl.Admin.Pages.Authentication;
@@ -23,12 +26,19 @@ namespace Wtdl.Admin.Authenticated
         // private readonly CustomAuthenticationStateProvider authentication;
         private readonly IDbContextFactory<CustomIdentityDbContext> dbContextFactory;
 
+        private readonly ILogger<AccountService> _logger;
+        private readonly IConfiguration _configuration;
+
         public AccountService(UserManager<WtdlUser> _userManager,
             RoleManager<WtdlRole> _roleManager,
             SignInManager<WtdlUser> _signInManager,
         IDbContextFactory<CustomIdentityDbContext> _dbContextFactory,
-        RoleClaimService claimService)
+        RoleClaimService claimService,
+            ILogger<AccountService> _logger,
+            IConfiguration configuration)
         {
+            _logger = _logger;
+            _configuration = configuration;
             roleClaimService = claimService;
             userManager = _userManager;
             roleManager = _roleManager;
@@ -197,50 +207,50 @@ namespace Wtdl.Admin.Authenticated
         public async Task<SignInWResult> LoginUserAsync(LoginModel model)
         {
 #if DEBUG
-            try
-            {
-                //生成默认账号与默认角色
-                var defuluser = await userManager.FindByEmailAsync("admin@wt.com");
-                if (defuluser is null)
-                {
-                    var createuser = Activator.CreateInstance<WtdlUser>();
-                    createuser.UserName = "admin";
-                    createuser.Email = "admin@wt.com";
-                    createuser.CreatedOn = DateTime.Now;
-                    createuser.CreatedBy = "t";
-                    createuser.IsActive = true;
+            //try
+            //{
+            //    //生成默认账号与默认角色
+            //    var defuluser = await userManager.FindByEmailAsync("admin@wt.com");
+            //    if (defuluser is null)
+            //    {
+            //        var createuser = Activator.CreateInstance<WtdlUser>();
+            //        createuser.UserName = "admin";
+            //        createuser.Email = "admin@wt.com";
+            //        createuser.CreatedOn = DateTime.Now;
+            //        createuser.CreatedBy = "t";
+            //        createuser.IsActive = true;
 
-                    await userManager.CreateAsync(createuser);
-                    //设置默认密码
-                    await userManager.AddPasswordAsync(createuser, "88888888");
+            //        await userManager.CreateAsync(createuser);
+            //        //设置默认密码
+            //        await userManager.AddPasswordAsync(createuser, "88888888");
 
-                    var createrole = Activator.CreateInstance<WtdlRole>();
-                    {
-                        createrole.Name = BaseRole.Aministrator;
-                        createrole.Description = "超级管理员角色，拥有系统最高权限，不可删除";
-                        createrole.CreatedOn = DateTime.Now;
-                        createrole.CreatedBy = "t";
-                    };
-                    await roleManager.CreateAsync(createrole);
+            //        var createrole = Activator.CreateInstance<WtdlRole>();
+            //        {
+            //            createrole.Name = BaseRole.Aministrator;
+            //            createrole.Description = "超级管理员角色，拥有系统最高权限，不可删除";
+            //            createrole.CreatedOn = DateTime.Now;
+            //            createrole.CreatedBy = "t";
+            //        };
+            //        await roleManager.CreateAsync(createrole);
 
-                    //用户添加角色
-                    await userManager.AddToRoleAsync(createuser, BaseRole.Aministrator);
+            //        //用户添加角色
+            //        await userManager.AddToRoleAsync(createuser, BaseRole.Aministrator);
 
-                    List<RoleClaimModel> roleClaims = new();
-                    roleClaims.GetAllPermissions();
+            //        List<RoleClaimModel> roleClaims = new();
+            //        roleClaims.GetAllPermissions();
 
-                    var addrole = await roleManager.FindByNameAsync(BaseRole.Aministrator);
-                    foreach (var item in roleClaims)
-                    {
-                        await roleManager.AddPermissionClaim(addrole, item.Value);
-                    }
-                    //  await roleManager.AddClaimAsync();
-                }
-            }
-            catch (Exception e)
-            {
-                return SignInWResult.Failure(e.Message);
-            }
+            //        var addrole = await roleManager.FindByNameAsync(BaseRole.Aministrator);
+            //        foreach (var item in roleClaims)
+            //        {
+            //            await roleManager.AddPermissionClaim(addrole, item.Value);
+            //        }
+            //        //  await roleManager.AddClaimAsync();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    return SignInWResult.Failure(e.Message);
+            //}
 
 #endif
 
@@ -269,7 +279,7 @@ namespace Wtdl.Admin.Authenticated
 
             //   await authentication.UpdateAuthenticationStateAsync(user, roleclaims.ToList());
 
-            return SignInWResult.Success(roleclaims.ToList());
+            return SignInWResult.Success(roleclaims.ToList(), user.Id);
         }
 
         private async Task<IEnumerable<Claim>> GetClaimsAsync(WtdlUser user)
@@ -312,6 +322,30 @@ namespace Wtdl.Admin.Authenticated
             return claims;
         }
 
+        public string GenerateJwtToken(List<Claim> claims)
+        {
+            var jwtclaims = new[]
+            {
+                // new Claim(ClaimTypes.)
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString())
+            };
+
+            claims = claims.Union(jwtclaims).ToList();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(2),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
         /// <summary>
         /// 删除角色
         /// </summary>
@@ -319,6 +353,7 @@ namespace Wtdl.Admin.Authenticated
         /// <exception cref="NotImplementedException"></exception>
         public async Task<bool> DeleteRoleAsync(WtdlRole role)
         {
+            //object roleManager = null;
             var result = await roleManager.DeleteAsync(role);
 
             return result.Succeeded;

@@ -138,13 +138,13 @@ namespace Wtdl.Repository
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public async Task<LotteryActivity> GetLotteryActivityAsync(Expression<Func<LotteryActivity, bool>> expression)
+        public async Task<LotteryActivity> GetLotteryActivityAsync()
         {
             using var context = _contextFactory.CreateDbContext();
             return await context.LotteryActivities.AsNoTracking()
-                .Where(expression)
+                .Where(w => w.IsActive)
                 .Include(c => c.Prizes)
-                .OrderByDescending(o => o.CreateTime)
+                .OrderByDescending(o => o.Id)
                 .FirstOrDefaultAsync();
         }
 

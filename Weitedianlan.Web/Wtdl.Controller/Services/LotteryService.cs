@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Senparc.Weixin.TenPay.V2;
 using StackExchange.Redis;
 using Weitedianlan.Model.Entity;
@@ -23,14 +24,18 @@ namespace Wtdl.Mvc.Services
         private readonly IDatabase _database;
         private readonly ILogger<LotteryService> _logger;
 
+        private readonly IMemoryCache _memoryCache;
+
         public LotteryService(LotteryActivityRepository lotteryActivityRepository,
             LotteryRecordRepository recordRepository,
             VerificationCodeRepository verificationCodeRepository,
             ActivityPrizeRepository repository,
             //IDistributedCache distributedCache,
             IConnectionMultiplexer connectionMultiplexer,
-        ILogger<LotteryService> logger)
+        ILogger<LotteryService> logger,
+            IMemoryCache cache)
         {
+            _memoryCache = cache;
             //  _distributedCache = distributedCache;
             _database = connectionMultiplexer.GetDatabase();
             _activityPrizeRepository = repository;
@@ -49,7 +54,27 @@ namespace Wtdl.Mvc.Services
         {
             try
             {
-                var result = await _lotteryActivityRepository.GetLotteryActivityAsync(a => a.IsActive == true);
+                //LotteryActivity result;
+                //if (!_memoryCache.TryGetValue("LotteryActivity", out result))
+                //{
+                //    // 如果缓存中没有数据，则从数据库或其他数据源获取数据并存入缓存中
+                //    result = await _lotteryActivityRepository.GetLotteryActivityAsync();
+
+                //    var cacheOptions = new MemoryCacheEntryOptions
+                //    {
+                //        AbsoluteExpiration = DateTimeOffset.MaxValue,
+                //        // AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddYears(1).Year, 1, 1, 0, 0, 0, TimeSpan.Zero)
+                //    };
+                //    _memoryCache.Set("LotteryActivity", result, cacheOptions);
+                //}
+                ////获取缓存活信息
+                //var cache = await _memoryCache.GetOrCreateAsync("LotteryActivity", async entry =>
+                //{
+                //    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                //    return await GetLotteryActivityAsync();
+                //});
+
+                var result = await _lotteryActivityRepository.GetLotteryActivityAsync();
 
                 if (result is not null)
                 {
@@ -95,26 +120,11 @@ namespace Wtdl.Mvc.Services
         /// <summary>
         /// 随机抽取一个奖品
         /// </summary>
-        /// <param name="openid"></param>
-        /// <param name="qrcode"></param>
-        /// <returns></returns>
-        //private async Task<PrizeResult> LuckyPrize(string openid, string qrcode)
-        //{
-        //    ; ;
-
-        //    //  var selectPrize = GetRandomPrize(activity);
-
-        //    return new PrizeResult();
-        //}
-
-        /// <summary>
-        /// 随机抽取一个奖品
-        /// </summary>
         /// <param name="activity"></param>
         /// <returns></returns>
         private async Task<ActivityPrize> GetLuckyPrize(string prizenumber)
         {
-            var activity = await _lotteryActivityRepository.GetLotteryActivityAsync(a => a.IsActive == true);
+            var activity = await _lotteryActivityRepository.GetLotteryActivityAsync();
 
             var prize = activity.Prizes.FirstOrDefault(f => f.PrizeNumber.Contains(prizenumber));
 

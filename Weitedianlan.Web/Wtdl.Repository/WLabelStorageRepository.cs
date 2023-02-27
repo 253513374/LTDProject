@@ -351,5 +351,21 @@ namespace Wtdl.Repository
                 return groupedData;
             }
         }
+
+        /// <summary>
+        /// 返回当天时间的数据量
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public int GetCount()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
+                    .Count();
+                return groupedData;
+            }
+        }
     }
 }

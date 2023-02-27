@@ -12,17 +12,15 @@ namespace Weitedianlan.WinUI
     {
         private WtdlSqlService WtdlSqlService { set; get; }
         private RequestOrder requestOrder { get; set; }
-        public ScanCodeReturnViewModel(RequestOrder requestOrder, WtdlSqlService WtdlSqlService)
+
+        public ScanCodeReturnViewModel(RequestOrder requestOrder)
         {
-            this.WtdlSqlService = WtdlSqlService;
+            this.WtdlSqlService = WtdlSqlService.TryGetSqlService();
             this.requestOrder = requestOrder;
         }
 
-
-
         public void SanCodeDeletecommand(AddtLabelx addtLabelx)
         {
-
         }
     }
 }

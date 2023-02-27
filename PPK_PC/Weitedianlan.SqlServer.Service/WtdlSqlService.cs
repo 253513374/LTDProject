@@ -1,7 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.SignalR.Client;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Remoting.Contexts;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,40 +20,53 @@ namespace Weitedianlan.SqlServer.Service
 {
     public class WtdlSqlService
     {
-        public static User _usernnfo = new User();
+        // public static User _usernnfo = new User();
         private WTDLEntityStrings DbEntities { set; get; }
 
-        public WtdlSqlService(WTDLEntityStrings wTDLEntities)
+        private readonly string HubUrl = ConfigurationManager.ConnectionStrings["HubUrl"].ConnectionString;
+        private readonly string LoginUrl = ConfigurationManager.ConnectionStrings["LoginUrl"].ConnectionString;
+
+        private HubConnection hubConnection;
+
+        private List<Claim> Claims = new List<Claim>();
+
+        public WtdlSqlService()
         {
-            DbEntities = wTDLEntities;
+            DbEntities = new WTDLEntityStrings();
         }
 
         public string GetAgentId(string agentname)
         {
-            var tAgentID = DbEntities.tAgents.AsNoTracking().Where(o => o.AName.Contains(agentname)).Select(s => s.AID).FirstOrDefault();
-            if (tAgentID != null)
+            using (var context = new WTDLEntityStrings())
             {
-                return tAgentID.ToString();
-            }
-            else
-            {
-                return "";
+                var tAgentID = context.tAgents.AsNoTracking().Where(o => o.AName.Contains(agentname)).Select(s => s.AID).FirstOrDefault();
+                if (tAgentID != null)
+                {
+                    return tAgentID.ToString();
+                }
+                else
+                {
+                    return "";
+                }
             }
         }
 
         public ResponseModel GetUser()
         {
-            var user = DbEntities.Users.AsNoTracking().ToList();
+            using (var context = new WTDLEntityStrings())
+            {
+                var user = context.Users.AsNoTracking().ToList();
 
-            ResponseModel responseModel = new ResponseModel();
+                ResponseModel responseModel = new ResponseModel();
 
-            responseModel.code = 200;
-            responseModel.result = "用户账户获取成功";
-            responseModel.data = new List<User>();
+                responseModel.code = 200;
+                responseModel.result = "用户账户获取成功";
+                responseModel.data = new List<User>();
 
-            responseModel.data = user;
+                responseModel.data = user;
 
-            return responseModel;
+                return responseModel;
+            }
         }
 
         /// <summary>
@@ -73,24 +94,27 @@ namespace Weitedianlan.SqlServer.Service
                 //if(re!=null)
                 //{
                 //    return AddtLabelsxModel(tlabelx, addtLabelx, 200, "重复发货");
-                //}
-
-                DbEntities.W_LabelStorages.Add(tlabelx);
-                int i = await DbEntities.SaveChangesAsync();
-                if (i > 0)
+                using (var context = new WTDLEntityStrings())
                 {
-                    var s = DbEntities.SetOrderStatusAsync(addtLabelx.QRCode);
-                    var ss = DbEntities.SetRedPacketAsync(addtLabelx.QRCode);
-                    return AddtLabelsxModel(tlabelx, addtLabelx, 200, "出库成功");
-                }
-                else
-                {
-                    return AddtLabelsxModel(tlabelx, addtLabelx, 400, "出库失败");
+                    context.W_LabelStorages.Add(tlabelx);
+                    int i = await context.SaveChangesAsync();
+                    if (i > 0)
+                    {
+                        // var s = context.SetOrderStatusAsync(addtLabelx.QRCode);
+                        //  var ss = context.SetRedPacketAsync(addtLabelx.QRCode);
+                        hubConnection = hubConnection.TryInitialize();
+                        await hubConnection.InvokeAsync("SendMessage", "我是账户", "我是密码a");
+                        return AddtLabelsxModel(tlabelx, addtLabelx, 200, "出库成功");
+                    }
+                    else
+                    {
+                        return AddtLabelsxModel(tlabelx, addtLabelx, 400, "出库失败");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                string strinfo = ex.InnerException.InnerException.Message;
+                string strinfo = ex.Message;
                 return AddtLabelsxModel(tlabelx, addtLabelx, 404, "系统错误", strinfo);
             }
         }
@@ -108,17 +132,35 @@ namespace Weitedianlan.SqlServer.Service
             return tLabelsxModel;
         }
 
-        public bool DeeletetLabelX(tLabelsxModel addtLabelx)
+        public async Task<DBResult<int>> DeeletetLabelX(tLabelsxModel addtLabelx)
         {
-            var w_LabelStorage = DbEntities.W_LabelStorages.Local.FirstOrDefault(x => x.QRCode.Contains(addtLabelx.QRCode));
-            if (w_LabelStorage != null)
+            try
             {
-                return DbEntities.W_LabelStorages.Local.Remove(addtLabelx.tLabels_X);
+                using (var context = new WTDLEntityStrings())
+                {
+                    var w_LabelStorage = await context.W_LabelStorages.FirstOrDefaultAsync(x => x.OutTime.Year == DateTime.Now.Year && x.OutTime.Month == DateTime.Now.Month && x.OutTime.Day == DateTime.Now.Day && x.QRCode.Contains(addtLabelx.QRCode));
+                    if (w_LabelStorage != null)
+                    {
+                        context.W_LabelStorages.Remove(w_LabelStorage);
+
+                        var delete = await context.SaveChangesAsync();
+
+                        if (delete > 0)
+                        {
+                            return DBResult<int>.Success(delete);
+                        }
+                    }
+                    else
+                    {
+                        return DBResult<int>.Fail("数据还没有出库");
+                    }
+                }
             }
-            else
+            catch (Exception e)
             {
-                return false;
+                return DBResult<int>.Fail($"出现异常：{e.Message}");
             }
+            return DBResult<int>.Fail($"失败");
         }
 
         /// <summary>
@@ -134,18 +176,12 @@ namespace Weitedianlan.SqlServer.Service
 
                     if (w_OrderTable == null)
                     {
-                        DbEntities.W_OrderTables.Add(orderTable);
-                        int ret = await DbEntities.SaveChangesAsync();
+                        using (var context = new WTDLEntityStrings())
+                        {
+                            context.W_OrderTables.Add(orderTable);
+                            int ret = await context.SaveChangesAsync();
+                        }
                     }
-
-                    //    if(ret>0)
-                    //    {
-                    //        return new ResponseModel { code = 200, result = "单号添加成功", data = orderTable };
-                    //    }
-                    //    else
-                    //    {
-                    //        return new ResponseModel { code = 400, result = "单号添加失败", data = orderTable };
-                    //    }
                 }
                 //else
                 //{
@@ -159,37 +195,41 @@ namespace Weitedianlan.SqlServer.Service
             //你的代码
         }
 
-        public List<W_OrderTable> FilterOrder()
-        {
-            return DbEntities.W_OrderTables.AsNoTracking().Where(w => w.FinishTime > DateTime.Now.AddDays(-7)).ToList();
-        }
+        //public List<W_OrderTable> FilterOrder()
+        //{
+        //    return DbEntities.W_OrderTables.AsNoTracking().Where(w => w.FinishTime > DateTime.Now.AddDays(-7)).ToList();
+        //}
 
         public ResponseModel AddAgent(AddAgent addAgent)
         {
-            var addAgentcode = DbEntities.tAgents.AsNoTracking().Where(o => o.AID.Trim() == addAgent.AID.Trim()).Select(s => s.AID).ToList();
-            if (addAgentcode.Count == 0)
+            using (var context = new WTDLEntityStrings())
             {
-                var agent = new tAgent()
+                var addAgentcode = context.tAgents.AsNoTracking().Where(o => o.AID.Trim() == addAgent.AID.Trim())
+                    .Select(s => s.AID).ToList();
+                if (addAgentcode.Count == 0)
                 {
-                    AID = addAgent.AID,
-                    AName = addAgent.AName,
-                    ABelong = addAgent.ABelong,
-                    AType = addAgent.AType
-                };
-                DbEntities.tAgents.Add(agent);
-                int i = DbEntities.SaveChanges();
-                if (i > 0)
-                {
-                    return new ResponseModel { code = 200, result = "进销商或客户添加成功", data = agent };
+                    var agent = new tAgent()
+                    {
+                        AID = addAgent.AID,
+                        AName = addAgent.AName,
+                        ABelong = addAgent.ABelong,
+                        AType = addAgent.AType
+                    };
+                    context.tAgents.Add(agent);
+                    int i = context.SaveChanges();
+                    if (i > 0)
+                    {
+                        return new ResponseModel { code = 200, result = "进销商或客户添加成功", data = agent };
+                    }
+                    else
+                    {
+                        return new ResponseModel { code = 400, result = "进销商或客户添加失败", data = agent };
+                    }
                 }
                 else
                 {
-                    return new ResponseModel { code = 400, result = "进销商或客户添加失败", data = agent };
+                    return new ResponseModel { code = 0, result = "已经存在" };
                 }
-            }
-            else
-            {
-                return new ResponseModel { code = 0, result = "已经存在" };
             }
         }
 
@@ -221,70 +261,111 @@ namespace Weitedianlan.SqlServer.Service
             }
         }
 
-        public bool DeeleteSendBackMode(SendBackMode sendBackMode)
-        {
-            //var tLabelxcode = DbEntities.W_LabelStorages.Local.Where(o => o.QRCode == sendBackMode.QrCode).FirstOrDefault();
-            //if(tLabelxcode!=null)
-            //{
-            //    return DbEntities.W_LabelStorages.Local.Remove(tLabelxcode);
-            //}
-            //else
-            //{
-            return false;
-            //}
-        }
+        //public bool DeeleteSendBackMode(SendBackMode sendBackMode)
+        //{
+        //    //var tLabelxcode = DbEntities.W_LabelStorages.Local.Where(o => o.QRCode == sendBackMode.QrCode).FirstOrDefault();
+        //    //if(tLabelxcode!=null)
+        //    //{
+        //    //    return DbEntities.W_LabelStorages.Local.Remove(tLabelxcode);
+        //    //}
+        //    //else
+        //    //{
+        //    return false;
+        //    //}
+        //}
 
         /// <summary>
         /// 获取tLabelX  出库单实际已经出库数量集合
         /// </summary>
         public ResponseModel GettLabelXList(string beingTime, string ordernumbel = "")
         {
-            // DateTime dateTime = DateTime.Now.AddDays(-30);
-            string Commandtext = "";
-            if (ordernumbel != "")
+            using (var context = new WTDLEntityStrings())
             {
-                Commandtext = string.Format(@"select OrderNumbels ,count(OrderNumbels) as OrderCount from W_LabelStorage where OutTime> '{0}' and OrderNumbels='{1}'  GROUP BY  OrderNumbels", beingTime, ordernumbel);
+                // DateTime dateTime = DateTime.Now.AddDays(-30);
+                string Commandtext = "";
+                if (ordernumbel != "")
+                {
+                    Commandtext =
+                        string.Format(
+                            @"select OrderNumbels ,count(OrderNumbels) as OrderCount from W_LabelStorage where OutTime> '{0}' and OrderNumbels='{1}'  GROUP BY  OrderNumbels",
+                            beingTime, ordernumbel);
+                }
+                else
+                {
+                    Commandtext =
+                        string.Format(
+                            @"select OrderNumbels ,count(OrderNumbels) as OrderCount from W_LabelStorage where OutTime> '{0}'  GROUP BY  OrderNumbels",
+                            beingTime);
+                }
+
+                var Ordercounts = context.Database.SqlQuery<tLabels_OrderCount>(Commandtext).ToList();
+
+                //  var banners = DbEntities.tLabels_X.Where(w=>w.OrderNumbels,w).ToList().OrderByDescending(c => c.fhDate1);
+                var response = new ResponseModel();
+                response.code = 200;
+                response.result = "Labels集合获取成功";
+                response.data = new List<tLabels_OrderCount>();
+
+                response.data = Ordercounts;
+
+                return response;
             }
-            else
-            {
-                Commandtext = string.Format(@"select OrderNumbels ,count(OrderNumbels) as OrderCount from W_LabelStorage where OutTime> '{0}'  GROUP BY  OrderNumbels", beingTime);
-            }
-
-            var Ordercounts = DbEntities.Database.SqlQuery<tLabels_OrderCount>(Commandtext).ToList();
-
-            //  var banners = DbEntities.tLabels_X.Where(w=>w.OrderNumbels,w).ToList().OrderByDescending(c => c.fhDate1);
-            var response = new ResponseModel();
-            response.code = 200;
-            response.result = "Labels集合获取成功";
-            response.data = new List<tLabels_OrderCount>();
-
-            response.data = Ordercounts;
-
-            return response;
         }
 
-        public User UserLoging(LoginData loginData)
+        /// <summary>
+        /// 用户登录系统
+        /// </summary>
+        /// <param name="loginData"></param>
+        /// <returns></returns>
+        public async Task<UserResult> UserLoging(LoginData loginData)
         {
-            //string.Format("select a.AType from tUser u join tAgent a on u.AgentID = a.AID  where UserID='{0}' and PWD='{1}'", loginData.Username, new DataEnCode().Encrypt(loginData.Password));
+            hubConnection = hubConnection.TryInitialize(loginData.Username, loginData.Password);
 
-            //var users = DbEntities.Users.ToArray();
-
-            var redb = DbEntities.Users.AsNoTracking().Where(w => w.UserID == loginData.Username).FirstOrDefault();
-
-            if (redb != null)
+            hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
             {
-                string enstr = new DataEnCode().Encrypt(loginData.Password);
-                //  string destr = new DataEnCode().Decrypt(redb.PWD);
-                if (redb.PWD.Trim() == enstr.Trim())
-                {
-                    return _usernnfo = redb;// loginData.Username;
-                }
-                return null;
-            }
-            else
+                //this.Dispatcher.Invoke(() =>
+                //{
+                //    var newMessage = $"{user}: {message}";
+                //    messagesList.Items.Add(newMessage);
+                //});
+            });
+
+            //await hubConnection.StartAsync();
+
+            try
             {
-                return null;
+                await hubConnection.StartAsync();
+
+                var usernnfo = hubConnection.TryGetUser(); //await hubConnection.InvokeAsync<User>("GetUserAsync");
+                                                           //messagesList.Items.Add("Connection started");
+                                                           // connectButton.IsEnabled = false;
+                                                           // sendButton.IsEnabled = true;
+
+                return UserResult.Success(usernnfo);
             }
+            catch (Exception ex)
+            {
+                return UserResult.Failed(ex.Message);
+                //Console.WriteLine(ex.Message);
+            }
+
+            //  return 1;
+            //var redb = DbEntities.Users.AsNoTracking().Where(w => w.UserID == loginData.Username).FirstOrDefault();
+
+            //if (redb != null)
+            //{
+            //    string enstr = new DataEnCode().Encrypt(loginData.Password);
+            //    //  string destr = new DataEnCode().Decrypt(redb.PWD);
+            //    if (redb.PWD.Trim() == enstr.Trim())
+            //    {
+            //        return _usernnfo = redb;// loginData.Username;
+            //    }
+            //    return null;
+            //}
+            //else
+            //{
+            //    return null;
+            //}
         }
 
         public ResponseModel GetOrdersFinish(string beingDatePickers)
@@ -307,6 +388,34 @@ namespace Weitedianlan.SqlServer.Service
             }
             return response;
             //  throw new NotImplementedException();
+        }
+    }
+
+    public class UserResult
+    {
+        public bool Successed { get; set; }
+
+        public string Message { get; set; } = string.Empty;
+
+        public User User { get; set; }
+
+        public static UserResult Success(User user)
+        {
+            return new UserResult
+            {
+                Successed = true,
+                User = user
+            };
+        }
+
+        //失败
+        public static UserResult Failed(string message)
+        {
+            return new UserResult
+            {
+                Successed = false,
+                Message = message
+            };
         }
     }
 }

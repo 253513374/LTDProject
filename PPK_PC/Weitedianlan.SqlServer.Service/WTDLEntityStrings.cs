@@ -29,11 +29,10 @@ namespace Weitedianlan.SqlServer.Service
         public WTDLEntityStrings()
             : base("name=WTDLModelString")
         {
-            if (_redis is null)
-            {
-                _redis = ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["RedisConnectionString"].ConnectionString);
-                // _redis.GetDatabase().Execute("BITFIELD", OrderStatus, "CREATE", "u32", "#10000000");
-            }
+            //if (_redis is null)
+            //{
+            //    _redis = ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["RedisConnectionString"].ConnectionString);
+            //}
         }
 
         public virtual DbSet<User> Users { get; set; }

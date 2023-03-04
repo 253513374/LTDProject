@@ -519,7 +519,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 25, 8, 17, 47, 94, DateTimeKind.Local).AddTicks(7538));
+                        .HasDefaultValue(new DateTime(2023, 3, 4, 13, 59, 50, 381, DateTimeKind.Local).AddTicks(9802));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -585,24 +585,29 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Adminaccount")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
 
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValue(new DateTime(2023, 3, 4, 13, 59, 50, 381, DateTimeKind.Local).AddTicks(6222));
 
                     b.Property<string>("Dealers")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
 
                     b.Property<string>("ExtensionName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("ExtensionOrder")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("OrderNumbels")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(28)
+                        .HasColumnType("nvarchar(28)");
 
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
@@ -611,16 +616,24 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OutType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("QRCode")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
 
                     b.HasKey("ID");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("ID"), false);
+
                     b.HasIndex("QRCode");
 
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QRCode"), false);
+
                     b.ToTable("W_LabelStorage", (string)null);
+
+                    SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.ActivityPrize", b =>

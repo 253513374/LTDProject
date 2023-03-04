@@ -16,6 +16,7 @@ using StackExchange.Redis;
 using Wtdl.Controller.Models.ResponseModel;
 using Wtdl.Repository.MediatRHandler.Events;
 using Microsoft.Extensions.Caching.Distributed;
+using Wtdl.Controller.Services;
 
 namespace Wtdl.Mvc.Services
 {
@@ -42,14 +43,18 @@ namespace Wtdl.Mvc.Services
         /// </summary>
         private readonly string _localIPAddress;
 
+        private HubService _hubService;
+
         public ScanByRedPacketService(RedPacketRecordRepository redPacketRecordRepository,
             VerificationCodeRepository verificationCodeRepository,
             ScanRedPacketRepository redPacketRepository,
             WLabelStorageRepository wLabelStorage,
             IDistributedCache distributedCache,
             IConnectionMultiplexer connectionMultiplexer,
+            HubService service,
              IMediator mediator)
         {
+            _hubService = service;
             _redPacketRecordRepository = redPacketRecordRepository;
             _verificationCodeRepository = verificationCodeRepository;
             _redPacketRepository = redPacketRepository;
@@ -171,7 +176,7 @@ namespace Wtdl.Mvc.Services
                 mchBillNo = $"WTDL{SystemTime.Now.ToString("yyyyMMddHHmmssfff")}{TenPayV3Util.BuildRandomStr(3)}",
                 openId = openid,
                 senderName = config.SenderName,
-                redPackAmount = amount,
+                redPackAmount = amount * 1000,
                 wishingWord = config.WishingWord,
                 QRCode = qrcode,
                 Captcha = captcha,
@@ -425,6 +430,8 @@ namespace Wtdl.Mvc.Services
                     };
                     //保存红包发放记录
                     var addresult = await _redPacketRecordRepository.AddAsync(packeresult);
+
+                    await _hubService.SendSendRedpacketTotalAmountAsync(sendNormalRedPackResult.total_amount);
                 }
                 else
                 {

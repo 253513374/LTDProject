@@ -6,13 +6,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Wtdl.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class dbcotext : Migration
+    public partial class db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "Analysis");
+
+            migrationBuilder.AlterDatabase()
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.CreateTable(
                 name: "FileUploadRecords",
@@ -97,7 +100,8 @@ namespace Wtdl.Repository.Migrations
                 schema: "Analysis",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Year = table.Column<int>(type: "int", nullable: false),
                     Month = table.Column<int>(type: "int", nullable: false),
                     OrderNumbels = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -194,7 +198,7 @@ namespace Wtdl.Repository.Migrations
                     PWD = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AgentID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Flag = table.Column<int>(type: "int", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 3, 4, 13, 53, 2, 644, DateTimeKind.Local).AddTicks(202))
                 },
                 constraints: table =>
                 {
@@ -224,22 +228,24 @@ namespace Wtdl.Repository.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QRCode = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    QRCode = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: true),
                     OrderTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OutTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Dealers = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Adminaccount = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OutType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderNumbels = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ExtensionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ExtensionOrder = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    Dealers = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: true),
+                    Adminaccount = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: true),
+                    OutType = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    OrderNumbels = table.Column<string>(type: "nvarchar(28)", maxLength: 28, nullable: true),
+                    ExtensionName = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    ExtensionOrder = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_W_LabelStorage", x => x.ID);
-                });
+                    table.PrimaryKey("PK_W_LabelStorage", x => x.ID)
+                        .Annotation("SqlServer:Clustered", false);
+                })
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.CreateTable(
                 name: "ActivityPrize",
@@ -339,7 +345,8 @@ namespace Wtdl.Repository.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_W_LabelStorage_QRCode",
                 table: "W_LabelStorage",
-                column: "QRCode");
+                column: "QRCode")
+                .Annotation("SqlServer:Clustered", false);
         }
 
         /// <inheritdoc />
@@ -377,10 +384,14 @@ namespace Wtdl.Repository.Migrations
                 name: "VerificationCodes");
 
             migrationBuilder.DropTable(
-                name: "W_LabelStorage");
+                name: "W_LabelStorage")
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.DropTable(
                 name: "LotteryActivity");
+
+            migrationBuilder.AlterDatabase()
+                .OldAnnotation("SqlServer:MemoryOptimized", true);
         }
     }
 }

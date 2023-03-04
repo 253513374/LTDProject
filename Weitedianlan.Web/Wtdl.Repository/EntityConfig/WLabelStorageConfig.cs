@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Weitedianlan.Model.Entity;
 
@@ -14,7 +15,21 @@ namespace Wtdl.Repository.EntityConfig
 
             builder.HasIndex(p => p.QRCode);//设置索引
 
-            builder.Property(p => p.CreateTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(p => p.CreateTime).HasDefaultValue(DateTime.Now);
+
+            builder.ToTable(b =>
+            {
+                b.IsMemoryOptimized();
+            });
+
+            builder.Property(p => p.OrderNumbels).HasMaxLength(28);
+            builder.Property(p => p.QRCode).HasMaxLength(21);
+            builder.Property(p => p.Adminaccount).HasMaxLength(18);
+            builder.Property(p => p.Dealers).HasMaxLength(18);
+            builder.Property(p => p.ExtensionName).HasMaxLength(5);
+            builder.Property(p => p.OutType).HasMaxLength(5);
+            builder.Property(p => p.ExtensionOrder).HasMaxLength(5);
+
             //builder
             //    .HasOne(p => p.Agent)
             //    .WithMany(b => b.WLabelStorage)

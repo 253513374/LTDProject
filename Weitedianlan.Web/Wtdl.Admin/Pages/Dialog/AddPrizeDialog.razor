@@ -25,7 +25,10 @@
                             @if (AddPrize.Type == PrizeType.Cash)
                             {
 
-                                <MudTextField Variant="Variant.Outlined" Label="固定金额" @bind-Value="AddPrize.CashValue" For="() => AddPrize.CashValue"></MudTextField>
+                                <MudTextField Variant="Variant.Outlined" 
+                                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                           AdornmentColor="Color.Warning"
+                                          HelperText="@($"输入的金额为：{((double)AddPrize.CashValue)/100}元")" Label="固定金额（分）" @bind-Value="AddPrize.CashValue" For="() => AddPrize.CashValue"></MudTextField>
                           @*      <MudStack Row="true" Spacing="4">
                                     <MudTextField Variant="Variant.Outlined" HelperText="温馨提示，金额不可设置太大" Label="最小金额" @bind-Value="AddPrize.MinCashValue" For="() => AddPrize.MinCashValue"></MudTextField>
                                     <MudTextField Variant="Variant.Outlined" Label="最大金额" @bind-Value="AddPrize.MaxCashValue" For="() => AddPrize.MaxCashValue"></MudTextField>

@@ -8,30 +8,32 @@ namespace Wtdl.Admin.Pages.FluentValidator
     {
         public RedPacketValidator()
         {
-            RuleFor(x => x.CashValue).GreaterThan(0)
-                .WithMessage("金额必须填写")
+            RuleFor(x => x.CashValue).GreaterThanOrEqualTo(1)
+                .WithMessage("金额不能为0元")
                 .When(w => w.RedPacketType == RedPacketType.AVERAGE);
 
-            RuleFor(x => x.CashValue).LessThan(50)
-                .WithMessage("固定金额必须小于50")
+            RuleFor(x => x.CashValue).LessThanOrEqualTo(20000)
+                .WithMessage("固定金额必须小于200元")
                 .When(w => w.RedPacketType == RedPacketType.AVERAGE);
 
-            RuleFor(x => x.MinCashValue).GreaterThan(0)
-                .WithMessage("最小金额必须大于0")
+            RuleFor(x => x.MinCashValue).GreaterThanOrEqualTo(1)
+                .WithMessage("最小金额不能为0 元")
                 .When(w => w.RedPacketType == RedPacketType.RANDOM);
 
             RuleFor(x => x.MinCashValue).LessThan(l => l.MaxCashValue)
-                .WithMessage("最小金额必须小于最大金额")
+                .WithMessage("最小金额不能大于或等于最大金额")
                 .When(w => w.RedPacketType == RedPacketType.RANDOM);
 
-            RuleFor(x => x.MaxCashValue).GreaterThan(0)
-                .WithMessage("最大金额必须大于0")
+            RuleFor(x => x.MaxCashValue).GreaterThanOrEqualTo(1)
+                .WithMessage("最大金额不能为 0 元")
                 .When(w => w.RedPacketType == RedPacketType.RANDOM);
-            RuleFor(x => x.MaxCashValue).LessThan(50)
-                .WithMessage("最大金额必须小于50")
+
+            RuleFor(x => x.MaxCashValue).LessThanOrEqualTo(20000)
+                .WithMessage("最大金额不能大于200元")
                 .When(w => w.RedPacketType == RedPacketType.RANDOM);
+
             RuleFor(x => x.MaxCashValue).GreaterThan(g => g.MinCashValue)
-                .WithMessage("最大金额必须大于最小金额")
+                .WithMessage("最大金额不能小于最小金额")
                 .When(w => w.RedPacketType == RedPacketType.RANDOM);
         }
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Quartz;
+using SQLitePCL;
 using Wtdl.Admin.Data;
+using Wtdl.Repository;
 using static Quartz.Logging.OperationName;
 
 namespace Wtdl.Admin.Quartzs
@@ -8,37 +10,44 @@ namespace Wtdl.Admin.Quartzs
     /// <summary>
     /// Quartz 定时任务每天凌晨统计当年数据
     /// </summary>
-    public class CurrentYearCountJob : Job
+    [DisallowConcurrentExecution]
+    public class CurrentYearCountJob : IJob
     {
-        private readonly IMemoryCache _cache;
+        private WLabelStorageRepository _storageRepository;
+        private IMemoryCache _cache;
+        private object _cacheLock = new object();
+        private ILogger<CurrentYearCountJob> _logger;
 
-        public CurrentYearCountJob(IMemoryCache cache)
+        public CurrentYearCountJob(IMemoryCache cache,
+            WLabelStorageRepository repository,
+            ILogger<CurrentYearCountJob> logger)
         {
+            _logger = logger;
+            _storageRepository = repository;
             _cache = cache;
         }
 
-        public override async Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
-            var now = DateTime.Now;
-            var timeToMidnight = new TimeSpan(24, 0, 0) - now.TimeOfDay;
+            //var now = DateTime.Now;
+            //var timeToMidnight = new TimeSpan(24, 0, 0) - now.TimeOfDay;
             var options = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(timeToMidnight);
+                .SetAbsoluteExpiration(DateTimeOffset.Now);
             int newValue;
-            lock (_cacheLock)
-            {
-                int counter;
-                if (!_cache.TryGetValue(CacheKeys.DayCacheKey, out counter))
-                {
-                    _logger.LogInformation("从数据库获取数据");
-                    //获取当前数据
-                    counter = _storageRepository.GetCount();
-                    _cache.Set(CacheKeys.DayCacheKey, counter);
-                    _logger.LogInformation("从数据库获取数据完成");
-                }
-                newValue = Interlocked.Increment(ref counter);
-                _cache.Set(CacheKeys.DayCacheKey, newValue, options);
-            }
 
+            int counter;
+            if (!_cache.TryGetValue(CacheKeys.DayCacheKey, out counter))
+            {
+                _logger.LogInformation("从数据库获取数据");
+                //获取当前数据
+                counter = await _storageRepository.GetCurrentYearCountAsync();
+                _cache.Set(CacheKeys.YearChaeKey, counter);
+                _logger.LogInformation("从数据库获取数据完成");
+            }
+            newValue = Interlocked.Increment(ref counter);
+            _cache.Set(CacheKeys.DayCacheKey, newValue, options);
+
+            //   return Task.CompletedTask;
             //_logger.LogInformation("缓存更新完成");
         }
     }

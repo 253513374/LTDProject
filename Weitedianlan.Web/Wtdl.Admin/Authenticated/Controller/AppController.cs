@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
+using Wtdl.Share;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -50,6 +51,14 @@ namespace Wtdl.Admin.Authenticated.Controller
             }
 
             return LoginResult.Failure($"登录失败:{loginresult.Error}-{loginresult.ErrorDescription}");
+        }
+
+        [HttpGet("GetToken")]
+        public async Task<LoginResult> LoginAppAsync()
+        {
+            var token = GenerateJwtToken(new List<Claim>());
+
+            return LoginResult.Success(token);
         }
 
         private string GenerateJwtToken(List<Claim> claims)

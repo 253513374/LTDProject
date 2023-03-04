@@ -18,7 +18,7 @@
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.body1">扫码立即领取现金</MudText>
-                    <MudTextField @bind-Value="RedPacket.ActivityName" For="() => RedPacket.ActivityName" Label="活动名称">活动名称</MudTextField>
+                    <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.ActivityName" For="() => RedPacket.ActivityName" Label="活动名称">活动名称</MudTextField>
                 </CardHeaderContent>
                 <CardHeaderActions>
                     <MudSwitch @bind-Checked="@RedPacket.IsActivity" Color="Color.Info">@(RedPacket.IsActivity?"已启用":"已禁用")</MudSwitch>
@@ -29,13 +29,13 @@
                 <MudStack Row="true" Reverse="false">
                     <MudText Class="mb-2" Typo="Typo.h5">配置红包</MudText>
                     <MudSpacer></MudSpacer>
-                    <MudSwitch  @bind-Checked="@RedPacket.IsSubscribe" Color="Color.Success">关注公众号才能领取红包</MudSwitch>    
+                    <MudSwitch   @bind-Checked="@RedPacket.IsSubscribe" Color="Color.Success">关注公众号才能领取红包</MudSwitch>    
                 </MudStack>
                    
                 <MudStack Spacing="3">
 
-                        <MudTextField @bind-Value="RedPacket.SenderName" For="() => RedPacket.SenderName" Label="发放红包人员名称"></MudTextField>
-                        <MudTextField @bind-Value="RedPacket.WishingWord" For="() => RedPacket.WishingWord" Label="红包祝福语"></MudTextField>
+                        <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.SenderName" For="() => RedPacket.SenderName" Label="发放红包人员名称"></MudTextField>
+                        <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.WishingWord" For="() => RedPacket.WishingWord" Label="红包祝福语"></MudTextField>
                     <MudSelect Variant="Variant.Text" Label="红包类型" @bind-Value="RedPacket.RedPacketType" For="() => RedPacket.RedPacketType">
                        
                         <MudSelectItem Value="RedPacketType.AVERAGE">固定红包</MudSelectItem>
@@ -43,13 +43,25 @@
                     </MudSelect>
                     @if (RedPacket.RedPacketType == RedPacketType.AVERAGE)
                     {
-                        <MudTextField @bind-Value="RedPacket.CashValue" For="() => RedPacket.CashValue" Label="单个红包金额"></MudTextField>
+                        
+                        <MudTextField Variant="Variant.Outlined" 
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                      AdornmentColor="Color.Warning"
+                                  HelperText="@($"输入的金额为：{((double)RedPacket.CashValue)/100}元")" Label="单个红包金额（分）" @bind-Value="RedPacket.CashValue" For="() => RedPacket.CashValue"></MudTextField>
                     }
                     @if (RedPacket.RedPacketType == RedPacketType.RANDOM)
                     {
                         <MudStack Row="true" Spacing="3">
-                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MinCashValue" For="() => RedPacket.MinCashValue" Label="最小红包金额"></MudTextField>
-                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MaxCashValue" For="() => RedPacket.MaxCashValue" Label="最大红包金额"></MudTextField>
+                            <MudTextField Variant="Variant.Outlined" 
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                          AdornmentColor="Color.Warning"
+                                      HelperText="@($"输入的金额为：{((double)RedPacket.MinCashValue)/100}元")" Label="最小红包金额（分）" @bind-Value="RedPacket.MinCashValue" For="() => RedPacket.MinCashValue"></MudTextField>
+                            <MudTextField Variant="Variant.Outlined" 
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                          AdornmentColor="Color.Warning"
+                                      HelperText="@($"输入的金额为：{((double)RedPacket.MaxCashValue)/100}元")" Label="最大红包金额（分）" @bind-Value="RedPacket.MaxCashValue" For="() => RedPacket.MaxCashValue"></MudTextField>
+@*                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MinCashValue" For="() => RedPacket.MinCashValue" Label="最小红包金额"></MudTextField>
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MaxCashValue" For="() => RedPacket.MaxCashValue" Label="最大红包金额"></MudTextField>*@
                         </MudStack>
                     }
                 </MudStack>

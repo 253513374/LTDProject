@@ -6,6 +6,7 @@ using Senparc.Weixin.TenPay.V2;
 using StackExchange.Redis;
 using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Enum;
+using Wtdl.Controller.Services;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 using Wtdl.Repository.Utility;
@@ -25,6 +26,8 @@ namespace Wtdl.Mvc.Services
         private readonly ILogger<LotteryService> _logger;
 
         private readonly IMemoryCache _memoryCache;
+
+        private HubService _hubService;
 
         public LotteryService(LotteryActivityRepository lotteryActivityRepository,
             LotteryRecordRepository recordRepository,
@@ -54,26 +57,6 @@ namespace Wtdl.Mvc.Services
         {
             try
             {
-                //LotteryActivity result;
-                //if (!_memoryCache.TryGetValue("LotteryActivity", out result))
-                //{
-                //    // 如果缓存中没有数据，则从数据库或其他数据源获取数据并存入缓存中
-                //    result = await _lotteryActivityRepository.GetLotteryActivityAsync();
-
-                //    var cacheOptions = new MemoryCacheEntryOptions
-                //    {
-                //        AbsoluteExpiration = DateTimeOffset.MaxValue,
-                //        // AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddYears(1).Year, 1, 1, 0, 0, 0, TimeSpan.Zero)
-                //    };
-                //    _memoryCache.Set("LotteryActivity", result, cacheOptions);
-                //}
-                ////获取缓存活信息
-                //var cache = await _memoryCache.GetOrCreateAsync("LotteryActivity", async entry =>
-                //{
-                //    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
-                //    return await GetLotteryActivityAsync();
-                //});
-
                 var result = await _lotteryActivityRepository.GetLotteryActivityAsync();
 
                 if (result is not null)
@@ -118,7 +101,7 @@ namespace Wtdl.Mvc.Services
         }
 
         /// <summary>
-        /// 随机抽取一个奖品
+        /// 抽取一个奖品
         /// </summary>
         /// <param name="activity"></param>
         /// <returns></returns>
@@ -200,7 +183,7 @@ namespace Wtdl.Mvc.Services
                 return value;
             }
 
-            var activityPrize = await _activityPrizeRepository.ExistAsync(a => a.PrizeNumber == prizenumber);
+            var activityPrize = await _activityPrizeRepository.ExistAsync(a => a.PrizeNumber == prizenumber && a.IsActive == true);
             if (!activityPrize)
             {
                 return new VerifyResult() { IsSuccess = false, Message = "抽奖奖品不存在" };
@@ -290,6 +273,9 @@ namespace Wtdl.Mvc.Services
 
                 // 随机抽取一个参加活动的奖品
                 var prize = await GetLuckyPrize(prizenumber);
+
+                await _hubService.SendLotteryCountAsync();
+
                 if (prize is null)
                 {
                     return new LotteryResult() { IsSuccess = false, Message = "奖品已经抽完" };
@@ -299,6 +285,8 @@ namespace Wtdl.Mvc.Services
 
                 if (randomPrizeNumber == prize.UniqueNumber)
                 {
+                    await _hubService.SendLotteryWinCountAsync();
+
                     // 记录抽奖数据
                     await RecordLotterySuccess(openid, qrcode, prize);
                     prize.Unredeemed = prize.Unredeemed + 1;

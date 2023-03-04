@@ -14,7 +14,7 @@ using MudBlazor;
 using Quartz;
 using Wtdl.Repository.MediatRHandler.Events;
 using StackExchange.Redis;
-using Wtdl.Admin.BackgroundTask;
+
 using Microsoft.EntityFrameworkCore;
 using Wtdl.Admin.Authenticated;
 using Wtdl.Admin.Authenticated.IdentityModel;
@@ -28,8 +28,17 @@ using Microsoft.AspNetCore.Identity;
 using Radzen;
 using Wtdl.Admin.Authenticated.Services;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Senparc.Weixin.AspNet;
+using Senparc.Weixin.Entities;
+using Senparc.Weixin.MP;
+using Wtdl.Admin.Quartzs;
 using Wtdl.Admin.SignalRHub;
+using Senparc.Weixin.RegisterServices;
+using Senparc.Weixin.TenPay;
+using Weitedianlan.Model.Entity;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -80,8 +89,8 @@ try
 
     builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-    var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
-    builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
+    //var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
+    //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
     //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 
     // Add services to the container.
@@ -121,14 +130,7 @@ try
     builder.Services.AddScoped<CustomAuthenticationService>();
     builder.Services.AddScoped<CustomAuthenticationStateProvider>();
     builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-    // builder.Services.AddHttpContextAccessor();
-    //builder.Services.AddAuthorizationCore();
-    //builder.Services.AddAuthentication(options =>
-    //{
-    //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    //});
+
     // 添加身份验证和授权服务
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -147,6 +149,51 @@ try
             };
         });
 
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "抽奖系统 API 接口", Version = "v1" });
+
+        var xmlFiles = new[] { $"{Assembly.GetExecutingAssembly().GetName().Name}.xml", $"{typeof(LotteryActivity).Assembly.GetName().Name}.xml" };
+        foreach (var xmlFile in xmlFiles)
+        {
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            c.IncludeXmlComments(xmlPath);
+        }
+        // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        // c.IncludeXmlComments(xmlPath);
+
+        //使用 AddSecurityDefinition 方法添加一个名为 "Bearer" 的安全定义，
+        //并定义为 JWT 授权标头使用 Bearer 方案。
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "使用 Bearer 方案的 JWT 授权标头。例子,注意空格: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+
+        //使用 AddSecurityRequirement 方法添加安全要求，并引用前面定义的 "Bearer" 安全定义
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                },
+                new List<string>()
+            }
+        });
+    });
+
     builder.Services.AddAuthorization(options =>
     {
         // options.a.AuthorizePage("/CustomUnauthorized");
@@ -155,7 +202,34 @@ try
         //    policy.RequireRole("admin"));
     });
 
+    ////Senparc.Weixin 注册（必须）
+    // builder.Services.AddSenparcWeixinServices(builder.Configuration);
+
     var app = builder.Build();
+
+    //#region 启用微信配置
+
+    //var senparcWeixinSetting = app.Services.GetService<IOptions<SenparcWeixinSetting>>()!.Value;
+
+    ////启用微信配置（必须）
+    //var registerService = app.UseSenparcWeixin(app.Environment,
+    //    null /* 不为 null 则覆盖 appsettings  中的 SenpacSetting 配置*/,
+    //    null /* 不为 null 则覆盖 appsettings  中的 SenpacWeixinSetting 配置*/,
+    //    register => { /* CO2NET 全局配置 */ },
+    //    (register, weixinSetting) =>
+    //    {
+    //        //注册公众号信息（可以执行多次，注册多个公众号）
+    //        register.RegisterMpAccount(weixinSetting, "【威特电缆】公众号");
+    //        register.RegisterTenpayV3(weixinSetting, "【威特电缆】微信支付（V2）");
+    //    });
+    //#endregion 启用微信配置
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        //c.SwaggerEndpoint("/swagger/v1/swagger.json", "微信H5后台API");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "抽奖系统 API 接口");
+    });
 
     app.UseResponseCompression();
     // Configure the HTTP request pipeline.
@@ -176,8 +250,9 @@ try
     app.MapControllers();
     app.MapHub<APPHub>("/apphub");
     app.MapFallbackToPage("/_Host");
-
-    //  endpoints.MapHub<AuthHub>("/authhub");
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 
     app.Run();
 }

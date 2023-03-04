@@ -44,97 +44,13 @@ namespace Wtdl.Repository
             using var context = _contextFactory.CreateDbContext();
             return await context.LotteryActivities.AsNoTracking()
                 .OrderByDescending(x => x.Id)
-                .Include(c => c.Prizes)
+                // .Include(c => c.Prizes)
                 .Take(count)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<LotteryActivity>> GetAllWithPaginationAsync(int pageIndex, int pageSize)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities.AsNoTracking()
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
-
         /// <summary>
-        /// 根据状态返回活动列表
-        /// </summary>
-        /// <param name="status"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<LotteryActivity>> GetActivityStatusAsync(ActivityStatus status)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities
-                .Where(x => x.Status == status)
-                .ToListAsync();
-        }
-
-        /// <summary>
-        /// 更新活动状态
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="status"></param>
-        /// <returns></returns>
-        public async Task<bool> UpdateActivityStatusAsync(int id, ActivityStatus status)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var entity = await context.LotteryActivities.FirstOrDefaultAsync(x => x.Id == id);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            entity.Status = status;
-            context.LotteryActivities.Update(entity);
-            var updateint = await context.SaveChangesAsync();
-            if (updateint > 0)
-            {
-                await _mediator.Publish(new LoggerEvent()
-                {
-                    TypeData = entity.GetType(),
-                    JsonData = GlobalUtility.SerializeObject(entity),
-                    OperationType = OperationType.Insert
-                });
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 返回指定活动信息
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<LotteryActivity> GetLotteryActivityAsync(int id)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities
-                .Where(x => x.Id == id)
-                .Include(x => x.Prizes)
-                .FirstOrDefaultAsync();
-        }
-
-        /// <summary>
-        /// 返回符合查询条件的活动信息
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<LotteryActivity>> GetAllLotteryActivityAsync(Expression<Func<LotteryActivity, bool>> expression)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities.AsNoTracking()
-                .Where(expression)
-                .Include(x => x.Prizes)
-                .ToListAsync();
-        }
-
-        /// <summary>
-        /// 返回符合条件的一条信息
+        /// 返回当前激活的唯一活动信息
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
@@ -143,27 +59,29 @@ namespace Wtdl.Repository
             using var context = _contextFactory.CreateDbContext();
             return await context.LotteryActivities.AsNoTracking()
                 .Where(w => w.IsActive)
-                .Include(c => c.Prizes)
-                .OrderByDescending(o => o.Id)
+                .Include(c => c.Prizes.Where(w => w.IsActive == true))
+
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<LotteryActivity> GetLotteryActivityWithPrizesAsync(int id)
+        public async Task<int> UpdateActiveStatus(LotteryActivity activity)
         {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities
-                .Where(x => x.Id == id)
-                .Include(x => x.Prizes)
-                .FirstOrDefaultAsync();
-        }
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                //批量更新IsActive状态
+                var update = await context.LotteryActivities.Where(w => w.IsActive)
+                    .BatchUpdateAsync(u => new LotteryActivity { IsActive = false });
 
-        public async Task<IEnumerable<LotteryActivity>> GetLotteryActivityWithPrizesAsync(Expression<Func<LotteryActivity, bool>> expression)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            return await context.LotteryActivities
-                .Where(expression)
-                .Include(x => x.Prizes)
-                .ToListAsync();
+                if (update >= 0)
+                {
+                    //更新
+                    context.LotteryActivities.Update(activity);
+                    return await context.SaveChangesAsync();
+                }
+
+                return update;
+                //   context.LotteryActivities.BatchUpdateAsync(u => u.IsActive == true);
+            }
         }
     }
 }

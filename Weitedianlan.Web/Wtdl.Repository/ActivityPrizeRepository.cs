@@ -73,5 +73,14 @@ namespace Wtdl.Repository
                 }
             }
         }
+
+        public async Task<List<ActivityPrize>> GetActivityPrizesAsync(int selectedActivityId)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.ActivityPrizes.AsNoTracking()
+                .Where(x => x.LotteryActivityId == selectedActivityId)
+                .ToListAsync();
+            // throw new NotImplementedException();
+        }
     }
 }

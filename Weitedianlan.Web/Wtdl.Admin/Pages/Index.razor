@@ -2,6 +2,7 @@
 @using Radzen.Blazor
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Diagnostics.Contracts
+@using Wtdl.Share.SignalR
 
 
 @inject LotteryRecordRepository _LotteryRecordRepository
@@ -27,11 +28,11 @@
                         </div>
                         <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mud-text-secondary  mb-n1">抽奖信息</MudText>
                         <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">0</MudText>
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@LotteryCount</MudText>
                             <MudText Typo="Typo.caption">抽奖</MudText>
                         </MudStack>
                         <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">0</MudText>
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@LotteryWinCount</MudText>
                             <MudText Typo="Typo.caption">中奖</MudText>
                         </MudStack>
                     </MudPaper>
@@ -44,11 +45,11 @@
                         <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mud-text-secondary  mb-n1">红包信息</MudText>
 
                         <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@FormsNever.RedPacketCount</MudText>
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@RedPackedCount</MudText>
                             <MudText Typo="Typo.caption">发放</MudText>
                         </MudStack>
                         <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@FormsNever.TotalAmountSum</MudText>
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@RedpacketTotalAmount</MudText>
                             <MudText Typo="Typo.caption">总额</MudText>
                         </MudStack>
                     </MudPaper>
@@ -62,7 +63,7 @@
                         <MudIcon Icon="@Icons.Material.Outlined.ShoppingCartCheckout" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
                         <div style="width: 100%">
                             <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今日出货量</MudText>
-                            <MudText Typo="Typo.h5">@DayCount</MudText>
+                            <MudText Typo="Typo.h5">@OutStorageCount</MudText>
                         </div>
                     </MudPaper>
                 </MudItem>
@@ -111,7 +112,7 @@
     @if (isgetyear)
     {
         <MudPaper Elevation="0" Class="pa-8">
-            <MudText Typo="Typo.h6"> 年销量分析图表 </MudText>
+            <MudText Typo="Typo.h6">@FormsNever.RadzenChartTitleText 年销量分析图表 </MudText>
 
             <MudPaper Height="55px" Elevation="5" Class="pa-3 mx-5"   Style="display: flex; align-items: center; gap: 0.5rem">
                 <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
@@ -120,7 +121,8 @@
                 <RadzenLabel Text="数据标签" For="dataLabels" />
             </MudPaper>
             <RadzenChart>
-                <RadzenAreaSeries Smooth="@smooth" Data="@FormsNever.GroupByYearCounts" CategoryProperty="Year" Title="@FormsNever.RadzenChartTitleText" ValueProperty="Count" RenderingOrder="1">
+                <RadzenAreaSeries Smooth="@smooth" Data="@FormsNever.GroupByYearCounts" Title="年总销量"  LineType="LineType.Solid"
+                                  CategoryProperty="Year"  ValueProperty="Count" RenderingOrder="1">
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                     <RadzenGridLines Visible="true" />
                     <RadzenLegend Position="LegendPosition.Top" />
@@ -128,7 +130,7 @@
             </RadzenChart>
         </MudPaper>
         <MudPaper Elevation="0" Class="pa-8">
-            <MudText Typo="Typo.h6"> 年份订单总量对比 </MudText>
+            <MudText Typo="Typo.h6">@FormsNever.RadzenChartTitleText  年订单总量对比 </MudText>
 
             <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
                 <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
@@ -137,7 +139,9 @@
                 <RadzenLabel Text="数据标签" For="dataLabels" />
             </RadzenCard>
             <RadzenChart>
-                <RadzenAreaSeries Smooth="@smooth" Data="@FormsNever.GroupByYearOrders" CategoryProperty="Year" Title="@FormsNever.RadzenChartTitleText" LineType="LineType.Dashed" ValueProperty="Count">
+                <RadzenAreaSeries Smooth="@smooth" Data="@FormsNever.GroupByYearOrders" 
+                                  CategoryProperty="Year"   ValueProperty="Count" 
+                                  LineType="LineType.Dotted" Title="订单总量">
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                     <RadzenGridLines Visible="true" />
                     <RadzenLegend Position="LegendPosition.Top" />
@@ -161,10 +165,16 @@
 @code
 {
 
-    private int DayCount { set; get; }
+   
     private bool isgetyear = false;
     private bool isgetorder = false;
 
+    public int OutStorageCount { set; get; }
+    public int LotteryWinCount { get; set; }
+    public int LotteryCount { get; set; }
+
+    public int RedPackedCount { get; set; }
+    public int RedpacketTotalAmount { get; set; }
 
     bool smooth = true;
     bool showDataLabels = true;
@@ -189,15 +199,32 @@
             
             var claims = auTask.Result.User.Claims.ToList();
             var token = Service.GenerateJwtToken(claims);
-
-
             hubConnection = hubConnection.TryInitialize(_navigationManager, token);
 
-            hubConnection.On<int>("OnReportFormsNever", (count) =>
+            hubConnection.On<int>(HubClientMethods.OnOutStorageDayCount, (count) =>
             {
-                DayCount = count;
-                //var encodedMsg = $"{user}: {message}";
-                //messages.Add(encodedMsg);
+                OutStorageCount = count;
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>
+            {
+                RedPackedCount = count;
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<int>(HubClientMethods.OnRedpacketTotalAmount, (count) =>
+            {
+                RedpacketTotalAmount = count;
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<int>(HubClientMethods.OnLotteryCount, (count) =>
+            {
+                LotteryCount = count;
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<int>(HubClientMethods.OnLotteryWinCount, (count) =>
+            {
+                //中奖人数
+                LotteryWinCount = count;
                 InvokeAsync(StateHasChanged);
             });
             await hubConnection.StartAsync();
@@ -244,6 +271,12 @@
         formsNever.RedPacketCount    = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync();
         formsNever.TotalAmountSum    = await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
         formsNever.GroupByYearOrders = await _outStorageRepository.GetGrapByYearAndOrderAsync();
+
+        if (formsNever.GroupByYearOrders is null || formsNever.GroupByYearOrders.Count==0)
+        {
+            formsNever.GroupByYearOrders =await _WLabelStorageRepository.GetGroupByOrderNumbelsAsync(DateTime.Now.Year);
+        }
+
         var groupbyyearorders = await _outStorageRepository.GetGrapByYearAsync();
         formsNever.GroupByYearCounts = groupbyyearorders.GroupBy(g => g.Year).Select(s =>
             new OutStorageAnalysis
@@ -285,7 +318,7 @@
                 _Cache.Set(CacheKeys.DayCacheKey, counter);
                // _logger.LogInformation("Index从数据库获取数据完成");
             }
-            DayCount = counter;
+            OutStorageCount = counter;
 
     //var newValue = Interlocked.Increment(ref counter);
     //_Cache.Set(CacheKeys.DayCacheKey, newValue, options);
@@ -295,5 +328,5 @@
     }
 
 
-    
+
 }

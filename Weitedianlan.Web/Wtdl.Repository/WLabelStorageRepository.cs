@@ -30,40 +30,35 @@ namespace Wtdl.Repository
             _logger = logger;
         }
 
-        public async Task<List<W_LabelStorage>> GetLatestRecordsAsync(int count)
+        //public async Task<List<W_LabelStorage>> GetLatestRecordsAsync(int count)
+        //{
+        //    using (var context = _contextFactory.CreateDbContext())
+        //    {
+        //        return await context.WLabelStorages
+        //            .OrderByDescending(x => x.OrderTime)
+        //            .Take(count)
+        //            .ToListAsync();
+        //    }
+        //}
+
+        //返回时间范围内的数据
+        public async Task<List<GroupByWLabelStorage>> GetGroupByTimeRecordsAsync(DateTime startTime, DateTime endTime)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.WLabelStorages
-                    .OrderByDescending(x => x.OrderTime)
-                    .Take(count)
-                    .ToListAsync();
-            }
-        }
+                var groupedData = context.WLabelStorages.AsNoTracking()
+                    .Where(x => x.OrderTime >= startTime && x.OrderTime <= endTime)
+                    .OrderByDescending(o => o.OrderTime)
+                    .GroupBy(x => new { x.OrderNumbels, x.OrderTime })
+                    //(x.OrderTime))
+                    .Select(g => new GroupByWLabelStorage()
+                    {
+                        OrderNumbels = g.Key.OrderNumbels,
+                        Time = g.Key.OrderTime,
+                        Count = g.Count(),
+                    });
 
-        public async Task<List<GroupByWLabelStorage>> GetLatest30DaysGroupByOrderTimeAsync()
-        {
-            try
-            {
-                using (var context = _contextFactory.CreateDbContext())
-                {
-                    var latestData = await context.WLabelStorages.AsNoTracking().OrderByDescending(x => x.ID).FirstOrDefaultAsync();
-
-                    var thirtyDaysAgo = latestData.OutTime.AddDays(-30);// DateTime.Now.AddDays(-30);
-
-                    var groupedData = context.WLabelStorages
-                        .Where(x => x.OrderTime > thirtyDaysAgo)
-                        .OrderByDescending(o => o.OrderTime)
-                        .GroupBy(x => new { x.OrderNumbels, x.OrderTime })
-                        //(x.OrderTime))
-                        .Select(g => new GroupByWLabelStorage()
-                        {
-                            OrderNumbels = g.Key.OrderNumbels,
-                            Time = g.Key.OrderTime,
-                            Count = g.Count(),
-                        });
-
-                    var resultList = await groupedData.Join(context.Agents,
+                var resultList = await groupedData.Join(context.Agents,
                         t => t.OrderNumbels,
                         a => a.AID,
                         (t, a) => new GroupByWLabelStorage
@@ -73,9 +68,51 @@ namespace Wtdl.Repository
                             Count = t.Count,
                             AgentName = a.AName,
                         }).Distinct()
-                        .OrderByDescending(o => o.Time).ToListAsync();
+                    .OrderByDescending(o => o.Time).ToListAsync();
 
-                    return resultList;
+                if (resultList is null || resultList.Count == 0)
+                {
+                    //匹配18年以前的数据
+                    var groupedDataold = context.WLabelStorages.AsNoTracking()
+                        .Where(x => x.OrderTime >= startTime && x.OrderTime <= endTime)
+                        .OrderByDescending(o => o.OrderTime)
+                        .GroupBy(x => new { x.OrderNumbels, x.OrderTime, x.Dealers })
+                        //(x.OrderTime))
+                        .Select(g => new GroupByWLabelStorage()
+                        {
+                            OrderNumbels = g.Key.OrderNumbels,
+                            ID = g.Key.Dealers,
+                            Time = g.Key.OrderTime,
+                            Count = g.Count(),
+                        });
+
+                    resultList = await groupedDataold.Join(context.Agents,
+                            t => t.ID,
+                            a => a.AID,
+                            (t, a) => new GroupByWLabelStorage
+                            {
+                                OrderNumbels = t.OrderNumbels,
+                                Time = t.Time,
+                                Count = t.Count,
+                                AgentName = a.AName,
+                            }).Distinct()
+                        .OrderByDescending(o => o.Time).ToListAsync();
+                }
+
+                return resultList;
+            }
+        }
+
+        public async Task<List<GroupByWLabelStorage>> GetLatestGroupByTimeRecordsAsync()
+        {
+            try
+            {
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    var latestData = await context.WLabelStorages.AsNoTracking().OrderByDescending(x => x.ID).FirstOrDefaultAsync();
+                    var thirtyDaysAgo = latestData.OutTime.AddDays(-30);// DateTime.Now.AddDays(-30);
+
+                    return await GetGroupByTimeRecordsAsync(thirtyDaysAgo, DateTime.Now);
                 }
             }
             catch (Exception e)
@@ -91,7 +128,7 @@ namespace Wtdl.Repository
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public async Task<List<GroupByWLabelStorage>> GetGroupByOrderNumbelsAsync(int Year)
+        public async Task<List<OutStorageAnalysis>> GetGroupByOrderNumbelsAsync(int Year)
         {
             try
             {
@@ -111,7 +148,7 @@ namespace Wtdl.Repository
                     context.BulkInsert(graupbylist);
                     context.SaveChanges();
 
-                    var listGroupBy = graupbylist.GroupBy(g => g.Year).Select(s => new GroupByWLabelStorage
+                    var listGroupBy = graupbylist.GroupBy(g => g.Year).Select(s => new OutStorageAnalysis
                     {
                         Year = s.Key,
                         Count = s.Count(),
@@ -123,7 +160,7 @@ namespace Wtdl.Repository
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return new List<GroupByWLabelStorage>();
+                return new List<OutStorageAnalysis>();
                 //re  throw;
             }
         }
@@ -366,6 +403,24 @@ namespace Wtdl.Repository
                     .Count();
                 return groupedData;
             }
+        }
+
+        /// <summary>
+        /// 返回统计最新一年数量
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<int> GetCurrentYearCountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.OrderTime.Year == DateTime.Now.Year)
+                    .CountAsync();
+                return groupedData;
+            }
+
+            //  throw new NotImplementedException();
         }
     }
 }

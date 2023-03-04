@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Client;
 using Senparc.Weixin.TenPay.V2;
 using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Services;
@@ -15,9 +16,12 @@ namespace Wtdl.Web.Api.Controllers
     {
         private readonly LotteryService _lotteryService;
 
+        //  private HubConnection _hubConnection;
+
         public LotteryController(LotteryService lotteryService)
         {
             _lotteryService = lotteryService;
+            // _hubConnection = connection;
         }
 
         /// <summary>
@@ -39,7 +43,7 @@ namespace Wtdl.Web.Api.Controllers
                 };
             }
 
-            if (qrcode.Length != 12)
+            if (qrcode.Trim().Length != 12)
             {
                 return new LotteryResult()
                 {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CsvHelper;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Interface;
 
@@ -111,12 +112,6 @@ namespace Wtdl.Repository
             }
         }
 
-        // public async Task<bool> Any
-        public async Task GetLotteryRecordAsync(Func<LotteryRecord, bool> func)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// 获取最新的前1000条记录
         /// </summary>
@@ -136,6 +131,19 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 return await context.LotteryRecords.AsNoTracking().CountAsync();
+            }
+        }
+
+        /// <summary>
+        /// 返回指定用户的抽奖信息
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<IEnumerable<LotteryRecord>> GetLotteryInfoAsync(string openid)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.LotteryRecords.AsNoTracking().Where(x => x.OpenId == openid).ToListAsync();
             }
         }
     }

@@ -14,6 +14,10 @@ using Senparc.Weixin.TenPay;
 using Wtdl.Repository.MediatRHandler.Events;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using StackExchange.Redis;
+using Weitedianlan.Model.Entity;
+using Wtdl.Controller.Services;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +41,15 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "抽奖系统 API 接口", Version = "v1" });
 
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+    var xmlFiles = new[] { $"{Assembly.GetExecutingAssembly().GetName().Name}.xml", $"{typeof(LotteryActivity).Assembly.GetName().Name}.xml" };
+    foreach (var xmlFile in xmlFiles)
+    {
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
+    }
+    // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    // c.IncludeXmlComments(xmlPath);
 
     //使用 AddSecurityDefinition 方法添加一个名为 "Bearer" 的安全定义，
     //并定义为 JWT 授权标头使用 Bearer 方案。
@@ -75,6 +85,27 @@ builder.Services.AddSwaggerGen(c =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+
+builder.Services.AddHttpClient();
+
+//var hubUrl = builder.Configuration.GetValue<string>("SignalR:HubUrl");
+//builder.Services.AddSingleton(provider => new HubConnectionBuilder()
+//    .WithUrl(hubUrl, options =>
+//    {
+//        options.AccessTokenProvider = async () =>
+//        {
+//            return await GetSignalRAppToken();
+
+//            static async Task<string?> GetSignalRAppToken()
+//            {
+//               // throw new NotImplementedException();
+//               return "";
+//            }
+//        };
+//    })
+//    .WithAutomaticReconnect()
+//    .Build());
 
 var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
@@ -91,6 +122,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
 //    options.Configuration = "redis-server:6379";
 //    options.InstanceName = "SampleInstance";
 //});
+
 builder.Services.AddResponseCaching();
 builder.Services.AddMemoryCache();
 ////Senparc.Weixin 注册（必须）
@@ -99,6 +131,8 @@ builder.Services.AddSenparcWeixinServices(builder.Configuration);
 var connectionString = builder.Configuration.GetConnectionString("LotteryDbConnection");
 builder.Services.AddLotteryDbContext(connectionString);
 
+builder.Services.AddSingleton<HubService>();
+builder.Services.AddScoped<UserItemsService>();
 builder.Services.AddScoped<LotteryService>();//注入抽奖服务
 builder.Services.AddScoped<SearchByCodeService>();//注入防伪溯源服务
 builder.Services.AddScoped<ScanByRedPacketService>();//注入红包服务

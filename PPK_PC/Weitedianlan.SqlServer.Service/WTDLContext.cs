@@ -1,20 +1,16 @@
-using StackExchange.Redis;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
-using StackExchange.Redis;
-
 using System.Configuration;
-using ABenNetCore.Redis.Xunit;
 
 namespace Weitedianlan.SqlServer.Service
 {
-    public partial class WTDLEntityStrings : DbContext
+    public partial class WTDLContext : DbContext
     {
-        private static ConnectionMultiplexer _redis;
+        // private static ConnectionMultiplexer _redis;
 
         /// <summary>
         /// 缓存订单状态的key，
@@ -26,7 +22,7 @@ namespace Weitedianlan.SqlServer.Service
         /// </summary>
         private readonly string RedPacketKey = "REDPACKETKEY";
 
-        public WTDLEntityStrings()
+        public WTDLContext()
             : base("name=WTDLModelString")
         {
             //if (_redis is null)
@@ -50,36 +46,36 @@ namespace Weitedianlan.SqlServer.Service
         /// <param name="status"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual async Task<bool> SetOrderStatusAsync(string qrcode)
-        {
-            var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
-            //截取qrcode 中的偏移量
-            var offset = qrcode.Substring(4, 7);
+        //public virtual async Task<bool> SetOrderStatusAsync(string qrcode)
+        //{
+        //    var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
+        //    //截取qrcode 中的偏移量
+        //    var offset = qrcode.Substring(4, 7);
 
-            var key = qrcode.Substring(0, 4);
+        //    var key = qrcode.Substring(0, 4);
 
-            //判断是否存在该key
-            if (!redisdb.KeyExists(key))
-            {
-                /*使用 BITFIELD 命令初始化一个名为 [key] 的位图，使用 CREATE 子命令指定创建一个新的位图，
-                 使用 u32 类型表示位图使用 32 位整数存储，使用 #10000000 表示位图的大小为 10000000。
-                执行完成后，位图的初始状态全部为 0。*/
-                // redisdb.Execute("BITFIELD", key, "CREATE", "u32", "#10000000");
-            }
-            ///设置位图状态为true
-            return await redisdb.StringSetBitAsync(key, Convert.ToInt64(offset), true);
-        }
+        //    //判断是否存在该key
+        //    if (!redisdb.KeyExists(key))
+        //    {
+        //        /*使用 BITFIELD 命令初始化一个名为 [key] 的位图，使用 CREATE 子命令指定创建一个新的位图，
+        //         使用 u32 类型表示位图使用 32 位整数存储，使用 #10000000 表示位图的大小为 10000000。
+        //        执行完成后，位图的初始状态全部为 0。*/
+        //        // redisdb.Execute("BITFIELD", key, "CREATE", "u32", "#10000000");
+        //    }
+        //    ///设置位图状态为true
+        //    return await redisdb.StringSetBitAsync(key, Convert.ToInt64(offset), true);
+        //}
 
         /// <summary>
         /// 缓存出库的过期时间，红包使用。出库超过24小时才可以领取红包
         /// </summary>
         /// <param name="qrcode"></param>
         /// <returns></returns>
-        public virtual async Task<bool> SetRedPacketAsync(string qrcode)
-        {
-            var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
-            return await redisdb.StringSetAsync(qrcode, DateTime.Now.ToString(), TimeSpan.FromHours(24));
-        }
+        //public virtual async Task<bool> SetRedPacketAsync(string qrcode)
+        //{
+        //    var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
+        //    return await redisdb.StringSetAsync(qrcode, DateTime.Now.ToString(), TimeSpan.FromHours(24));
+        //}
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -74,5 +74,22 @@ namespace Wtdl.Repository
             }
             //   throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 返回指定用户领取红包记录
+        /// </summary>
+        /// <param name="openid"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<IEnumerable<RedPacketRecord>> GetUserRedPacketInfoAsync(string openid)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.AsNoTracking().Where(x => x.ReOpenId == openid).ToListAsync();
+                //return await context.RedPacketRecords.AsNoTracking().Where(x => x.OpenId == openid);
+            }
+            //   throw new NotImplementedException();
+            // throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Wtdl.Admin.Authenticated.Controller
+﻿namespace Wtdl.Share
 {
     public class LoginResult
     {
@@ -25,7 +25,7 @@
             };
         }
 
-        public static LoginResult Success(string token, string username, string userid)
+        public static LoginResult Success(string token, string username = "", string userid = "")
         {
             return new LoginResult()
             {

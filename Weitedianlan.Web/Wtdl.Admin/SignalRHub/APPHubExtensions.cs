@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Wtdl.Admin.SignalRHub
 {
-    public static class HubExtensions
+    public static class APPHubExtensions
     {
+        /// <summary>
+        /// 初始化连接
+        /// </summary>
+        /// <param name="hubConnection"></param>
+        /// <param name="navigation"></param>
+        /// <param name="accesstoken"></param>
+        /// <returns></returns>
         public static HubConnection TryInitialize(this HubConnection hubConnection, NavigationManager navigation, string accesstoken)
         {
             if (hubConnection == null)

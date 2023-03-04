@@ -88,7 +88,7 @@ namespace Wtdl.Repository.Interface
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<T>().Where(predicate).AsNoTracking().ToListAsync();
+                return await context.Set<T>().AsNoTracking().Where(predicate).ToListAsync();
             }
 
             //   return await context.FileUploadRecords.AsNoTracking().Where(predicate).ToListAsync();

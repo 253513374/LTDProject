@@ -12,8 +12,8 @@ using Wtdl.Repository;
 namespace Wtdl.Repository.Migrations
 {
     [DbContext(typeof(LotteryContext))]
-    [Migration("20230221060011_dbcotext")]
-    partial class dbcotext
+    [Migration("20230304055302_db")]
+    partial class db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -148,9 +148,11 @@ namespace Wtdl.Repository.Migrations
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.Analysis.OutStorageAnalysis", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Count")
                         .HasColumnType("float");
@@ -517,8 +519,10 @@ namespace Wtdl.Repository.Migrations
                     b.Property<string>("AgentID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("CreateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2023, 3, 4, 13, 53, 2, 644, DateTimeKind.Local).AddTicks(202));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -584,24 +588,27 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Adminaccount")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
 
                     b.Property<DateTime>("CreateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Dealers")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(18)
+                        .HasColumnType("nvarchar(18)");
 
                     b.Property<string>("ExtensionName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("ExtensionOrder")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("OrderNumbels")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(28)
+                        .HasColumnType("nvarchar(28)");
 
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
@@ -610,16 +617,24 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OutType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("QRCode")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
 
                     b.HasKey("ID");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("ID"), false);
+
                     b.HasIndex("QRCode");
 
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QRCode"), false);
+
                     b.ToTable("W_LabelStorage", (string)null);
+
+                    SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.ActivityPrize", b =>

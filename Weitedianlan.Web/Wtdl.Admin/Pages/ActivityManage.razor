@@ -6,6 +6,8 @@
 @inject IDialogService DialogService
 @inject LotteryActivityRepository LotteryActivityRepository
 @inject AgentRepository _agentRepository
+@inject ActivityPrizeRepository activityPrizeRepository
+
 @inject ISnackbar Snackbar
 
 
@@ -64,43 +66,52 @@ else
                 @if (context.ShowPrizes)
             {
                 <MudTr>
-                    <td colspan="6">
-                        <MudCard Elevation="3" Class="mx-5">
+                    <td colspan="7">
+                        <MudCard Elevation="3" Class="mx-5"  >
                             <MudCardHeader>
                                 <CardHeaderContent>
                                     <MudText Typo="Typo.body1">活动【 <strong>@context.Name</strong> 】-奖品详细列表</MudText>
                                 </CardHeaderContent>
                             </MudCardHeader>
-                            <MudCardContent Class="pa-0">
-                                <MudTable Items="context.Prizes" Dense="true" Striped="true"
-                                      Bordered="true" Hover="true" Context="prize">
-                                    <HeaderContent>
-                                        <MudTh>奖品名称</MudTh>
-                                        <MudTh>奖品类型</MudTh>
-                                        <MudTh>奖品数量</MudTh>
-                                        <MudTh>固定金额</MudTh>
-                                        <MudTh>奖品描述</MudTh>
-                                        <MudTh>奖品图片</MudTh>
-                                        <MudTh>奖品状态</MudTh>
-                                    </HeaderContent>
-                                    <RowTemplate>
-                                        <MudTd>@prize.Name</MudTd>
-                                        <MudTd>@prize.Type</MudTd>
-                                        <MudTd>@prize.Amount</MudTd>
-                                        <MudTd>@prize.CashValue</MudTd>
+                                <MudCardContent Class="pa-0" Style="min-height: 200px">
 
-                                        <MudTd>@prize.Description</MudTd>
-                                        <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100" /></MudTd>
-                                        <MudTd>@(prize.IsActive ? "启用" : "禁用")</MudTd>
-                                            <MudTd>
-                                                <MudStack Row="true" Spacing="1">
-                                                    <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
-                                                </MudStack>
-                                            </MudTd>
-                                        </RowTemplate>
+                                    @if (context.Prizes is null)
+                                    {
+                                        <MudSkeletonComponent></MudSkeletonComponent>
+                                    }
+                                    else
+                                    {
+                                        <MudTable Items="context.Prizes" Dense="true" Striped="true"
+                                                  Bordered="true" Hover="true" Context="prize">
+                                            <HeaderContent>
+                                                <MudTh>奖品名称</MudTh>
+                                                <MudTh>奖品类型</MudTh>
+                                                <MudTh>奖品数量</MudTh>
+                                                <MudTh>中奖概率</MudTh>
+                                                <MudTh>中奖红包(元)</MudTh>
+                                                <MudTh>奖品描述</MudTh>
+                                                <MudTh>奖品图片</MudTh>
+                                                <MudTh>奖品状态</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd>@prize.Name</MudTd>
+                                                <MudTd>@prize.Type</MudTd>
+                                                <MudTd>@prize.Amount</MudTd>
+                                                <MudTd>@prize.Probability</MudTd>
+                                                <MudTd>@prize.CashValue</MudTd>
+                                                <MudTd>@prize.Description</MudTd>
+                                                <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100"/></MudTd>
+                                                <MudTd>@(prize.IsActive ? "启用" : "禁用")</MudTd>
+                                                <MudTd>
+                                                    <MudStack Row="true" Spacing="1">
+                                                        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
+                                                    </MudStack>
+                                                </MudTd>
+                                            </RowTemplate>
 
-                                    </MudTable>
-                                </MudCardContent>
+                                        </MudTable>
+                                    }
+                            </MudCardContent>
                             </MudCard>
                         </td>
                     </MudTr>
@@ -123,6 +134,10 @@ else
 
     private string searchString;
     private bool ShowPrizesDetails { set; get; }
+
+
+    private List<ActivityPrize> ActivityPrizes;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -150,9 +165,11 @@ else
         // _selectedPrize = new Prize();
     }
 
-    private void ShowBtnPress(LotteryActivity selectedActivity)
+    private async Task ShowBtnPress(LotteryActivity selectedActivity)
     {
         selectedActivity.ShowPrizes = !selectedActivity.ShowPrizes;
+
+        selectedActivity.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(selectedActivity.Id);
     }
 
 
@@ -182,9 +199,11 @@ else
                 Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
                 var up2 = Activities.FirstOrDefault(x => x.Id == value.LotteryActivityId); //.FirstOrDefault(x => x.Id == value.Id).Name = resultPrize.Name;
                 up2.ShowPrizes = true;
-                // StateHasChanged();
+                up2.Prizes = await activityPrizeRepository.GetActivityPrizesAsync((int)value.LotteryActivityId);
+    // StateHasChanged();
             }
 
+            //Activities.FirstOrDefault(f=>f.)
             // Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
         }
     }
@@ -210,8 +229,10 @@ else
 
     private async Task EditActivity(LotteryActivity context)
     {
+
+
         context.IsActive = !context.IsActive;
-        var insertresult = await LotteryActivityRepository.UpdateAsync(context);
+        var insertresult = await LotteryActivityRepository.UpdateActiveStatus(context);
         if (insertresult > 0)
         {
             if (context.IsActive)
@@ -227,6 +248,8 @@ else
         {
             Snackbar.Add("活动状态更新失败", Severity.Error);
         }
+
+        Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
     }
 
 }

@@ -80,7 +80,7 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 return await context.OutStorageAnalyses.AsNoTracking()
-                    .GroupBy(g => new { g.Year, g.OrderNumbels })
+                    .GroupBy(g => new { g.Year })
                     .Select(s => new OutStorageAnalysis()
                     {
                         Year = s.Key.Year,

@@ -27,15 +27,15 @@ namespace Weitedianlan.Model.Entity
         
         public DateTime? datetiem { get; set; }
 
-        /// <summary>
-        /// 参加活动的ID
-        /// </summary>
-        public int? LotteryActivityId { get; set; }
+        ///// <summary>
+        ///// 参加活动的ID
+        ///// </summary>
+        //public int? LotteryActivityId { get; set; }
         
-        /// <summary>
-        /// 参加活动信息
-        /// </summary>
-        public virtual LotteryActivity LotteryActivity { get; set; }
+        ///// <summary>
+        ///// 参加活动信息
+        ///// </summary>
+        //public virtual LotteryActivity LotteryActivity { get; set; }
 
         //  public virtual ICollection<W_LabelStorage> WLabelStorage { get; set; }
     }

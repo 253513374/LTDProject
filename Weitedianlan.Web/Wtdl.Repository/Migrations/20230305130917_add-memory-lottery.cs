@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Wtdl.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class db : Migration
+    public partial class addmemorylottery : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -72,9 +72,9 @@ namespace Wtdl.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsSuccessPrize = table.Column<bool>(type: "bit", nullable: false),
-                    OpenId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OpenId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    QRCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QRCode = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Claimed = table.Column<int>(type: "int", nullable: false),
@@ -92,8 +92,10 @@ namespace Wtdl.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LotteryRecord", x => x.Id);
-                });
+                    table.PrimaryKey("PK_LotteryRecord", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
+                })
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.CreateTable(
                 name: "OutStorage",
@@ -142,7 +144,7 @@ namespace Wtdl.Repository.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QrCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QrCode = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Captcha = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CashAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ReceiveTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -150,7 +152,7 @@ namespace Wtdl.Repository.Migrations
                     MchbillNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MchId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WxAppId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReOpenId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReOpenId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TotalAmount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SendListid = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NonceStr = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -160,8 +162,10 @@ namespace Wtdl.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RedPacketRecords", x => x.Id);
-                });
+                    table.PrimaryKey("PK_RedPacketRecords", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
+                })
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.CreateTable(
                 name: "ScanRedPackets",
@@ -188,6 +192,32 @@ namespace Wtdl.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tAgent",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AProvince = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ACity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AAddr = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ATel = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    APeople = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ABelong = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AType = table.Column<int>(type: "int", nullable: true),
+                    datetiem = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tAgent", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
+                })
+                .Annotation("SqlServer:MemoryOptimized", true);
+
+            migrationBuilder.CreateTable(
                 name: "tUser",
                 columns: table => new
                 {
@@ -198,7 +228,7 @@ namespace Wtdl.Repository.Migrations
                     PWD = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AgentID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Flag = table.Column<int>(type: "int", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 3, 4, 13, 53, 2, 644, DateTimeKind.Local).AddTicks(202))
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 3, 5, 21, 9, 17, 659, DateTimeKind.Local).AddTicks(7740))
                 },
                 constraints: table =>
                 {
@@ -237,7 +267,7 @@ namespace Wtdl.Repository.Migrations
                     OrderNumbels = table.Column<string>(type: "nvarchar(28)", maxLength: 28, nullable: true),
                     ExtensionName = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
                     ExtensionOrder = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 3, 5, 21, 9, 17, 659, DateTimeKind.Local).AddTicks(4271)),
                     AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -280,36 +310,6 @@ namespace Wtdl.Repository.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "tAgent",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AProvince = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ACity = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AAddr = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ATel = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    APeople = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ABelong = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AType = table.Column<int>(type: "int", nullable: true),
-                    datetiem = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LotteryActivityId = table.Column<int>(type: "int", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tAgent", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tAgent_LotteryActivity_LotteryActivityId",
-                        column: x => x.LotteryActivityId,
-                        principalTable: "LotteryActivity",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_ActivityPrize_LotteryActivityId",
                 table: "ActivityPrize",
@@ -321,9 +321,22 @@ namespace Wtdl.Repository.Migrations
                 column: "CreateTime");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LotteryRecord_CreateTime",
+                name: "IX_LotteryRecord_OpenId",
                 table: "LotteryRecord",
-                column: "CreateTime");
+                column: "OpenId")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LotteryRecord_QRCode",
+                table: "LotteryRecord",
+                column: "QRCode")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LotteryRecord_QRCode_OpenId",
+                table: "LotteryRecord",
+                columns: new[] { "QRCode", "OpenId" })
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prize_CreateTime",
@@ -331,9 +344,28 @@ namespace Wtdl.Repository.Migrations
                 column: "CreateTime");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tAgent_LotteryActivityId",
-                table: "tAgent",
-                column: "LotteryActivityId");
+                name: "IX_RedPacketRecords_CreateTime",
+                table: "RedPacketRecords",
+                column: "CreateTime")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RedPacketRecords_QrCode",
+                table: "RedPacketRecords",
+                column: "QrCode")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RedPacketRecords_QrCode_ReOpenId",
+                table: "RedPacketRecords",
+                columns: new[] { "QrCode", "ReOpenId" })
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RedPacketRecords_ReOpenId",
+                table: "RedPacketRecords",
+                column: "ReOpenId")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_VerificationCodes_QRCode",
@@ -359,7 +391,8 @@ namespace Wtdl.Repository.Migrations
                 name: "FileUploadRecords");
 
             migrationBuilder.DropTable(
-                name: "LotteryRecord");
+                name: "LotteryRecord")
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.DropTable(
                 name: "OutStorage",
@@ -369,13 +402,15 @@ namespace Wtdl.Repository.Migrations
                 name: "Prize");
 
             migrationBuilder.DropTable(
-                name: "RedPacketRecords");
+                name: "RedPacketRecords")
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.DropTable(
                 name: "ScanRedPackets");
 
             migrationBuilder.DropTable(
-                name: "tAgent");
+                name: "tAgent")
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.DropTable(
                 name: "tUser");

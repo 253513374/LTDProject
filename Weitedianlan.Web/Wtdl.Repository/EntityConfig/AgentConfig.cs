@@ -18,6 +18,11 @@ namespace Wtdl.Repository.EntityConfig
             builder.Property(p => p.datetiem);
 
             builder.Property(p => p.CreateTime).HasDefaultValueSql("GETDATE()");
+
+            builder.ToTable(b =>
+            {
+                b.IsMemoryOptimized();
+            }).HasAnnotation("SqlServer:MemoryOptimizedSize", 200 * 1024);//预分配 100MB 内存
             //builder.HasMany(a => a.WLabelStorage)
             //    .WithOne(w => w.Agent)
             //    .HasForeignKey(w => w.Dealers);

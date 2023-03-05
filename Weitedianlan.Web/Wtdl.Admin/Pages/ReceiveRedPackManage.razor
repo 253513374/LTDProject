@@ -15,8 +15,25 @@
 else
 {
 
-    <MudTable ServerData="@(new Func<TableState, Task<TableData<RedPacketRecord>>>(ServerReload))"
-              Dense="true" Striped="true" @ref="@mtable">
+@*    ServerData = "@(new Func<TableState, Task<TableData<RedPacketRecord>>>(ServerReload))"*@
+
+    <MudStack Class="my-5" Row="true"  >
+        <MudDateRangePicker   @ref="_picker" Label="查询时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
+                <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(async () => await OnDateRangePickerOk())">确定</MudButton>
+            </PickerActions>
+        </MudDateRangePicker>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+    </MudStack>
+
+    <MudTable Items="@PacketRecords"
+          Filter="new Func<RedPacketRecord, bool>(FilterFunc1)"
+              Dense="true" Striped="true" @ref="@_table">
         <ToolBarContent>
             <MudText Typo="Typo.h6">红包领取记录</MudText>
             <MudSpacer/>
@@ -24,7 +41,7 @@ else
         </ToolBarContent>
         <HeaderContent>
             <MudTh></MudTh>
-            <MudTh>OpenId</MudTh>
+            <MudTh>微信OpenID</MudTh>
             <MudTh>订单号</MudTh>
             <MudTh>标签序号</MudTh>
             <MudTh>验证码</MudTh>
@@ -55,25 +72,32 @@ else
         </MudTd>*@
         </RowTemplate>
         <PagerContent>
-            <MudTablePager/>
+            <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
+                <MudText Typo="Typo.button">@($"总数：{PacketRecords.Count()} ")</MudText>
+                <MudPagination Style="justify-content: end" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
+            </MudStack>
         </PagerContent>
     </MudTable>
 }
 @code {
 
+    private MudDateRangePicker _picker;
+    private DateRange _dateRange = new DateRange(DateTime.Now.Date.AddDays(-7), DateTime.Now.Date);
+
+    private MudTable<RedPacketRecord> _table;
+
     private IEnumerable<RedPacketRecord> PacketRecords { set; get; }
 
-    private MudTable<RedPacketRecord> mtable;
+   // private MudTable<RedPacketRecord> mtable;
     //private MudTable<Element> table;
     private string searchString = null;
     private int redPacketRecordCunt;
 
 
-    //protected async override Task OnInitializedAsync()
-    //{
-    //    PacketRecords = await _PacketRecordRepository.GetAllAsync();
-    //   // return base.OnInitializedAsync();
-    //}
+    protected async override Task OnInitializedAsync()
+    {
+        PacketRecords = await _PacketRecordRepository.FindAsync(f=>f.CreateTime>=DateTime.Now.Date.AddDays(-90));
+    }
 
     private async Task<TableData<RedPacketRecord>> ServerReload(TableState state)
     {
@@ -116,15 +140,53 @@ else
             case "mass_field":
                 break;
         }
-
         PacketRecords = datalist.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
         return new TableData<RedPacketRecord>() { TotalItems = redPacketRecordCunt, Items = PacketRecords };
-        //throw new NotImplementedException();
+
     }
     private Task OnSearch(string text)
     {
         searchString = text;
-        mtable.ReloadServerData();
+        _table.ReloadServerData();
         return Task.CompletedTask;
+    }
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+    private bool FilterFunc1(RedPacketRecord element) => FilterFunc(element, searchString);
+
+    private bool FilterFunc(RedPacketRecord element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return true;
+        }
+               
+        if (element.ReOpenId.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Captcha.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.QrCode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.TotalAmount.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+
+        if ($"{element.ReOpenId} {element.Captcha} {element.QrCode}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    private async Task OnDateRangePickerOk()
+    {
+        PacketRecords = null;
+        _picker.Close();
+        PacketRecords = await _PacketRecordRepository.FindAsync(f => f.CreateTime >= _dateRange.Start.Value && f.CreateTime <= _dateRange.End.Value);
+        return; 
     }
 }

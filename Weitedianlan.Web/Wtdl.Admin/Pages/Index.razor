@@ -45,11 +45,11 @@
                         <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mud-text-secondary  mb-n1">红包信息</MudText>
 
                         <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@RedPackedCount</MudText>
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@RedPacketCount</MudText>
                             <MudText Typo="Typo.caption">发放</MudText>
                         </MudStack>
                         <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@RedpacketTotalAmount</MudText>
+                            <MudText Typo="Typo.h6" Align="Align.Center" Inline="true">@TotalAmountSum</MudText>
                             <MudText Typo="Typo.caption">总额</MudText>
                         </MudStack>
                     </MudPaper>
@@ -112,7 +112,7 @@
     @if (isgetyear)
     {
         <MudPaper Elevation="0" Class="pa-8">
-            <MudText Typo="Typo.h6">@FormsNever.RadzenChartTitleText 年销量分析图表 </MudText>
+            <MudText Typo="Typo.h6">@FormsNever.RadzenChartTitleText 销量分析图表 </MudText>
 
             <MudPaper Height="55px" Elevation="5" Class="pa-3 mx-5"   Style="display: flex; align-items: center; gap: 0.5rem">
                 <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
@@ -130,7 +130,7 @@
             </RadzenChart>
         </MudPaper>
         <MudPaper Elevation="0" Class="pa-8">
-            <MudText Typo="Typo.h6">@FormsNever.RadzenChartTitleText  年订单总量对比 </MudText>
+            <MudText Typo="Typo.h6">@FormsNever.RadzenChartTitleText  订单分析图表 </MudText>
 
             <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
                 <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
@@ -139,8 +139,8 @@
                 <RadzenLabel Text="数据标签" For="dataLabels" />
             </RadzenCard>
             <RadzenChart>
-                <RadzenAreaSeries Smooth="@smooth" Data="@FormsNever.GroupByYearOrders" 
-                                  CategoryProperty="Year"   ValueProperty="Count" 
+                <RadzenAreaSeries Smooth="@smooth" Data="@FormsNever.GroupByOrderCounts"
+                              CategoryProperty="Year"   ValueProperty="Count" 
                                   LineType="LineType.Dotted" Title="订单总量">
                     <RadzenSeriesDataLabels Visible="@showDataLabels" />
                     <RadzenGridLines Visible="true" />
@@ -165,16 +165,17 @@
 @code
 {
 
-   
+
     private bool isgetyear = false;
     private bool isgetorder = false;
 
-    public int OutStorageCount { set; get; }
-    public int LotteryWinCount { get; set; }
-    public int LotteryCount { get; set; }
+  
+    private int OutStorageCount { set; get; }//今日出库数量
+    private int LotteryWinCount { get; set; }//中奖数量
+    private int LotteryCount { get; set; }//抽奖数量
 
-    public int RedPackedCount { get; set; }
-    public int RedpacketTotalAmount { get; set; }
+    private int RedPacketCount { get; set; }//红包发放数量
+    private int TotalAmountSum { get; set; }//红包发放金额
 
     bool smooth = true;
     bool showDataLabels = true;
@@ -195,8 +196,6 @@
     {
         if (auTask.Result.User is not null )
         {
-                
-            
             var claims = auTask.Result.User.Claims.ToList();
             var token = Service.GenerateJwtToken(claims);
             hubConnection = hubConnection.TryInitialize(_navigationManager, token);
@@ -208,12 +207,12 @@
             });
             hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>
             {
-                RedPackedCount = count;
+                RedPacketCount = count;
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnRedpacketTotalAmount, (count) =>
             {
-                RedpacketTotalAmount = count;
+                TotalAmountSum = count;
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnLotteryCount, (count) =>
@@ -239,12 +238,6 @@
     // await GetOrderNumberAsync();
     }
 
-    //private List<OutStorageAnalysis> GroupByYearCounts { set; get; }
-    //private List<OutStorageAnalysis> GroupByYearOrders { set; get; }
-
-
-    
-
     private  async Task GetAllYearCountAsync()
     {
         var cacheKey = $"ReportFormsNever{DateTime.Now.Year}";
@@ -259,6 +252,11 @@
             _Cache.Set(cacheKey, FormsNever, cacheOptions);
         }
 
+        LotteryCount      = await _LotteryRecordRepository.GetLotteryRecordsCountAsync();
+        LotteryWinCount   = await _LotteryRecordRepository.GetLotteryWinRecordsCountAsync();
+        RedPacketCount    = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync();
+        TotalAmountSum    = (int) await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
+        OutStorageCount = await _WLabelStorageRepository.GetTodayOutCountAsync(); 
 
         isgetyear = true;
     }
@@ -267,14 +265,12 @@
     {
 
         var formsNever = new ReportFormsNever();
-        formsNever.LotteryCount      = await _LotteryRecordRepository.GetLotteryRecordsCountAsync();
-        formsNever.RedPacketCount    = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync();
-        formsNever.TotalAmountSum    = await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
-        formsNever.GroupByYearOrders = await _outStorageRepository.GetGrapByYearAndOrderAsync();
+      
+        formsNever.GroupByOrderCounts = await _outStorageRepository.GetGrapByYearAndOrderAsync();
 
-        if (formsNever.GroupByYearOrders is null || formsNever.GroupByYearOrders.Count==0)
+        if (formsNever.GroupByOrderCounts is null || formsNever.GroupByOrderCounts.Count == 0)
         {
-            formsNever.GroupByYearOrders =await _WLabelStorageRepository.GetGroupByOrderNumbelsAsync(DateTime.Now.Year);
+            formsNever.GroupByOrderCounts = await _WLabelStorageRepository.GetGroupByOrderNumbelsAsync(DateTime.Now.Year);
         }
 
         var groupbyyearorders = await _outStorageRepository.GetGrapByYearAsync();

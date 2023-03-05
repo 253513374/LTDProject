@@ -13,6 +13,7 @@ namespace Wtdl.Repository.EntityConfig
             builder.Property(p => p.ID)//设置属性为自增长
                 .ValueGeneratedOnAdd();
 
+            builder.HasIndex(p => p.ID);//设置索引
             builder.HasIndex(p => p.QRCode);//设置索引
 
             builder.Property(p => p.CreateTime).HasDefaultValue(DateTime.Now);
@@ -20,7 +21,7 @@ namespace Wtdl.Repository.EntityConfig
             builder.ToTable(b =>
             {
                 b.IsMemoryOptimized();
-            });
+            }).HasAnnotation("SqlServer:MemoryOptimizedSize", 5 * 1024 * 1024);//预分配5GB 内存
 
             builder.Property(p => p.OrderNumbels).HasMaxLength(28);
             builder.Property(p => p.QRCode).HasMaxLength(21);

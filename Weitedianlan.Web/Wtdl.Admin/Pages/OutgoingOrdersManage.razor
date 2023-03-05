@@ -19,12 +19,8 @@
 else
 {
 
-
 @* 出库单管理页面 *@
     <MudPaper Height="400" Elevation="0" Style="max-height: 600px; position: relative;">
-        
-        
-        
         <MudStack Class="my-5" Row="true"  >
             <MudDateRangePicker   @ref="_picker" Label="查询时间范围" @bind-DateRange="_dateRange" AutoClose="false">
                 <PickerActions>
@@ -38,7 +34,7 @@ else
             <MudSpacer></MudSpacer>
             <MudSpacer></MudSpacer>
         </MudStack>
-        <MudTable Items="labelStorages" Class="mud-table-responsive"
+        <MudTable  @ref="@_table" Items="@labelStorages" Class="mud-table-responsive"
                   Filter="new Func<GroupByWLabelStorage, bool>(FilterFunc1)"
                   Dense="true" Striped="true" Hover="true" Bordered="true">
             <ToolBarContent>
@@ -69,13 +65,20 @@ else
                 </MudTd>
             </RowTemplate>
             <PagerContent>
-                <MudTablePager/>
+             @*   <MudTablePager/>*@
+             <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
+                 <MudText Typo="Typo.button">@($"订单量：{labelStorages.Count}  总扫码量：{labelStorages.Sum(s=>s.Count)} ")</MudText>
+                 <MudPagination Style="justify-content: end" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
+             </MudStack>
+               
             </PagerContent>
         </MudTable>
     </MudPaper>
 }
 @code {
     
+    private MudTable<GroupByWLabelStorage> _table;
+  
     private MudDateRangePicker _picker;
     private DateRange _dateRange = new DateRange(DateTime.Now.Date.AddDays(-7), DateTime.Now.Date);
 
@@ -146,5 +149,10 @@ else
         _picker.Close();
         labelStorages = await _labelStorageRepository.GetGroupByTimeRecordsAsync(_dateRange.Start.Value, _dateRange.End.Value);
         return; 
+    }
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
     }
 }

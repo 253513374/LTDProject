@@ -130,17 +130,18 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int?>("LotteryActivityId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("datetiem")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LotteryActivityId");
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
                     b.ToTable("tAgent", (string)null);
+
+                    b.HasAnnotation("SqlServer:MemoryOptimizedSize", 204800);
+
+                    SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.Analysis.OutStorageAnalysis", b =>
@@ -310,7 +311,7 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("OpenId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PrizeDescription")
                         .HasColumnType("nvarchar(max)");
@@ -322,7 +323,7 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QRCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
@@ -338,9 +339,25 @@ namespace Wtdl.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreateTime");
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("OpenId");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("OpenId"), false);
+
+                    b.HasIndex("QRCode");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QRCode"), false);
+
+                    b.HasIndex("QRCode", "OpenId");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QRCode", "OpenId"), false);
 
                     b.ToTable("LotteryRecord", (string)null);
+
+                    b.HasAnnotation("SqlServer:MemoryOptimizedSize", 1048576);
+
+                    SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.Prize", b =>
@@ -434,10 +451,10 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QrCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ReOpenId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("ReceiveTime")
                         .HasColumnType("datetime2");
@@ -453,7 +470,29 @@ namespace Wtdl.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("CreateTime");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CreateTime"), false);
+
+                    b.HasIndex("QrCode");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QrCode"), false);
+
+                    b.HasIndex("ReOpenId");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("ReOpenId"), false);
+
+                    b.HasIndex("QrCode", "ReOpenId");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QrCode", "ReOpenId"), false);
+
                     b.ToTable("RedPacketRecords");
+
+                    b.HasAnnotation("SqlServer:MemoryOptimizedSize", 1048576);
+
+                    SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
             modelBuilder.Entity("Weitedianlan.Model.Entity.ScanRedPacket", b =>
@@ -519,7 +558,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 3, 4, 13, 59, 50, 381, DateTimeKind.Local).AddTicks(9802));
+                        .HasDefaultValue(new DateTime(2023, 3, 5, 21, 9, 17, 659, DateTimeKind.Local).AddTicks(7740));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -591,7 +630,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 3, 4, 13, 59, 50, 381, DateTimeKind.Local).AddTicks(6222));
+                        .HasDefaultValue(new DateTime(2023, 3, 5, 21, 9, 17, 659, DateTimeKind.Local).AddTicks(4271));
 
                     b.Property<string>("Dealers")
                         .HasMaxLength(18)
@@ -633,6 +672,8 @@ namespace Wtdl.Repository.Migrations
 
                     b.ToTable("W_LabelStorage", (string)null);
 
+                    b.HasAnnotation("SqlServer:MemoryOptimizedSize", 5242880);
+
                     SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
@@ -640,15 +681,6 @@ namespace Wtdl.Repository.Migrations
                 {
                     b.HasOne("Weitedianlan.Model.Entity.LotteryActivity", "LotteryActivity")
                         .WithMany("Prizes")
-                        .HasForeignKey("LotteryActivityId");
-
-                    b.Navigation("LotteryActivity");
-                });
-
-            modelBuilder.Entity("Weitedianlan.Model.Entity.Agent", b =>
-                {
-                    b.HasOne("Weitedianlan.Model.Entity.LotteryActivity", "LotteryActivity")
-                        .WithMany()
                         .HasForeignKey("LotteryActivityId");
 
                     b.Navigation("LotteryActivity");

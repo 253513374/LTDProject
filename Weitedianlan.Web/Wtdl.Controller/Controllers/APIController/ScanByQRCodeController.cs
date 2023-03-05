@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using Weitedianlan.Model.Entity;
 using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Models.ResponseModel;
@@ -16,9 +17,12 @@ namespace Wtdl.Mvc.Controllers.APIController
     {
         private readonly SearchByCodeService _searchByCodeService;
 
-        public ScanByQRCodeController(SearchByCodeService codeService)
+        private ILogger<ScanByQRCodeController> _logger;
+
+        public ScanByQRCodeController(SearchByCodeService codeService, ILogger<ScanByQRCodeController> logger)
         {
             _searchByCodeService = codeService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -67,17 +71,30 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns>
         /// </returns>
-        [ResponseCache(Duration = 300)]
+        [ResponseCache(Duration = 300, VaryByQueryKeys = new string[] { "qrcode" })]
         [HttpGet("Traceability")]
         public async Task<TraceabilityResult> Get(string qrcode)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            // your function code here
+
             if (string.IsNullOrEmpty(qrcode))
             {
                 return new TraceabilityResult() { Status = false, Msg = "查询标签序号不能为空" };
             }
 
             qrcode = qrcode.Trim();
-            return await _searchByCodeService.GetWLabelStorageAsync(qrcode);
+            var result = await _searchByCodeService.GetWLabelStorageAsync(qrcode);
+
+            stopwatch.Stop();
+            TimeSpan ts = stopwatch.Elapsed;
+
+            _logger.LogInformation("溯源信息查询时间: {0}.{1:000} 秒",
+                ts.Seconds, ts.Milliseconds);
+
+            return result;
         }
     }
 }

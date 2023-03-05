@@ -109,7 +109,10 @@ namespace Wtdl.Repository
             {
                 using (var context = _contextFactory.CreateDbContext())
                 {
-                    var latestData = await context.WLabelStorages.AsNoTracking().OrderByDescending(x => x.ID).FirstOrDefaultAsync();
+                    int maxId = context.WLabelStorages.Select(e => e.ID).Max();
+                    //var latestData = context.WLabelStorages.FromSqlRaw("SELECT MAX(ID) FROM W_LabelStorage");
+                    var latestData = context.WLabelStorages.FirstOrDefault(e => e.ID == maxId);
+                    //   var latestData = await context.WLabelStorages.AsNoTracking().OrderByDescending(x => x.OutTime).FirstOrDefaultAsync();
                     var thirtyDaysAgo = latestData.OutTime.AddDays(-30);// DateTime.Now.AddDays(-30);
 
                     return await GetGroupByTimeRecordsAsync(thirtyDaysAgo, DateTime.Now);
@@ -145,7 +148,7 @@ namespace Wtdl.Repository
                             Count = g.Count(),
                         }).ToListAsync();
 
-                    context.BulkInsert(graupbylist);
+                    context.BulkInsert(graupbylist.Where(w => w.Year >= 2015 && w.Year < DateTime.Now.Year).ToList());
                     context.SaveChanges();
 
                     var listGroupBy = graupbylist.GroupBy(g => g.Year).Select(s => new OutStorageAnalysis
@@ -346,7 +349,10 @@ namespace Wtdl.Repository
             }
         }
 
-        //返回当天的出库数量
+        /// <summary>
+        /// 返回当天的出库数量
+        /// </summary>
+        /// <returns></returns>
         public async Task<int> GetTodayOutCountAsync()
         {
             using (var context = _contextFactory.CreateDbContext())

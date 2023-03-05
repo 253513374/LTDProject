@@ -15,7 +15,7 @@ else
 
 
 
-    <MudTable Items="lotteryRecords" Dense="true" Striped="true"
+    <MudTable @ref="@_table" Items="lotteryRecords" Dense="true" Striped="true"
               Filter="new Func<LotteryRecord, bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
               Bordered="true" Hover="true">
         <ToolBarContent>
@@ -25,7 +25,7 @@ else
             <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh>OpenId</MudTh>
+            <MudTh>微信OpenID</MudTh>
             <MudTh>标签序号</MudTh>
             <MudTh>抽奖时间</MudTh>
             <MudTh>抽奖状态</MudTh>
@@ -57,7 +57,10 @@ else
             <MudTd>@context.Claimed</MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager/>
+            <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
+                <MudText Typo="Typo.button">@($"总数：{lotteryRecords.Count()} ")</MudText>
+                <MudPagination Style="justify-content: end" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
+            </MudStack>
         </PagerContent>
         @*    <PagerContent>
         <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
@@ -65,6 +68,9 @@ else
     </MudTable>
 }
 @code {
+
+
+    private MudTable<LotteryRecord> _table;
 
     // private MudTable<LotteryRecord> _table;
     private IEnumerable<LotteryRecord> lotteryRecords;
@@ -103,6 +109,9 @@ else
     {
         lotteryRecords = await _LotteryRecordRepository.GetLatestLotteryRecordsAsync();
     }
-
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
 
 }

@@ -146,5 +146,17 @@ namespace Wtdl.Repository
                 return await context.LotteryRecords.AsNoTracking().Where(x => x.OpenId == openid).ToListAsync();
             }
         }
+
+        /// <summary>
+        /// 返回中奖总数
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> GetLotteryWinRecordsCountAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.LotteryRecords.AsNoTracking().Where(x => x.IsSuccessPrize == true).CountAsync();
+            }
+        }
     }
 }

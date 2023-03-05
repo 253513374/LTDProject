@@ -9,7 +9,7 @@ namespace Wtdl.Admin.Data
     {
         public ReportFormsNever()
         {
-            GroupByYearOrders = new List<OutStorageAnalysis>();
+            GroupByOrderCounts = new List<OutStorageAnalysis>();
             GroupByYearCounts = new List<OutStorageAnalysis>();
         }
 
@@ -36,7 +36,7 @@ namespace Wtdl.Admin.Data
         /// <summary>
         /// 年订单量
         /// </summary>
-        public List<OutStorageAnalysis> GroupByYearOrders { set; get; }
+        public List<OutStorageAnalysis> GroupByOrderCounts { set; get; }
 
         /// <summary>
         /// 年出货量
@@ -47,7 +47,12 @@ namespace Wtdl.Admin.Data
         {
             get
             {
-                return $"{GroupByYearCounts.Min(m => m.Year)} - {GroupByYearCounts.Max(m => m.Year)}";
+                if (GroupByYearCounts.Count > 0)
+                {
+                    return $"{GroupByYearCounts.Min(m => m.Year)} - {GroupByYearCounts.Max(m => m.Year)}";
+                }
+
+                return "";
             }
         }
 
@@ -55,7 +60,9 @@ namespace Wtdl.Admin.Data
         {
             get
             {
-                return GroupByYearCounts.Sum(s => s.Count);
+                if (GroupByYearCounts.Count > 0)
+                    return GroupByYearCounts.Sum(s => s.Count);
+                return 0;
             }
         }
 
@@ -63,7 +70,9 @@ namespace Wtdl.Admin.Data
         {
             get
             {
-                return GroupByYearOrders.Sum(s => s.Count);
+                if (GroupByYearCounts.Count > 0)
+                    return GroupByOrderCounts.Sum(s => s.Count);
+                return 0;
             }
         }
     }

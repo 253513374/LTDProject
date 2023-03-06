@@ -214,7 +214,6 @@
     <Compile Include="ViewModels\DBResult.cs" />
     <Compile Include="Services\HubExtensions.cs" />
     <Compile Include="ViewModels\LoginData.cs" />
-    <Compile Include="ViewModels\LoginResult.cs" />
     <Compile Include="ViewModels\OutStorageResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\tAgent.cs" />

@@ -31,15 +31,13 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                if (count == 0)
-                {
-                    return await context.Prizes
-                        .OrderByDescending(x => x.CreateTime)
-                        .AsNoTracking().ToListAsync();
-                }
+                //if (count == 0)
+                //{
+                //    return await context.Prizes.AsNoTracking().ToListAsync();
+                //}
                 return await context.Prizes.AsNoTracking()
-                    .OrderByDescending(x => x.CreateTime)
-                    .Take(count)
+                    //.OrderByDescending(x => x.CreateTime)
+                    //.Take(count)
                     .ToListAsync();
             }
         }

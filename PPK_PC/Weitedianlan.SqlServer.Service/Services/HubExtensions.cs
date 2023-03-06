@@ -7,6 +7,7 @@ using System.Configuration;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Wtdl.Share;
 
 namespace Weitedianlan.SqlServer.Service
 {

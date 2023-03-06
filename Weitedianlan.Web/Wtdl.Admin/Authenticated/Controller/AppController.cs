@@ -78,7 +78,7 @@ namespace Wtdl.Admin.Authenticated.Controller
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddYears(5),
                 signingCredentials: creds
             );
 

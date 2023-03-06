@@ -29,8 +29,6 @@ namespace Wtdl.Admin.Quartzs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            //var now = DateTime.Now;
-            //var timeToMidnight = new TimeSpan(24, 0, 0) - now.TimeOfDay;
             var options = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(DateTimeOffset.Now);
             int newValue;
@@ -40,15 +38,12 @@ namespace Wtdl.Admin.Quartzs
             {
                 _logger.LogInformation("从数据库获取数据");
                 //获取当前数据
-                counter = await _storageRepository.GetCurrentYearCountAsync();
+                counter = await _storageRepository.GetThisYearOutCountAsync();
                 _cache.Set(CacheKeys.YearChaeKey, counter);
                 _logger.LogInformation("从数据库获取数据完成");
             }
             newValue = Interlocked.Increment(ref counter);
             _cache.Set(CacheKeys.DayCacheKey, newValue, options);
-
-            //   return Task.CompletedTask;
-            //_logger.LogInformation("缓存更新完成");
         }
     }
 }

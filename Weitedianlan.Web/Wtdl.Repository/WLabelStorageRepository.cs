@@ -10,6 +10,8 @@ using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
 using System.Linq;
 using EFCore.BulkExtensions;
+using Microsoft.Identity.Client;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using Weitedianlan.Model.Entity.Analysis;
 
 namespace Wtdl.Repository
@@ -47,7 +49,7 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 var groupedData = context.WLabelStorages.AsNoTracking()
-                    .Where(x => x.OrderTime >= startTime && x.OrderTime <= endTime)
+                    .Where(x => x.OrderTime >= startTime && x.OrderTime < endTime.AddDays(1))
                     .OrderByDescending(o => o.OrderTime)
                     .GroupBy(x => new { x.OrderNumbels, x.OrderTime })
                     //(x.OrderTime))
@@ -58,16 +60,17 @@ namespace Wtdl.Repository
                         Count = g.Count(),
                     });
 
-                var resultList = await groupedData.Join(context.Agents,
+                var resultList = await groupedData.GroupJoin(context.Agents,
                         t => t.OrderNumbels,
-                        a => a.AID,
-                        (t, a) => new GroupByWLabelStorage
-                        {
-                            OrderNumbels = t.OrderNumbels,
-                            Time = t.Time,
-                            Count = t.Count,
-                            AgentName = a.AName,
-                        }).Distinct()
+                a => a.AID,
+                        (t, a) => new { outstorage = t, agents = a })
+                    .SelectMany(s => s.agents.DefaultIfEmpty(), (s, suagent) => new GroupByWLabelStorage()
+                    {
+                        OrderNumbels = s.outstorage.OrderNumbels,
+                        Time = s.outstorage.Time,
+                        Count = s.outstorage.Count,
+                        AgentName = suagent.AName,
+                    }).Distinct()
                     .OrderByDescending(o => o.Time).ToListAsync();
 
                 if (resultList is null || resultList.Count == 0)
@@ -86,17 +89,18 @@ namespace Wtdl.Repository
                             Count = g.Count(),
                         });
 
-                    resultList = await groupedDataold.Join(context.Agents,
-                            t => t.ID,
-                            a => a.AID,
-                            (t, a) => new GroupByWLabelStorage
-                            {
-                                OrderNumbels = t.OrderNumbels,
-                                Time = t.Time,
-                                Count = t.Count,
-                                AgentName = a.AName,
-                            }).Distinct()
-                        .OrderByDescending(o => o.Time).ToListAsync();
+                    resultList = await groupedDataold.GroupJoin(context.Agents,
+                               t => t.OrderNumbels,
+                               a => a.AID,
+                               (t, a) => new { outstorage = t, agents = a })
+                           .SelectMany(s => s.agents.DefaultIfEmpty(), (s, suagent) => new GroupByWLabelStorage()
+                           {
+                               OrderNumbels = s.outstorage.OrderNumbels,
+                               Time = s.outstorage.Time,
+                               Count = s.outstorage.Count,
+                               AgentName = suagent.AName,
+                           }).Distinct()
+                           .OrderByDescending(o => o.Time).ToListAsync();
                 }
 
                 return resultList;
@@ -231,9 +235,9 @@ namespace Wtdl.Repository
                     .Where(w => w.QRCode.Trim() == qrcode.Trim())
                     .Select(s => s.OutTime)
                     .FirstOrDefaultAsync();
-                outtime = outtime.AddHours(24);
+                outtime = outtime.AddDays(1);
                 //判断两个时间的大小
-                if (DateTime.Compare(now, outtime) > 0)
+                if (DateTime.Now.Date > outtime.Date)
                 {
                     return true;
                 }
@@ -412,11 +416,11 @@ namespace Wtdl.Repository
         }
 
         /// <summary>
-        /// 返回统计最新一年数量
+        /// 返回今年扫码出库量
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<int> GetCurrentYearCountAsync()
+        public async Task<int> GetThisYearOutCountAsync()
         {
             using (var context = _contextFactory.CreateDbContext())
             {

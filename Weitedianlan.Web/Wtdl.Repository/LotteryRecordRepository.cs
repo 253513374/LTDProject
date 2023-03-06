@@ -113,7 +113,7 @@ namespace Wtdl.Repository
         }
 
         /// <summary>
-        /// 获取最新的前1000条记录
+        /// 获取最新前90天记录
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
@@ -121,7 +121,7 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.LotteryRecords.AsNoTracking().OrderByDescending(x => x.CreateTime).Take(1000).ToListAsync();
+                return await context.LotteryRecords.AsNoTracking().Where(x => x.CreateTime>DateTime.Now.AddDays(-90)).ToListAsync();
             }
         }
 

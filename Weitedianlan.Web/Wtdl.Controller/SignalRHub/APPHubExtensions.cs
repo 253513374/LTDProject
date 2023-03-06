@@ -22,6 +22,7 @@ namespace Wtdl.Controller.SignalRHub
                                   {
                                       options.AccessTokenProvider = () => Task.FromResult(accesstoken);
                                   })
+                                  .WithAutomaticReconnect()
                                   .Build();
             }
             return hubConnection;

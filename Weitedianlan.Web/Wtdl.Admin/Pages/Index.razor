@@ -72,7 +72,7 @@
                         <MudIcon Icon="@Icons.Material.Outlined.Warehouse" Color="Color.Primary" Class="mx-4" Style="width: 54px; height: 54px;"></MudIcon>
                         <div style="width: 100%">
                             <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">今年出货量</MudText>
-                            <MudText Typo="Typo.h5">@_Cache.Get(CacheKeys.YearChaeKey)</MudText>
+                            <MudText Typo="Typo.h5">@OutStorageThisYearCount</MudText>
                         </div>
                     </MudPaper>
                 </MudItem>
@@ -169,13 +169,13 @@
     private bool isgetyear = false;
     private bool isgetorder = false;
 
-  
-    private int OutStorageCount { set; get; }//今日出库数量
-    private int LotteryWinCount { get; set; }//中奖数量
-    private int LotteryCount { get; set; }//抽奖数量
+    private int OutStorageThisYearCount;//今年出库数量
+    private int OutStorageCount;//今日出库数量
+    private int LotteryWinCount;//中奖数量
+    private int LotteryCount;//抽奖数量
 
-    private int RedPacketCount { get; set; }//红包发放数量
-    private int TotalAmountSum { get; set; }//红包发放金额
+    private int RedPacketCount;//红包发放数量
+    private int TotalAmountSum;//红包发放金额
 
     bool smooth = true;
     bool showDataLabels = true;
@@ -207,7 +207,7 @@
             });
             hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>
             {
-                RedPacketCount = count;
+                RedPacketCount = Interlocked.Increment(ref RedPacketCount);
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnRedpacketTotalAmount, (count) =>
@@ -217,13 +217,13 @@
             });
             hubConnection.On<int>(HubClientMethods.OnLotteryCount, (count) =>
             {
-                LotteryCount = count;
+                LotteryCount = Interlocked.Increment(ref LotteryCount);
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnLotteryWinCount, (count) =>
             {
                 //中奖人数
-                LotteryWinCount = count;
+                LotteryWinCount = Interlocked.Increment(ref LotteryWinCount);
                 InvokeAsync(StateHasChanged);
             });
             await hubConnection.StartAsync();
@@ -257,6 +257,9 @@
         RedPacketCount    = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync();
         TotalAmountSum    = (int) await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
         OutStorageCount = await _WLabelStorageRepository.GetTodayOutCountAsync(); 
+
+        //今年出口量
+        OutStorageThisYearCount = await _WLabelStorageRepository.GetThisYearOutCountAsync();
 
         isgetyear = true;
     }

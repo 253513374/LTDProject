@@ -89,19 +89,14 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyOut(string qrcode)
         {
-            //抽奖限制：出库24小时才能抽奖
-            var qrcodekey = qrcode.Substring(0, 4);
-            var offset = qrcode.Substring(4, 7);
+            var outqrcode = await _wLabelStorageRepository.FindSingleAsync(f => f.QRCode.Contains(qrcode));
 
-            //获取出库状态 偏移量的位置为 1,说明已经出库
-            var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
-            if (bitValue)
+            if (outqrcode is not null)
             {
-                //获取出库数据是否超过24小时
-                var value = await _database.StringGetAsync(qrcode);
-                if (value.HasValue)
+                var outOKTime = outqrcode.OutTime.AddDays(1);
+
+                if (outOKTime < DateTime.Now)
                 {
-                    // key 存在，说明还没有超过24小时,继续处理
                     return new VerifyResult()
                     {
                         IsSuccess = false,
@@ -113,19 +108,56 @@ namespace Wtdl.Mvc.Services
                     return new VerifyResult()
                     {
                         IsSuccess = true,
-                        Message = "标签已经扫码出库，但是还没有到抽奖时间",
+                        Message = "可以参加活动",
                     };
                 }
             }
             else
             {
-                // 偏移量的位置值为 0，说明数据还没有出库
                 return new VerifyResult()
                 {
                     IsSuccess = false,
                     Message = "标签还没有扫码出库，无法参与活动",
                 };
             }
+
+            ////抽奖限制：出库24小时才能抽奖
+            //var qrcodekey = qrcode.Substring(0, 4);
+            //var offset = qrcode.Substring(4, 7);
+
+            ////获取出库状态 偏移量的位置为 1,说明已经出库
+            //var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
+            //if (bitValue)
+            //{
+            //    //获取出库数据是否超过24小时
+            //    var value = await _database.StringGetAsync(qrcode);
+            //    if (value.HasValue)
+            //    {
+            //        // key 存在，说明还没有超过24小时,继续处理
+            //        return new VerifyResult()
+            //        {
+            //            IsSuccess = false,
+            //            Message = "标签已经扫码出库，但是还没有到抽奖时间",
+            //        };
+            //    }
+            //    else
+            //    {
+            //        return new VerifyResult()
+            //        {
+            //            IsSuccess = true,
+            //            Message = "标签已经扫码出库，但是还没有到抽奖时间",
+            //        };
+            //    }
+            //}
+            //else
+            //{
+            //    // 偏移量的位置值为 0，说明数据还没有出库
+            //    return new VerifyResult()
+            //    {
+            //        IsSuccess = false,
+            //        Message = "标签还没有扫码出库，无法参与活动",
+            //    };
+            //}
         }
 
         /// <summary>

@@ -5,6 +5,15 @@
 
 
 <MudPageTitle Title="抽奖数据" Description="扫码抽奖记录"></MudPageTitle>
+
+
+
+
+
+
+
+
+
 @if (lotteryRecords is null)
 {
 
@@ -13,7 +22,19 @@
 else
 {
 
-
+    <MudStack Class="my-5" Row="true"  >
+        <MudDateRangePicker   @ref="_picker" Label="查询时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
+                <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(async () => await OnDateRangePickerOk())">确定</MudButton>
+            </PickerActions>
+        </MudDateRangePicker>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+    </MudStack>
 
     <MudTable @ref="@_table" Items="lotteryRecords" Dense="true" Striped="true"
               Filter="new Func<LotteryRecord, bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
@@ -69,6 +90,8 @@ else
 }
 @code {
 
+    private MudDateRangePicker _picker;
+    private DateRange _dateRange = new DateRange(DateTime.Now.Date.AddDays(-7), DateTime.Now.Date);
 
     private MudTable<LotteryRecord> _table;
 
@@ -113,5 +136,11 @@ else
     {
         _table.NavigateTo(i - 1);
     }
-
+    private async Task OnDateRangePickerOk()
+    {
+        lotteryRecords = null;
+        _picker.Close();
+        lotteryRecords = await _LotteryRecordRepository.FindAsync(f => f.CreateTime >= _dateRange.Start.Value && f.CreateTime <= _dateRange.End.Value);
+        return; 
+    }
 }

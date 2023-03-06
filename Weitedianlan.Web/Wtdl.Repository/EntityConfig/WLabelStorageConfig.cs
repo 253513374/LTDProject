@@ -15,6 +15,7 @@ namespace Wtdl.Repository.EntityConfig
 
             builder.HasIndex(p => p.ID);//设置索引
             builder.HasIndex(p => p.QRCode);//设置索引
+            builder.HasIndex(p => p.CreateTime);//设置索引
 
             builder.Property(p => p.CreateTime).HasDefaultValue(DateTime.Now);
 

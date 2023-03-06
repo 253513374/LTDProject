@@ -1,43 +1,42 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using System.Net.Http;
+using System.Text.Json;
+using Microsoft.Net.Http.Headers;
 using Wtdl.Controller.SignalRHub;
+using Wtdl.Share;
 using Wtdl.Share.SignalR;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Wtdl.Controller.Services
 {
     public class HubService
     {
-        private HubConnection _connection;
+        private static HubConnection _connection;
 
         private readonly IConfiguration _configuration;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<HubService> _logger;
 
-        public HubService(IConfiguration configuration, HttpClient client, ILogger<HubService> logger)
+        private static string Token;
+        private static string HubUrl;
+
+        public HubService(IConfiguration configuration, IHttpClientFactory httpClientFactory, ILogger<HubService> logger)
         {
             //   _connection = connection;
             _logger = logger;
             _configuration = configuration;
-
+            _httpClientFactory = httpClientFactory;
             _ = TryInitializeHub();
+            Token = GetSignalRAppToken().Result;
+            HubUrl = configuration.GetValue<string>("SignalR:HubUrl");
+
+            //  _connection.TryInitialize(HubUrl, Token);
         }
 
         private async Task TryInitializeHub()
         {
-            if (_connection is null)
-            {
-                var hubUrl = _configuration.GetValue<string>("SignalR:HubUrl");
-                _connection = new HubConnectionBuilder()
-                    .WithUrl(hubUrl, options =>
-                    {
-                        options.AccessTokenProvider = async () =>
-                        {
-                            return await GetSignalRAppToken();
-                        };
-                    })
-                    .WithAutomaticReconnect()
-                    .Build();
-                _connection.StartAsync();
-            }
+            _connection = _connection.TryInitialize(HubUrl, Token);
+            await _connection.StartAsync();
         }
 
         /// <summary>
@@ -48,14 +47,45 @@ namespace Wtdl.Controller.Services
         {
             ///http调用，返回token
             var tokenurl = _configuration.GetValue<string>("SignalR:TokenUrl");
-            return await _httpClient.GetStringAsync(tokenurl);
+
+            var httpRequestMessage = new HttpRequestMessage(
+                HttpMethod.Get,
+                tokenurl)
+            {
+                Headers =
+                {
+                    { HeaderNames.Accept, "application/json" },
+                    { HeaderNames.UserAgent, "HttpRequestsSample" }
+                }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                var contentStream =
+                   await httpResponseMessage.Content.ReadAsStringAsync();
+
+                var LoginResult = JsonSerializer.Deserialize<LoginResult>(contentStream);
+                return LoginResult.Token;
+                //GitHubBranches = await JsonSerializer.DeserializeAsync
+                //    <IEnumerable<GitHubBranch>>(contentStream);
+            }
+
+            return ""; //await _httpClient.GetStringAsync(tokenurl);
         }
 
         public async Task SendLotteryCountAsync()
         {
             try
             {
-                await TryInitializeHub();
+                _connection = _connection.TryInitialize(HubUrl, Token);
+                if (_connection.State != HubConnectionState.Connected)
+                {
+                    await _connection.StartAsync();
+                }
+
                 await _connection.InvokeAsync(HubServerMethods.SendLotteryCount);
             }
             catch (Exception e)

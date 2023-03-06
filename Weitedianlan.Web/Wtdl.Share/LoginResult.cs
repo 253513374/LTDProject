@@ -1,4 +1,6 @@
-﻿namespace Wtdl.Share
+﻿using System.Text.Json.Serialization;
+
+namespace Wtdl.Share
 {
     public class LoginResult
     {
@@ -6,14 +8,19 @@
         {
         }
 
+        [JsonPropertyName("succeeded")]
         public bool Succeeded { get; set; }
 
+        [JsonPropertyName("error")]
         public string Error { get; set; }
 
+        [JsonPropertyName("token")]
         public string Token { get; set; }
 
+        [JsonPropertyName("username")]
         public string Username { get; set; }
 
+        [JsonPropertyName("userId")]
         public string UserId { get; set; }
 
         public static LoginResult Failure(string error)

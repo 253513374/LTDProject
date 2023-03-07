@@ -1,6 +1,4 @@
-﻿using RTools_NTS.Util;
-
-namespace Wtdl.Mvc.Models
+﻿namespace Wtdl.Mvc.Models
 {
     public class LoginResult
     {

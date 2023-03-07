@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.Remoting.Contexts;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 using Weitedianlan.model.ReQuest;
@@ -30,6 +24,11 @@ namespace Weitedianlan.SqlServer.Service
         private HubConnection hubConnection;
 
         private List<Claim> Claims = new List<Claim>();
+
+        /// <summary>
+        /// 默认在线 true,l离线为false
+        /// </summary>
+        private static bool OnlineOrOffline = true;
 
         public WtdlSqlService()
         {
@@ -91,19 +90,26 @@ namespace Weitedianlan.SqlServer.Service
             };
             try
             {
-                using (var context = new WTDLContext())
+                //判断是网络是Online还是Offline
+                if (hubConnection.State == HubConnectionState.Connected)
                 {
-                    context.W_LabelStorages.Add(tlabelx);
-                    int i = await context.SaveChangesAsync();
-                    if (i > 0)
+                    hubConnection = hubConnection.TryInitialize();
+                    await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
+                    //var result = await hubConnection.InvokeAsync<OutStorageResult>("SendOutStorageAsync", tlabelx);
+
+                    return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                }
+                else
+                {
+                    ///网络不通的情况下，数据保存到本地数据库
+                    using (var context = new WTDLContext())
                     {
-                        hubConnection = hubConnection.TryInitialize();
-                        await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
-                        // var result = await hubConnection.InvokeAsync<OutStorageResult>("SendOutStorageAsync", tlabelx);
-                        return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
-                    }
-                    else
-                    {
+                        context.W_LabelStorages.Add(tlabelx);
+                        int i = await context.SaveChangesAsync();
+                        if (i > 0)
+                        {
+                            return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                        }
                         return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
                     }
                 }
@@ -189,10 +195,6 @@ namespace Weitedianlan.SqlServer.Service
                         }
                     }
                 }
-                //else
-                //{
-                //    return new ResponseModel { code = 404, result = "单号数据为空", data = null };
-                //}
             }
             catch (Exception ex)
             {
@@ -328,55 +330,56 @@ namespace Weitedianlan.SqlServer.Service
         /// </summary>
         /// <param name="loginData"></param>
         /// <returns></returns>
-        public async Task<UserResult> UserLoging(LoginData loginData)
+        public async Task<UserResult> UserLoging(LoginData loginData, bool isonline)
         {
             hubConnection = hubConnection.TryInitialize(loginData.Username, loginData.Password);
-
             hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
             {
+                //服务器后台通过这里控制PC端是否可以使用
                 //this.Dispatcher.Invoke(() =>
                 //{
                 //    var newMessage = $"{user}: {message}";
                 //    messagesList.Items.Add(newMessage);
                 //});
             });
+            hubConnection.Closed += async (error) =>
+            {
+                OnlineOrOffline = false;
+                // 网络断开的处理逻辑，一直循环重新连接上为止.
+                await Task.Delay(new Random().Next(0, 3) * 1000);
+                await ConnectWithRetryAsync();
+            };
 
-            //await hubConnection.StartAsync();
+            hubConnection.Reconnected += (connectionId) =>
+            {
+                OnlineOrOffline = true;
+                // 重新连接成功的处理逻辑
+                Console.WriteLine($"重新连接成功！:{connectionId}");
+                return Task.CompletedTask;
+            };
+
+            hubConnection.Reconnecting += (connectionId) =>
+            {
+                //进入重连状态
+                return Task.CompletedTask;
+            };
 
             try
             {
                 await hubConnection.StartAsync();
-
-                var usernnfo = hubConnection.TryGetUser(); //await hubConnection.InvokeAsync<User>("GetUserAsync");
-                                                           //messagesList.Items.Add("Connection started");
-                                                           // connectButton.IsEnabled = false;
-                                                           // sendButton.IsEnabled = true;
-
+                var usernnfo = hubConnection.TryGetUser();
                 return UserResult.Success(usernnfo);
             }
             catch (Exception ex)
             {
+                if (!isonline)
+                {
+                    _ = ConnectWithRetryAsync();
+                    return UserResult.Success(new User() { UserName = loginData.Username, UserID = "OfflineUserId" });
+                }
+
                 return UserResult.Failed(ex.Message);
-                //Console.WriteLine(ex.Message);
             }
-
-            //  return 1;
-            //var redb = DbEntities.Users.AsNoTracking().Where(w => w.UserID == loginData.Username).FirstOrDefault();
-
-            //if (redb != null)
-            //{
-            //    string enstr = new DataEnCode().Encrypt(loginData.Password);
-            //    //  string destr = new DataEnCode().Decrypt(redb.PWD);
-            //    if (redb.PWD.Trim() == enstr.Trim())
-            //    {
-            //        return _usernnfo = redb;// loginData.Username;
-            //    }
-            //    return null;
-            //}
-            //else
-            //{
-            //    return null;
-            //}
         }
 
         public ResponseModel GetOrdersFinish(string beingDatePickers)
@@ -399,6 +402,37 @@ namespace Weitedianlan.SqlServer.Service
             }
             return response;
             //  throw new NotImplementedException();
+        }
+
+        private async Task ConnectWithRetryAsync()
+        {
+            while (true)
+            {
+                try
+                {
+                    await hubConnection.StartAsync();
+                    Console.WriteLine("连接成功！");
+                    break;//连接成功 退出循环
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("401"))
+                    {
+                        Console.WriteLine($"SignalR连接失败！:{ex.Message}");
+                    }
+                    //if (retryAttempts < retryCount)
+                    //{
+                    //    Console.WriteLine($"连接失败：{ex.Message}，{retryCount - retryAttempts} 次尝试后将重试...");
+                    //    retryAttempts++;
+                    //    await Task.Delay(retryDelay);
+                    //}
+                    //else
+                    //{
+                    //    Console.WriteLine("连接失败：达到最大重试次数！");
+                    //    break;
+                    //}
+                }
+            }
         }
     }
 

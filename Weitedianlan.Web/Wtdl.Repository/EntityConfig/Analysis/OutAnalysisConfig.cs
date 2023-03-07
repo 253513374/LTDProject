@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Entity.Analysis;
 
 namespace Wtdl.Repository.EntityConfig.Analysis

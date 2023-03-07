@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EFCore.BulkExtensions;
+﻿using EFCore.BulkExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Entity.Analysis;
 using Wtdl.Repository.Interface;
 using Wtdl.Repository.MediatRHandler.Events;

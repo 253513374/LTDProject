@@ -1,12 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CsvHelper;
 using Weitedianlan.Model.Entity;
 using Wtdl.Repository.Interface;
 
@@ -121,7 +115,7 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.LotteryRecords.AsNoTracking().Where(x => x.CreateTime>DateTime.Now.AddDays(-90)).ToListAsync();
+                return await context.LotteryRecords.AsNoTracking().Where(x => x.CreateTime > DateTime.Now.AddDays(-90)).ToListAsync();
             }
         }
 

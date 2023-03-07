@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Wtdl.Admin.Data;
 using Wtdl.Admin.Pages.Dialog.Components.FileUpImage;
 
 namespace Wtdl.Admin.Pages.FluentValidator

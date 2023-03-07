@@ -1,17 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Wtdl.Admin.Authenticated.IdentityModel;
-
-namespace Wtdl.Admin.Authenticated
+﻿namespace Wtdl.Admin.Authenticated
 {
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Components.Authorization;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
+    using System.Threading.Tasks;
 
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {

@@ -1,11 +1,9 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
-using MimeKit;
-using MimeKit.Utils;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Wtdl.Repository.MediatRHandler.Events;
 using Microsoft.Extensions.Options;
+using MimeKit;
+using Wtdl.Repository.MediatRHandler.Events;
 
 namespace Wtdl.Repository.Tools
 {

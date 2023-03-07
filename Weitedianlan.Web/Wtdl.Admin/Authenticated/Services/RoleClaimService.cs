@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Pkcs;
-using System.Collections.Generic;
 using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
-using static Wtdl.Admin.Authenticated.IdentityModel.Permissions;
 
 namespace Wtdl.Admin.Authenticated.Services
 {

@@ -8,12 +8,8 @@
 ----------------------------------------------------------------*/
 
 //DPBMARK_FILE MP
-using Senparc.CO2NET.Extensions;
 using Senparc.CO2NET.Utilities;
-using Senparc.NeuChar.Agents;
 using Senparc.NeuChar.Entities;
-using Senparc.Weixin.MP;
-using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.Entities;
 using System.Diagnostics;
 

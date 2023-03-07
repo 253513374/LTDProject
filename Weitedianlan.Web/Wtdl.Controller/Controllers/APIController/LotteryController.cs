@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR.Client;
-using Senparc.Weixin.TenPay.V2;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Services;

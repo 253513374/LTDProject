@@ -1,5 +1,4 @@
-﻿using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Enum;
+﻿using Weitedianlan.Model.Enum;
 
 namespace Wtdl.Mvc.Models
 {

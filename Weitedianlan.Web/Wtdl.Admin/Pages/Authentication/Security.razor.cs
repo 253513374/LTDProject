@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MudBlazor;
 using Wtdl.Admin.Authenticated;
-using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Pages.Authentication.Fluent;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
 

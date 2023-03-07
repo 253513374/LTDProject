@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Weitedianlan.model.ReQuest
+﻿namespace Weitedianlan.model.ReQuest
 {
     public class AddAgent
     {
-
         public string AID { get; set; }
         public string AName { get; set; }
         public string AProvince { get; set; }
@@ -18,6 +11,5 @@ namespace Weitedianlan.model.ReQuest
         public string APeople { get; set; }
         public string ABelong { get; set; }
         public int AType { get; set; }
-
     }
 }

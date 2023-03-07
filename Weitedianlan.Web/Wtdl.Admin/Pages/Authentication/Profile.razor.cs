@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using MudBlazor;
 using Wtdl.Admin.Authenticated;
 using Wtdl.Admin.Authenticated.IdentityModel;
-using Wtdl.Admin.Pages.Authentication.ViewModel;
 
 namespace Wtdl.Admin.Pages.Authentication
 {

@@ -1,23 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Senparc.Weixin.AspNet;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
-using System.Text;
-using Microsoft.OpenApi.Models;
-using Wtdl.Mvc.Services;
-using Wtdl.Repository;
-using System.Reflection;
 using Senparc.Weixin.TenPay;
-using Wtdl.Repository.MediatRHandler.Events;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
 using StackExchange.Redis;
+using System.Reflection;
+using System.Text;
 using Weitedianlan.Model.Entity;
 using Wtdl.Controller.Services;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Configuration;
+using Wtdl.Mvc.Services;
+using Wtdl.Repository;
+using Wtdl.Repository.MediatRHandler.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 

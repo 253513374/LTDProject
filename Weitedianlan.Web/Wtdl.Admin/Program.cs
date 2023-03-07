@@ -1,44 +1,27 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.StaticWebAssets;
-using MudBlazor.Services;
-using Serilog;
-using Serilog.Formatting.Json;
-using System.Reflection;
-using System.Text;
-using Wtdl.Admin.Data;
-using Wtdl.Repository;
 using MediatR;
-using MudBlazor;
-using Quartz;
-using Wtdl.Repository.MediatRHandler.Events;
-using StackExchange.Redis;
-
-using Microsoft.EntityFrameworkCore;
-using Wtdl.Admin.Authenticated;
-using Wtdl.Admin.Authenticated.IdentityModel;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Identity;
-using Radzen;
-using Wtdl.Admin.Authenticated.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Senparc.Weixin.AspNet;
-using Senparc.Weixin.Entities;
-using Senparc.Weixin.MP;
+using MudBlazor.Services;
+using Quartz;
+using Radzen;
+using Serilog;
+using System.Reflection;
+using System.Text;
+using Weitedianlan.Model.Entity;
+using Wtdl.Admin.Authenticated;
+using Wtdl.Admin.Authenticated.IdentityModel;
+using Wtdl.Admin.Authenticated.Services;
+using Wtdl.Admin.Data;
 using Wtdl.Admin.Quartzs;
 using Wtdl.Admin.SignalRHub;
-using Senparc.Weixin.RegisterServices;
-using Senparc.Weixin.TenPay;
-using Weitedianlan.Model.Entity;
+using Wtdl.Repository;
+using Wtdl.Repository.MediatRHandler.Events;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -270,7 +253,11 @@ static void RegisterPermissionClaims(AuthorizationOptions options)
     foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
     {
         var propertyValue = prop.GetValue(null);
-        Console.WriteLine(propertyValue.ToString());
+
+#if DEBUG
+        Console.WriteLine($"{prop.Name}:{propertyValue}");
+#endif
+
         if (propertyValue is not null)
         {
             options.AddPolicy(propertyValue.ToString(), policy => policy.RequireClaim(CustomClaimTypes.Permission, propertyValue.ToString()));

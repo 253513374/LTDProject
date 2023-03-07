@@ -1,9 +1,8 @@
 ﻿//using BlazorHero.CleanArchitecture.Client.Extensions;
 
-using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 using Wtdl.Admin.Authenticated;
 
 namespace Wtdl.Admin.Shared.Components

@@ -1,5 +1,4 @@
-﻿using Senparc.Weixin.TenPay.V3;
-using Weitedianlan.Model.Entity;
+﻿using Weitedianlan.Model.Entity;
 using Weitedianlan.Model.Enum;
 
 namespace Wtdl.Mvc.Models

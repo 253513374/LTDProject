@@ -212,7 +212,7 @@
             });
             hubConnection.On<int>(HubClientMethods.OnRedpacketTotalAmount, (count) =>
             {
-                TotalAmountSum = count;
+                TotalAmountSum += count;
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnLotteryCount, (count) =>
@@ -288,15 +288,7 @@
       
         return formsNever;
     }
-    
 
-
-
-
-    string FormatAsUSD(object value)
-    {
-        return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
-    }
 
     private Task LoadCache()
     {
@@ -318,9 +310,7 @@
                // _logger.LogInformation("Index从数据库获取数据完成");
             }
             OutStorageCount = counter;
-
-    //var newValue = Interlocked.Increment(ref counter);
-    //_Cache.Set(CacheKeys.DayCacheKey, newValue, options);
+            
         }
 
         return Task.CompletedTask;

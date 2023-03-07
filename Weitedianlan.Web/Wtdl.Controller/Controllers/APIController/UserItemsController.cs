@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Wtdl.Controller.Services;
 using Wtdl.Mvc.Models;
-using Wtdl.Repository;
 
 namespace Wtdl.Controller.Controllers.APIController
 {

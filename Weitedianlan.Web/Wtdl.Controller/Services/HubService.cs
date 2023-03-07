@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using System.Net.Http;
-using System.Text.Json;
 using Microsoft.Net.Http.Headers;
+using System.Text.Json;
 using Wtdl.Controller.SignalRHub;
 using Wtdl.Share;
 using Wtdl.Share.SignalR;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Wtdl.Controller.Services
 {
@@ -142,7 +140,7 @@ namespace Wtdl.Controller.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"signalR连接错误：,{e.Message}");
+                _logger.LogError($"SendSendRedpacketTotalAmountAsync()-signalR连接错误：,{e.Message}");
                 // throw;
             }
         }

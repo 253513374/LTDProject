@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Weitedianlan.model.ReQuest;
+﻿using Weitedianlan.model.ReQuest;
 using Weitedianlan.SqlServer.Service;
 
 namespace Weitedianlan.WinUI

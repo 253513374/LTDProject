@@ -1,14 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Authenticated.Services;
-using Wtdl.Admin.Pages.Authentication;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
 
 namespace Wtdl.Admin.Authenticated

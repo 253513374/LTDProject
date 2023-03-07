@@ -1,13 +1,9 @@
-﻿using System.Linq.Expressions;
-using EFCore.BulkExtensions;
+﻿using EFCore.BulkExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Enum;
 using Wtdl.Repository.Interface;
-using Wtdl.Repository.MediatRHandler.Events;
-using Wtdl.Repository.Utility;
 
 namespace Wtdl.Repository
 {

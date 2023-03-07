@@ -1,6 +1,5 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 using EFCore.BulkExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Wtdl.Admin.Authenticated;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Wtdl.Admin.Pages.Authentication
 {

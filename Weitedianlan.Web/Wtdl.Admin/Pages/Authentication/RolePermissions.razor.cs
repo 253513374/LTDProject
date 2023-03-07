@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-
-using Microsoft.AspNetCore.Components;
-
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Authorization;
-using Wtdl.Admin.Pages.Authentication.ViewModel;
-using Wtdl.Admin.Authenticated;
+using System.Security.Claims;
 using Wtdl.Admin.Authenticated.Services;
+using Wtdl.Admin.Pages.Authentication.ViewModel;
 
 namespace Wtdl.Admin.Pages.Authentication
 {

@@ -1,9 +1,7 @@
-﻿
-using System;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Data.Entity;
 
 using Weitedianlan.model.Entity;
+
 public partial class Oracle_ERP_Db : DbContext
 {
     public Oracle_ERP_Db()

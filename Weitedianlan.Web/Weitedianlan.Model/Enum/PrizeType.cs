@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Weitedianlan.Model.Enum
+﻿namespace Weitedianlan.Model.Enum
 {
     /// <summary>
     /// 奖品类型枚举

@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using EFCore.BulkExtensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
-using EFCore.BulkExtensions;
 using Wtdl.Repository.MediatRHandler.Events;
 using Wtdl.Repository.Utility;
 

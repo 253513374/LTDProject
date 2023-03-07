@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Weitedianlan.model.Entity
+﻿namespace Weitedianlan.model.Entity
 {
     public partial class T_BDX_ORDER
     {
@@ -65,6 +59,5 @@ namespace Weitedianlan.model.Entity
         //    public string DJ { get; set; }
         //    public string YS { get; set; }
         //}
-
     }
 }

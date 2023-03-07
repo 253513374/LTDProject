@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Weitedianlan.Model.Enum;
-
-namespace Weitedianlan.Model.Entity.Analysis
+﻿namespace Weitedianlan.Model.Entity.Analysis
 {
     public class OutStorageAnalysis
     {

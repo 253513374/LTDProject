@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Senparc.Weixin;
+﻿using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 
 namespace Wtdl.Mvc.Controllers

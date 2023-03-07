@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Quartz;
-using SQLitePCL;
 using Wtdl.Admin.Data;
 using Wtdl.Repository;
-using static Quartz.Logging.OperationName;
 
 namespace Wtdl.Admin.Quartzs
 {

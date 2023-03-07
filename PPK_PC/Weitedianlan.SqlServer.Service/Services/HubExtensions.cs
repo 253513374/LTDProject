@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.AspNetCore.SignalR.Client;
 using System.Configuration;
-using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Wtdl.Share;
 
 namespace Weitedianlan.SqlServer.Service
@@ -40,7 +38,7 @@ namespace Weitedianlan.SqlServer.Service
                 hubConnection = new HubConnectionBuilder()
                     .WithUrl(HubUrl,
                         options => { options.AccessTokenProvider = async () => await LoginAsync(_username, _password); })
-                    .WithAutomaticReconnect()
+                    //.WithAutomaticReconnect()
                     .Build();
             }
 
@@ -65,44 +63,42 @@ namespace Weitedianlan.SqlServer.Service
 
         private static async Task<string> LoginAsync(string username, string password)
         {
-            using (var httpClient = new HttpClient())
+            try
             {
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                //var content = new FormUrlEncodedContent(new Dictionary<string, string>
-                //{
-                //    { "username", username },
-                //    { "password", password }
-                //});
-                // 构造请求内容
-                //var contents = new FormUrlEncodedContent(new[]
-                //{
-                //    new KeyValuePair<string, string>("username", username),
-                //    new KeyValuePair<string, string>("password", password)
-                //});
-                HttpContent content = new StringContent(JsonSerializer.Serialize(new LoginModel { Username = username, Password = password }));
-
-                var url = $"{LoginUrl}?username={username}&password={password}";
-
-                var response = await httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                //var responseContent = await response.Content.ReadAsStringAsync();
-
-                var result = await response.Content.ReadAsStringAsync();
-
-                var loginResult = JsonSerializer.Deserialize<LoginResult>(result); //await JsonSerializer.DeserializeAsync<LoginResult>(result);
-
-                if (loginResult.Succeeded)
+                using (var httpClient = new HttpClient())
                 {
-                    User = new User();
-                    User.UserName = loginResult.Username;
-                    User.UserID = loginResult.UserId;
+                    httpClient.DefaultRequestHeaders.Accept.Clear();
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(new LoginModel { Username = username, Password = password }));
+
+                    var url = $"{LoginUrl}?username={username}&password={password}";
+
+                    var response = await httpClient.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    //var responseContent = await response.Content.ReadAsStringAsync();
+
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    var loginResult = JsonSerializer.Deserialize<LoginResult>(result); //await JsonSerializer.DeserializeAsync<LoginResult>(result);
+
+                    if (loginResult.Succeeded)
+                    {
+                        User = new User();
+                        User.UserName = loginResult.Username;
+                        User.UserID = loginResult.UserId;
+                        return loginResult.Token;
+                    }
+
                     return loginResult.Token;
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
 
-                return loginResult.Token;
+                return "";
+                // throw;
             }
         }
 

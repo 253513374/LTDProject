@@ -1,5 +1,4 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using Weitedianlan.Model.Enum;
 
 namespace Weitedianlan.Model.Entity

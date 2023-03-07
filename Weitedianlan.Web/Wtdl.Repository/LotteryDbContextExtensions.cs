@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using Wtdl.Repository.MediatRHandler.Events;
 using Wtdl.Repository.Tools;
 
 namespace Wtdl.Repository

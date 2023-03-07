@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Weitedianlan.model.ReQuest
+﻿namespace Weitedianlan.model.ReQuest
 {
     public class RequestOrder
     {
@@ -23,7 +17,6 @@ namespace Weitedianlan.model.ReQuest
         /// </summary>
         public string KH { set; get; }
 
-
         /// <summary>
         /// 需求数量
         /// </summary>
@@ -38,6 +31,5 @@ namespace Weitedianlan.model.ReQuest
         /// 单位
         /// </summary>
         public string DW { set; get; }
-
     }
 }

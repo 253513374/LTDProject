@@ -1,18 +1,12 @@
-﻿using MediatR;
+﻿using EFCore.BulkExtensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Internal;
-using StackExchange.Redis;
 using Weitedianlan.Model.Entity;
+using Weitedianlan.Model.Entity.Analysis;
 using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
-using System.Linq;
-using EFCore.BulkExtensions;
-using Microsoft.Identity.Client;
-using Org.BouncyCastle.Math.EC.Rfc7748;
-using Weitedianlan.Model.Entity.Analysis;
 
 namespace Wtdl.Repository
 {

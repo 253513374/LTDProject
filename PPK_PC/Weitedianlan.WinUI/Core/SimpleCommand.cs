@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Weitedianlan.WinUI.Core
 {
-    class SimpleCommand : ICommand
+    internal class SimpleCommand : ICommand
     {
         public SimpleCommand(Func<object, bool> canExecute = null, Action<object> execute = null)
         {

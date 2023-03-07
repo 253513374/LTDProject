@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Security.Claims;
 using Wtdl.Admin.Authenticated.IdentityModel;
-using Wtdl.Admin.Pages.Authentication;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
 
 namespace Wtdl.Admin.Authenticated

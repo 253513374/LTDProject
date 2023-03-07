@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Weitedianlan.model.Entity;
-using Weitedianlan.model.Response;
-using Weitedianlan.model.ReQuest;
-using Oracle.ManagedDataAccess.Client;
-using System.Linq.Expressions;
-using System.Data;
-using System.Reflection;
 using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Reflection;
+using Weitedianlan.model.Entity;
+using Weitedianlan.model.ReQuest;
+using Weitedianlan.model.Response;
 
 namespace Weitedianlan.Oracle.service
 {

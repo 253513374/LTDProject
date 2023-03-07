@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Weitedianlan.model.ReQuest;
-using Weitedianlan.model.Response;
+﻿using Weitedianlan.model.ReQuest;
 using Weitedianlan.SqlServer.Service;
 
 namespace Weitedianlan.WinUI
@@ -15,7 +8,7 @@ namespace Weitedianlan.WinUI
         private WtdlSqlService WtdlSqlService { set; get; }
         private RequestOrder requestOrder { get; set; }
 
-       // public ObservableCollection<tLabelsxModel> addtLabelxes;// = new ObservableCollection<tLabelsxModel>();
+        // public ObservableCollection<tLabelsxModel> addtLabelxes;// = new ObservableCollection<tLabelsxModel>();
         public ScanCodeViewModel(RequestOrder requestOrder, WtdlSqlService WtdlSqlService)
         {
             this.WtdlSqlService = WtdlSqlService;
@@ -27,9 +20,6 @@ namespace Weitedianlan.WinUI
             //       new tLabelsxModel { QRCode="000000" , OrderNumbel="111111", ResultStatus ="111", Aname="456456", }
             //};
         }
-
-
-      
 
         //public void SanCodeAddcommand(string sancode)
         //{
@@ -53,10 +43,8 @@ namespace Weitedianlan.WinUI
 
         //}
 
-        public void Add( AddtLabelx addtLabelx)
+        public void Add(AddtLabelx addtLabelx)
         {
-
         }
-
     }
 }

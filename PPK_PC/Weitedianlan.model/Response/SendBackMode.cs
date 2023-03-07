@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Weitedianlan.model.Response
+﻿namespace Weitedianlan.model.Response
 {
     public class SendBackMode
     {
@@ -15,4 +9,3 @@ namespace Weitedianlan.model.Response
         public string Errorinfo { get; set; }
     }
 }
- 

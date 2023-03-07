@@ -35,7 +35,6 @@ namespace Wtdl.Mvc.Controllers
     using Senparc.Weixin.AspNet.MvcExtension;
     using Senparc.Weixin.MP;
     using Senparc.Weixin.MP.Entities.Request;
-    using Senparc.Weixin.MP.MvcExtension;
 
     public partial class WeixinController : BaseController
     {

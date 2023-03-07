@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Weitedianlan.Model.Entity;
 using Wtdl.Admin.Pages.Authentication.ViewModel;
 
 namespace Wtdl.Admin.Pages.Authentication.Fluent

@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace Wtdl.Admin.Pages.Authentication.ViewModel
+﻿namespace Wtdl.Admin.Pages.Authentication.ViewModel
 {
     public class BaseResponse<T>
     {

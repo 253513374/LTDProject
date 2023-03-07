@@ -1,17 +1,10 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
-using MudBlazor;
 using Weitedianlan.Model.Entity;
-using Wtdl.Admin.Authenticated;
-using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Data;
-using Wtdl.Admin.Pages.Authentication.ViewModel;
 using Wtdl.Repository;
-using Wtdl.Share.SignalR;
-
 using Wtdl.Share.SignalR;
 
 namespace Wtdl.Admin.SignalRHub
@@ -133,9 +126,9 @@ namespace Wtdl.Admin.SignalRHub
             return;
         }
 
-        public async Task SendRedpacketTotalAmount()
+        public async Task SendRedpacketTotalAmount(int totalamount)
         {
-            await Clients.All.SendAsync(HubClientMethods.OnRedpacketTotalAmount, 11);
+            await Clients.All.SendAsync(HubClientMethods.OnRedpacketTotalAmount, totalamount);
             return;
         }
     }

@@ -26,5 +26,10 @@
         /// 更新 红包领取金额 方法
         /// </summary>
         public static string OnRedpacketTotalAmount = "OnRedpacketTotalAmount";
+
+        /// <summary>
+        /// 删除已经上传的离线数据。
+        /// </summary>
+        public static string OnDeleteSynchronizationData = "DeleteSynchronizationData";
     }
 }

@@ -25,6 +25,8 @@ namespace Weitedianlan.SqlServer.Service
 
         private List<Claim> Claims = new List<Claim>();
 
+        private const string NotPut = "NotPut";
+
         /// <summary>
         /// 默认在线 true,l离线为false
         /// </summary>
@@ -39,7 +41,8 @@ namespace Weitedianlan.SqlServer.Service
         {
             using (var context = new WTDLContext())
             {
-                var tAgentID = context.tAgents.AsNoTracking().Where(o => o.AName.Contains(agentname)).Select(s => s.AID).FirstOrDefault();
+                var tAgentID = context.tAgents.AsNoTracking().Where(o => o.AName.Contains(agentname)).Select(s => s.AID)
+                    .FirstOrDefault();
                 if (tAgentID != null)
                 {
                     return tAgentID.ToString();
@@ -95,21 +98,31 @@ namespace Weitedianlan.SqlServer.Service
                 {
                     hubConnection = hubConnection.TryInitialize();
                     await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
-                    //var result = await hubConnection.InvokeAsync<OutStorageResult>("SendOutStorageAsync", tlabelx);
+                    var result =
+                        await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
 
-                    return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                    if (result.Successed)
+                    {
+                        return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                    }
+                    else
+                    {
+                        return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
+                    }
                 }
                 else
                 {
                     ///网络不通的情况下，数据保存到本地数据库
                     using (var context = new WTDLContext())
                     {
+                        tlabelx.ExtensionOrder = "NoPut";
                         context.W_LabelStorages.Add(tlabelx);
                         int i = await context.SaveChangesAsync();
                         if (i > 0)
                         {
                             return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
                         }
+
                         return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
                     }
                 }
@@ -130,7 +143,8 @@ namespace Weitedianlan.SqlServer.Service
         /// <param name="ResultStatus"></param>
         /// <param name="Errorinfo"></param>
         /// <returns></returns>
-        public tLabelsxModel UPdateAddtLabelsxModel(AddtLabelx addtLabelx, int ResulCode, string ResultStatus, string Errorinfo = "")
+        public tLabelsxModel UPdateAddtLabelsxModel(AddtLabelx addtLabelx, int ResulCode, string ResultStatus,
+            string Errorinfo = "")
         {
             tLabelsxModel tLabelsxModel = new tLabelsxModel();
             tLabelsxModel.QRCode = addtLabelx.QRCode;
@@ -149,11 +163,12 @@ namespace Weitedianlan.SqlServer.Service
             {
                 using (var context = new WTDLContext())
                 {
-                    var w_LabelStorage = await context.W_LabelStorages.FirstOrDefaultAsync(x => x.OutTime.Year == DateTime.Now.Year && x.OutTime.Month == DateTime.Now.Month && x.OutTime.Day == DateTime.Now.Day && x.QRCode.Contains(qrcode));
+                    var w_LabelStorage = await context.W_LabelStorages.FirstOrDefaultAsync(x =>
+                        x.OutTime.Year == DateTime.Now.Year && x.OutTime.Month == DateTime.Now.Month &&
+                        x.OutTime.Day == DateTime.Now.Day && x.QRCode.Contains(qrcode));
                     if (w_LabelStorage != null)
                     {
                         context.W_LabelStorages.Remove(w_LabelStorage);
-
                         var delete = await context.SaveChangesAsync();
 
                         if (delete > 0)
@@ -172,6 +187,7 @@ namespace Weitedianlan.SqlServer.Service
             {
                 return DBResult<int>.Fail($"出现异常：{e.Message}");
             }
+
             return DBResult<int>.Fail($"失败");
         }
 
@@ -184,7 +200,8 @@ namespace Weitedianlan.SqlServer.Service
             {
                 if (orderTable != null)
                 {
-                    W_OrderTable w_OrderTable = DbEntities.W_OrderTables.AsNoTracking().Where(w => w.OrderId.Trim().Contains(orderTable.OrderId.Trim())).FirstOrDefault();
+                    W_OrderTable w_OrderTable = DbEntities.W_OrderTables.AsNoTracking()
+                        .Where(w => w.OrderId.Trim().Contains(orderTable.OrderId.Trim())).FirstOrDefault();
 
                     if (w_OrderTable == null)
                     {
@@ -203,39 +220,41 @@ namespace Weitedianlan.SqlServer.Service
             //你的代码
         }
 
-        //public List<W_OrderTable> FilterOrder()
-        //{
-        //    return DbEntities.W_OrderTables.AsNoTracking().Where(w => w.FinishTime > DateTime.Now.AddDays(-7)).ToList();
-        //}
-
-        public ResponseModel AddAgent(AddAgent addAgent)
+        public async Task<ResponseModel> AddAgent(AddAgent addAgent)
         {
-            using (var context = new WTDLContext())
+            if (hubConnection.State == HubConnectionState.Connected)
             {
-                var addAgentcode = context.tAgents.AsNoTracking().Where(o => o.AID.Trim() == addAgent.AID.Trim())
-                    .Select(s => s.AID).ToList();
-                if (addAgentcode.Count == 0)
+                hubConnection = hubConnection.TryInitialize();
+                await hubConnection.InvokeAsync(HubServerMethods.SendAgent, addAgent);
+                return new ResponseModel();
+            }
+            else
+            {
+                using (var context = new WTDLContext())
                 {
-                    var agent = new tAgent()
+                    var addAgentcode = context.tAgents.AsNoTracking().Where(o => o.AID.Trim() == addAgent.AID.Trim())
+                        .Select(s => s.AID).ToList();
+                    if (addAgentcode.Count == 0)
                     {
-                        AID = addAgent.AID,
-                        AName = addAgent.AName,
-                        ABelong = addAgent.ABelong,
-                        AType = addAgent.AType
-                    };
-                    context.tAgents.Add(agent);
-                    int i = context.SaveChanges();
-                    if (i > 0)
-                    {
-                        return new ResponseModel { code = 200, result = "进销商或客户添加成功", data = agent };
+                        var agent = new tAgent()
+                        {
+                            AID = addAgent.AID,
+                            AName = addAgent.AName,
+                            ABelong = addAgent.ABelong,
+                            AType = addAgent.AType
+                        };
+                        context.tAgents.Add(agent);
+                        int i = context.SaveChanges();
+                        if (i > 0)
+                        {
+                            return new ResponseModel { code = 200, result = "进销商或客户添加成功", data = agent };
+                        }
+                        else
+                        {
+                            return new ResponseModel { code = 400, result = "进销商或客户添加失败", data = agent };
+                        }
                     }
-                    else
-                    {
-                        return new ResponseModel { code = 400, result = "进销商或客户添加失败", data = agent };
-                    }
-                }
-                else
-                {
+
                     return new ResponseModel { code = 0, result = "已经存在" };
                 }
             }
@@ -344,7 +363,7 @@ namespace Weitedianlan.SqlServer.Service
             });
             hubConnection.Closed += async (error) =>
             {
-                OnlineOrOffline = false;
+                //OnlineOrOffline = false;
                 // 网络断开的处理逻辑，一直循环重新连接上为止.
                 await Task.Delay(new Random().Next(0, 3) * 1000);
                 await ConnectWithRetryAsync();
@@ -352,8 +371,8 @@ namespace Weitedianlan.SqlServer.Service
 
             hubConnection.Reconnected += (connectionId) =>
             {
-                OnlineOrOffline = true;
-                // 重新连接成功的处理逻辑
+                //OnlineOrOffline = true;
+                // 重新连接成功的处理逻辑，重新上传保存在本地的数据
                 Console.WriteLine($"重新连接成功！:{connectionId}");
                 return Task.CompletedTask;
             };
@@ -385,7 +404,8 @@ namespace Weitedianlan.SqlServer.Service
         public ResponseModel GetOrdersFinish(string beingDatePickers)
         {
             DateTime dateTime = DateTime.Now.AddDays(-7);
-            List<W_OrderTable> listfinish = null;//DbEntities.W_OrderTables.AsNoTracking().Where(T=>T.FinishTime> dateTime).ToList();
+            List<W_OrderTable>
+                listfinish = null; //DbEntities.W_OrderTables.AsNoTracking().Where(T=>T.FinishTime> dateTime).ToList();
             var response = new ResponseModel();
             if (listfinish != null)
             {
@@ -400,6 +420,7 @@ namespace Weitedianlan.SqlServer.Service
                 response.code = 400;
                 response.result = "完成出库单集合获取失败";
             }
+
             return response;
             //  throw new NotImplementedException();
         }
@@ -410,9 +431,10 @@ namespace Weitedianlan.SqlServer.Service
             {
                 try
                 {
+                    hubConnection = hubConnection.TryInitialize();
                     await hubConnection.StartAsync();
-                    Console.WriteLine("连接成功！");
-                    break;//连接成功 退出循环
+                    Console.WriteLine("循环重试网络连接成功！");
+                    break; //连接成功 退出循环
                 }
                 catch (Exception ex)
                 {
@@ -433,6 +455,42 @@ namespace Weitedianlan.SqlServer.Service
                     //}
                 }
             }
+        }
+
+        ///
+        /// 把还未同步的列表数据分割成大小为1000的数据块，分批上传
+        private async Task Synchronization()
+        {
+            using (var context = new WTDLContext())
+            {
+                var resultList = await context.W_LabelStorages.AsNoTracking()
+                    .Where(w => w.ExtensionOrder.Contains(NotPut)).ToListAsync();
+
+                // 将数据分割成大小为1000的数据块
+                var dataChunks = ChunkList(resultList, 1000);
+
+                //await connection.StartAsync();
+
+                foreach (var chunk in dataChunks)
+                {
+                    if (hubConnection.State == HubConnectionState.Connected)
+                    {
+                        var result = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorageBatch, chunk);
+                    }
+                }
+            }
+        }
+
+        public static List<List<T>> ChunkList<T>(List<T> list, int chunkSize)
+        {
+            List<List<T>> chunks = new List<List<T>>();
+
+            for (int i = 0; i < list.Count; i += chunkSize)
+            {
+                chunks.Add(list.GetRange(i, Math.Min(chunkSize, list.Count - i)));
+            }
+
+            return chunks;
         }
     }
 

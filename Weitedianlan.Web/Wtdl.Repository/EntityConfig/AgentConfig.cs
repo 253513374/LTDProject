@@ -17,7 +17,7 @@ namespace Wtdl.Repository.EntityConfig
             //设置默认值
             builder.Property(p => p.datetiem);
 
-            builder.Property(p => p.CreateTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(p => p.CreateTime).HasDefaultValueSql("getdate()");
 
             builder.ToTable(b =>
             {

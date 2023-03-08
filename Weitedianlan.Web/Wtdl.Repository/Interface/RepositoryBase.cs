@@ -108,7 +108,7 @@ namespace Wtdl.Repository.Interface
         }
 
         /// <summary>
-        /// 查询数据是否存在
+        /// 查询数据是否存在,存在为true,否则为false
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>

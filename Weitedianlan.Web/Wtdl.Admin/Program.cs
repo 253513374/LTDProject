@@ -83,7 +83,10 @@ try
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<WeatherForecastService>();
     builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-    builder.Services.AddSignalR();
+    builder.Services.AddSignalR(options =>
+    {
+        options.MaximumReceiveMessageSize = 512 * 1024; // 设置最大发送信息容量0.5 MB （512KB）
+    });
     builder.Services.AddResponseCompression(opts =>
     {
         opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

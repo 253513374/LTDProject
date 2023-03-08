@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Identity.Client.Extensions.Msal;
+using Senparc.Weixin.TenPay.V3;
 using Weitedianlan.Model.Entity;
 using Wtdl.Admin.Data;
 using Wtdl.Repository;
@@ -19,15 +21,17 @@ namespace Wtdl.Admin.SignalRHub
         private readonly object _cacheLock = new object();
 
         private readonly WLabelStorageRepository _storageRepository;
+        private readonly AgentRepository _agentRepository;
 
         private ILogger<APPHub> _logger;
 
         //构造函数
-        public APPHub(IMemoryCache cache, ILogger<APPHub> logger, WLabelStorageRepository repository)
+        public APPHub(IMemoryCache cache, ILogger<APPHub> logger, WLabelStorageRepository repository, AgentRepository agentRepository)
         {
             _storageRepository = repository;
             _logger = logger;
             _cache = cache;
+            _agentRepository = agentRepository;
         }
 
         #region 发送信息
@@ -80,6 +84,26 @@ namespace Wtdl.Admin.SignalRHub
             await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, newValue);
         }
 
+        public async Task SendAgentAsync(Agent agent)
+        {
+            //判断Agent 中是否存在
+            var result = await _agentRepository.AnyAsync(f => f.AID == agent.AID);
+            if (!result)
+            {
+                var resultint = await _agentRepository.AddAsync(agent);
+            }
+            return;
+        }
+
+        public async Task<OutStorageResult> SendOutStorageBatchAsync(List<W_LabelStorage> labelStorages)
+        {
+            // var username = Context.User.Identity.Name;
+            // storage.Adminaccount = username;
+            await _storageRepository.BulkInsertAsync(labelStorages);
+
+            return OutStorageResult.Success(DateTime.Now, labelStorages.Count, "BatchInsert");
+        }
+
         /// <summary>
         /// 实时出库。数据写入数据库
         /// </summary>
@@ -93,20 +117,14 @@ namespace Wtdl.Admin.SignalRHub
 
             if (result > 0)
             {
+                await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, 0);
                 return OutStorageResult.Success(DateTime.Now, result, storage.QRCode);
             }
-
             //发货失败
             return OutStorageResult.Fail("发货失败", storage.QRCode);
         }
 
         #endregion 发送信息
-
-        //public async Task SendOutStorageDayCount()
-        //{
-        //    await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount,11);
-        //    return;
-        //}
 
         public async Task SendLotteryWinCount()
         {

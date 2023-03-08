@@ -19,7 +19,7 @@ namespace Wtdl.Repository.EntityConfig
                     x => (ImportStatus)x
                 );
 
-            builder.Property(p => p.CreateTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(p => p.CreateTime).HasDefaultValueSql("getdate()");
         }
     }
 }

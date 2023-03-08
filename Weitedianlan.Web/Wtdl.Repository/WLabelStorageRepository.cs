@@ -26,6 +26,22 @@ namespace Wtdl.Repository
             _logger = logger;
         }
 
+        //批量插入数据
+        public async Task BulkInsertAsync(List<W_LabelStorage> list)
+        {
+            try
+            {
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    await context.BulkInsertOrUpdateAsync(list);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"批量出库异常：BulkInsertAsync：{e.Message}");
+            }
+        }
+
         //public async Task<List<W_LabelStorage>> GetLatestRecordsAsync(int count)
         //{
         //    using (var context = _contextFactory.CreateDbContext())

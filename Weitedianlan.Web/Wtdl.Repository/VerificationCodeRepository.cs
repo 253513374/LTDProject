@@ -47,15 +47,9 @@ namespace Wtdl.Repository
                     var index = (int)obj;
                     using (var context = _contextFactory.CreateDbContext())
                     {
-                        //使用事务功能，保证数据一致性
-                        //using (var transaction = context.Database.BeginTransaction())
-                        //{
-                        //    try
-                        //    {
                         var stopwatch = new Stopwatch();
                         stopwatch.Start();
                         await context.BulkInsertAsync(chunk);
-                        //        transaction.Commit();
                         stopwatch.Stop();
 
                         _logger.LogInformation($"TASK-[{index}]:数据成功写入数据库{chunk.Count}:{chunk.Last().QRCode} 耗时：{stopwatch.ElapsedMilliseconds}毫秒");

@@ -202,7 +202,7 @@
 
             hubConnection.On<int>(HubClientMethods.OnOutStorageDayCount, (count) =>
             {
-                OutStorageCount = count;
+                OutStorageCount = Interlocked.Increment(ref OutStorageCount);
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>

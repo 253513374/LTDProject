@@ -11,5 +11,14 @@
         public static string SendRedPackedCount = "SendRedPackedCount";
 
         public static string SendRedpacketTotalAmount = "SendRedpacketTotalAmount";
+
+        /// <summary>
+        /// 批量出库-
+        /// </summary>
+        public static string SendOutStorageBatch = "SendOutStorageBatchAsync";
+
+        public static string SendOutStorage = "SendOutStorageAsync";
+
+        public static string SendAgent = "SendAgentAsync";
     }
 }

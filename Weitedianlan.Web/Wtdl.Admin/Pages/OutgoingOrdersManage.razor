@@ -98,16 +98,18 @@ else
 
         var result = await resultdialog.Result;
         
-        if (!result.Canceled)
-        {
-           // Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
-        }
-        //throw new NotImplementedException();
     }
 
     protected override async Task OnInitializedAsync()
     {
         labelStorages = await _labelStorageRepository.GetLatestGroupByTimeRecordsAsync();
+
+        if (labelStorages is not null)
+        {
+            _dateRange.Start = labelStorages.Min(s => s.Time);
+            _dateRange.Start = labelStorages.Max(s => s.Time);
+        }
+      
         return;// base.OnInitializedAsync();
     }
     private bool FilterFunc1(GroupByWLabelStorage element) => FilterFunc(element, searchString);

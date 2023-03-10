@@ -20,5 +20,7 @@
         public static string SendOutStorage = "SendOutStorageAsync";
 
         public static string SendAgent = "SendAgentAsync";
+
+        public static string SendDeleteSynchronizationData = "SendDeleteSynchronizationDataAsync";
     }
 }

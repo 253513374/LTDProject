@@ -256,8 +256,7 @@
         LotteryWinCount   = await _LotteryRecordRepository.GetLotteryWinRecordsCountAsync();
         RedPacketCount    = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync();
         TotalAmountSum    = (int) await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
-        OutStorageCount = await _WLabelStorageRepository.GetTodayOutCountAsync(); 
-
+        OutStorageCount   = await _WLabelStorageRepository.GetTodayOutCountAsync(); 
         //今年出口量
         OutStorageThisYearCount = await _WLabelStorageRepository.GetThisYearOutCountAsync();
 

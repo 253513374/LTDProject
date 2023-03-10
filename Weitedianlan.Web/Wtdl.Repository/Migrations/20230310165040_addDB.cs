@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Wtdl.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class addmemorylottery : Migration
+    public partial class addDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +31,7 @@ namespace Wtdl.Repository.Migrations
                     FileHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UploadTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -206,7 +207,7 @@ namespace Wtdl.Repository.Migrations
                     ABelong = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AType = table.Column<int>(type: "int", nullable: true),
                     datetiem = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -227,7 +228,7 @@ namespace Wtdl.Repository.Migrations
                     PWD = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AgentID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Flag = table.Column<int>(type: "int", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 3, 5, 21, 9, 17, 659, DateTimeKind.Local).AddTicks(7740))
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 3, 11, 0, 50, 40, 425, DateTimeKind.Local).AddTicks(6546))
                 },
                 constraints: table =>
                 {
@@ -265,8 +266,8 @@ namespace Wtdl.Repository.Migrations
                     OutType = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
                     OrderNumbels = table.Column<string>(type: "nvarchar(28)", maxLength: 28, nullable: true),
                     ExtensionName = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
-                    ExtensionOrder = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 3, 5, 21, 9, 17, 659, DateTimeKind.Local).AddTicks(4271)),
+                    ExtensionOrder = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true, defaultValue: ""),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
                     AdminUser = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -372,6 +373,18 @@ namespace Wtdl.Repository.Migrations
                 column: "QRCode",
                 unique: true,
                 filter: "[QRCode] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_W_LabelStorage_ID",
+                table: "W_LabelStorage",
+                column: "ID")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_W_LabelStorage_OutTime",
+                table: "W_LabelStorage",
+                column: "OutTime")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_W_LabelStorage_QRCode",

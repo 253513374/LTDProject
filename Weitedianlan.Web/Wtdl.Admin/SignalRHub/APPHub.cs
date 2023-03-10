@@ -7,6 +7,7 @@ using Senparc.Weixin.TenPay.V3;
 using Weitedianlan.Model.Entity;
 using Wtdl.Admin.Data;
 using Wtdl.Repository;
+using Wtdl.Share;
 using Wtdl.Share.SignalR;
 
 namespace Wtdl.Admin.SignalRHub
@@ -122,6 +123,11 @@ namespace Wtdl.Admin.SignalRHub
             }
             //发货失败
             return OutStorageResult.Fail("发货失败", storage.QRCode);
+        }
+
+        public async Task SendDeleteSynchronizationDataAsync(SynchState state)
+        {
+            await Clients.All.SendAsync(HubClientMethods.OnDeleteSynchronizationData, state.SynchDataKey);
         }
 
         #endregion 发送信息

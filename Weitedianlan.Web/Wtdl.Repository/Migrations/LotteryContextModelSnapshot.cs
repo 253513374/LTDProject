@@ -128,7 +128,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<DateTime?>("datetiem")
                         .HasColumnType("datetime2");
@@ -183,7 +183,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<long>("FileCount")
                         .HasColumnType("bigint");
@@ -558,7 +558,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 3, 8, 16, 51, 26, 897, DateTimeKind.Local).AddTicks(9088));
+                        .HasDefaultValue(new DateTime(2023, 3, 11, 0, 50, 40, 425, DateTimeKind.Local).AddTicks(6546));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -630,7 +630,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 3, 8, 16, 51, 26, 897, DateTimeKind.Local).AddTicks(5526));
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Dealers")
                         .HasMaxLength(18)
@@ -641,8 +641,10 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("ExtensionOrder")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasColumnType("nvarchar(5)")
+                        .HasDefaultValue("");
 
                     b.Property<string>("OrderNumbels")
                         .HasMaxLength(28)
@@ -666,13 +668,13 @@ namespace Wtdl.Repository.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("ID"), false);
 
-                    b.HasIndex("CreateTime");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("CreateTime"), false);
-
                     b.HasIndex("ID");
 
                     SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("ID"), false);
+
+                    b.HasIndex("OutTime");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("OutTime"), false);
 
                     b.HasIndex("QRCode");
 

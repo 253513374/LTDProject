@@ -32,7 +32,9 @@ try
 {
     Log.Information("Starting web application");
     var builder = WebApplication.CreateBuilder(args);
-    builder.Host.UseSerilog(); // <-- Add this line
+    builder.Host.UseSerilog((ctx, lc) => lc
+       .WriteTo.Console()
+       .ReadFrom.Configuration(ctx.Configuration));
 
     //builder.Configuration.GetConnectionString("LotteryDbConnection")
     var connectionString = builder.Configuration.GetConnectionString("LotteryDbConnection");
@@ -78,7 +80,11 @@ try
 
     // Add services to the container.
     builder.Services.AddRazorPages();
-    builder.Services.AddServerSideBlazor();
+
+    builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    });
     builder.Services.AddControllers();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<WeatherForecastService>();

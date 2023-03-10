@@ -14,9 +14,10 @@ namespace Wtdl.Repository.EntityConfig
 
             builder.HasIndex(p => p.ID);//设置索引
             builder.HasIndex(p => p.QRCode);//设置索引
-            builder.HasIndex(p => p.CreateTime);//设置索引
+            builder.HasIndex(p => p.OutTime);//设置索引
 
-            builder.Property(p => p.CreateTime).HasDefaultValue(DateTime.Now);
+            builder.Property(p => p.CreateTime).HasDefaultValueSql("getdate()");
+            builder.Property(p => p.ExtensionOrder).HasDefaultValue("");
 
             builder.ToTable(b =>
             {

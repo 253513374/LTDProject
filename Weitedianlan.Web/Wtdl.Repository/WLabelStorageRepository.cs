@@ -123,11 +123,11 @@ namespace Wtdl.Repository
             {
                 using (var context = _contextFactory.CreateDbContext())
                 {
-                    int maxId = context.WLabelStorages.Select(e => e.ID).Max();
+                    var latestData = context.WLabelStorages.Select(e => e.OutTime).Max();
                     //var latestData = context.WLabelStorages.FromSqlRaw("SELECT MAX(ID) FROM W_LabelStorage");
-                    var latestData = context.WLabelStorages.FirstOrDefault(e => e.ID == maxId);
+                    //var latestData = context.WLabelStorages.FirstOrDefault(e => e.ID == maxId);
                     //   var latestData = await context.WLabelStorages.AsNoTracking().OrderByDescending(x => x.OutTime).FirstOrDefaultAsync();
-                    var thirtyDaysAgo = latestData.OutTime.AddDays(-30);// DateTime.Now.AddDays(-30);
+                    var thirtyDaysAgo = latestData.AddDays(-30);// DateTime.Now.AddDays(-30);
 
                     return await GetGroupByTimeRecordsAsync(thirtyDaysAgo, DateTime.Now);
                 }

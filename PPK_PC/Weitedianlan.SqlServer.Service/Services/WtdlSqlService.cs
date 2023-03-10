@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using Weitedianlan.model.ReQuest;
 using Weitedianlan.model.Response;
+using Wtdl.Share;
 using Wtdl.Share.SignalR;
 
 namespace Weitedianlan.SqlServer.Service
@@ -25,7 +26,7 @@ namespace Weitedianlan.SqlServer.Service
 
         private List<Claim> Claims = new List<Claim>();
 
-        private const string NotPut = "NotPut";
+        // private const string NotPut = "NotPut";
 
         /// <summary>
         /// 默认在线 true,l离线为false
@@ -115,7 +116,7 @@ namespace Weitedianlan.SqlServer.Service
                     ///网络不通的情况下，数据保存到本地数据库
                     using (var context = new WTDLContext())
                     {
-                        tlabelx.ExtensionOrder = "NoPut";
+                        tlabelx.ExtensionOrder = $"{DateTime.Now.Day.ToString("yyyyMMdd")}";
                         context.W_LabelStorages.Add(tlabelx);
                         int i = await context.SaveChangesAsync();
                         if (i > 0)
@@ -352,8 +353,9 @@ namespace Weitedianlan.SqlServer.Service
         public async Task<UserResult> UserLoging(LoginData loginData, bool isonline)
         {
             hubConnection = hubConnection.TryInitialize(loginData.Username, loginData.Password);
-            hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+            hubConnection.On<string>(HubClientMethods.OnDeleteSynchronizationData, async (deleteid) =>
             {
+                await DeleteSynchronizationData(deleteid);
                 //服务器后台通过这里控制PC端是否可以使用
                 //this.Dispatcher.Invoke(() =>
                 //{
@@ -458,25 +460,29 @@ namespace Weitedianlan.SqlServer.Service
         }
 
         ///
-        /// 把还未同步的列表数据分割成大小为1000的数据块，分批上传
+        /// 把还未同步的列表数据分割成大小为1000的数据块，分批上传,只同步30天以内的离线数据
         private async Task Synchronization()
         {
             using (var context = new WTDLContext())
             {
                 var resultList = await context.W_LabelStorages.AsNoTracking()
-                    .Where(w => w.ExtensionOrder.Contains(NotPut)).ToListAsync();
+                    .Where(e => e.ExtensionOrder != null && e.OutTime >= DateTime.Now.Date.AddDays(-14)).ToListAsync();
 
-                // 将数据分割成大小为1000的数据块
-                var dataChunks = ChunkList(resultList, 1000);
-
-                //await connection.StartAsync();
-
-                foreach (var chunk in dataChunks)
+                var groupbyList = resultList.GroupBy(e => e.ExtensionOrder).ToDictionary(g => g.Key, g => g.ToList());
+                foreach (var variable in groupbyList)
                 {
-                    if (hubConnection.State == HubConnectionState.Connected)
+                    // 将数据分割成大小为1000的数据块
+                    var dataChunks = ChunkList(variable.Value, 1000);
+                    foreach (var chunk in dataChunks)
                     {
-                        var result = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorageBatch, chunk);
+                        if (hubConnection.State == HubConnectionState.Connected)
+                        {
+                            var result = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorageBatch, chunk);
+                        }
                     }
+
+                    //上传完一组数据， 就删除一组数据
+                    await hubConnection.InvokeAsync(HubServerMethods.SendDeleteSynchronizationData, SynchState.SendCompleted(variable.Key));
                 }
             }
         }
@@ -491,6 +497,16 @@ namespace Weitedianlan.SqlServer.Service
             }
 
             return chunks;
+        }
+
+        ///离线数据已经全部上传，需要完全删除
+        private async Task DeleteSynchronizationData(string notput)
+        {
+            using (var context = new WTDLContext())
+            {
+                context.W_LabelStorages.RemoveRange(context.W_LabelStorages.Where(w => w.ExtensionOrder.Contains(notput)));
+                await context.SaveChangesAsync();
+            }
         }
     }
 

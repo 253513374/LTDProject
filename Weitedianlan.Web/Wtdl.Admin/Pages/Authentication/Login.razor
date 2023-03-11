@@ -113,11 +113,9 @@ else
 
             processing = true;
 
-            await Task.Delay(1000);
+            //await Task.Delay(1000);
             var model = mudForm.Model as LoginModel;
-
-            
-            var result = await accountService.LoginUserAsync(model);
+            var result = await accountService.LoginUserAsync(_tokenModel);
 
             if (result.Succeeded)
             {

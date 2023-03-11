@@ -61,6 +61,11 @@ namespace Wtdl.Mvc.Services
             {
                 var result = await _lotteryActivityRepository.GetLotteryActivityAsync();
 
+                var activiprize =
+                  await _activityPrizeRepository.FindAsync(f => f.LotteryActivityId == result.Id && f.IsActive == true);
+
+                result.Prizes = activiprize.ToList();
+
                 if (result is not null)
                 {
                     var view = new ActivityResult()
@@ -101,6 +106,15 @@ namespace Wtdl.Mvc.Services
                 return new ActivityResult() { Msg = $"服务器错误：{e.Message}" };
             }
         }
+
+        /// <summary>
+        /// 返回活动奖品
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
+        //private async Task<ActivityPrize> GetActivityPrize(string a)
+        //{
+        //}
 
         /// <summary>
         /// 抽取一个奖品

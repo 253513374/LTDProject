@@ -203,7 +203,9 @@ namespace Wtdl.Admin.Authenticated
         /// <returns></returns>
         public async Task<SignInWResult> LoginUserAsync(LoginModel model)
         {
-#if DEBUG
+            #region MyRegion  
+
+
             //try
             //{
             //    //生成默认账号与默认角色
@@ -249,8 +251,8 @@ namespace Wtdl.Admin.Authenticated
             //    return SignInWResult.Failure(e.Message);
             //}
 
-#endif
 
+#endregion 
             // using var dbContext = dbContextFactory.CreateDbContext();
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName || u.Email == model.UserName || u.PhoneNumber == model.UserName);
 

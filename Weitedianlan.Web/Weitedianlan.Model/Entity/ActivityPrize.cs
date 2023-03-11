@@ -13,6 +13,7 @@ namespace Weitedianlan.Model.Entity
         public ActivityPrize()
         {
             PrizeNumber = Guid.NewGuid().ToString().Replace("-", "");
+            UniqueNumber = 0;//默认不中奖
         }
 
         /// <summary>

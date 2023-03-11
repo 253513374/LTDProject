@@ -84,11 +84,16 @@
     RedPacketValidator PacketValidator = new RedPacketValidator();
 
 
-
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
+        if (firstRender)
+        {
+            RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
+            StateHasChanged();
+        }
+        return;// base.OnAfterRenderAsync(firstRender);
     }
+
 
    
 

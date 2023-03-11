@@ -100,10 +100,22 @@ else
     {
         //_prizeRepository = new PrizeRepository();
 
-        Prizes = await _prizeRepository.GetLatestRecordsAsync();
+        
     }
 
-    protected async Task Delete(int id)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                Prizes = await _prizeRepository.GetLatestRecordsAsync();
+                StateHasChanged();
+            }
+            return;
+            // base.OnAfterRenderAsync(firstRender);
+        }
+
+
+        protected async Task Delete(int id)
     {
         await _prizeRepository.DeleteByIdAsync(id);
         Prizes = await _prizeRepository.GetAllAsync();

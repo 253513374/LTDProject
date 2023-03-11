@@ -1,5 +1,7 @@
 ﻿@using FluentValidation
 
+@inject IWebHostEnvironment _webHostEnvironment
+
 <MudStack  Spacing="0" AlignItems="AlignItems.Stretch" Justify="Justify.Center">
     <MudForm @ref="@FileMudForm" Model="@fileUpload" Validation=@FunValidation>
         <MudFileUpload @bind-Files="fileUpload.File"  For="(() => fileUpload.File)" OnFilesChanged="OnUploadFiles" 
@@ -34,7 +36,8 @@
     [Parameter]
     public EventCallback<string> OnImageFileCallback { get; set; }
 
-
+    private IBrowserFile _selectedImage;
+    private string _imagePath;
     /// <summary>
     /// 绑定自定义验证类【AbstractValidator<FileUploadFluent>】
     /// </summary>
@@ -46,24 +49,103 @@
         if (FunValidation is null)
         {
             FunValidation = new ImageFileFluentValidator().ValidateValue;
-
-           
         }
         fileUpload.ImageBase64 = ImageBase64;
     }
     private async Task OnUploadFiles(InputFileChangeEventArgs arg)
     {
+
+        if (File.Exists(_imagePath))
+        {
+            File.Delete(_imagePath);
+        }
+
         using (var stream = arg.File.OpenReadStream(arg.File.Size))
         {
-            using (var ms = new MemoryStream())
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(arg.File.Name);
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "UploadImages");
+
+            if (!Directory.Exists(uploadPath))
             {
-                await stream.CopyToAsync(ms);
-                var fileBytes = ms.ToArray();
-                ImageBase64 = $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
-                await OnImageFileCallback.InvokeAsync(ImageBase64);
+                Directory.CreateDirectory(uploadPath);
             }
+
+            _imagePath = Path.Combine(uploadPath, fileName);
+
+            //var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadImages");
+            //if (!Directory.Exists(directoryPath))
+            //{
+            //    Directory.CreateDirectory(directoryPath);
+            //}
+            //_imagePath = Path.Combine(directoryPath, arg.File.Name);
+
+            var relativePath = Path.Combine("UploadImages", fileName);
+
+            using (var filestream = new FileStream(_imagePath, FileMode.Create))
+            {
+                //保存图像到服务器文件
+                await stream.CopyToAsync(filestream);
+                byte[] buffer = new byte[arg.File.Size];
+                await stream.ReadAsync(buffer);
+               
+                await OnImageFileCallback.InvokeAsync(relativePath);
+            }
+            ImageBase64 = @$"{relativePath}";
+            //using (var ms = new MemoryStream())
+            //{
+            //    await stream.CopyToAsync(ms);
+            //    var fileBytes = ms.ToArray();
+            //    ImageBase64 = $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
+            //    await OnImageFileCallback.InvokeAsync(ImageBase64);
+            //}
         }
         return ;
+    }
+    private async Task<string> ConvertToBase64(IBrowserFile file)
+    {
+        if (file != null)
+        {
+            byte[] buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            return $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        }
+
+        return string.Empty;
+    }
+
+    private async Task UploadImage()
+    {
+        if (_selectedImage != null)
+        {
+    // Save image file to the server
+            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "UploadImages");
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            var fileName = Path.Combine(directoryPath, _selectedImage.Name);
+            using (var stream = new FileStream(fileName, FileMode.Create))
+            {
+                await _selectedImage.OpenReadStream().CopyToAsync(stream);
+            }
+
+    //// Save image info to the database
+    //        var image = new ImageInfo
+    //        {
+    //            Name = _selectedImage.Name,
+    //            Path = fileName
+    //        };
+
+    //        _dbContext.Images.Add(image);
+    //        await _dbContext.SaveChangesAsync();
+
+    //// Clear the selection
+    //        _selectedImage = null;
+    //        _imageUrl = string.Empty;
+
+    //// Refresh the image list
+    //        _images = await _dbContext.Images.ToListAsync();
+        }
     }
 
    

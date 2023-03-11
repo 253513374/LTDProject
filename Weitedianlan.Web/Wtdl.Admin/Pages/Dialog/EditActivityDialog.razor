@@ -47,6 +47,8 @@
 
 @code {
 
+
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
 
@@ -75,15 +77,19 @@
         await fileform.FileMudForm.Validate();
         if (mudForm.IsValid && fileform.FileMudForm.IsValid)
         {
-            var result = await _ActivityRepository.UpdateAsync(UplotteryActivity);
+
+            var lotteryActivity = mudForm.Model as LotteryActivity;
+            var username = AuthenticationStateTask.Result.User.Identity.Name;
+            lotteryActivity.AdminUser = username;
+            var result = await _ActivityRepository.UpdateAsync(lotteryActivity);
             if (result > 0)
             {
-                Snackbar.Add($"活动【 {UplotteryActivity.Name} 】编辑成功", Severity.Success);
+                Snackbar.Add($"活动【 {lotteryActivity.Name} 】编辑成功", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
-                Snackbar.Add($"活动【 {UplotteryActivity.Name} 】编辑失败", Severity.Error);
+                Snackbar.Add($"活动【 {lotteryActivity.Name} 】编辑失败", Severity.Error);
             }
 
             return;

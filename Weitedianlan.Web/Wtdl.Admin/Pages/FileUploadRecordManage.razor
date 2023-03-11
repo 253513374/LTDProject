@@ -12,7 +12,7 @@
 @inject ILogger<FileUploadRecordManage> _logger
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject Task<AuthenticationState> authenticationStateTask
+
 
 
 <MudPageTitle Title="文本数据" Description="上传红包验证码text文本数据"></MudPageTitle>
@@ -157,6 +157,8 @@
 
     private FileUploadRecord improRecord;
 
+
+    [CascadingParameter] public Task<AuthenticationState> authenticationStateTask { set; get; }
 
     protected override async Task OnInitializedAsync()
     {

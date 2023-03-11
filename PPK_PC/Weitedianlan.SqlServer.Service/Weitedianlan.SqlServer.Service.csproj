@@ -211,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataEnCode.cs" />
+    <Compile Include="Services\UserResult.cs" />
     <Compile Include="ViewModels\DBResult.cs" />
     <Compile Include="Services\HubExtensions.cs" />
     <Compile Include="ViewModels\LoginData.cs" />

@@ -49,6 +49,8 @@
 
 @code {
 
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
 
@@ -59,8 +61,7 @@
     private MudForm mudForm;
     private FileUpImageComponent fileform;
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     
 
     private string ImageBase64 { set; get; }
@@ -72,15 +73,20 @@
         await fileform.FileMudForm.Validate();
         if (mudForm.IsValid && fileform.FileMudForm.IsValid)
         {
-            var result =  await _ActivityRepository.AddAsync(AddlotteryActivity);
+
+            var lotteryActivity = mudForm.Model as LotteryActivity;
+            var username = AuthenticationStateTask.Result.User.Identity.Name;
+            lotteryActivity.AdminUser = username;
+
+            var result = await _ActivityRepository.AddAsync(lotteryActivity);
             if (result>0)
             {
-                Snackbar.Add($"活动【 {AddlotteryActivity.Name} 】创建成功", Severity.Success);
+                Snackbar.Add($"活动【 {lotteryActivity.Name} 】创建成功", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
-                Snackbar.Add($"活动【 {AddlotteryActivity.Name} 】创建失败", Severity.Error);
+                Snackbar.Add($"活动【 {lotteryActivity.Name} 】创建失败", Severity.Error);
             }
            
             return;

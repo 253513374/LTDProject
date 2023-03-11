@@ -66,6 +66,8 @@
    
 </MudDialog>
 @code {
+
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
    // private string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-2  mud-width-full mud-height-full z-10";
@@ -92,15 +94,19 @@
         await fileform.FileMudForm.Validate();
         if (form.IsValid && fileform.FileMudForm.IsValid)
         {
-            var result = await _prizeRepository.AddAsync(AddPrize);
+            var prize = form.Model as Prize;
+            var username = AuthenticationStateTask.Result.User.Identity.Name;
+            prize.AdminUser = username;
+
+            var result = await _prizeRepository.AddAsync(prize);
             if (result > 0)
             {
-                Snackbar.Add($"奖品 {AddPrize.Name} 添加成功", Severity.Success);
+                Snackbar.Add($"奖品 {prize.Name} 添加成功", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
-                Snackbar.Add($"奖品 {AddPrize.Name} 添加失败", Severity.Error);
+                Snackbar.Add($"奖品 {prize.Name} 添加失败", Severity.Error);
             }
         }
     }

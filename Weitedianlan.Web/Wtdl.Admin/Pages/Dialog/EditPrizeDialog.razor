@@ -62,7 +62,11 @@
         </DialogActions>
 
     </MudDialog>
-    @code {
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
 
@@ -86,16 +90,20 @@
         await fileform.FileMudForm.Validate();
         if (form.IsValid && fileform.FileMudForm.IsValid)
         {
-            var result = await _prizeRepository.UpdateAsync(UpPrize);
+
+            var prize = form.Model as Prize;
+            var username = authenticationStateTask.Result.User.Identity.Name;
+            prize.AdminUser = username;
+            var result = await _prizeRepository.UpdateAsync(prize);
 
             if (result > 0)
             {
-                Snackbar.Add($"奖品 {UpPrize.Name} 更新成功", Severity.Success);
+                Snackbar.Add($"奖品 {prize.Name} 更新成功", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
-                Snackbar.Add($"奖品 {UpPrize.Name} 更新失败", Severity.Error);
+                Snackbar.Add($"奖品 {prize.Name} 更新失败", Severity.Error);
             }            
         }
     }

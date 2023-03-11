@@ -112,8 +112,8 @@ namespace Wtdl.Admin.SignalRHub
         /// <returns></returns>
         public async Task<OutStorageResult> SendOutStorageAsync(W_LabelStorage storage)
         {
-            var username = Context.User.Identity.Name;
-            storage.Adminaccount = username;
+            //var username = Context.User.Identity.Name;
+            //storage.Adminaccount = username;
             var result = await _storageRepository.AddAsync(storage);
 
             if (result > 0)

@@ -59,8 +59,8 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 var groupedData = context.WLabelStorages.AsNoTracking()
-                    .Where(x => x.OrderTime >= startTime && x.OrderTime < endTime.AddDays(1))
-                    .OrderByDescending(o => o.OrderTime)
+                    .Where(x => x.OutTime >= startTime && x.OutTime < endTime.AddDays(1))
+                    .OrderByDescending(o => o.OutTime)
                     .GroupBy(x => new { x.OrderNumbels, x.OrderTime })
                     //(x.OrderTime))
                     .Select(g => new GroupByWLabelStorage()
@@ -372,7 +372,8 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 var groupedData = await context.WLabelStorages.AsNoTracking()
-                    .Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
+                    .Select(s => s.OutTime)
+                    .Where(w => w.Date == DateTime.Now.Date)
                     .CountAsync();
                 return groupedData;
             }
@@ -384,7 +385,8 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 var groupedData = await context.WLabelStorages.AsNoTracking()
-                    .Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
+                    .Select(s => new { s.OrderTime, s.OrderNumbels })
+                    .Where(w => w.OrderTime.Date == DateTime.Now.Date)
                     .GroupBy(g => g.OrderNumbels)
                     .CountAsync();
                 return groupedData;
@@ -418,8 +420,9 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var groupedData = context.WLabelStorages.AsNoTracking()
-                    .Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
+                var groupedData = context.WLabelStorages.AsNoTracking().Select(s => s.OutTime)
+                    .Where(w => w.Date == DateTime.Now.Date)
+                    //.Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
                     .Count();
                 return groupedData;
             }
@@ -435,7 +438,8 @@ namespace Wtdl.Repository
             using (var context = _contextFactory.CreateDbContext())
             {
                 var groupedData = await context.WLabelStorages.AsNoTracking()
-                    .Where(w => w.OrderTime.Year == DateTime.Now.Year)
+                    .Select(s => s.OutTime)
+                    .Where(w => w.Year == DateTime.Now.Year)
                     .CountAsync();
                 return groupedData;
             }

@@ -11,6 +11,9 @@ namespace Weitedianlan.Model.Entity
         public Prize()
         {
             PrizeNumber = Guid.NewGuid().ToString().Replace("_", "");
+            UniqueNumber = "0";//默认不中奖
+            Probability = 0.001;//默认中奖概率为千分一
+            IsActive = true;//默认启用该奖品
         }
 
         /// <summary>

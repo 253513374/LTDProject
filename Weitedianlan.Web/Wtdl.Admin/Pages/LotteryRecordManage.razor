@@ -128,10 +128,16 @@ else
         return false;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        lotteryRecords = await _LotteryRecordRepository.GetLatestLotteryRecordsAsync();
+        if (firstRender)
+        {
+            lotteryRecords = await _LotteryRecordRepository.GetLatestLotteryRecordsAsync();
+            StateHasChanged();
+        }
+        return;//base.OnAfterRenderAsync(firstRender);
     }
+
     private void PageChanged(int i)
     {
         _table.NavigateTo(i - 1);

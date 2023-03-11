@@ -25,7 +25,6 @@ using Wtdl.Repository.MediatRHandler.Events;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
-
     .CreateBootstrapLogger();
 
 try
@@ -33,8 +32,9 @@ try
     Log.Information("Starting web application");
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog((ctx, lc) => lc
-       .WriteTo.Console()
-       .ReadFrom.Configuration(ctx.Configuration));
+        .WriteTo.Console()
+        .MinimumLevel.Debug()
+        .ReadFrom.Configuration(ctx.Configuration));
 
     //builder.Configuration.GetConnectionString("LotteryDbConnection")
     var connectionString = builder.Configuration.GetConnectionString("LotteryDbConnection");
@@ -64,7 +64,6 @@ try
     builder.Services.AddQuartz(q =>
     {
         q.UseMicrosoftDependencyInjectionJobFactory();
-
         q.AddJob<LoadStockOutCacheJob>(j => j.WithIdentity("MyJob"));
         q.AddTrigger(t => t
             .WithIdentity("MyJobTrigger")
@@ -80,11 +79,11 @@ try
 
     // Add services to the container.
     builder.Services.AddRazorPages();
-
-    builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
-    {
-        options.DetailedErrors = true;
-    });
+    builder.Services.AddServerSideBlazor();
+    //builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
+    //{
+    //    options.DetailedErrors = true;
+    //});
     builder.Services.AddControllers();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<WeatherForecastService>();

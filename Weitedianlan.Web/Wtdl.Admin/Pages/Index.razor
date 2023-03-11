@@ -15,8 +15,7 @@
 
 <MudPageTitle Title="数据面板" Description="系统数据分析统计"></MudPageTitle>
 
-@if(FormsNever is not null)
-{
+
 
 <MudGrid >
         <MudItem xs="12" sm="12" md="6">
@@ -106,7 +105,7 @@
         </MudItem>
     </MudGrid>
 
-    }
+    
 
 <MudStack Class="my-12 " >
     @if (isgetyear)
@@ -188,12 +187,16 @@
     [CascadingParameter]
     private Task<AuthenticationState> auTask { get; set; }
 
-    private ReportFormsNever FormsNever;
+    private ReportFormsNever FormsNever=new();
 
     [Inject] private AccountService Service { get; set; }
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender)
+        {
+            return;
+        }
         if (auTask.Result.User is not null )
         {
             var claims = auTask.Result.User.Claims.ToList();
@@ -202,7 +205,7 @@
 
             hubConnection.On<int>(HubClientMethods.OnOutStorageDayCount, (count) =>
             {
-                OutStorageCount = Interlocked.Increment(ref OutStorageCount);
+                OutStorageCount = count;//Interlocked.Increment(ref OutStorageCount);
                 InvokeAsync(StateHasChanged);
             });
             hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>
@@ -228,13 +231,13 @@
             });
             await hubConnection.StartAsync();
         }
-        if (FormsNever is null)
-        {
-            FormsNever = new ReportFormsNever();
-        }
+        //if (FormsNever is null)
+        //{
+        //    FormsNever = new ReportFormsNever();
+        //}
         await GetAllYearCountAsync();
         await LoadCache();
-
+        StateHasChanged();
     // await GetOrderNumberAsync();
     }
 

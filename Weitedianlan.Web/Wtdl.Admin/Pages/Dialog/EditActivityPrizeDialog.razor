@@ -61,7 +61,10 @@
         </DialogActions>
 
     </MudDialog>
-    @code {
+@code {
+
+
+    [CascadingParameter] Task<AuthenticationState> AuthenticationStateTask { get; set; }
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
 
@@ -83,20 +86,25 @@
         await fileform.FileMudForm.Validate();
         if (form.IsValid && fileform.FileMudForm.IsValid)
         {
-            if (UpActivityPrize.UniqueNumber == 0)
+
+            var activityPrize = form.Model as ActivityPrize;
+            var username = AuthenticationStateTask.Result.User.Identity.Name;
+            activityPrize.AdminUser = username;
+
+            if (activityPrize.UniqueNumber == 0)
             {
-                UpActivityPrize.UniqueNumber = await GlobalUtility.GetRandomInt(UpActivityPrize.Probability);
+                activityPrize.UniqueNumber = await GlobalUtility.GetRandomInt(activityPrize.Probability);
             }
-            MudDialog.Close(DialogResult.Ok(UpActivityPrize));
+            MudDialog.Close(DialogResult.Ok(activityPrize));
           
         }
     }
 
-        private Task UpFileImage(string arg)
-        {
-            UpActivityPrize.ImageUrl = arg;//
-            return Task.CompletedTask;
-        //throw new NotImplementedException();
-        }
+    private Task UpFileImage(string arg)
+    {
+        UpActivityPrize.ImageUrl = arg;//
+        return Task.CompletedTask;
+    //throw new NotImplementedException();
+    }
 
     }

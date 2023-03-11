@@ -80,7 +80,7 @@ namespace Weitedianlan.SqlServer.Service
         /// <returns></returns>
         public async Task<tLabelsxModel> AddtLabelX(AddtLabelx addtLabelx)
         {
-            tLabelsxModel tLabelsxModel = new tLabelsxModel();
+            //tLabelsxModel tLabelsxModel = new tLabelsxModel();
             var tlabelx = new W_LabelStorage()
             {
                 QRCode = addtLabelx.QRCode,
@@ -97,41 +97,53 @@ namespace Weitedianlan.SqlServer.Service
                 //判断是网络是Online还是Offline
                 if (hubConnection.State == HubConnectionState.Connected)
                 {
-                    hubConnection = hubConnection.TryInitialize();
-                    await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
-                    var result =
-                        await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
+                    try
+                    {
+                        hubConnection = hubConnection.TryInitialize();
+                        hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
+                        //var result = await
+                        hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
 
-                    if (result.Successed)
-                    {
+                        //if (result.Successed)
+                        //{
                         return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                        //}
+                        //else
+                        //{
+                        //    return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
+                        //}
                     }
-                    else
+                    catch (Exception e)
                     {
-                        return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
+                        return await TLabelsxModelOffline(addtLabelx, tlabelx);
                     }
                 }
                 else
                 {
-                    ///网络不通的情况下，数据保存到本地数据库
-                    using (var context = new WTDLContext())
-                    {
-                        tlabelx.ExtensionOrder = $"{DateTime.Now.Day.ToString("yyyyMMdd")}";
-                        context.W_LabelStorages.Add(tlabelx);
-                        int i = await context.SaveChangesAsync();
-                        if (i > 0)
-                        {
-                            return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
-                        }
-
-                        return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
-                    }
+                    return await TLabelsxModelOffline(addtLabelx, tlabelx);
                 }
             }
             catch (Exception ex)
             {
                 string strinfo = ex.Message;
                 return UPdateAddtLabelsxModel(addtLabelx, 404, "系统错误", strinfo);
+            }
+        }
+
+        private async Task<tLabelsxModel> TLabelsxModelOffline(AddtLabelx addtLabelx, W_LabelStorage tlabelx)
+        {
+            ///网络不通的情况下，数据保存到本地数据库
+            using (var context = new WTDLContext())
+            {
+                tlabelx.ExtensionOrder = $"{DateTime.Now.Day.ToString("yyyyMMdd")}";
+                context.W_LabelStorages.Add(tlabelx);
+                int i = await context.SaveChangesAsync();
+                if (i > 0)
+                {
+                    return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                }
+
+                return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
             }
         }
 
@@ -507,34 +519,6 @@ namespace Weitedianlan.SqlServer.Service
                 context.W_LabelStorages.RemoveRange(context.W_LabelStorages.Where(w => w.ExtensionOrder.Contains(notput)));
                 await context.SaveChangesAsync();
             }
-        }
-    }
-
-    public class UserResult
-    {
-        public bool Successed { get; set; }
-
-        public string Message { get; set; } = string.Empty;
-
-        public User User { get; set; }
-
-        public static UserResult Success(User user)
-        {
-            return new UserResult
-            {
-                Successed = true,
-                User = user
-            };
-        }
-
-        //失败
-        public static UserResult Failed(string message)
-        {
-            return new UserResult
-            {
-                Successed = false,
-                Message = message
-            };
         }
     }
 }

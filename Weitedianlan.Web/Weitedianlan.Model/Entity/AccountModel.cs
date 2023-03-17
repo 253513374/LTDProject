@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     public class AccountModel
     {

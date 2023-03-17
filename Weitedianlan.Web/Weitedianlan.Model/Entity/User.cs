@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     using System;
     using System.Collections.Generic;

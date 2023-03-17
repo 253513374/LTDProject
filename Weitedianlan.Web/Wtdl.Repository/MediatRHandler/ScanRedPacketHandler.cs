@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
 
 namespace Wtdl.Repository.MediatRHandler
 {

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
 
 namespace Wtdl.Admin.Pages.FluentValidator
 {

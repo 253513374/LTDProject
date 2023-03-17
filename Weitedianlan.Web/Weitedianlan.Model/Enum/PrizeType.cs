@@ -1,4 +1,4 @@
-﻿namespace Weitedianlan.Model.Enum
+﻿namespace Wtdl.Model.Enum
 {
     /// <summary>
     /// 奖品类型枚举

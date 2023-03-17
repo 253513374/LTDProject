@@ -7,10 +7,14 @@ using Senparc.Weixin.TenPay.V3;
 using StackExchange.Redis;
 using System.Net;
 using System.Net.Sockets;
-using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Enum;
+using Wtdl.Model.Entity;
+using Wtdl.Model.Enum;
 using Wtdl.Controller.Models.ResponseModel;
 using Wtdl.Controller.Services;
+
+using Wtdl.Model.Enum;
+
+using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 using Wtdl.Repository.MediatRHandler.Events;
@@ -26,7 +30,7 @@ namespace Wtdl.Mvc.Services
         private readonly WLabelStorageRepository _wLabelStorageRepository;
 
         //private readonly IDistributedCache _distributedCache;
-        private readonly IDatabase _database;
+        //  private readonly IDatabase _database;
 
         private string appId = Config.SenparcWeixinSetting.WeixinAppId;
 
@@ -48,7 +52,7 @@ namespace Wtdl.Mvc.Services
             ScanRedPacketRepository redPacketRepository,
             WLabelStorageRepository wLabelStorage,
             IDistributedCache distributedCache,
-            IConnectionMultiplexer connectionMultiplexer,
+            //   IConnectionMultiplexer connectionMultiplexer,
             HubService service,
              IMediator mediator)
         {
@@ -58,7 +62,7 @@ namespace Wtdl.Mvc.Services
             _redPacketRepository = redPacketRepository;
             _wLabelStorageRepository = wLabelStorage;
             //_distributedCache = distributedCache;
-            _database = connectionMultiplexer.GetDatabase();
+            //  _database = connectionMultiplexer.GetDatabase();
             _mediator = mediator;
             //_localIPAddress = GetIp();
             var host = Dns.GetHostEntry(Dns.GetHostName());

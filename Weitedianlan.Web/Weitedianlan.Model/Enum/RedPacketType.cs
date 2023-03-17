@@ -1,4 +1,4 @@
-﻿namespace Weitedianlan.Model.Enum
+﻿namespace Wtdl.Model.Enum
 {
     public enum RedPacketType
     {

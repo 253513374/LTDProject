@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
-using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Enum;
+using Wtdl.Model.Entity;
+
+using Wtdl.Model.Enum;
 
 namespace Wtdl.Admin.Pages.FluentValidator
 {

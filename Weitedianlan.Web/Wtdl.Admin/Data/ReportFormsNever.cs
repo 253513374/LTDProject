@@ -1,4 +1,4 @@
-﻿using Weitedianlan.Model.Entity.Analysis;
+﻿using Wtdl.Model.Entity.Analysis;
 
 namespace Wtdl.Admin.Data
 {

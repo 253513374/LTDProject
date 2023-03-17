@@ -13,7 +13,7 @@ using Radzen;
 using Serilog;
 using System.Reflection;
 using System.Text;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
 using Wtdl.Admin.Authenticated;
 using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Authenticated.Services;

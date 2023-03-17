@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Wtdl.Controller.Models.ResponseModel;
+using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Services;
 

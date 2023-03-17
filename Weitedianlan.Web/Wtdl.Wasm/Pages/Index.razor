@@ -1,0 +1,91 @@
+﻿@page "/"
+@page "/{Id}"
+
+@using System.Text.RegularExpressions
+
+<PageTitle>威特电缆</PageTitle>
+
+
+<MudImage Src="images/mony.jpg" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+<h3>Code：  @Code</h3>
+<h3>QRCode： @QRCode</h3>
+<h3>OpenId： @OpenId</h3>
+
+@code
+{
+
+    [Parameter]
+    public string? Id { set; get; }
+
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "code")]
+    public string? Code { get; set; }
+
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "state")]
+    public string? QRCode { get; set; }
+
+
+  
+    public string? OpenId { set; get; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (string.IsNullOrEmpty(Code))
+        {
+            var p = await MatchInt(_navigationManager.Uri);
+
+            Console.WriteLine($"_navigationManager.Uri:{p}");
+            var url = $"http://www.chn315.top/authcallback"; //回调地址
+
+            var getoauthurl = $"OAuth2Url?qrcode={p}";
+            HttpResponseMessage response = await _httpClient.GetAsync(getoauthurl);//请求返回微信授权访问地址
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+
+                _navigationManager.NavigateTo(content);
+                return;
+            }
+            else
+            {
+    //  return StatusCode((int)response.StatusCode);
+            }
+        }
+        else
+        {
+            await GetWeixinUserOpenID(Code);
+        }
+
+        //StateHasChanged();
+    }
+
+    private async Task GetWeixinUserOpenID(string code)
+    {
+        if (string.IsNullOrEmpty(OpenId))
+        {
+            OpenId = await _httpClient.GetStringAsync($"OAuth2/WXLogin?code={code}");
+        }
+        
+    }
+
+
+
+    private async Task<string> MatchInt(string args)
+    {
+    // string input = "http://www.chn315.top/236810001404";
+        string pattern = @"/(\d{12})$"; // 匹配网址末尾12位数字
+        Match match = Regex.Match(args, pattern);
+        if (match.Success)
+        {
+            return match.Groups[1].Value;
+    //Console.WriteLine(result); // 输出：236810001404
+        }
+        return DateTime.Now.ToString("yyyyMMddhhmmss");
+    }
+}

@@ -10,8 +10,9 @@ using Senparc.Weixin.TenPay;
 using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
-using Weitedianlan.Model.Entity;
+
 using Wtdl.Controller.Services;
+using Wtdl.Model.Entity;
 using Wtdl.Mvc.Services;
 using Wtdl.Repository;
 using Wtdl.Repository.MediatRHandler.Events;
@@ -104,8 +105,8 @@ builder.Services.AddHttpClient();
 //    .WithAutomaticReconnect()
 //    .Build());
 
-var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
+//var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
+//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
 //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 
 //builder.Services.AddStackExchangeRedisCache(options =>
@@ -134,6 +135,14 @@ builder.Services.AddScoped<LotteryService>();//注入抽奖服务
 builder.Services.AddScoped<SearchByCodeService>();//注入防伪溯源服务
 builder.Services.AddScoped<ScanByRedPacketService>();//注入红包服务
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+        builder.WithOrigins(new string[] { "http://www.chn315.top", "http://localhost:5276" })
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -170,13 +179,14 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "抽奖系统 API 接口");
 });
 
+app.UseCors();
 // 配置 Redis 中间件
 
 app.UseResponseCaching();
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
+app.UseStaticFiles();
 app.UseRouting();
 app.UseEndpoints(endpoints =>
 {

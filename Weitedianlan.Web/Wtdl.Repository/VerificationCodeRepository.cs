@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
 using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
 using Wtdl.Repository.Tools;

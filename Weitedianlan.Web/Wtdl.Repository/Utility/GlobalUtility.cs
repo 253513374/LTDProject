@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
 
 namespace Wtdl.Repository.Utility
 {

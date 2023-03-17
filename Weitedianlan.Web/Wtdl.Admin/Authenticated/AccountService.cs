@@ -203,8 +203,7 @@ namespace Wtdl.Admin.Authenticated
         /// <returns></returns>
         public async Task<SignInWResult> LoginUserAsync(LoginModel model)
         {
-            #region MyRegion  
-
+            #region MyRegion
 
             //try
             //{
@@ -251,9 +250,10 @@ namespace Wtdl.Admin.Authenticated
             //    return SignInWResult.Failure(e.Message);
             //}
 
+            #endregion MyRegion
 
-#endregion 
             // using var dbContext = dbContextFactory.CreateDbContext();
+
             var user = await userManager.Users.FirstOrDefaultAsync(u => u.UserName == model.UserName || u.Email == model.UserName || u.PhoneNumber == model.UserName);
 
             //验证用户密码是否正确

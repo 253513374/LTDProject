@@ -3,8 +3,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
-using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Entity.Analysis;
+using Wtdl.Model.Entity;
+using Wtdl.Model.Entity.Analysis;
 using Wtdl.Repository.Data;
 using Wtdl.Repository.Interface;
 

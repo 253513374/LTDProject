@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Enum;
+
+using Wtdl.Model.Entity;
+using Wtdl.Model.Enum;
 
 namespace Wtdl.Repository.EntityConfig
 {

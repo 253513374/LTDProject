@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Weitedianlan.Model.Entity.Analysis;
+using Wtdl.Model.Entity.Analysis;
 
 namespace Wtdl.Repository.EntityConfig.Analysis
 {

@@ -1,0 +1,57 @@
+﻿@page "/authcallback"
+
+
+
+<h3>AuthCallBack</h3>
+
+<h3>Code：  @Code</h3>
+
+<h3>QRCode： @QRCode</h3>
+
+<h3>url： @url</h3>
+
+
+@code {
+
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "code")]
+    public string? Code { get; set; }
+
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "qrcode")]
+    public string? QRCode { get; set; }
+
+
+    private string url;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("Code:" + Code);
+            Console.WriteLine("QRCode:" + QRCode);
+
+
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override void OnInitialized()
+    {
+        url = _navigationManager.Uri;
+
+        if (string.IsNullOrEmpty(Code)&& string.IsNullOrEmpty(QRCode))
+        {
+            _navigationManager.NavigateTo("/");
+        }
+
+
+        //var code = QueryHelpers.ParseQuery(uri.Query).TryGetValue("code", out var codeValue) ? codeValue.ToString() : null;
+        //var state = QueryHelpers.ParseQuery(uri.Query).TryGetValue("state", out var stateValue) ? stateValue.ToString() : null;
+        
+    // TODO: 在这里处理传递的参数
+    }
+
+}

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using StackExchange.Redis;
-using Weitedianlan.Model.Entity;
-using Weitedianlan.Model.Enum;
+using Wtdl.Model.Entity;
+using Wtdl.Model.Enum;
 using Wtdl.Controller.Services;
+
+using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 using Wtdl.Repository.Utility;
@@ -20,7 +22,7 @@ namespace Wtdl.Mvc.Services
         private readonly ActivityPrizeRepository _activityPrizeRepository;
         private readonly WLabelStorageRepository _wLabelStorageRepository;
 
-        private readonly IDatabase _database;
+        //private readonly IDatabase _database;
         private readonly ILogger<LotteryService> _logger;
 
         private readonly IMemoryCache _memoryCache;
@@ -33,8 +35,8 @@ namespace Wtdl.Mvc.Services
             VerificationCodeRepository verificationCodeRepository,
             ActivityPrizeRepository repository,
             HubService hubService,
-            //IDistributedCache distributedCache,
-            IConnectionMultiplexer connectionMultiplexer,
+        //IDistributedCache distributedCache,
+        //  IConnectionMultiplexer connectionMultiplexer,
         ILogger<LotteryService> logger,
             IMemoryCache cache)
         {
@@ -42,7 +44,7 @@ namespace Wtdl.Mvc.Services
             _memoryCache = cache;
             _hubService = hubService;
             //  _distributedCache = distributedCache;
-            _database = connectionMultiplexer.GetDatabase();
+            //  _database = connectionMultiplexer.GetDatabase();
             _activityPrizeRepository = repository;
             _lotteryActivityRepository = lotteryActivityRepository;
             _lotteryRecordRepository = recordRepository;

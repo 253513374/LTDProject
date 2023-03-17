@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Weitedianlan.Model.Entity.Analysis;
+using Wtdl.Model.Entity.Analysis;
 using Wtdl.Repository.Interface;
 using Wtdl.Repository.MediatRHandler.Events;
 using Wtdl.Repository.Utility;

@@ -1,7 +1,7 @@
 ﻿using System;
-using Weitedianlan.Model.Enum;
+using Wtdl.Model.Enum;
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     /// <summary>
     /// 抽奖记录

@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using System;
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     public class VerificationCode : IEntityBase
     {

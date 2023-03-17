@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Weitedianlan.Model.Enum;
+using Wtdl.Model.Enum;
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     /// <summary>
     /// 这个类与Prize一样。这里保存的是参加抽奖的奖品信息
@@ -59,7 +59,7 @@ namespace Weitedianlan.Model.Entity
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool IsActive { get; set; }//是否启用
+        public bool IsActive { get; set; } //是否启用
 
         /// <summary>
         /// 奖品图片

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Weitedianlan.Model\Weitedianlan.Model.csproj" />
+    <ProjectReference Include="..\Weitedianlan.Model\Wtdl.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

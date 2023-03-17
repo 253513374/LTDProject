@@ -1,4 +1,4 @@
-﻿namespace Weitedianlan.Model.Entity.Analysis
+﻿namespace Wtdl.Model.Entity.Analysis
 {
     public class OutStorageAnalysis
     {

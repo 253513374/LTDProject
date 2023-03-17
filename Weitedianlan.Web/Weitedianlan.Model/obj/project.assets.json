@@ -730,9 +730,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
-      "projectName": "Weitedianlan.Model",
-      "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Weitedianlan.Model.csproj",
+      "projectUniqueName": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Wtdl.Model.csproj",
+      "projectName": "Wtdl.Model",
+      "projectPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\Wtdl.Model.csproj",
       "packagesPath": "C:\\Users\\q4528\\.nuget\\packages\\",
       "outputPath": "E:\\ProjectCode\\WTJTProject\\Weitedianlan.Web\\Weitedianlan.Model\\obj\\",
       "projectStyle": "PackageReference",
@@ -805,7 +805,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

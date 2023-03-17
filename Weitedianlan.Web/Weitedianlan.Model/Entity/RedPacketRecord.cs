@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     /// <summary>
     /// 红包发放记录

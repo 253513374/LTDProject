@@ -1,5 +1,5 @@
 ﻿using CsvHelper.Configuration;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
 
 namespace Wtdl.Repository.Tools
 {

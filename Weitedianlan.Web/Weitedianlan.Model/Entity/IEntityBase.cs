@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System;
 
-namespace Weitedianlan.Model.Entity
+namespace Wtdl.Model.Entity
 {
     public abstract class IEntityBase : IRequest<string>, INotification
     {

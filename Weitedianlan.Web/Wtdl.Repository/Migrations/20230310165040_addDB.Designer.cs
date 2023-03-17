@@ -25,7 +25,7 @@ namespace Wtdl.Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.ActivityPrize", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.ActivityPrize", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,7 +90,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("ActivityPrize", (string)null);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.Agent", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.Agent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,7 +147,7 @@ namespace Wtdl.Repository.Migrations
                     SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.Analysis.OutStorageAnalysis", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.Analysis.OutStorageAnalysis", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,7 +172,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("OutStorage", "Analysis");
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.FileUploadRecord", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.FileUploadRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -217,7 +217,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("FileUploadRecords");
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.LotteryActivity", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.LotteryActivity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -276,7 +276,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("LotteryActivity", (string)null);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.LotteryRecord", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.LotteryRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -363,7 +363,7 @@ namespace Wtdl.Repository.Migrations
                     SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.Prize", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.Prize", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -418,7 +418,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("Prize", (string)null);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.RedPacketRecord", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.RedPacketRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -498,7 +498,7 @@ namespace Wtdl.Repository.Migrations
                     SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.ScanRedPacket", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.ScanRedPacket", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -547,7 +547,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("ScanRedPackets");
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.User", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.User", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -580,7 +580,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("tUser", (string)null);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.VerificationCode", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.VerificationCode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -615,7 +615,7 @@ namespace Wtdl.Repository.Migrations
                     b.ToTable("VerificationCodes");
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.W_LabelStorage", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.W_LabelStorage", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -690,16 +690,16 @@ namespace Wtdl.Repository.Migrations
                     SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.ActivityPrize", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.ActivityPrize", b =>
                 {
-                    b.HasOne("Weitedianlan.Model.Entity.LotteryActivity", "LotteryActivity")
+                    b.HasOne("Wtdl.Model.Entity.LotteryActivity", "LotteryActivity")
                         .WithMany("Prizes")
                         .HasForeignKey("LotteryActivityId");
 
                     b.Navigation("LotteryActivity");
                 });
 
-            modelBuilder.Entity("Weitedianlan.Model.Entity.LotteryActivity", b =>
+            modelBuilder.Entity("Wtdl.Model.Entity.LotteryActivity", b =>
                 {
                     b.Navigation("Prizes");
                 });

@@ -1,4 +1,4 @@
-﻿namespace Wtdl.Share.SignalR
+﻿namespace   Wtdl.Share.SignalR
 {
     public static class HubServerMethods
     {

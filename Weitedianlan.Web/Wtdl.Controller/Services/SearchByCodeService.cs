@@ -3,7 +3,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Web;
-using Weitedianlan.Model.Entity;
+using Wtdl.Model.Entity;
+using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 

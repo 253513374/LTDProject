@@ -1,4 +1,4 @@
-﻿namespace Weitedianlan.Model.Enum
+﻿namespace Wtdl.Model.Enum
 {
     /// <summary>
     /// 出库数据统计类型

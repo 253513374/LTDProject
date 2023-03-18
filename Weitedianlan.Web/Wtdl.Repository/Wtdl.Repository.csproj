@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Weitedianlan.Model\Wtdl.Model.csproj" />
+    <Folder Include="新文件夹\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="新文件夹\" />
+    <ProjectReference Include="..\Wtdl.Model\Wtdl.Model.csproj" />
   </ItemGroup>
 
 </Project>

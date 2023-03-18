@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Weitedianlan.Model\Wtdl.Model.csproj" />
     <ProjectReference Include="..\Wtdl.Repository\Wtdl.Repository.csproj" />
     <ProjectReference Include="..\Wtdl.Share\Wtdl.Share.csproj" />
   </ItemGroup>

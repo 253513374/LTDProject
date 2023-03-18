@@ -8,35 +8,32 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<div class="page">
+
     @if (IsWeChat)
     {
-      @*  <div class="sidebar">
-            <NavMenu/>
-        </div>*@
-
-        <main>
-         @*   <div class="top-row px-4">
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            </div>*@
-
-        <article class="content px-4">
-            @Body
-        </article>
-        </main>
-    
-        }
+        <MudLayout>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.Large">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    }
     else
     {
-        <div class=" d-flex justify-content-center align-items-center " style="height: 100vh; width: 100%">
-            <MudStack Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                <MudIcon Icon="@Icons.Material.Filled.Info" Style="Width:100px;height: 100px" Color="Color.Info" />
-                <p>请在微信客户端打开链接</p>
-            </MudStack>
-        </div>
+        <MudLayout>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.Large" Style="height: 100vh">
+                    <MudStack Class="page" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.Info" Style="Width:100px;height: 100px" Color="Color.Info" />
+                        <p>请在微信客户端打开链接</p>
+                    </MudStack>
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
     }
 
-</div>
+
 
 
 @code
@@ -49,6 +46,10 @@
         var userAgent = await JSRuntime.InvokeAsync<string>("eval", "navigator.userAgent");
         IsWeChat = userAgent.Contains("MicroMessenger");
     
+        #if DEBUG
+            IsWeChat = !IsWeChat;
+        #endif
+
         return; //base.OnInitializedAsync();
     }
 

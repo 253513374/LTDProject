@@ -18,6 +18,13 @@ namespace Wtdl.Wasm
                 //builder.HostEnvironment.BaseAddress
                 BaseAddress = new Uri("http://www.rewt.cn/")
             });
+
+            //builder.Services.AddHttpClient("WeixinAPI", client =>
+            //    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
+            //builder.Services.AddHttpClient("WeixinAPI", client =>
+            //    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
             builder.Services.AddMudServices();
             builder.Services.AddLogging(logging =>
             {

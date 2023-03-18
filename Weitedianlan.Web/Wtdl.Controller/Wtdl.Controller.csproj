@@ -20,7 +20,6 @@
     <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.12.5.7" />
     <PackageReference Include="Senparc.Weixin.TenPay" Version="1.12.5.7" />
     <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.6.8.13" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.90" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
@@ -31,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\OAuth\" />
   </ItemGroup>
 
 </Project>

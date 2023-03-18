@@ -2,16 +2,114 @@
 @page "/{Id}"
 
 @using System.Text.RegularExpressions
+@using Wtdl.Model.ResponseModel
+@using System.Text.Json
+
+
+@inject ILogger<Index> _logger
+
 
 <PageTitle>威特电缆</PageTitle>
 
+@if (!string.IsNullOrEmpty(QRCode))
+{
 
-<MudImage Src="images/mony.jpg" Alt="Mony the dog" Elevation="25" Class="rounded-lg" />
+    <SurveyPrompt Title="防伪信息" />
+    @if (antiFakeResult is not null && antiFakeResult.AntiFakeByData is not null)
+    {
+        
+        <MudPaper Elevation="0">
+            <MudStack Style="max-width: 85%;margin: 0 auto;text-align: center" Justify="Justify.Center" AlignItems="AlignItems.Center" >
+                <MudImage ObjectFit="ObjectFit.Fill" Style="Width: 100%;height: auto"  Src="@antiFakeResult.AntiFakeByData.ImgUrl" Alt="Mony the dog" Elevation="1" Class="rounded-lg" />
+            </MudStack>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
-<h3>Code：  @Code</h3>
-<h3>QRCode： @QRCode</h3>
-<h3>OpenId： @OpenId</h3>
+            <MudStack Class="my-5" Spacing="1" Style="Margin:0 auto;padding: 0 auto" Justify="Justify.FlexStart">
+
+                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">标签序号:</MudText>
+                    <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.LabelNum</MudText>
+                </MudStack>
+                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">首次查询:</MudText>
+                    <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.FirstQueryTime</MudText>
+                </MudStack>
+                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">商品名称:</MudText>
+                    <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.ProductName</MudText>
+                </MudStack>
+                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">纤维特征:</MudText>
+                    <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.FibreColor</MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+    <SurveyPrompt Title="溯源信息" />
+    @if (traceabilityResult is not null)
+    {
+@*        <MudStack Justify="Justify.FlexStart">
+
+            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">出库单号:</MudText>
+                <MudText Typo="Typo.button" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
+            </MudStack>
+            
+            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">出库时间:</MudText>
+                <MudText Typo="Typo.button" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
+            </MudStack>
+
+            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">供应商信息:</MudText>
+                <MudText Typo="Typo.button" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
+            </MudStack>
+        </MudStack>*@
+
+        <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelineAlign="TimelineAlign.Start"
+                     TimelinePosition="TimelinePosition.Right">
+            <MudStack Justify="Justify.FlexStart">
+                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                    <ItemContent>
+                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
+                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
+                        </MudStack>
+                    </ItemContent>
+                </MudTimelineItem>
+                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                    <ItemContent>
+                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
+                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
+                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
+                        </MudStack>
+                    </ItemContent>
+                    @*  <ItemOpposite>
+                        <MudText Color="Color.Warning">14:08</MudText>
+                    </ItemOpposite>*@
+                </MudTimelineItem>
+                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                    <ItemContent>
+                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
+                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
+                        </MudStack>
+                    </ItemContent>
+                </MudTimelineItem>
+            </MudStack>
+        </MudTimeline>
+    }
+
+    <SurveyPrompt Title="授权与微信用户openid" />
+    <MudPaper>
+
+        <MudText Typo="Typo.button" Style="word-wrap:break-word;">Code：  @Code</MudText>
+        <MudText>QRCode： @QRCode</MudText>
+        <MudText>OpenId： @OpenId</MudText>
+    </MudPaper>
+
+    <MudPaper Elevation="0" Class="my-12"></MudPaper>
+}
+
 
 @code
 {
@@ -30,53 +128,121 @@
     public string? QRCode { get; set; }
 
 
+    private AntiFakeResult antiFakeResult;
+    private TraceabilityResult traceabilityResult;
   
+   
+    JsonSerializerOptions options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
     public string? OpenId { set; get; }
 
     protected override async Task OnInitializedAsync()
     {
 
-        if (string.IsNullOrEmpty(Code))
-        {
-            var p = await MatchInt(_navigationManager.Uri);
+        //if (string.IsNullOrEmpty(Code))
+        //{
+        //    var p = await RegexMatch(_navigationManager.Uri);
+        //    var getoauthurl = $"OAuth2Url?qrcode={p}";
+        //    HttpResponseMessage response = await _httpClient.GetAsync(getoauthurl);//请求返回微信授权访问地址
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        string content = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"_navigationManager.Uri:{p}");
-            var url = $"http://www.chn315.top/authcallback"; //回调地址
+        //        _navigationManager.NavigateTo(content);
+        //        return;
+        //    }
+        //    else
+        //    {
+   
+        //    }
+        //}
 
-            var getoauthurl = $"OAuth2Url?qrcode={p}";
-            HttpResponseMessage response = await _httpClient.GetAsync(getoauthurl);//请求返回微信授权访问地址
-            if (response.IsSuccessStatusCode)
-            {
-                string content = await response.Content.ReadAsStringAsync();
-
-                _navigationManager.NavigateTo(content);
-                return;
-            }
-            else
-            {
-    //  return StatusCode((int)response.StatusCode);
-            }
-        }
-        else
-        {
-            await GetWeixinUserOpenID(Code);
-        }
-
-        //StateHasChanged();
     }
 
-    private async Task GetWeixinUserOpenID(string code)
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (string.IsNullOrEmpty(OpenId))
+        if (firstRender)
         {
-            OpenId = await _httpClient.GetStringAsync($"OAuth2/WXLogin?code={code}");
+            if (!string.IsNullOrEmpty(QRCode))
+            {
+                OpenId             = await GetWeixinUserOpenID(Code);
+                antiFakeResult     = await GetAntiFakeResultAsync(QRCode);
+                traceabilityResult = await GetTraceabilityResultAsync(QRCode);
+                StateHasChanged();
+            }
+           
+            
+        }
+    }
+
+    private async Task<string> GetWeixinUserOpenID(string code)
+    {
+
+        try
+        {
+            if (string.IsNullOrEmpty(OpenId))
+            {
+                return  await _httpClient.GetStringAsync($"OAuth2/WXLogin?code={code}");
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"微信获取openid异常：{e.Message}");
+            throw;
         }
         
+        return "";
     }
 
 
+    private async Task<AntiFakeResult> GetAntiFakeResultAsync(string qrcode)
+    {
+        try
+        {
 
-    private async Task<string> MatchInt(string args)
+            var response = await _httpClient.GetAsync($"ScanByQRCode/AntiFake?qrcode={qrcode}");
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<AntiFakeResult>(stream, options);
+            }
+           
+            _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"查询防伪信息异常：{e.Message}");
+        }
+
+        return new AntiFakeResult();
+    }
+
+    private async Task<TraceabilityResult> GetTraceabilityResultAsync(string qrcode)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"ScanByQRCode/Traceability?qrcode={qrcode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TraceabilityResult>(stream, options);
+            }
+           
+            _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"查询溯源信息异常：{e.Message}");
+        }
+        return new TraceabilityResult();
+    }
+
+
+    private async Task<string> RegexMatch(string args)
     {
     // string input = "http://www.chn315.top/236810001404";
         string pattern = @"/(\d{12})$"; // 匹配网址末尾12位数字

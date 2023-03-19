@@ -12,8 +12,8 @@
     @if (IsWeChat)
     {
         <MudLayout>
-            <MudMainContent>
-                <MudContainer MaxWidth="MaxWidth.Large">
+            <MudMainContent Class="pt-0 mt-0">
+                <MudContainer MaxWidth="MaxWidth.Large" Class="pt-0 mt-0">
                     @Body
                 </MudContainer>
             </MudMainContent>
@@ -22,11 +22,11 @@
     else
     {
         <MudLayout>
-            <MudMainContent>
+            <MudMainContent Class="mt-0 pt-1">
                 <MudContainer MaxWidth="MaxWidth.Large" Style="height: 100vh">
                     <MudStack Class="page" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Filled.Info" Style="Width:100px;height: 100px" Color="Color.Info" />
-                        <p>请在微信客户端打开链接</p>
+                        <p>请在微信客户端打开二维码链接.</p>
                     </MudStack>
                 </MudContainer>
             </MudMainContent>

@@ -4,115 +4,308 @@
 @using System.Text.RegularExpressions
 @using Wtdl.Model.ResponseModel
 @using System.Text.Json
+@using Wtdl.Controller.Models.ResponseModel
+@using Wtdl.Model.Entity
 
 
+@inject IJSRuntime JsRuntime
 @inject ILogger<Index> _logger
 
+<style >
+    body {
+        /*color: rgba(12, 12, 12, 0.5);*/
+        
+    }
 
-<PageTitle>威特电缆</PageTitle>
+    footer {
+        background-color: #F9F9F9;
+        padding: 20px;
+        margin-top: 50px;
+        color: rgba(65, 63, 54, 0.7);
+    }
+
+
+    ul li span {
+        color: rgba(65, 105, 225, 0.8);
+    }
+
+    /* 媒体查询：移动设备 */
+    @@media screen and (max-width: 767px) {
+    li {
+        display: block;
+    }
+        
+    }
+
+    /* 媒体查询：桌面设备 */
+    @@media screen and (min-width: 768px) {
+        ul {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    .modal-dialog {
+        margin: 0px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 350px; 
+        z-index: 1001;
+        background-image: url('/img/金币礼盒720.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+    }
+
+    .modal-content {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        /*box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.5);*/
+    }
+
+    .modal-header {
+        background-color: transparent;
+        position: relative;
+    }
+
+    .modal-header .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #modalOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色 */
+        display: none; /* 初始隐藏 */
+        z-index: 999; /* 放在最上层 */
+    }
+    .close {
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+
+    .keyframesbtn {
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    </style >
+
+<PageTitle>威特五金</PageTitle>
 
 @if (!string.IsNullOrEmpty(QRCode))
 {
 
-    <SurveyPrompt Title="防伪信息" />
+    
     @if (antiFakeResult is not null && antiFakeResult.AntiFakeByData is not null)
     {
-        
-        <MudPaper Elevation="0">
-            <MudStack Style="max-width: 85%;margin: 0 auto;text-align: center" Justify="Justify.Center" AlignItems="AlignItems.Center" >
-                <MudImage ObjectFit="ObjectFit.Fill" Style="Width: 100%;height: auto"  Src="@antiFakeResult.AntiFakeByData.ImgUrl" Alt="Mony the dog" Elevation="1" Class="rounded-lg" />
+
+        <MudPaper Elevation="0" Class="mt-0 pt-0">
+
+            <SurveyPrompt Title="防伪信息" />
+
+           @* <MudButton OnClick="OpenDialog" Color="Color.Primary" >打开对话框</MudButton>*@
+            <MudStack Style="max-width: 85%; margin: 0 auto; text-align: center" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudImage ObjectFit="ObjectFit.Fill" Style="Width: 100%;max-width: 350px; height: auto" Src="@antiFakeResult.AntiFakeByData.ImgUrl" Alt="Mony the dog" Elevation="1" Class="rounded-lg"/>
             </MudStack>
 
-            <MudStack Class="my-5" Spacing="1" Style="Margin:0 auto;padding: 0 auto" Justify="Justify.FlexStart">
+            <MudStack Class="my-5" Spacing="1" Style="Margin: 0 auto; padding: 0 auto" Justify="Justify.FlexStart">
 
                 <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">标签序号:</MudText>
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word; width: 100px;">标签序号:</MudText>
                     <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.LabelNum</MudText>
                 </MudStack>
                 <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">首次查询:</MudText>
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word; width: 100px;">首次查询:</MudText>
                     <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.FirstQueryTime</MudText>
                 </MudStack>
                 <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">商品名称:</MudText>
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word; width: 100px;">商品名称:</MudText>
                     <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.ProductName</MudText>
                 </MudStack>
                 <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">纤维特征:</MudText>
+                    <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word; width: 100px;">纤维特征:</MudText>
                     <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.FibreColor</MudText>
                 </MudStack>
             </MudStack>
         </MudPaper>
     }
-    <SurveyPrompt Title="溯源信息" />
-    @if (traceabilityResult is not null)
-    {
-@*        <MudStack Justify="Justify.FlexStart">
 
-            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">出库单号:</MudText>
-                <MudText Typo="Typo.button" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
-            </MudStack>
-            
-            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">出库时间:</MudText>
-                <MudText Typo="Typo.button" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
-            </MudStack>
-
-            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word;width: 100px;">供应商信息:</MudText>
-                <MudText Typo="Typo.button" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
-            </MudStack>
-        </MudStack>*@
-
-        <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelineAlign="TimelineAlign.Start"
-                     TimelinePosition="TimelinePosition.Right">
-            <MudStack Justify="Justify.FlexStart">
-                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
-                    <ItemContent>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
-                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
-                        </MudStack>
-                    </ItemContent>
-                </MudTimelineItem>
-                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
-                    <ItemContent>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
-                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
-                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
-                        </MudStack>
-                    </ItemContent>
-                    @*  <ItemOpposite>
-                        <MudText Color="Color.Warning">14:08</MudText>
-                    </ItemOpposite>*@
-                </MudTimelineItem>
-                <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
-                    <ItemContent>
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
-                            <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
-                        </MudStack>
-                    </ItemContent>
-                </MudTimelineItem>
-            </MudStack>
-        </MudTimeline>
-    }
-
-    <SurveyPrompt Title="授权与微信用户openid" />
-    <MudPaper>
-
-        <MudText Typo="Typo.button" Style="word-wrap:break-word;">Code：  @Code</MudText>
-        <MudText>QRCode： @QRCode</MudText>
-        <MudText>OpenId： @OpenId</MudText>
+    <MudPaper Elevation="0">
+        <SurveyPrompt Title="溯源信息" />
+        @if (traceabilityResult is not null)
+        {
+            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelineAlign="TimelineAlign.Start"
+                         TimelinePosition="TimelinePosition.Right">
+                <MudStack Justify="Justify.FlexStart" Class="ml-3">
+                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" Style="Width:100%;">
+                        <ItemContent>
+                            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
+                            </MudStack>
+                        </ItemContent>
+                    </MudTimelineItem>
+                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                        <ItemContent>
+                            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
+                            </MudStack>
+                        </ItemContent>
+                        @*  <ItemOpposite>
+                            <MudText Color="Color.Warning">14:08</MudText>
+                        </ItemOpposite>*@
+                    </MudTimelineItem>
+                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                        <ItemContent>
+                            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
+                            </MudStack>
+                        </ItemContent>
+                    </MudTimelineItem>
+                </MudStack>
+            </MudTimeline>
+        }
     </MudPaper>
 
-    <MudPaper Elevation="0" Class="my-12"></MudPaper>
+@*    <MudPaper>
+        
+
+        <MudStack Row="false" Spacing="0" Justify="Justify.FlexStart" Class="mt-18">
+            <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">Copyright © chn315.top 2023</MudText>
+            <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">琼ICP备2020003165号 公安备案: 46010502000375号</MudText>
+        </MudStack>
+    </MudPaper>*@
+
+
+    <footer >
+        <h2 style="margin-top: 10px;">联系我们</h2>
+        <h4 style="margin-top: 25px;">全省销售热线</h4>
+        <ul style="list-style: none; margin: 0; padding: 0;">
+            <li style="margin-bottom: 10px;">
+                <strong style="font-weight: bold;">海口总仓：</strong>
+                海口市秀英区美安大道8号
+                <br>
+                联系电话：<span>65305288</span>
+            </li>
+        </ul>
+        <h4 style="margin-top: 20px;">区域销售热线</h4>
+        <ul style="list-style: none; margin: 0; padding: 0;">
+            <li style="margin-bottom: 10px;">
+                <strong style="font-weight: bold;">区域范围：</strong>
+                定安、文昌、琼海、万宁
+                <br>
+                联系电话(微信)：<span> 18308989062</span>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <strong style="font-weight: bold;">区域范围：</strong>
+                临高、儋州、昌江、白沙、东方
+                <br>
+                联系电话(微信)：<span>18308989063</span>
+            </li>
+            <li style="margin-bottom: 10px;">
+                <strong style="font-weight: bold;">区域范围：</strong>
+                三亚、陵水、保亭、五指山、乐东
+                <br>
+                联系电话(微信)：<span >18308989065</span>
+            </li>
+        </ul>
+        <p style="color: gray; margin-top: 20px;">&copy; 2023 chn315.top. 版权所有.</p>
+    </footer>
+    
+
 }
 
 
+<!-- 遮罩层 -->
+<div id="modalOverlay"></div>
+<div id="exampleModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mr-5" style="border: 0px;">
+                <MudIconButton Icon="@Icons.Material.Outlined.Close" OnClick="@CloseDialog" Size="Size.Large" Class="close" aria-label="Close">
+                   
+                </MudIconButton>
+            </div>
+            @*<div class="modal-body">
+                @if (redStatusResult is not null)
+                {
+                    <div> @redStatusResult.StuteCode</div>
+                }
+            </div>*@
+            <div class="modal-footer justify-content-center mt-auto" style="border: 0px;">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>*@
+                <MudFab Class="keyframesbtn" ButtonType="ButtonType.Button" Label="点击领取" Style="Color:black; background-color: darkkhaki; border: none" OnClick="@SubmitForm">领</MudFab>
+            </div>
+        </div>
+    </div>
+</div>
+@*<MudDialog @bind-IsOpen="_dialogIsOpen"  >
+    <div class="dialog-overlay"></div>
+    <div class="dialog-box">
+        <h3>个性化对话框标题</h3>
+        <MudIconButton Icon="Icons.Outlined.Close" Color="Color.Default" OnClick="@CloseDialog" />
+      
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@SubmitForm">提交</MudButton>
+    </div>
+</MudDialog>*@
+
+@*<MudDialog >
+
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3"/> Edit rating
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <p>How awesome are inline dialogs?</p>
+        <MudRating @bind-SelectedValue="rating" Class="mt-3"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>*@
+
 @code
 {
+
+   // private bool _dialogIsOpen = true;
+
+
 
     [Parameter]
     public string? Id { set; get; }
@@ -130,8 +323,32 @@
 
     private AntiFakeResult antiFakeResult;
     private TraceabilityResult traceabilityResult;
-  
-   
+
+
+
+    /// <summary>
+    /// 抽奖结果
+    /// </summary>
+    private LotteryResult lotteryResult;
+
+    /// <summary>
+    /// 抽奖活动信息
+    /// </summary>
+    private LotteryActivity lotteryActivity;
+
+    /// <summary>
+    /// 当前用户与标签的领取红包的状态
+    /// </summary>
+    private RedStatusResult redStatusResult;
+
+    /// <summary>
+    /// 领取红包的结果
+    /// </summary>
+    private RedPacketResult redPacketResult;
+
+
+
+
     JsonSerializerOptions options = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true
@@ -155,26 +372,41 @@
         //    }
         //    else
         //    {
-   
+
         //    }
         //}
 
     }
 
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+
+          //  QRCode = "143890836071";
             if (!string.IsNullOrEmpty(QRCode))
             {
-                OpenId             = await GetWeixinUserOpenID(Code);
-                antiFakeResult     = await GetAntiFakeResultAsync(QRCode);
+
+                //OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
+                OpenId = await GetWeixinUserOpenID(Code);
+                antiFakeResult = await GetAntiFakeResultAsync(QRCode);
                 traceabilityResult = await GetTraceabilityResultAsync(QRCode);
+                lotteryActivity    = await GetLotteryActivityAsync();
+
+                if (!string.IsNullOrEmpty(OpenId))
+                {
+                    redStatusResult = await GetRedStatusResultAsync(OpenId, QRCode);
+
+                    if (redStatusResult.IsSuccess)
+                    {
+                        if (redStatusResult.StuteCode.ToUpper() !="NOT")
+                        {
+                            await OpenDialog();
+                        }
+                    }
+                }
                 StateHasChanged();
             }
-           
-            
         }
     }
 
@@ -183,7 +415,7 @@
 
         try
         {
-            if (string.IsNullOrEmpty(OpenId))
+            if (!string.IsNullOrEmpty(code))
             {
                 return  await _httpClient.GetStringAsync($"OAuth2/WXLogin?code={code}");
             }
@@ -193,10 +425,9 @@
             _logger.LogError($"微信获取openid异常：{e.Message}");
             throw;
         }
-        
+
         return "";
     }
-
 
     private async Task<AntiFakeResult> GetAntiFakeResultAsync(string qrcode)
     {
@@ -209,7 +440,7 @@
                 var stream = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<AntiFakeResult>(stream, options);
             }
-           
+
             _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
         }
         catch (Exception e)
@@ -231,7 +462,7 @@
                 var stream = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<TraceabilityResult>(stream, options);
             }
-           
+
             _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
         }
         catch (Exception e)
@@ -240,6 +471,122 @@
         }
         return new TraceabilityResult();
     }
+
+    private async Task<RedStatusResult> GetRedStatusResultAsync(string openid , string qrcode)
+    {
+        try
+        {
+            var url = $"RedPacket/RedPackStatus?openid={openid}&qrcode={qrcode}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RedStatusResult>(stream, options);
+            }
+
+            _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
+
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"查询领取现金红包异常：{e.Message}");
+        }
+        return new RedStatusResult();
+    }
+
+    private async Task<RedPacketResult> GetRedPacketResultQRCodeAsync(string openid, string qrcode)
+    {
+        try
+        {
+            var url = $"RedPacket/QRCode?openid={openid}&qrcode={qrcode}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RedPacketResult>(stream, options);
+            }
+
+            _logger.LogError($"二维码领取现金红包失败：{response.StatusCode}");
+
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"二维码领取现金红包异常：{e.Message}");
+        }
+        return new RedPacketResult();
+    }
+
+    private async Task<RedPacketResult> GetRedPacketResultCaptchaAsync(string openid, string qrcode, string captcha)
+    {
+        try
+        {
+            var url = $"RedPacket/Captcha?openid={openid}&qrcode={qrcode}&captcha={captcha}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<RedPacketResult>(stream, options);
+            }
+
+            _logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
+
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"验证码领取现金红包异常：{e.Message}");
+        }
+        return new RedPacketResult();
+    }
+
+    private async Task<LotteryActivity> GetLotteryActivityAsync()
+    {
+        try
+        {
+            var url = $"LotteryActivity";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<LotteryActivity>(stream, options);
+            }
+
+            _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
+
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
+        }
+        return new LotteryActivity();
+    }
+
+    private async Task<LotteryResult> LuckyDraw(string openid, string qrcode, string prizennumber)
+    {
+        try
+        {
+            var url = $"Lottery?qrcode={qrcode}&openid={openid}&prizennumber={prizennumber}";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<LotteryResult>(stream, options);
+            }
+
+            _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
+
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
+        }
+        return new LotteryResult();
+    }
+
 
 
     private async Task<string> RegexMatch(string args)
@@ -253,5 +600,28 @@
     //Console.WriteLine(result); // 输出：236810001404
         }
         return DateTime.Now.ToString("yyyyMMddhhmmss");
+    }
+
+
+    private async Task OpenDialog()
+    {
+
+        await JsRuntime.InvokeVoidAsync("openDialog");
+      //  _dialogIsOpen = true;
+      //  StateHasChanged();
+    }
+
+    private async Task CloseDialog()
+    {
+        //关闭对话框
+        await JsRuntime.InvokeVoidAsync("closeDialog");
+        StateHasChanged();
+    }
+
+    private async Task SubmitForm()
+    {
+        // 处理表单提交逻辑
+        await JsRuntime.InvokeVoidAsync("closeDialog");
+        StateHasChanged();
     }
 }

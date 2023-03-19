@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Wtdl.Wasm</title>
+    <title>威特五金</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
@@ -29,7 +29,7 @@
 
             .mud-wasm {
                 animation: slide 3s ease-in-out infinite alternate;
-                background-image: linear-gradient(-60deg,#663399 50%,#0069c0 50%);
+                background-image: linear-gradient(-45deg,#00557C 50%,#1BA6D2 50%);
                 bottom: 0;
                 left: -50%;
                 opacity: .5;
@@ -129,8 +129,6 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <!--<spript src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js"></spript>-->
-
     <script>
         async function fetchOAuthUrl() {
             try {
@@ -138,7 +136,6 @@
                 console.log('window.location.href:', url);
                 const pattern = /(\d{12})$/;
                 const match = url.match(pattern);
-
                 if (match) {
 
                     const urlqrcode = match[0];
@@ -150,15 +147,16 @@
                     const response = await fetch(oauthUrl, { method: 'GET', mode: 'cors' });
 
                     if (!response.ok) {
-                        throw new Error('Failed to fetch OAuth URL.');
+                        throw new Error('未能访问OAuth 网址。');
                     };
                     const content = await response.text();
                     console.log('response.text():', content);
 
                     window.location.href = content;
                 }
+                console.log('找不到二维码序号:', url);
             } catch (error) {
-                console.error('Error:', error);
+                console.error('fetchOAuthUrl() Error:', error);
             }
         }
         const params = new URLSearchParams(window.location.search);
@@ -168,7 +166,25 @@
             // 在这里执行相应的代码
         } else {
             // URL 不包含 "code" 查询参数, 重定向到微信 OAuth 授权页面.
+
+            console.log('URL 不包含 "code" 查询参数, 重定向到微信 OAuth 授权页面.');
             fetchOAuthUrl();
+        }
+
+        function openDialog() {
+
+            var modalOverlay = document.getElementById('modalOverlay');
+            var modal = document.getElementById('exampleModal');
+            modal.style.display = 'block';
+            modalOverlay.style.display = 'block';
+
+        }
+
+        function closeDialog() {
+            var modalOverlay = document.getElementById('modalOverlay');
+            var modal = document.getElementById('exampleModal');
+            modal.style.display = 'none';
+            modalOverlay.style.display = 'none';
         }
     </script>
 </body>

@@ -33,6 +33,7 @@ namespace Wtdl.Mvc.Controllers.APIController
         [ResponseCache(Duration = 300)]
         public async Task<AntiFakeResult> GetSearchByCodeAsync(string qrcode)
         {
+            _logger.LogInformation("查询防伪数据");
             if (string.IsNullOrEmpty(qrcode))
             {
                 return new AntiFakeResult

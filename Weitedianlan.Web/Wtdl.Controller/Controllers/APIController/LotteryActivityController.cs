@@ -35,7 +35,7 @@ namespace Wtdl.Web.Api.Controllers
         [HttpGet]
         public async Task<ActivityResult> GetLotteryActivity(string qrcode = "")
         {
-            _logger.LogInformation("收到访问信息:LotteryActivityController.GetLotteryActivity");
+            _logger.LogInformation("获取抽奖活动信息以及参与活动的产品信息。");
 
             return await _lotteryService.GetLotteryActivityAsync();
         }

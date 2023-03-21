@@ -16,6 +16,11 @@ namespace Wtdl.Repository.EntityConfig
             builder.HasIndex(p => p.QRCode).IsUnique();//设置索引
 
             builder.Property(p => p.CreateTime).HasDefaultValueSql("GETDATE()"); ;//设置默认值
+
+            builder.ToTable(b =>
+            {
+                b.IsMemoryOptimized();
+            }).HasAnnotation("SqlServer:MemoryOptimizedSize", 1 * 1024 * 1024);//预分配5GB 内存
         }
     }
 }

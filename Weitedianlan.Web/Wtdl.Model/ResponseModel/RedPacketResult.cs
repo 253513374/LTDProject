@@ -1,4 +1,4 @@
-﻿namespace   Wtdl.Model.ResponseModel
+﻿namespace Wtdl.Model.ResponseModel
 {
     public class RedPacketResult
     {
@@ -14,5 +14,23 @@
 
         public int Code { get; set; }
         public string TotalAmount { get; set; }
+
+        public static RedPacketResult Fail(string message)
+        {
+            return new RedPacketResult
+            {
+                IsSuccess = false,
+                Message = message
+            };
+        }
+
+        public static RedPacketResult Success(string totalamount)
+        {
+            return new RedPacketResult
+            {
+                IsSuccess = true,
+                TotalAmount = totalamount
+            };
+        }
     }
 }

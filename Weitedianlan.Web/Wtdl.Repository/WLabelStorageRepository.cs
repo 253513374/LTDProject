@@ -446,5 +446,23 @@ namespace Wtdl.Repository
 
             //  throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 查询出库时间
+        /// </summary>
+        /// <returns></returns>
+        public async Task<DateTime?> FindOutDateTime(string qrcode)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var groupedData = await context.WLabelStorages.AsNoTracking()
+                    .Select(s => new { s.QRCode, s.OutTime })
+                    .Where(w => w.QRCode == qrcode)
+                    .OrderBy(o => o.OutTime)
+                    .FirstOrDefaultAsync();
+                if (groupedData != null) return groupedData.OutTime;
+            }
+            return default;
+        }
     }
 }

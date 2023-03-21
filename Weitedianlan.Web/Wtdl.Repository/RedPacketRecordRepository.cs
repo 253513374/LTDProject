@@ -89,5 +89,30 @@ namespace Wtdl.Repository
             //   throw new NotImplementedException();
             // throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 返回二维码数量
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        public async Task<int> FindAsync(string qrcode)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.AsNoTracking()
+                    .CountAsync(c => c.QrCode == qrcode);
+                //.Where(x => x.QrCode == qrcode).Select(x => x.QrCode).ToListAsync();
+            }
+        }
+
+        public async Task<int> FindUserLimt(string openid)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.AsNoTracking()
+                    .CountAsync(c => c.ReOpenId == openid);
+                //.Where(x => x.ReOpenId == openid).Select(x => x.ReOpenId).ToListAsync();
+            }
+        }
     }
 }

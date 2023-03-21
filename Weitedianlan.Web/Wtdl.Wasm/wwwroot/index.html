@@ -12,6 +12,13 @@
     <link href="Wtdl.Wasm.styles.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background-color: #2177b8;
+            color: #e2e1e4;
+        }
+    </style>
 </head>
 
 <body>
@@ -152,7 +159,7 @@
                     const content = await response.text();
                     console.log('response.text():', content);
 
-                    window.location.href = content;
+                    // window.location.href = content;
                 }
                 console.log('找不到二维码序号:', url);
             } catch (error) {

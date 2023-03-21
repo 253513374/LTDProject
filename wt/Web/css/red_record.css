@@ -1,0 +1,406 @@
+*{margin:0;padding:0;list-style-type:none;}
+html,body,div,span,a,p,img,dl,dt,dd,ol,ul,li{border:0;margin:0;padding:0;font-size:100%;text-decoration:none}
+img{color:transparent;font-size:0;vertical-align:middle;-ms-interpolation-mode:bicubic;max-width:100%;}
+ol,ul{list-style:none}
+li{display:list-item}
+:focus,.focus{outline:none}
+.clear1{ clear:both}
+input[type="button"], input[type="submit"], input[type="reset"] {-webkit-appearance: none;}
+textarea { -webkit-appearance: none;} 
+body{max-width:640px;margin:0 auto;font-family:"microsoft yahei";font-size:13px;background:#ffffff;}
+.display1{ display:none;}
+
+.header,.header3{ padding:15% 0px 2% 0px; background:#e8343d url(../images/new_year_icon5.png) no-repeat; width:100%; height:auto; overflow:hidden; background-size:100% auto;-webkit-background-size:100% auto; position:relative}
+.header3,.header-top{ padding:15% 0px;}
+.header-main{ width:100%;}
+.header-left{ width:100%;text-align:center;padding:40px 0px 0px 0px;}
+.header-left h1{ color:#faeb6d; width:30%; margin:0px auto; padding-top:10px;}
+.header-left h1 b{ display:block;text-align:center; width:100%;font-size:50px; line-height:50px; vertical-align:middle}
+.header-left h1 span{ display:block;float:left;width:25%;font-size:18px;vertical-align:middle; text-align:left;}
+.header-left p{ color:#ffffff; font-size:30px;line-height:36px; margin-top:20px;}
+.header-right{ text-align:center}
+.header-footer{ text-align:center;vertical-align:middle; margin-top:10%;  font-size:22px; color:#faeb6d}
+.header-footer span{vertical-align:middle;}
+.header-footer img{ vertical-align:middle; margin-right:5px; width:40px;}
+.header-icon1{background:url(../images/new_year_icon6.png) no-repeat; width:150px; height:170px;background-size:100% 100%;-webkit-background-size:100% 100%; position:absolute; top:0px; left:0px; }
+
+
+.header-a1{position:absolute; top:15px; right:20px; color:#ffffff; font-size:22px;line-height:22px; text-decoration:underline }
+.main1{ width:76%; margin:10% auto 0% auto; position:relative}
+.main1-but1,.main1-but2{ width:40%; float:left; display:block; border:2px solid #e8343d; background-color:#ffffff; color:#e8343d; font-size:28px; font-weight:600; border-radius:6px;-webkit-border-radius:6px; padding:15px 0px; }
+.main1-but2{ float:right;}
+.main1 span{ display:block;background:url(../images/new_year_icon22.png) no-repeat; width:50px; height:75px;background-size:100% 100%;-webkit-background-size:100% 100%; position:absolute; top:-30px; left:-30px; }
+.footer1,.footer4,.footer5{ text-align:center;vertical-align:middle; margin-top:20%; margin-bottom:5%; font-size:24px; color:#444444}
+.footer1 img{ vertical-align:middle; margin-right:5px; width:20px;}
+.footer4{font-size:18px; width:96%; margin:20% auto 5% auto; }
+.footer5{ font-size:18px}
+.footer5 img{ vertical-align:middle; margin-right:5px; width:20px;}
+/*领取到的红包*/
+.header-phone{ width:100%; text-align:center;padding:40px 0px; }
+.header-phone h1{color:#faeb6d; font-size:36px; line-height:50px;}
+.header-phone p{color:#ffffff; font-size:26px;line-height:26px;}
+.header-phone p.p1{ text-decoration:underline; margin-top:10px;}
+.options-main{ width:100%;}
+.options-main ul{ display:table;width:100%;}
+.options-main ul li{ width:33%; display: table-cell;background-color:#df271c; border-right:1px solid #fff; padding:20px 0px;margin-bottom:5%; cursor:pointer;}
+.options-main ul li:last-child{border-right:none; }
+.options-main ul li p{ color:#faec75; text-align:center; text-align:center; font-size:24px;}
+.options-main ul li.options-on{ background-color:#fff;}
+.options-main ul li.options-on p{ color:#df271c}
+.teb{ clear:both; margin-top:2%}
+.teb ul li{ width:96%; height:100%; overflow:hidden; margin:0px auto; padding:15px 0px;}
+.teb ul li .teb-left1{ float:left; width:50%;text-align:center}
+.teb ul li .teb-left2{ float:left; width:25%; text-align:center}
+.teb ul li .teb-right3{ float:right; width:25%;text-align:center}
+.teb ul li h3{ font-size:20px; font-weight:normal; color:#000;}
+.teb ul li h3.reb1{color:#ea1104}
+.teb ul li p{ font-size:16px;color:#6d6a6a}
+
+
+
+.footer2,.footer3{ text-align:center;vertical-align:middle; margin-top:20%; margin-bottom:5%; font-size:20px; color:#444444}
+.footer2 span{ color:#ea1104}
+.footer2 span.span1{ text-decoration:underline; cursor:pointer}
+#options1,#options2{ display:none}
+.teb2{ clear:both;}
+.teb2 ul li{ width:100%; height:100%; overflow:hidden; border-bottom:1px solid #d3d2d2; margin:0px auto; padding:15px 0px; cursor:pointer;}
+.teb2 ul li a{ display:block; width:90%; margin:0px auto;}
+.teb2 ul li .teb-left1{ float:left; width:80%;}
+.teb2 ul li .teb-right2{ float:right; width:20%;text-align:center}
+.teb2 ul li h3{ font-size:20px; font-weight:normal; color:#000;}
+.teb2 ul li h3.text-indent1{ text-indent:5px;}
+.teb2 ul li h1{ font-size:24px; font-weight:normal; color:#000;}
+.teb2 ul li h1.text-indent2{ text-indent:10%;}
+.teb2 ul li p{ font-size:16px;color:#6d6a6a}
+.teb2 ul li p.reb1{color:#ea1104}
+.teb2 ul li p.text-indent2{ text-indent:40px;}
+
+.teb3 ul li{ width:90%; height:100%; overflow:hidden; border-bottom:none; padding:10px 0px; }
+.footer2{ text-align:center;vertical-align:middle; margin-top:20%; margin-bottom:5%; font-size:20px; color:#444444}
+.footer2 span{ color:#ea1104}
+.teb4 ul li .teb-left1{width:35%;}
+.teb4 ul li .teb-left2{width:35%;}
+.teb4 ul li .teb-right3{ width:20%;text-align:left; float:left}
+.teb4 ul li .teb-right4{width:10%;float:right; text-align:center}
+
+.no-record{font-size:20px;color:#000; text-align:center; margin:10% 0px 20% 0px;}
+
+.options-title{ width:84%; height:100%; overflow:hidden; background-color:#feeaea; padding:10px 8% 10px 8%;}
+.options-title2{ width:96%;  padding:10px 0% 10px 4%;}
+.options-title3{ width:85%;  padding:10px 10% 10px 5%;}
+.options-title .title-left{ float:left; width:50%;text-align:left; font-size:20px;color:#790c10}
+.options-title .title-left b{ font-size:22px;}
+.options-title .title-right{ float:right;width:50%;text-align:right; font-size:20px; color:#790c10}
+.options-title .title-right b{ font-size:22px;}
+/*查看红包领取情况*/
+.header3{ padding:12% 0px;}
+.header4{ padding:12% 0px 5% 0px;}
+.header-phone2{ width:100%; text-align:center;padding:30px 0px; }
+.header-phone2 h1{color:#faeb6d; font-size:36px; line-height:50px;}
+.header-phone2 p{color:#ffffff; font-size:26px;line-height:36px;}
+.header-icon2,header-icon3{background:url(../images/new_year_icon12.png) no-repeat; width:160px; height:160px;background-size:100% 100%;-webkit-background-size:100% 100%; position:absolute; bottom:5%; right:10%; }
+.header-icon3{background:url(../images/new_year_icon19.png) no-repeat;background-size:100% 100%;-webkit-background-size:100% 100%;}
+.header-but1{background:url(../images/new_year_but6.png) no-repeat; width:200px; height:58px; border:none; margin:2% auto 0px auto;background-size:100% 100%;-webkit-background-size:100% 100%; font-size:24px; color:#e13429; font-weight:bold; position:relative; z-index:5;  }
+.options-main2{width:100%; background-color:#df271c; padding:10px 0%; border-bottom:4px solid #e8343d; margin-bottom:2%; position:relative}
+.options-main2 .options-body{width:94%;display:table; margin:0px auto;}
+.options-main2 .options1{ width:75%; display:table-cell;}
+.options-main2 .options1 p{ font-size:22px; color:#fff;}
+.options-main2 .options1 p img{ margin-right:10px; width:26px; vertical-align:middle}
+.options-main2 .options1 p span{ vertical-align:middle}
+.options-main2 .options2{ width:25%; display:table-cell;text-align:right;}
+.options-main2 .options2 a{font-size:22px; color:#faec75; text-decoration:underline;vertical-align:middle }
+.options-main2 .options-icon1{background:url(../images/new_year_icon14.png) no-repeat; width:20px; height:16px;background-size:100% 100%;-webkit-background-size:100% 100%; position:absolute; top:-16px; left:4%; }
+.footer3{ margin-top:10%; margin-bottom:2%;line-height:29px;}
+.footer3 span{ color:#ea1104;}
+.footer3 span.span1{ text-decoration:underline; cursor:pointer}
+.header2-ewm{ width:100%; text-align:center; margin-bottom:5%;}
+.header2-ewm h1 img{ width:200px;}
+
+.not-receive{margin:10% auto 10% auto; width:70%}
+.not-receive h1{background:url(../images/new_year_icon13.png) no-repeat; width:242px; height:230px; margin:0px auto 3% auto; background-size:100% 100%;-webkit-background-size:100% 100%; }
+.not-receive p{ text-align:center;font-size:24px; line-height:50px;}
+.not-receive p b{ font-size:30px; font-weight:normal; color:#000000}
+.not-receive p span{ color:#ea1104;}
+.not-receive p span.span1{ text-decoration:underline; cursor:pointer}
+
+
+@media screen and (max-width:599px){
+/*我的红包页*/
+.header{ padding:15% 0px 3% 0px; }
+.header-left{padding:20px 0px 0px 0px;}
+.header-left h1{width:45%; margin:0px auto; padding-top:10px;}
+.header-left h1 b{width:75%;font-size:40px; line-height:40px; }
+.header-left h1 span{width:20%;font-size:15px;}
+.header-left p{ font-size:26px;line-height:28px; margin-top:0px;}
+.header-footer{ margin-top:10%;  font-size:16px; }
+.header-footer img{margin-right:5px; width:30px;}
+
+.header-icon1{ width:100px; height:113px;}
+.header-a1{top:15px; right:20px; font-size:20px;line-height:22px; }
+.main1{ width:76%; margin:10% auto 0% auto;}
+.main1-but1,.main1-but2,.main1-but3{ width:44%;  font-size:24px;  padding:15px 0px; }
+.main1-but3{ margin:7% auto 5% auto; width:42%;  }
+.main1 span{ width:30px; height:44px;top:-20px; left:-15px; }
+.footer1{ margin-top:30%; margin-bottom:5%; font-size:20px;}
+.footer1 img{margin-right:5px; width:20px;}
+.footer4{font-size:14px; width:96%; margin:30% auto 5% auto; }
+.footer5{ font-size:14px}
+.footer5 img{ vertical-align:middle; margin-right:5px; width:15px;}
+
+/*领取到的红包*/
+.header-phone{padding:20px 0px; }
+.header-phone h1{font-size:30px; line-height:46px;}
+.header-phone p{ font-size:20px;line-height:20px;}
+.header-phone p.p1{ margin-top:7px;}
+.options-main ul li{padding:15px 0px;margin-bottom:5%}
+.options-main ul li p{ font-size:18px;}
+
+.teb{ clear:both;}
+.teb ul li{ width:96%; margin:0px auto; padding:10px 0px;}
+.teb ul li .teb-left1{width:55%;}
+.teb ul li .teb-left2{width:25%;}
+.teb ul li .teb-right3{width:20%;}
+.teb ul li h3{ font-size:16px;}
+.teb ul li p{ font-size:14px;}
+.footer2{ margin-top:30%; margin-bottom:5%; font-size:14px; }
+
+.teb4 ul li .teb-left1{width:42%;}
+.teb4 ul li .teb-left2{width:30%;}
+.teb4 ul li .teb-right3{ width:13%;text-align:left; float:left}
+.teb4 ul li .teb-right4{width:15%;float:right; text-align:center}
+
+.teb2 ul li{ margin:0px auto; padding:15px 0px;}
+.teb2 ul li .teb-left1{ width:70%;}
+.teb2 ul li .teb-right2{ width:30%;}
+.teb2 ul li h3{ font-size:16px; }
+.teb2 ul li h3.text-indent1{ text-indent:5px;}
+.teb2 ul li h1{ font-size:20px;}
+.teb2 ul li h1.text-indent2{ text-indent:15%;}
+.teb2 ul li p{ font-size:14px;}
+.teb2 ul li p.text-indent2{ text-indent:30px;}
+.teb3 ul li{padding:5px 0px; }
+.no-record{font-size:16px; margin:10% 0px 20% 0px;}
+
+.options-title{ width:84%;  padding:10px 8% 10px 8%;}
+.options-title2{ width:97%;  padding:10px 0% 10px 3%;}
+.options-title3{ width:85%;  padding:10px 10% 10px 5%;}
+.options-title .title-left{font-size:16px;}
+.options-title .title-left b{font-size:17px;}
+.options-title .title-right{font-size:16px;}
+.options-title .title-right b{ font-size:17px;}
+
+
+/*查看红包领取情况*/
+.header3{ padding:12% 0px;}
+.header4{ padding:12% 0px 5% 0px;}
+.header-phone2{ width:100%;padding:20px 0px; }
+.header-phone2 h1{font-size:28px; line-height:40px;}
+.header-phone2 p{font-size:20px;line-height:34px;}
+.header-but1{ width:160px; height:46px; line-height:50px; margin:2% auto 0px auto; font-size:20px; }
+.header-icon2{ width:100px; height:100px; }
+.options-main2{padding:7px 0%; margin-bottom:2%;}
+.options-main2 .options-body{width:94%;}
+.options-main2 .options1{ width:80%; }
+.options-main2 .options1 p{ font-size:16px; }
+.options-main2 .options1 p img{ margin-right:10px; width:30px;}
+.options-main2 .options2{ width:20%;}
+.options-main2 .options2 a{font-size:16px;}
+.footer3{ margin-top:10%; margin-bottom:2%; font-size:16px; line-height:26px; }
+.header2-ewm{margin-bottom:5%;}
+.header2-ewm h1 img{ width:160px;}
+
+.not-receive{margin:10% auto 10% auto;}
+.not-receive h1{width:160px; height:152px; margin:0px auto 3% auto; }
+.not-receive p{font-size:16px; line-height:30px;}
+.not-receive p b{ font-size:20px; }
+
+}
+@media screen and (max-width:384px){
+/*我的红包页*/
+.header-left{padding:20px 0px 0px 0px;}
+.header-left h1{width:45%; margin:0px auto; padding-top:10px;}
+.header-left h1 b{width:75%;font-size:40px; line-height:40px; }
+.header-left h1 span{width:20%;font-size:15px;}
+.header-left p{ font-size:24px;line-height:24px; margin-top:0px;}
+.header-footer{ margin-top:10%;  font-size:14px; }
+.header-footer img{margin-right:5px; width:30px;}
+
+
+
+.header-icon1{ width:100px; height:113px;}
+.header-a1{top:15px; right:20px; font-size:20px;line-height:22px; }
+.main1{ width:76%; margin:10% auto 0% auto;}
+.main1-but1,.main1-but2,.main1-but3{ width:44%;  font-size:20px;  padding:15px 0px; }
+.main1-but3{ margin:7% auto 5% auto; width:45%;  }
+
+.footer1{ margin-top:20%; margin-bottom:5%; font-size:16px;}
+.footer1 img{margin-right:5px; width:16px;}
+.footer4{font-size:14px; width:80%; margin:20% auto 5% auto; }
+
+.footer5{ font-size:13px}
+.footer5 img{ vertical-align:middle; margin-right:5px; width:15px;}
+/*领取到的红包*/
+.header-phone{padding:15px 0px; }
+.footer2{ margin-top:30%; margin-bottom:5%; font-size:14px; }
+.font-size1{font-size:16px;}
+/*查看红包领取情况*/
+.header3{ padding:15% 0px;}
+.header4{ padding:12% 0px 5% 0px;}
+.header-phone2{ width:100%;padding:20px 0px 0px; }
+.header-phone2 h1{font-size:28px; line-height:40px;}
+.header-phone2 p{font-size:20px;line-height:34px;}
+.header-icon2{ width:80px; height:80px; }
+.options-main2{padding:7px 0%; margin-bottom:2%;}
+.options-main2 .options-body{width:94%;}
+
+.not-receive h1{width:140px; height:129px; margin:0px auto 3% auto; }
+
+
+.teb4 ul li .teb-left1{width:38%;}
+.teb4 ul li .teb-left2{width:32%;}
+.teb4 ul li .teb-right3{ width:15%;text-align:left; float:left}
+.teb4 ul li .teb-right4{width:15%;float:right; text-align:center}
+
+.options-title{ width:92%;  padding:10px 4% 10px 4%;}
+.options-title2{ width:97%;  padding:10px 0% 10px 3%;}
+.options-title3{ width:87%;  padding:10px 8% 10px 5%;}
+
+}
+@media screen and (max-width:360px){
+
+.header-icon1{ width:90px; height:102px;}
+.header-a1{top:15px; right:20px; font-size:16px;line-height:22px; }
+.main1{ width:76%; margin:10% auto 0% auto;}
+.main1-but1,.main1-but2,.main1-but3{ width:44%;  font-size:20px;  padding:13px 0px; }
+.main1-but3{ margin:7% auto 5% auto; width:45%;  }
+
+/*领取到的红包*/
+.header-phone{padding:15px 0px; }
+.options-main ul li p{ font-size:16px;}
+
+.footer2{ margin-top:30%; margin-bottom:5%; font-size:13px; }
+.font-size1{font-size:16px;}
+/*查看红包领取情况*/
+.header3{ padding:15% 0px;}
+.header4{ padding:12% 0px 5% 0px;}
+.header-phone2{ width:100%;padding:10px 0px 0px 0px; }
+.header-phone2 h1{font-size:24px; line-height:36px;}
+.header-phone2 p{font-size:18px;line-height:30px;}
+.header-but1{ width:140px; height:41px; line-height:45px; margin:2% auto 0px auto; font-size:18px; }
+.options-main2{padding:7px 0%; margin-bottom:2%;}
+.options-main2 .options-body{width:96%;}
+.options-main2 .options1{ width:80%; }
+.options-main2 .options1 p{ font-size:15px; }
+.options-main2 .options1 p img{ margin-right:5px; width:25px;}
+.options-main2 .options2{ width:20%;}
+.options-main2 .options2 a{font-size:15px;}
+.options-main2 .options-icon1{width:16px; height:13px; top:-13px; left:4%; }
+.footer3{ margin-top:10%; margin-bottom:2%; font-size:15px; line-height:26px; }
+.header2-ewm{margin-bottom:5%;}
+.header2-ewm h1 img{ width:160px;}
+
+}
+
+@media screen and (max-width:320px){
+
+/*我的红包页*/
+.header-left{padding:20px 0px 0px 0px;}
+.header-left h1{width:43%; margin:0px auto; padding-top:10px;}
+.header-left h1 b{width:80%;font-size:35px; line-height:35px; }
+.header-left h1 span{width:20%;font-size:12px;}
+.header-left p{ font-size:20px;line-height:20px; margin-top:0px;}
+.header-footer{ margin-top:8%;  font-size:12px; }
+.header-footer img{margin-right:5px; width:25px;}
+
+
+.header-icon1{ width:70px; height:79px;}
+.header-a1{top:15px; right:20px; font-size:16px;line-height:22px; }
+.main1{ width:76%; margin:8% auto 0% auto;}
+.main1-but1,.main1-but2,.main1-but3{ width:40%;  font-size:16px;  padding:13px 0px; }
+.main1-but3{ margin:7% auto 5% auto; width:43%;  }
+.main1 span{ width:25px; height:37px;top:-15px; left:-15px; }
+.footer1{ margin-top:15%; margin-bottom:5%; font-size:14px;}
+.footer1 img{margin-right:5px; width:14px;}
+.footer4{font-size:12px; width:80%; margin:15% auto 5% auto; }
+.footer5{ font-size:12px}
+.footer5 img{ vertical-align:middle; margin-right:5px; width:14px;}
+/*领取到的红包*/
+.header-phone{padding:20px 0px; }
+.header-phone h1{font-size:26px; line-height:36px;}
+.header-phone p{ font-size:18px;line-height:18px;}
+.options-main ul li{padding:10px 0px;margin-bottom:5%}
+.options-main ul li p{ font-size:16px;}
+
+.teb{ clear:both;}
+.teb ul li{ width:96%; margin:0px auto; padding:5px 0px;}
+.teb ul li .teb-left1{width:55%;}
+.teb ul li .teb-left2{width:25%;}
+.teb ul li .teb-right3{width:20%;}
+.teb ul li h3{ font-size:14px;}
+.teb ul li p{ font-size:12px;}
+.footer2{ margin-top:15%; margin-bottom:5%; font-size:12px; }
+.font-size1{font-size:14px;}
+.teb2 ul li{ margin:0px auto; padding:15px 0px;}
+.teb2 ul li .teb-left1{ width:70%;}
+.teb2 ul li .teb-right2{ width:30%;}
+.teb2 ul li h3{ font-size:14px; }
+.teb2 ul li h3.text-indent1{ text-indent:5px;}
+.teb2 ul li h1{ font-size:18px;}
+.teb2 ul li h1.text-indent2{ text-indent:15%;}
+.teb2 ul li p{ font-size:12px;}
+.teb2 ul li p.text-indent2{ text-indent:28px;}
+.teb3 ul li{padding:5px 0px; }
+.no-record{font-size:14px; margin:10% 0px 20% 0px;}
+
+.teb4 ul li .teb-left1{width:38%;}
+.teb4 ul li .teb-left2{width:32%;}
+.teb4 ul li .teb-right3{ width:15%;text-align:left; float:left}
+.teb4 ul li .teb-right4{width:15%;float:right; text-align:center}
+
+.options-title{ width:92%;  padding:10px 4% 10px 4%;}
+.options-title2{ width:97%;  padding:10px 0% 10px 3%;}
+.options-title3{ width:87%;  padding:10px 8% 10px 5%;}
+.options-title .title-left{font-size:14px;}
+.options-title .title-left b{font-size:15px;}
+.options-title .title-right{font-size:14px;}
+.options-title .title-right b{ font-size:15px;}
+
+/*查看红包领取情况*/
+.header3{ padding:15% 0px;}
+.header4{ padding:12% 0px 5% 0px;}
+.header-phone2{ width:100%;padding:10px 0px 0px 0px; }
+.header-phone2 h1{font-size:20px; line-height:30px;}
+.header-phone2 p{font-size:16px;line-height:28px;}
+.header-icon2{ width:70px; height:70px; }
+.options-main2{padding:7px 0%; margin-bottom:2%;}
+.options-main2 .options-body{width:96%;}
+.options-main2 .options1{ width:80%; }
+.options-main2 .options1 p{ font-size:14px; }
+.options-main2 .options1 p img{ margin-right:5px; width:20px;}
+.options-main2 .options2{ width:20%;}
+.options-main2 .options2 a{font-size:14px;}
+.footer3{ margin-top:10%; margin-bottom:2%; font-size:14px; line-height:22px; }
+.header2-ewm{margin-bottom:5%;}
+.header2-ewm h1 img{ width:140px;}
+
+.not-receive{margin:10% auto 10% auto;}
+.not-receive h1{width:100px; height:92px; margin:0px auto 3% auto; }
+.not-receive p{font-size:14px; line-height:24px;}
+.not-receive p b{ font-size:16px; }
+}
+
+
+.options-main2 .options3{ width:100%; }
+
+
+.return{
+	width:50px;
+	position:fixed;
+	right:0;
+	z-index:999;
+	bottom:10%;
+}
+.return img{
+	width:100%;
+	margin-bottom:10px;
+}

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 
 using Wtdl.Mvc.Services;
 
@@ -30,7 +29,7 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
         [HttpGet("AntiFake")]
-        [ResponseCache(Duration = 300)]
+        [ResponseCache(Duration = 300, VaryByQueryKeys = new string[] { "qrcode" })]
         public async Task<AntiFakeResult> GetSearchByCodeAsync(string qrcode)
         {
             _logger.LogInformation("查询防伪数据");
@@ -43,26 +42,7 @@ namespace Wtdl.Mvc.Controllers.APIController
                 };
             }
 
-            try
-            {
-                var s = await _searchByCodeService.GetSearchByCodeAsync(qrcode);
-
-                return new AntiFakeResult()
-                {
-                    IsSuccess = true,
-                    Message = "",
-                    AntiFakeByData = s,
-                };
-            }
-            catch (Exception e)
-            {
-                return new AntiFakeResult()
-                {
-                    IsSuccess = false,
-                    Message = e.Message,
-                    AntiFakeByData = null,
-                };
-            }
+            return await _searchByCodeService.QueryTag(qrcode);
         }
 
         /// <summary>

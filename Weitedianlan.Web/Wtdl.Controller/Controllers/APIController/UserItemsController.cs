@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Wtdl.Controller.Services;
 using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 
 namespace Wtdl.Controller.Controllers.APIController
 {

@@ -1,11 +1,6 @@
-﻿using System.Collections;
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Web;
+﻿using Newtonsoft.Json;
 using Wtdl.Model.Entity;
 using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 
 namespace Wtdl.Mvc.Services
@@ -16,108 +11,89 @@ namespace Wtdl.Mvc.Services
         private readonly AgentRepository _agentRepository;
         private readonly VerificationCodeRepository _verificationCodeRepository;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _clientFactory;
+        private ILogger _logger;
 
         public SearchByCodeService(WLabelStorageRepository storageRepository,
             AgentRepository agentRepository,
+            IHttpClientFactory clientFactory,
             VerificationCodeRepository verificationCodeRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<SearchByCodeService> logger)
         {
+            _clientFactory = clientFactory;
             _labelStorageRepository = storageRepository;
             _agentRepository = agentRepository;
             _verificationCodeRepository = verificationCodeRepository;
             _configuration = configuration;
+            _logger = logger;
         }
 
         /// <summary>
-        /// 查询防伪标签数据
+        /// 查询防伪信息
         /// </summary>
-        /// <param name="hashtable"></param>
+        /// <param name="qrcode"></param>
         /// <returns></returns>
-        public async Task<SearchByCode> GetSearchByCodeAsync(string qrcode)
+        public async Task<AntiFakeResult> QueryTag(string qrcode)
         {
-            var url = _configuration.GetSection("QueryQRCode").Value;
-            HttpWebRequest request = await CreateHttpWebRequest(url);
-            var hashtable = await QueryParameter(qrcode);
+            var baseurl = _configuration.GetSection("QueryQRCode").Value;
+            var num = qrcode;
+            var code = qrcode.Substring(0, 4); ;
+            var query_type = "手机网络";
+            var username = "wt";
+            var ip = "13800000000";//电话？
+            string url = $"{baseurl}?lang=cn&num={num}&code={code}&query_type=手机网络&username={username}&ip={ip}";
 
-            byte[] data = await EncodePars(hashtable);
-            WriteRequestData(request, data);
+            var client = _clientFactory.CreateClient();
 
-            var servicedata = await ResponseFormat(request.GetResponse());
-
-            return JsonSerializer.Deserialize<SearchByCode>(servicedata);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="querystring"></param>
-        /// <returns></returns>
-        private Task<Hashtable> QueryParameter(string querystring)
-        {
-            Hashtable pars = new Hashtable();
-            //var code = await GetSpecialRuleCode(querystring);//queryLabelString.Substring(0, 4);
-            // var CallCenterUser = await _UserManager.FindByNameAsync(UserName);
-            pars["num"] = querystring;
-            pars["code"] = querystring.Substring(0, 4); ;
-            pars["query_type"] = "网络";
-            pars["username"] = "wt";
-
-            pars["ip"] = "13800000000";//电话？
-
-            return Task.FromResult(pars);
-        }
-
-        private Task<HttpWebRequest> CreateHttpWebRequest(string url)
-        {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Credentials = CredentialCache.DefaultCredentials;
-            request.Timeout = 10000;
-            return Task.FromResult(request);
-        }
-
-        private Task<byte[]> EncodePars(Hashtable hashtable)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (string k in hashtable.Keys)
+            try
             {
-                if (sb.Length > 0)
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    sb.Append("&");
+                    var content = await response.Content.ReadAsStringAsync();
+                    // 对 content 进行处理，例如反序列化为一个对象
+                    // 将结果返回给客户端，或者执行其他操作
+                    _logger.LogInformation($"QueryTag防伪查询结果：{content}");
+                    var result = JsonConvert.DeserializeObject<SearchByCode>(content);
+
+                    return AntiFakeResult.Success(result);
                 }
-                sb.Append(HttpUtility.UrlEncode(k) + "=" + HttpUtility.UrlEncode(hashtable[k].ToString()));
+                else
+                {
+                    // 如果请求失败，返回失败的状态码和错误信息
+                    return AntiFakeResult.Fail($"请求返回失败代码：{response.StatusCode}");
+                }
             }
-            return Task.FromResult(Encoding.UTF8.GetBytes(sb.ToString()));
+            catch (HttpRequestException ex)
+            {
+                // 捕获由 HttpClient 发出的请求时引发的异常
+                return AntiFakeResult.Fail($"Code:{StatusCodes.Status500InternalServerError}:Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // 捕获其他可能出现的异常
+                return AntiFakeResult.Fail($"Code:{StatusCodes.Status500InternalServerError}:Error: {ex.Message}");
+            }
         }
 
-        private Task WriteRequestData(HttpWebRequest request, byte[] data)
-        {
-            request.ContentLength = data.Length;
-            Stream writer = request.GetRequestStream();
-            writer.Write(data, 0, data.Length);
-            writer.Close();
-
-            return Task.CompletedTask;
-        }
-
-        private Task<string> ResponseFormat(WebResponse response)
-        {
-            StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-            String retXml = sr.ReadToEnd();
-            sr.Close();
-            return Task.FromResult(retXml);
-        }
-
+        /// <summary>
+        /// 查询溯源信息
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
         public async Task<TraceabilityResult> GetWLabelStorageAsync(string qrcode)
         {
             try
             {
+                // OutTime,s.OrderNumbels,s.QRCode
+                //var wqrcode = await _labelStorageRepository.GetWLabelStorageAsync(qrcode);
                 var wqrcode = await _labelStorageRepository.GetWLabelStorageAsync(qrcode);
                 if (wqrcode is not null)
                 {
+                    // 使用这些属性执行其他操作
                     var outqrcode = await _agentRepository.FindSingleAgentAsync(wqrcode.Dealers.Trim());
-
                     return new TraceabilityResult()
                     {
                         Status = true,
@@ -132,14 +108,14 @@ namespace Wtdl.Mvc.Services
                     return new TraceabilityResult()
                     {
                         Status = false,
-                        Msg = "查询不到标签，标签还未出库"
+                        Msg = "标签还未出库"
                     };
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError($"查询溯源信息出现异常：{e.Message}");
+                return new TraceabilityResult();
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace   Wtdl.Model.ResponseModel
+﻿namespace Wtdl.Model.ResponseModel
 {
     /// <summary>
     /// 抽奖结果

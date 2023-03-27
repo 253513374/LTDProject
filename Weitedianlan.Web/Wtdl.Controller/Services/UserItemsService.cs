@@ -1,5 +1,4 @@
 ﻿using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 using Wtdl.Repository;
 
 namespace Wtdl.Controller.Services

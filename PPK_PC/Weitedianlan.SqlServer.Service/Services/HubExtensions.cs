@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;

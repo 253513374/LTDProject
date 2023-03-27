@@ -1,2 +1,226 @@
-﻿body {
+﻿/*body {
+    background-image: linear-gradient(to bottom, #1e90ff, #42A5F5);
 }
+*/
+footer {
+    background-color: rgba(0,0,0,0.3);
+    margin: 0 auto;
+    width: 100%;
+    color: white;
+    margin-top: 50px;
+    border-radius: 15px;
+    font-size: 14px;
+    /* color: #e2e1e4*/
+}
+
+.weixinimg {
+    width: 100%;
+    height: auto;
+    border: 0px solid white;
+    padding: 20px;
+    border-radius: 15px;
+    /* background-color: rgba(255,255,255,0.5);*/
+    /*background-color: rgba(127,127,127,0.8)*/
+}
+
+.businesscard {
+    align-self: center;
+    font-size: 12px;
+    margin: 0;
+    padding: 16px;
+    height: 100px;
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    color: black;
+    background-image: url(img/Gradient_blob.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: -150px;
+    background-color: white;
+}
+
+ul li span {
+    /*color: #EEA47F;*/
+    color: #EEA47F;
+}
+
+.footertext {
+    color: #EEA47F;
+}
+
+/* 媒体查询：移动设备 */
+@media screen and (max-width: 767px) {
+    li {
+        display: block;
+    }
+}
+
+/* 媒体查询：桌面设备 */
+@media screen and (min-width: 768px) {
+    ul {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    li {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.modal-dialog {
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 350px;
+    z-index: 1001;
+    background-image: url('/img/金币礼盒720.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+.modal-content {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    /*box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.5);*/
+}
+
+.modal-header {
+    background-color: transparent;
+    position: relative;
+}
+
+    .modal-header .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+#modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+    display: none; /* 初始隐藏 */
+    z-index: 999; /* 放在最上层 */
+}
+
+.close {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.keyframesbtn {
+    /*2秒动画，无限循环*/
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 个性名片*/
+.container {
+    position: relative;
+    font-family: sans-serif;
+    padding: 0px;
+}
+
+    .container::before, .container::after {
+        content: "";
+        background-color: #fab5704c;
+        position: absolute;
+    }
+
+    .container::before {
+        border-radius: 50%;
+        width: 6rem;
+        height: 6rem;
+        top: 10%;
+        left: 7%;
+    }
+
+    .container::after {
+        content: "";
+        position: absolute;
+        height: 3rem;
+        top: 8%;
+        right: 5%;
+        border: 1px solid;
+    }
+
+    .container .box {
+        width: 100%;
+        height: 8em;
+        padding: 8px;
+        background-color: rgba(255, 255, 255, 0.074);
+        border: 1px solid rgba(255, 255, 255, 0.222);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        border-radius: .7rem;
+        transition: all ease .3s;
+    }
+
+    .container .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .container .box .title {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: .3em
+        }
+
+        .container .box div strong {
+            display: block;
+            margin-bottom: .5rem;
+        }
+
+        .container .box div p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: .1em;
+        }
+
+        .container .box div span {
+            font-size: .7rem;
+            font-weight: 300;
+        }
+
+            .container .box div span:nth-child(3) {
+                font-weight: 500;
+                margin-right: .2rem;
+            }
+
+        .container .box:hover {
+            box-shadow: 0px 0px 20px 1px #ffbb763f;
+            border: 1px solid rgba(255, 255, 255, 0.454);
+        }

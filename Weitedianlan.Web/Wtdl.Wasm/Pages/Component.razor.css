@@ -1,0 +1,116 @@
+﻿/* 通用样式 */
+body {
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: linear-gradient(to bottom, #007BFF, #42A5F5);
+    color: #333;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.card {
+    background-color: #FFF;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 顶部区域 */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.logo img,
+.scan-icon img {
+    height: 30px;
+}
+
+/* 防伪信息区域 */
+.authenticity {
+    text-align: center;
+}
+
+    .authenticity h2 {
+        margin: 10px 0;
+    }
+
+    .authenticity p {
+        margin: 5px 0;
+    }
+
+#check-authenticity {
+    background-color: #007BFF;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* 溯源信息区域 */
+.traceability {
+    text-align: left;
+}
+
+    .traceability h2 {
+        margin: 10px 0;
+    }
+
+.timeline {
+    list-style-type: none;
+    padding: 0;
+}
+
+    .timeline li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 20px;
+    }
+
+        .timeline li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background-color: #007BFF;
+            border-radius: 50%;
+        }
+
+.node-date,
+.node-info {
+    margin: 5px 0;
+}
+
+/* 底部区域 */
+footer {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.contact-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+    .contact-item img {
+        height: 24px;
+        margin-right: 10px;
+    }

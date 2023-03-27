@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Services;
 
 namespace Wtdl.Web.Api.Controllers

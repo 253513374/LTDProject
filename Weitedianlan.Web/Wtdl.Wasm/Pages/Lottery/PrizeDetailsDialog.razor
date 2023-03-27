@@ -1,0 +1,32 @@
+﻿@using Wtdl.Model.ResponseModel
+
+<MudDialog Style="background-color: #FCF6F5;padding: 10px">
+    <DialogContent >
+        
+        <MudContainer Style="max-height: 80vh; width: 100%; overflow-y: scroll">
+            <MudStack Justify="Justify.FlexStart" Spacing="3" Style="color:#f0003c;overflow: hidden; ">
+            
+                @if (PrizeDetails is not null)
+                {
+                    var imgpath = $"http://admin.rewt.cn/{PrizeDetails.ImageUrl.Replace('\\', '/')}";
+                    <img src="@imgpath" style="width: 100%; height: auto" />
+                    <MudText Typo="Typo.h6"> <strong style="letter-spacing: .3em">@PrizeDetails.Name</strong></MudText>
+                    <MudText> @PrizeDetails.Description</MudText>
+                    <MudText Typo="Typo.button">中奖概率： @PrizeDetails.Probability</MudText>
+                }
+            </MudStack>
+        </MudContainer>
+        
+      
+    </DialogContent>
+   @* <DialogActions>
+        <MudButton StartIcon="@Icons.Material.Filled.Close" OnClick="@(()=>Instance.Close())">关闭</MudButton>
+    </DialogActions>*@
+</MudDialog>
+@code {
+
+
+    [CascadingParameter] public MudDialogInstance Instance { get; set; }
+
+    [Parameter] public PrizeResult PrizeDetails { get; set; }
+}

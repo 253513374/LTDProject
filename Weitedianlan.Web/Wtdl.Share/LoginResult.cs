@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace   Wtdl.Share
+namespace Wtdl.Share
 {
     public class LoginResult
     {

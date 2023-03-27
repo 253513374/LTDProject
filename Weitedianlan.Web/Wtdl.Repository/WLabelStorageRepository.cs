@@ -220,13 +220,16 @@ namespace Wtdl.Repository
             {
                 using (var context = _contextFactory.CreateDbContext())
                 {
-                    return await context.WLabelStorages.AsNoTracking()
+                    var result = await context.WLabelStorages.AsNoTracking()
+                        // .Select(s =>new { s.OutTime,s.OrderNumbels,s.QRCode,s.Dealers})
                         .Where(w => w.QRCode == qrcode).FirstOrDefaultAsync();
+
+                    return result;
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError($"GetWLabelStorageAsync:{e.Message}");
+                _logger.LogError($"溯源信息查询异常:{e.Message}");
                 return null;
             }
         }

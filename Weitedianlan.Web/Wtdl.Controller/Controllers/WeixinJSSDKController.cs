@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Senparc.CO2NET.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
 using Senparc.Weixin;
-using Senparc.Weixin.MP;
-using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.Helpers;
-using Wtdl.Mvc.Controllers;
 
 namespace Wtdl.Controller.Controllers
 {

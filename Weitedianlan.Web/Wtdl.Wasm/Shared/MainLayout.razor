@@ -12,8 +12,8 @@
     @if (IsWeChat)
     {
         <MudLayout>
-        <MudMainContent Class="pt-0 mt-0" >
-                <MudContainer MaxWidth="MaxWidth.Large" Class="pt-0 mt-0">
+            <MudMainContent Class="pt-0 mt-0" >
+                <MudContainer MaxWidth="MaxWidth.Medium">
                     @Body
                 </MudContainer>
             </MudMainContent>
@@ -38,6 +38,8 @@
 
 @code
 {
+
+
 
     bool IsWeChat { get; set; }
 

@@ -8,8 +8,6 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.TenPay;
 using Serilog;
-using Serilog.Events;
-using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
 
@@ -31,6 +29,7 @@ try
     // builder.Host.UseSerilog();
     builder.Host.UseSerilog((ctx, lc) => lc
         .WriteTo.Console()
+        .MinimumLevel.Debug()
         .ReadFrom.Configuration(ctx.Configuration));
 
     // 添加身份验证服务

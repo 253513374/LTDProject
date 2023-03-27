@@ -13,13 +13,13 @@ using Radzen;
 using Serilog;
 using System.Reflection;
 using System.Text;
-using Wtdl.Model.Entity;
 using Wtdl.Admin.Authenticated;
 using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Authenticated.Services;
 using Wtdl.Admin.Data;
 using Wtdl.Admin.Quartzs;
 using Wtdl.Admin.SignalRHub;
+using Wtdl.Model.Entity;
 using Wtdl.Repository;
 using Wtdl.Repository.MediatRHandler.Events;
 
@@ -80,10 +80,10 @@ try
     // Add services to the container.
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
-    //builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
-    //{
-    //    options.DetailedErrors = true;
-    //});
+    builder.Services.AddServerSideBlazor().AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    });
     builder.Services.AddControllers();
     builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<WeatherForecastService>();

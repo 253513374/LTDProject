@@ -1,0 +1,19 @@
+﻿
+
+<MudContainer>
+    <MudText Typo="Typo.h4">@Message</MudText>
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@Close">确定</MudButton>
+</MudContainer>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+
+
+    [Parameter] public string Message { get; set; }
+
+    private void Close()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

@@ -21,5 +21,24 @@ namespace Wtdl.Model.ResponseModel
         /// 防伪数据
         /// </summary>
         public SearchByCode AntiFakeByData { get; set; }
+
+        public static AntiFakeResult Fail(string message)
+        {
+            return new AntiFakeResult
+            {
+                IsSuccess = false,
+                Message = message
+            };
+        }
+
+        public static AntiFakeResult Success(SearchByCode searchByCode)
+        {
+            return new AntiFakeResult
+            {
+                IsSuccess = true,
+                Message = "",
+                AntiFakeByData = searchByCode
+            };
+        }
     }
 }

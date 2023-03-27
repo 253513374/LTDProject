@@ -36,6 +36,10 @@ namespace Wtdl.Admin.Pages.FluentValidator
             RuleFor(x => x.MaxCashValue).GreaterThan(g => g.MinCashValue)
                 .WithMessage("最大金额不能小于最小金额")
                 .When(w => w.RedPacketType == RedPacketType.RANDOM);
+
+            RuleFor(r => r.ActivityName).NotEmpty().WithMessage("活动名称不能为空");
+            RuleFor(w => w.SenderName).NotEmpty().WithMessage("发红包人不能为空");
+            RuleFor(w => w.WishingWord).NotEmpty().WithMessage("祝福语不能为空");
         }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>

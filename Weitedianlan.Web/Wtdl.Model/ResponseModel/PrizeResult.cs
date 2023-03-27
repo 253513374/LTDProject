@@ -1,11 +1,11 @@
-﻿namespace   Wtdl.Model.ResponseModel
+﻿namespace Wtdl.Model.ResponseModel
 {
     public class PrizeResult
     {
         /// <summary>
         /// 奖品编号。
         /// </summary>
-        public int Id { get; set; }//奖品ID
+        public string PrizeNumber { get; set; }//奖品编号
 
         /// <summary>
         /// 奖品名称

@@ -1,0 +1,90 @@
+﻿body {
+}
+
+/* 设置单元格样式 */
+.grid-item {
+    background-color: rgba(218,165,32,0.3);
+    border: 0px solid white;
+    /* box-shadow: goldenrod 10px 10px inset;*/
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+    /* 设置宽度和高度相等 */
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 2px;
+    overflow: hidden; /* 限制内容不溢出 */
+    box-shadow: 0px 2px 4px rgba(218,165,32,0.8); /* 添加阴影 */
+    transform-style: preserve-3d;
+}
+    /*    .grid-item > img {
+        height: 100%;
+        width: 100%;
+        margin: 0 auto;
+        object-fit: contain;
+        text-align: center;
+        padding: 6px;
+    }*/
+    .grid-item img {
+        height: 100%;
+        width: 100%;
+        margin: 0 auto;
+        object-fit: contain;
+        text-align: center;
+        padding: 6px;
+    }
+
+    .grid-item.selected {
+        border: 2px solid #f0003c;
+        animation: scaleAndRotate 0.5s ease-in-out;
+        transform: scale(1.2);
+        /* transform: scale(1.2);
+    transition: transform 1s ease;*/
+        /*z-index: 1;*/
+    }
+
+@keyframes scaleAndRotate {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        transform: scale(1.1) rotate(10deg);
+    }
+
+    100% {
+        transform: scale(1.2) rotate(0deg);
+    }
+}
+
+/*详情按钮*/
+.details-button {
+    --curve-size: .5em;
+    position: absolute;
+    width: 80%;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f0003c;
+    border: none;
+    padding: 4px 8px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #F4EFEA;
+    font-weight: 800;
+    letter-spacing: .3em;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+    clip-path: polygon(
+    /* Top-left */
+    0% var(--curve-size), var(--curve-size) 0,
+    /* top-right */
+    100% 0, 100% calc(100% - var(--curve-size)),
+    /* bottom-right 1 */
+    calc(100% - var(--curve-size)) 100%,
+    /* bottom-right 2 */
+    0 100%);
+}

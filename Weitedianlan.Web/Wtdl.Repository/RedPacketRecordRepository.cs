@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Wtdl.Model.Entity;
 
-using Wtdl.Model.Entity;
-
 using Wtdl.Repository.Interface;
 
 namespace Wtdl.Repository

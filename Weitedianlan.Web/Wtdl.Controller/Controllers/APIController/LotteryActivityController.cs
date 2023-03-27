@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Senparc.CO2NET.Extensions;
 using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -35,9 +35,11 @@ namespace Wtdl.Web.Api.Controllers
         [HttpGet]
         public async Task<ActivityResult> GetLotteryActivity(string qrcode = "")
         {
-            _logger.LogInformation("获取抽奖活动信息以及参与活动的产品信息。");
+            var result = await _lotteryService.GetLotteryActivityAsync();
 
-            return await _lotteryService.GetLotteryActivityAsync();
+            _logger.LogInformation($"获取抽奖活动信息以及参与活动的产品信息:{result.ToJson()}");
+
+            return result;
         }
     }
 }

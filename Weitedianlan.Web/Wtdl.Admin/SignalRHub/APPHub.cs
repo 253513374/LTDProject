@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Identity.Client.Extensions.Msal;
-using Senparc.Weixin.TenPay.V3;
-using  Wtdl.Model.Entity;
 using Wtdl.Admin.Data;
+using Wtdl.Model.Entity;
 using Wtdl.Repository;
 using Wtdl.Share;
 using Wtdl.Share.SignalR;

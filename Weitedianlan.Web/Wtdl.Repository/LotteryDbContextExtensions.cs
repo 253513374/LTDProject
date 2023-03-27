@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Wtdl.Model.Entity;
 using Wtdl.Repository.Tools;
 
 namespace Wtdl.Repository
@@ -23,7 +24,8 @@ namespace Wtdl.Repository
             services.AddScoped<EmailSender>();
             services.AddScoped<OutStorageRepository>();
 
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            var assembly = new[] { Assembly.GetExecutingAssembly(), typeof(LotteryActivity).Assembly };
+            services.AddMediatR(assembly);
 
 #if DEBUG
             services.AddDbContextFactory<LotteryContext>(options => options.UseSqlServer(connectionString)

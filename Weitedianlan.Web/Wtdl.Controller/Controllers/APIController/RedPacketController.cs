@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Wtdl.Controller.Models.ResponseModel;
 using Wtdl.Model.ResponseModel;
-using Wtdl.Mvc.Models;
 using Wtdl.Mvc.Services;
 
 namespace Wtdl.Mvc.Controllers.APIController

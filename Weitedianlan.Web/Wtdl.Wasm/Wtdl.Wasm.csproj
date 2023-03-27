@@ -4,6 +4,12 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<RunAOTCompilation>true</RunAOTCompilation>
+	<BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
+
+	  <PublishTrimmed>true</PublishTrimmed>
+	 
+	  <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +21,30 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Wtdl.Model\Wtdl.Model.csproj" />
+	  
+	  <ProjectReference Include="..\Wtdl.Model\Wtdl.Model.csproj" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Folder Include="Pages\新文件夹\" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Content Update="web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <None Update="MP_verify_HobPEQ0RKaQiDAUy.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

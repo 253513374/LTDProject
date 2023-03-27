@@ -1,0 +1,255 @@
+﻿@page "/prizesshow"
+
+
+
+@inherits ComponentBase
+
+@inject IJSRuntime JsRuntime
+@inject ILogger<PrizesShow> _logger
+
+<PageTitle>扫码抽大奖</PageTitle>
+
+<Header></Header>
+
+
+@if (Container.Activity is not null)
+{
+
+    <MudStack Spacing="3">
+
+    
+        <MudText Typo="Typo.h5" Style="justify-content: center;display: flex;">@Container.Activity.Name</MudText>
+
+        @if (!string.IsNullOrEmpty(Container.Activity.ActivityImage))
+        {
+            var imgpath = $"http://admin.rewt.cn/{Container.Activity.ActivityImage.Replace('\\', '/')}";
+            <MudImage Src="@imgpath" Style="max-width: 90vw;border-radius: 5px;" ObjectFit="ObjectFit.Contain"></MudImage>
+        }
+
+
+        <MudText Typo="Typo.body2"> @Container.Activity.Description</MudText>
+
+        <MudText Class="my-3" Typo="Typo.button" Style="letter-spacing:.3em">抽奖号码：@Container.Code</MudText>
+    </MudStack>
+    <div class="grid-container">
+        @if (Container.Activity is not null)
+        {
+            foreach (var prize in Container.Activity.Prizes)
+            {
+                <PrizeGridItem IsRound="false" PrizeItem="@prize" Class="image-container" DisplayMode="PrizeDisplayMode.Simple"
+                               Clicked="@((item) => OnGridItemClick(item))"
+                                OnShowDetails="@ShowPrizeDetailsDialog" />
+            }
+        }
+    </div>
+
+    if (SelectedPrizeItem is not null )
+    {
+        <MudStack Style="height: 55px"  AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-10">
+            <button onclick="@OnLuckyDraw">
+                <span class="shadow"></span>
+                <span class="edge"></span>
+                <span class="front text"> 开始抽奖
+                </span>
+            </button>
+        </MudStack>
+    }
+    else
+    {
+        <MudStack Style="height: 55px" AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-10" />
+    }
+   
+    
+
+    <MudText Class="my-5" Typo="Typo.h6">活动结束倒计时：@TimeRemaining.Days 天 @TimeRemaining.Hours 小时 @TimeRemaining.Minutes 分钟 @TimeRemaining.Seconds 秒</MudText>
+
+    <MudStack Class="my-5" Justify="Justify.FlexStart" Spacing="0">
+        <MudText Typo="Typo.h6">抽奖规则</MudText>
+        <MudText Typo="Typo.caption ">1.抽奖活动的主题、奖品、时间和参与方式将在抽奖活动开始前公布。</MudText>
+        <MudText Typo="Typo.caption ">2.如果中奖者在规定时间内未领取奖品，或者无法提供真实、准确、完整的信息，其中奖资格将被取消。</MudText>
+        <MudText Typo="Typo.caption ">3.奖品将在规定的时间内发放。中奖者需要提供真实、准确、完整的联系信息以便奖品发放。</MudText>
+        <MudText Typo="Typo.caption ">4.抽奖活动的主办方有权根据实际情况对规则进行修改和解释。如有任何争议，主办方有最终决定权。</MudText>
+        <MudText Typo="Typo.caption ">5.参与者在参与抽奖活动的过程中应遵守相关法律法规和道德规范。如参与者违反相关规定，主办方有权取消其参与资格。</MudText>
+        <MudText Typo="Typo.caption ">6.抽奖活动的主办方有权根据实际情况对规则进行修改和解释。如有任何争议，主办方有最终决定权。</MudText>
+        <MudText Typo="Typo.caption ">7.参与者在参与抽奖活动的过程中产生的任何问题、损失或损害，主办方不承担任何责任。</MudText>
+        <MudText Typo="Typo.caption ">8.参与者在参与抽奖活动的过程中，主动或被动地向主办方提供的所有信息，主办方将严格保密，并仅用于抽奖活动及后续相关事宜。</MudText>
+    </MudStack>
+
+@*    <div class="spinner-container" style="@(isSpinning ? "display:flex;" : "display:none;")">
+        <div class="spinner"></div>
+    </div>*@
+
+
+}
+else
+{
+    <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Style="height:100vh " >
+        <MudIcon Color="Color.Warning" Icon="@Icons.Material.Filled.Info" Style="Width:64px;height: 64px;"></MudIcon>
+        <MudText Typo="Typo.h5">请使用微信扫一扫打开来链接！不要刷新页面</MudText>
+    </MudStack>
+}
+
+
+@code {
+    //[CascadingParameter(Name = "qrcode")]
+    //public string QRCode { get; set; }
+
+    //[CascadingParameter(Name = "openid")]
+    //public string OpenId { set; get; }
+    private PrizeGridItem SelectedPrizeItem { get; set; }
+
+    private int? selectedItem = null;
+    private bool isSpinning = false;
+    private string boxContainerClass;
+    private bool boxOpened = false;
+
+
+    private TimeSpan TimeRemaining { get; set; }
+    private System.Timers.Timer CountdownTimer { get; set; }
+    /// <summary>
+    /// 抽奖结果
+    /// </summary>
+    private LotteryResult lotteryResult;
+
+    [Inject]
+    protected DataStateContainer Container { set; get; }
+
+    
+
+
+    DialogParameters parameters = new();
+    JsonSerializerOptions options = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CountdownTimer = new System.Timers.Timer(1000);
+            CountdownTimer.Elapsed += (sender, args) => UpdateTimeRemaining();
+            CountdownTimer.AutoReset = true;
+            CountdownTimer.Enabled = true;
+        }
+
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+    private async Task<ActivityResult> GetLotteryActivityAsync()
+    {
+        try
+        {
+            var url = $"LotteryActivity";
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<ActivityResult>(stream, options);
+            }
+            _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
+        }
+        return null;
+    }
+
+
+
+
+    //private Task togglePrizeSelection(PrizeDraw prizeDraw)
+    //{
+    //    // throw new NotImplementedException();
+
+    //    return Task.CompletedTask; 
+    //}
+
+    //public Task CheckedPrize(PrizeResult prizeResult)
+    //{
+    //    return Task.CompletedTask;
+    //}
+
+    //private Task OnPrizeItemClick(PrizeResult arg)
+    //{
+
+    //    //_ = ShowPrizeDetailsDialog();
+    //    return  Task.CompletedTask;
+    //}
+
+    /// <summary>
+    ///  显示奖品详情
+    /// </summary>
+    /// <returns></returns>
+    private async Task ShowPrizeDetailsDialog()
+    {
+        var parameters = new DialogParameters
+        {
+               ["PrizeDetails"] = SelectedPrizeItem.PrizeItem
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large };
+        await _dialogService.ShowAsync<PrizeDetailsDialog>("奖品详情",parameters, options);
+    }
+
+    /// <summary>
+    /// 控制子组件得UI状态
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    private Task OnGridItemClick(PrizeGridItem item)
+    {
+        //throw new NotImplementedException();
+        if (SelectedPrizeItem != null)
+        {
+            SelectedPrizeItem.IsSelected = false;
+            SelectedPrizeItem.IsDetailButton= false;
+        }
+        SelectedPrizeItem = item;
+        SelectedPrizeItem.IsSelected = true;
+        SelectedPrizeItem.IsDetailButton = true;
+
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 活动倒计时
+    /// </summary>
+    /// <returns></returns>
+    private Task UpdateTimeRemaining()
+    {
+        if (Container.Activity is not null)
+        {
+            TimeRemaining = Container.Activity.EndTime.Value - DateTime.Now;
+            if (TimeRemaining < TimeSpan.Zero)
+            {
+                TimeRemaining = TimeSpan.Zero;
+                CountdownTimer.Enabled = false;
+            }
+        }
+        InvokeAsync(StateHasChanged);
+
+        return  Task.CompletedTask;
+    }
+
+
+    private  Task OnLuckyDraw()
+    {
+        var parameters = new DialogParameters
+        {
+            ["QRCode"] =Container.Code,
+            ["OpenId"] = Container.OpenId,
+            ["PrizeNumber"] = SelectedPrizeItem.PrizeItem.PrizeNumber
+        };
+        var options = new DialogOptions { 
+            CloseButton = true,
+            FullWidth = true, 
+            MaxWidth = MaxWidth.Large,
+            DisableBackdropClick = true,
+            
+        };
+        var result= _dialogService.Show<LuckyDraw>("",parameters, options);
+
+        return Task.CompletedTask;
+    }
+
+}

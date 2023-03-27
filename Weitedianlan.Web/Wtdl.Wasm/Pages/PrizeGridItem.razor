@@ -1,0 +1,95 @@
+﻿@using Wtdl.Model.ResponseModel
+@using System.Drawing
+
+
+@*<div class="grid-item @SpinClass" @onclick="OnGridItemClick">
+    <img src="@PrizeItem.ImageUrl" alt="@PrizeItem.Description" />
+</div>*@
+
+@if (DisplayMode == PrizeDisplayMode.Simple)
+{
+
+    <div class=" @RoundContainer @SelectedClass @Class @SpinClass" @onclick="OnGridItemClick">
+        <img src="@($"http://admin.rewt.cn/{PrizeItem.ImageUrl.Replace('\\', '/')}")" alt="@PrizeItem.Description"/>
+        <button class="details-button" @onclick="ShowDetails" style="@DetailButtonStyle">详情</button>
+    </div>
+}
+else
+{
+    <div class="grid-item-details" >
+        <h3>@PrizeItem.Description</h3>
+        <img src="@PrizeItem.ImageUrl" alt="@PrizeItem.Description" />
+        <p>这里可以添加更多的详细信息，例如奖品的价值、数量等。</p>
+    </div>
+}
+
+@code {
+
+    [Parameter] public PrizeResult PrizeItem { get; set; }
+
+
+   
+
+
+    //[Parameter] public EventCallback<PrizeResult> OnItemClick { get; set; }
+    [Parameter] public EventCallback<PrizeGridItem> Clicked { get; set; }
+    [Parameter] public EventCallback OnShowDetails { get; set; }
+
+    [Parameter] public PrizeDisplayMode DisplayMode { get; set; } = PrizeDisplayMode.Simple;
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+
+    /// <summary>
+    /// 控制是否启用点击交互动画
+    /// </summary>
+    [Parameter] public bool IsSelected { get; set; }
+
+    /// <summary>
+    /// 圆形样式
+    /// </summary>
+    [Parameter] public bool IsRound { get; set; }
+    [Parameter] public bool IsSpinning { get; set; }
+    [Parameter] public bool IsDetailButton { get; set; }
+
+    private string SelectedClass => IsSelected ? "selected" : string.Empty;
+
+    private string RoundContainer => IsRound ? "round-container":"grid-item";
+
+
+    private string SpinClass => IsSpinning ? "spin" : string.Empty;
+    private string DetailButtonStyle => IsDetailButton ? "display:block" : "display:none";
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //if (PrizeItem is not null)
+            //{
+            //    var imapath = $"http://admin.rewt.cn/{PrizeItem.ImageUrl.Replace('\\', '/')}";
+            //    PrizeItem.ImageUrl = imapath;
+            //}
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    private async Task OnGridItemClick()
+    {
+        await Clicked.InvokeAsync(this);
+        //await OnItemClick.InvokeAsync(PrizeItem);
+    }
+
+    
+
+    private async Task ShowDetails(MouseEventArgs e)
+    {
+       // detailButtonVisible = !detailButtonVisible;
+        await OnShowDetails.InvokeAsync();
+       
+    }
+}

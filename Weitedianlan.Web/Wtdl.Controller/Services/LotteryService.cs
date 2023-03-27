@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using StackExchange.Redis;
+using Wtdl.Controller.Services;
 using Wtdl.Model.Entity;
 using Wtdl.Model.Enum;
-using Wtdl.Controller.Services;
-
 using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Models;
 using Wtdl.Repository;
@@ -84,16 +82,15 @@ namespace Wtdl.Mvc.Services
                         //Prizes = result.Prizes.ToList(),
                     };
                     var prizeList = result.Prizes.ToList();
-                    for (int i = 0; i < prizeList.Count; i++)
+                    foreach (var prize in prizeList)
                     {
-                        var prize = prizeList[i];
                         view.Prizes.Add(new PrizeResult()
                         {
                             Probability = prize.Probability,
                             ImageUrl = prize.ImageUrl,
                             Name = prize.Name,
                             Description = prize.Description,
-                            Id = prize.Id,
+                            PrizeNumber = prize.PrizeNumber,
                         });
                     }
 

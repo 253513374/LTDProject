@@ -4,11 +4,6 @@ namespace Wtdl.Admin.Authenticated.IdentityModel
 {
     public class WtdlUser : IdentityUser<string>
     {
-        public WtdlUser()
-        {
-            Id = System.Guid.NewGuid().ToString();
-        }
-
         /// <summary>
         /// 头像
         /// </summary>

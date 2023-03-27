@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Senparc.CO2NET.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
 using Senparc.Weixin;
-using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.OAuth;
-using Senparc.Weixin.TenPay.V3;
 
 namespace Wtdl.Controller.Controllers.OAuth
 {

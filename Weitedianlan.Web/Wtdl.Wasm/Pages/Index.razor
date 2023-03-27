@@ -7,157 +7,34 @@
 @using Wtdl.Controller.Models.ResponseModel
 @using Wtdl.Model.Entity
 @using Wtdl.Wasm.Pages.Debug
+@using System.Security.Cryptography
 
+@inherits ComponentBase
 
 @inject IJSRuntime JsRuntime
 @inject ILogger<Index> _logger
 
-<style >
-    body {
-        /*color: rgba(12, 12, 12, 0.5);*/
-        
-    }
-
-    footer {
-        background-color: transparent;
-        
-        margin: 0 auto;
-        width: 100%;
-        color: rgb(226,225,228);
-       /* color: #e2e1e4*/
-        
-
-    }
-
-
-    ul li span {
-        /*color: #EEA47F;*/
-        color: rgba(238, 164, 128, 0.9);
-    }
-
-    /* 媒体查询：移动设备 */
-    @@media screen and (max-width: 767px) {
-    li {
-        display: block;
-    }
-        
-    }
-
-    /* 媒体查询：桌面设备 */
-    @@media screen and (min-width: 768px) {
-        ul {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        li {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    }
-
-    .modal-dialog {
-       
-        margin: 0 auto;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        height: 350px; 
-        z-index: 1001;
-        background-image: url('/img/金币礼盒720.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-attachment: fixed;
-    }
-
-    .modal-content {
-        border: none;
-        background-color: transparent;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        /*box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.5);*/
-    }
-
-    .modal-header {
-        background-color: transparent;
-        position: relative;
-    }
-
-    .modal-header .close {
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
-
-    #modalOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
-        display: none; /* 初始隐藏 */
-        z-index: 999; /* 放在最上层 */
-    }
-    .close {
-        font-size: 3rem;
-        font-weight: bold;
-    }
-
-
-    .keyframesbtn {
-        /*2秒动画，无限循环*/
-        animation: pulse 2s ease-in-out infinite;
-    }
-
-    @@keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.2);
-        }
-        100% {
-            transform: scale(1);
-        }
-    }
-    </style >
+    
 
 <PageTitle>威特五金</PageTitle>
 
-@if (!string.IsNullOrEmpty(QRCode))
-{
+<Header></Header>
 
+    <MudCard Elevation="0" Style="background-color: transparent;color:#FFFFFE">
 
-
-
-    <MudPaper Elevation="0" Style="background-color: transparent;color:#e2e1e4">
-
-            <SurveyPrompt Title="防伪信息" />
-
-        <MudStack Spacing="2" Style="background-color: transparent;">
+        <MudContainer>
+            <MudStack Spacing="2" Style="background-color: transparent;">
                 <MudText Typo="Typo.body2" Style="font-weight: bold">尊敬的用户：</MudText>
-                <MudText Class="ml-3" Typo="Typo.button" Style="word-wrap: break-word;">您所查询的防伪标签照片如下图所示，请随机抽查标签上的3-5粒亮片，观察其形状、位置、颜色是否与标签上的亮片相符，若相符，则是真品；否则，谨防假冒。（请注意彩色亮片可挑出）!</MudText>
-                 <MudButton OnClick="OpenDialog" Color="Color.Primary" >打开对话框</MudButton>
-
-
+            <MudText Typo="Typo.button" Style="word-wrap: break-word; white-space: pre-wrap;">        您所查询的防伪标签照片如下图所示，请随机抽查标签上的3-5粒亮片，观察其形状、位置、颜色是否与标签上的亮片相符，若相符，则是真品；否则，谨防假冒。（请注意彩色亮片可挑出）!</MudText>
                 @if (antiFakeResult is not null && antiFakeResult.AntiFakeByData is not null)
                 {
-                    <div style="max-width: 85%; margin: 0 auto; text-align: center">
-                        <img style="Width: 100%; height: auto; padding: 2px" src="@antiFakeResult.AntiFakeByData.ImgUrl" Alt="Mony the dog" class="rounded-lg"/>
+                    <div style="max-width: 85%; margin: 2px auto; text-align: center">
+                        <img style="Width: 100%; height: auto; padding: 4px" src="@antiFakeResult.AntiFakeByData.ImgUrl" Alt="图片加载失败..." class="rounded-lg" />
                     </div>
 
-                    <MudStack Class="my-5" Spacing="1">
+                    <MudStack Class="my-5 mx-0" Spacing="1">
 
-                        <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                        <MudStack Class="mx-0" Row="true" Spacing="1" Justify="Justify.FlexStart">
                             <MudText Typo="Typo.button" Align="Align.Right" Style="word-wrap: break-word; width: 100px;">标签序号:</MudText>
                             <MudText Typo="Typo.button" Style="word-wrap: break-word;">@antiFakeResult.AntiFakeByData.LabelNum</MudText>
                         </MudStack>
@@ -179,45 +56,62 @@
                 {
                     <AntiFakeSkeleton></AntiFakeSkeleton>
                 }
-            <MudText Class="ml-3" Align="Align.Left" Style="color: gray;" Typo="Typo.caption"> 如有疑问，请拨打电话<span style="color:rgba(238, 164, 128, 0.8);">400-6800-315</span>详细咨询</MudText>
+                
             </MudStack>
-        </MudPaper>
+            <MudText Class="footertext" Align="Align.Left" Typo="Typo.caption"> 如有疑问，请拨打电话<span class="footertext">400-6800-315</span>详细咨询</MudText>
+        </MudContainer>
+    </MudCard>
 
 
-    <MudPaper Elevation="0" Style="background-color: transparent;color: #e2e1e4">
-        <SurveyPrompt Title="溯源信息" />
-        @if (traceabilityResult is not null)
+<MudCard Elevation="0" Style="background-color: transparent;color: #FFFFFE;margin-top: 50px">
+       
+    
+    <MudCardHeader><MudText Typo="Typo.h5">溯源信息 </MudText></MudCardHeader>
+    @if (traceabilityResult is not null)
         {
             <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelineAlign="TimelineAlign.Start"
                          TimelinePosition="TimelinePosition.Right">
                 <MudStack Justify="Justify.FlexStart" Class="ml-3">
-                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" Style="Width:100%;">
-                        <ItemContent>
-                            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
-                            </MudStack>
-                        </ItemContent>
-                    </MudTimelineItem>
-                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
-                        <ItemContent>
-                            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
-                            </MudStack>
-                        </ItemContent>
-                        @*  <ItemOpposite>
-                            <MudText Color="Color.Warning">14:08</MudText>
-                        </ItemOpposite>*@
-                    </MudTimelineItem>
-                    <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
-                        <ItemContent>
-                            <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
-                            </MudStack>
-                        </ItemContent>
-                    </MudTimelineItem>
+                    
+                    
+                    @if (string.IsNullOrEmpty(traceabilityResult.OrderNumbels))
+                    {
+                        <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" Style="Width: 100%;">
+                            <ItemContent>
+                                <MudAlert Icon="@Icons.Material.Filled.Warning" Style="background-color: #eea47f">
+                                    <MudText  Typo="Typo.button" Align="Align.Left"  Style="word-wrap: break-word;color: #000000;font-weight: 800">标签还未出库</MudText>
+                                </MudAlert>
+                                
+                            </ItemContent>
+                        </MudTimelineItem>
+                    }
+                    else
+                    {
+                        <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" Style="Width: 100%;">
+                            <ItemContent>
+                                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                                    <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
+                                    <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OrderNumbels</MudText>
+                                </MudStack>
+                            </ItemContent>
+                        </MudTimelineItem>
+                        <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                            <ItemContent>
+                                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
+                                    <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
+                                    <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.OutTime</MudText>
+                                </MudStack>
+                            </ItemContent>
+                        </MudTimelineItem>
+                        <MudTimelineItem Color="Color.Success" Variant="Variant.Filled" Size="Size.Small">
+                            <ItemContent>
+                                <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                                    <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
+                                    <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@traceabilityResult.AgentName</MudText>
+                                </MudStack>
+                            </ItemContent>
+                        </MudTimelineItem>
+                    }
                 </MudStack>
             </MudTimeline>
         }
@@ -225,55 +119,130 @@
         {
             <TraceabilitySkeleton></TraceabilitySkeleton>
         }
-    </MudPaper>
-
-@*    <MudPaper>
-        
-
-        <MudStack Row="false" Spacing="0" Justify="Justify.FlexStart" Class="mt-18">
-            <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">Copyright © chn315.top 2023</MudText>
-            <MudText Style="Color: grey; font-weight: 100" Typo="Typo.caption">琼ICP备2020003165号 公安备案: 46010502000375号</MudText>
-        </MudStack>
-    </MudPaper>*@
-
-    <SurveyPrompt Title="联系我们" />
-    <footer >
-       
-        <h4 style="margin-top: 25px;">全省销售热线</h4>
-        <ul style="list-style: none; margin: 0; padding: 0;">
-            <li style="margin-bottom: 10px;">
-                <strong style="font-weight: bold;">海口总仓：</strong>
-                海口市秀英区美安大道8号
-                <br>
-                联系电话：<span>65305288</span>
-            </li>
-        </ul>
-        <h4 style="margin-top: 20px;">区域销售热线</h4>
-        <ul style="list-style: none; margin: 0; padding: 0;">
-            <li style="margin-bottom: 10px;">
-                <strong style="font-weight: bold;">区域范围：</strong>
-                定安、文昌、琼海、万宁
-                <br>
-                联系电话(微信)：<span> 18308989062</span>
-            </li>
-            <li style="margin-bottom: 10px;">
-                <strong style="font-weight: bold;">区域范围：</strong>
-                临高、儋州、昌江、白沙、东方
-                <br>
-                联系电话(微信)：<span>18308989063</span>
-            </li>
-            <li style="margin-bottom: 10px;">
-                <strong style="font-weight: bold;">区域范围：</strong>
-                三亚、陵水、保亭、五指山、乐东
-                <br>
-                联系电话(微信)：<span >18308989065</span>
-            </li>
-        </ul>
-        <p style="color: gray; margin-top: 20px;">&copy; 2023 chn315.top. 版权所有.</p>
-    </footer>
+    </MudCard>
     
 
-}
+<MudButton OnClick="@OpenDialog"> 打开红包对话框</MudButton>
+
+<MudButton OnClick="@OpenLuckyDrawDialog"> 打开抽奖对话框</MudButton>
+
+<footer >
+    
+    <MudCard Elevation="0" Style=" color: #fffffe;background-color: transparent;border-radius:15px ">
+        <MudCardHeader><h2>联系我们</h2></MudCardHeader>
+      
+        <img class="weixinimg" src="img/weixinlogo2.png" />
+        <MudContainer>
+            <MudText Class="my-3" Typo="Typo.h6" Style="margin-top: 25px;">全省销售热线</MudText>
+            
+            <div class="container">
+                <div class="box">
+                    <span class="title">海口总仓</span>
+                    <div>
+                        <p>地址：海口市秀英区美安大道8号</p>
+                        <strong>电话(微信)：6530 5288</strong>
+                        @*<span>VALID</span> <span>01/28</span>*@
+                    </div>
+                </div>
+            </div>
+            
+
+            @*            <div class="businesscard">
+                <MudStack Spacing="3" Row="true">
+                    <MudStack Spacing="0" >
+                        <MudImage ObjectFit="ObjectFit.Contain" Src="/img/logo.png" Style="Width:64px"></MudImage>
+                        <MudText Typo="Typo.button" Style="font-weight: 800;" Align="Align.Center">海口总仓</MudText>
+                    </MudStack>
+                    <MudStack Style="align-self: center;" Spacing="1"  >
+                        <MudText Typo="Typo.button">地址：海口市秀英区美安大道8号</MudText>
+                        <MudText Typo="Typo.button">电话(微信)：65305288</MudText>
+                    </MudStack>
+                </MudStack>
+            </div>*@
+
+            <MudText Class="my-3" Typo="Typo.h6" Style="margin-top: 25px;">区域销售热线</MudText>
+            
+            <MudStack Spacing="2">
+                
+                <div class="container">
+                    <div class="box">
+                        <span class="title">区域范围</span>
+                        <div>
+                            <p>地址：三亚、陵水、保亭、五指山、乐东</p>
+                            <strong>电话(微信)：183 0898 9065</strong>
+                            @*<span>VALID</span> <span>01/28</span>*@
+                        </div>
+                    </div>
+                </div>
+
+           @*     <div class="businesscard">
+                    <MudStack Spacing="3" Row="true" AlignItems="AlignItems.Center">
+                        <MudStack Spacing="0">
+                            <MudImage ObjectFit="ObjectFit.Contain" Src="/img/logo.png" Style="Width: 64px"></MudImage>
+                            <MudText Typo="Typo.button" Style="font-weight: 800;" Align="Align.Center">区域范围</MudText>
+                        </MudStack>
+                        <MudStack Style="align-self: center;" Spacing="1">
+                            <MudText Typo="Typo.button">地址：三亚、陵水、保亭、五指山、乐东</MudText>
+                            <MudText Typo="Typo.button">电话(微信)：18308989065</MudText>
+                        </MudStack>
+                    </MudStack>
+                </div>*@
+                
+                
+                <div class="container">
+                    <div class="box">
+                        <span class="title">区域范围</span>
+                        <div>
+                            <p>地址：临高、儋州、昌江、白沙、东方</p>
+                            <strong>电话(微信)：183 0898 9063</strong>
+                            @*<span>VALID</span> <span>01/28</span>*@
+                        </div>
+                    </div>
+                </div>
+           @*              <div class="businesscard">
+                    <MudStack Spacing="3" Row="true" AlignItems="AlignItems.Center">
+                        <MudStack Spacing="0">
+                            <MudImage ObjectFit="ObjectFit.Contain" Src="/img/logo.png" Style="Width: 64px"></MudImage>
+                            <MudText Typo="Typo.button" Style="font-weight: 800;" Align="Align.Center">区域范围</MudText>
+                        </MudStack>
+                        <MudStack Style="align-self: center;" Spacing="1">
+                            <MudText Typo="Typo.button">地址：临高、儋州、昌江、白沙、东方</MudText>
+                            <MudText Typo="Typo.button">电话(微信)：18308989063</MudText>
+                        </MudStack>
+                    </MudStack>
+                </div>*@
+           
+           
+           <div class="container">
+               <div class="box">
+                   <span class="title">区域范围</span>
+                   <div>
+                        <p>地址：定安、文昌、琼海、万宁</p>
+                        <strong>电话(微信)：183 0898 9062</strong>
+                       @*<span>VALID</span> <span>01/28</span>*@
+                   </div>
+               </div>
+           </div>
+          @* <div class="businesscard">
+                    <MudStack Spacing="3" Row="true">
+                        <MudStack Spacing="0">
+                            <MudImage ObjectFit="ObjectFit.Contain" Src="/img/logo.png" Style="Width: 64px"></MudImage>
+                            <MudText Typo="Typo.button" Style="font-weight: 800;" Align="Align.Center">区域范围</MudText>
+                        </MudStack>
+                        <MudStack Style="align-self: center;" Spacing="1">
+                            <MudText Typo="Typo.button">地址：定安、文昌、琼海、万宁</MudText>
+                            <MudText Typo="Typo.button">电话(微信)：18308989062</MudText>
+                        </MudStack>
+                    </MudStack>
+                </div>*@
+            </MudStack>
+        </MudContainer>
+        <p style="color: gray; margin-top: 20px;justify-content: center">&copy; 2023 chn315.top. 版权所有.</p>
+    </MudCard>
+</footer>
+    
+
+
 
 
 <!-- 遮罩层 -->
@@ -286,12 +255,6 @@
                    
                 </MudIconButton>
             </div>
-            @*<div class="modal-body">
-                @if (redStatusResult is not null)
-                {
-                    <div> @redStatusResult.StuteCode</div>
-                }
-            </div>*@
             <div class="modal-footer justify-content-center mt-auto" style="border: 0px;">
                 @*<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>*@
                 
@@ -321,7 +284,14 @@
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "state")]
-    public string? QRCode { get; set; }
+    public string QRCode { get; set; }
+
+
+    public string OpenId { set; get; }
+
+
+    [Inject]
+    protected DataStateContainer Container { set; get; }
 
 
     private AntiFakeResult antiFakeResult;
@@ -356,47 +326,38 @@
     {
         PropertyNameCaseInsensitive = true
     };
-    public string? OpenId { set; get; }
 
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnParametersSetAsync()
     {
 
-        //if (string.IsNullOrEmpty(Code))
-        //{
-        //    var p = await RegexMatch(_navigationManager.Uri);
-        //    var getoauthurl = $"OAuth2Url?qrcode={p}";
-        //    HttpResponseMessage response = await _httpClient.GetAsync(getoauthurl);//请求返回微信授权访问地址
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        string content = await response.Content.ReadAsStringAsync();
+        if (!string.IsNullOrEmpty(QRCode))
+        {
+            await Container.SetCode(QRCode, "");
+        }
+        #if DEBUG
+            Id = Id ?? "000000000009";
+            QRCode = Id;
+            await Container.SetCode(QRCode, "");
+            // Container.SetCode(QRCode,OpenId);
+        #endif
+        
 
-        //        _navigationManager.NavigateTo(content);
-        //        return;
-        //    }
-        //    else
-        //    {
-
-        //    }
-        //}
 
     }
-
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-
-          //  QRCode = "143890836071";
-            OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
-            QRCode = "143890836071";
-            if (!string.IsNullOrEmpty(QRCode))
+            if (!string.IsNullOrEmpty(Container.Code))
             {
-
-                OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
-               // OpenId = await GetWeixinUserOpenID(Code);
+                OpenId = await GetWeixinUserOpenID(Code);
+                //OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
+              
                 antiFakeResult = await GetAntiFakeResultAsync(QRCode);
                 traceabilityResult = await GetTraceabilityResultAsync(QRCode);
-                lotteryActivity    = await GetLotteryActivityAsync();
+                var lotteryActivity    = await GetLotteryActivityAsync();
 
                 if (!string.IsNullOrEmpty(OpenId))
                 {
@@ -407,6 +368,10 @@
                         await OpenDialog();
                     }
                 }
+
+                await Container.SetCode(QRCode, OpenId);
+                await Container.SetActivity(lotteryActivity);
+
                 StateHasChanged();
             }
         }
@@ -501,28 +466,17 @@
     {
         try
         {
-            openid = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
-            qrcode = "143890836071";
+            //openid = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
+            //qrcode = "143890836071";
             var url = $"RedPacket/QRCode?openid={openid}&qrcode={qrcode}";
-
-            //parameters.Add("Msg", $"请求url：{url}");
-            //await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
-            //发起post 请求
-            
-
 
             var response =  await _httpClient.PostAsync(url, null);// _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var stream = await response.Content.ReadAsStringAsync();
-    //parameters.Add("Msg", $"请求url成功：{stream}");
-                //await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
                 return JsonSerializer.Deserialize<RedPacketResult>(stream, options);
             }
-
             _logger.LogError($"二维码领取现金红包失败：{response.StatusCode}");
-
-
         }
         catch (Exception e)
         {
@@ -544,10 +498,7 @@
                 var stream = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<RedPacketResult>(stream, options);
             }
-
             _logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
-
-
         }
         catch (Exception e)
         {
@@ -556,7 +507,7 @@
         return null;
     }
 
-    private async Task<LotteryActivity> GetLotteryActivityAsync()
+    private async Task<ActivityResult> GetLotteryActivityAsync()
     {
         try
         {
@@ -564,13 +515,12 @@
             var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                var stream = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<LotteryActivity>(stream, options);
+                var stream = await response.Content.ReadFromJsonAsync<ActivityResult>();
+               // var result= JsonSerializer.Deserialize<LotteryActivity>(stream, options);
+
+                return stream;
             }
-
             _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
-
-
         }
         catch (Exception e)
         {
@@ -579,51 +529,13 @@
         return null;
     }
 
-    private async Task<LotteryResult> LuckyDraw(string openid, string qrcode, string prizennumber)
+    private async Task OpenLuckyDrawDialog()
     {
-        try
-        {
-            var url = $"Lottery?qrcode={qrcode}&openid={openid}&prizennumber={prizennumber}";
-            var response = await _httpClient.GetAsync(url);
-            if (response.IsSuccessStatusCode)
-            {
-                var stream = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<LotteryResult>(stream, options);
-            }
-
-            _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
-
-
-        }
-        catch (Exception e)
-        {
-            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
-        }
-        return null;
+        _navigationManager.NavigateTo("/prizesshow");
     }
-
-
-
-    //private async Task<string> RegexMatch(string args)
-    //{
-    //// string input = "http://www.chn315.top/236810001404";
-    //    string pattern = @"/(\d{12})$"; // 匹配网址末尾12位数字
-    //    Match match = Regex.Match(args, pattern);
-    //    if (match.Success)
-    //    {
-    //        return match.Groups[1].Value;
-    ////Console.WriteLine(result); // 输出：236810001404
-    //    }
-    //    return DateTime.Now.ToString("yyyyMMddhhmmss");
-    //}
-
-
     private async Task OpenDialog()
     {
-
         await JsRuntime.InvokeVoidAsync("openDialog");
-      //  _dialogIsOpen = true;
-      //  StateHasChanged();
     }
 
     private async Task CloseDialog()
@@ -636,8 +548,7 @@
     private async Task SubmitForm()
     {
         // 点击领取红包
-
-        //var parameters = new DialogParameters();
+    //var parameters = new DialogParameters();
         parameters.Add("Msg", $"OpenId：{OpenId}   QRCode：{QRCode}");
         try
         {
@@ -656,17 +567,6 @@
                 parameters.Add("Msg", $"redPacketResult：{redPacketResult.Message}");
                 await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
             }
-            //var resulDt = await  _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
-            //var result = await resulDt.Result;
-            //if (!result.Canceled)
-            //{
-                
-
-
-            //}
-
-            
-           // _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
         }
         catch (Exception e)
         {

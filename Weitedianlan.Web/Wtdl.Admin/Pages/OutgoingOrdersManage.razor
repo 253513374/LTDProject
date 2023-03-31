@@ -38,11 +38,15 @@ else
                   Filter="new Func<GroupByWLabelStorage, bool>(FilterFunc1)"
                   Dense="true" Striped="true" Hover="true" Bordered="true">
             <ToolBarContent>
-                <MudText Typo="Typo.h5">扫码出库数据</MudText>
+                
+                <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
+                <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
                 <MudSpacer></MudSpacer>
                 <MudSpacer></MudSpacer>
                 <MudSpacer></MudSpacer>
-                <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                <MudSpacer></MudSpacer>
+                <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
             </ToolBarContent>
             <HeaderContent>
 
@@ -100,25 +104,22 @@ else
         
     }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            NewMethod();
+           await LoadData();
         }
-        return base.OnAfterRenderAsync(firstRender);
     }
 
- 
-
-    private async Task NewMethod()
+    private async Task LoadData()
     {
         labelStorages = await _labelStorageRepository.GetLatestGroupByTimeRecordsAsync();
 
-        if (labelStorages is not null)
+        if (labelStorages is not null && labelStorages.Count>1)
         {
             _dateRange.Start = labelStorages.Min(s => s.Time);
-            _dateRange.Start = labelStorages.Max(s => s.Time);
+            _dateRange.End = labelStorages.Max(s => s.Time);
         }
         StateHasChanged();
     }
@@ -168,4 +169,34 @@ else
     {
         _table.NavigateTo(i - 1);
     }
+
+
+
+    private async Task ExportToExcel()
+    {
+        try
+        {
+            var fielter = _table.FilteredItems;
+            if (fielter.Count()!=0)
+            {
+                var excelData = ExportService.ExportToExcel(fielter);
+                var browserBase64 = Convert.ToBase64String(excelData);
+                var href = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{browserBase64}";
+                await _jsRuntime.InvokeVoidAsync("downloadFile", href, $"{nameof(GroupByWLabelStorage).ToLower()}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx");
+
+                _snackBar.Add(string.IsNullOrWhiteSpace(searchString)
+                    ? "出库记录导出"
+                    : "出库记录过滤导出", Severity.Success);
+            }
+            else
+            {
+                _snackBar.Add($"出库记录数据为null", Severity.Warning);
+            }
+        }
+        catch (Exception e)
+        {
+            _snackBar.Add(e.Message, Severity.Error);
+        }
+    }
+
 }

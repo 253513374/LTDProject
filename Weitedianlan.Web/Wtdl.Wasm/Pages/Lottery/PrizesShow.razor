@@ -22,8 +22,8 @@
 
         @if (!string.IsNullOrEmpty(Container.Activity.ActivityImage))
         {
-            var imgpath = $"http://admin.rewt.cn/{Container.Activity.ActivityImage.Replace('\\', '/')}";
-            <MudImage Src="@imgpath" Style="max-width: 90vw;border-radius: 5px;" ObjectFit="ObjectFit.Contain"></MudImage>
+
+            <MudImage Src="@Container.Activity.ActivityImage.GetImageUrl()" Style="max-width: 90vw;border-radius: 5px;" ObjectFit="ObjectFit.Contain"></MudImage>
         }
 
 

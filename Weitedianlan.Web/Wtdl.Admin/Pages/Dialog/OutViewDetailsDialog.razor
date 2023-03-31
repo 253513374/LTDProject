@@ -22,7 +22,14 @@
                           SortLabel="Sort By" Striped="true" Hover="true" Bordered="true">
 
                     <ToolBarContent>
-                        <MudText Typo="Typo.h6">总数量 @wlabelStorage.Count() </MudText>
+                        
+                        <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
+                        <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
+                        
+                        <MudSpacer></MudSpacer>
+                        <MudSpacer></MudSpacer>
+                        <MudSpacer></MudSpacer>
+                        <MudText Typo="Typo.button">总数量: @wlabelStorage.Count() </MudText>
 
                     </ToolBarContent>
                     <HeaderContent>
@@ -57,7 +64,7 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
 
-   
+
 
     [Parameter]
     public string OrderNumbels { get; set; } = "";
@@ -71,6 +78,50 @@
             wlabelStorage = await _labelStorageRepository.FindAsync(f => f.OrderNumbels == OrderNumbels);
         }
         return;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (OrderNumbels is not "")
+            {
+                await LoadData();
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task LoadData()
+    {
+        if (OrderNumbels is not "")
+        {
+            wlabelStorage = await _labelStorageRepository.FindAsync(f => f.OrderNumbels == OrderNumbels);
+        }
+    }
+    private async Task ExportToExcel()
+    {
+        try
+        {
+         
+            if (wlabelStorage.Count() != 0)
+            {
+                var excelData = ExportService.ExportToExcel(wlabelStorage);
+                var browserBase64 = Convert.ToBase64String(excelData);
+                var href = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{browserBase64}";
+                await _jsRuntime.InvokeVoidAsync("downloadFile", href, $"{nameof(W_LabelStorage).ToLower()}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx");
+
+              
+            }
+            else
+            {
+                _snackBar.Add($"出库记录数据为null", Severity.Warning);
+            }
+        }
+        catch (Exception e)
+        {
+            _snackBar.Add(e.Message, Severity.Error);
+        }
     }
 
 }

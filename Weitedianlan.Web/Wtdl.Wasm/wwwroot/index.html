@@ -8,7 +8,7 @@
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/png" href="img/logo.png" />
     <link href="Wtdl.Wasm.styles.css" rel="stylesheet">
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
 
@@ -154,7 +154,7 @@
                     const urlqrcode = match[0];
                     console.log('match:', urlqrcode);
 
-                    const oauthUrl = "http://www.rewt.cn/OAuth2Url?qrcode=" + urlqrcode;
+                    const oauthUrl = "https://www.rewt.cn/OAuth2Url?qrcode=" + urlqrcode;
 
                     console.log('oauthUrl:', oauthUrl);
                     const response = await fetch(oauthUrl, { method: 'GET', mode: 'cors' });

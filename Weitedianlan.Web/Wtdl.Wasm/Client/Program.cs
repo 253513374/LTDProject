@@ -15,7 +15,7 @@ namespace Wtdl.Wasm
             builder.Services.AddScoped(sp => new HttpClient
             {
                 //builder.HostEnvironment.BaseAddress
-                BaseAddress = new Uri("http://www.rewt.cn/")
+                BaseAddress = new Uri("https://www.rewt.cn/")
             });
 
             builder.Services.AddSingleton<DataStateContainer>();

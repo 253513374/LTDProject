@@ -12,12 +12,21 @@
 	  <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
 
+	<PropertyGroup>
+
+		<PublishIISAssets>true</PublishIISAssets>
+		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+	</PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
     <PackageReference Include="MudBlazor" Version="6.2.0" />
   </ItemGroup>
 
+	<Target Name="CopyWebConfig" AfterTargets="Publish">
+		<Copy SourceFiles="web.config" DestinationFolder="$(PublishDir)" />
+	</Target>
 
 
   <ItemGroup>

@@ -115,7 +115,9 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.LotteryRecords.AsNoTracking().Where(x => x.CreateTime > DateTime.Now.AddDays(-90)).ToListAsync();
+                //查询最大时间
+                var maxTime = await context.LotteryRecords.AsNoTracking().MaxAsync(x => x.CreateTime);
+                return await context.LotteryRecords.AsNoTracking().Where(x => x.CreateTime > maxTime.AddDays(-90)).ToListAsync();
             }
         }
 

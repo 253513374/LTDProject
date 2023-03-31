@@ -24,7 +24,7 @@ namespace Wtdl.Controller.Controllers
         {
             var UrlBase =
                 OAuthApi.GetAuthorizeUrl(appId,
-                    "http://www.chn315.top/",
+                    "https://www.chn315.top/",
                     qrcode, OAuthScope.snsapi_base);//snsapi_base方式回调地址
 
             return Ok(UrlBase);

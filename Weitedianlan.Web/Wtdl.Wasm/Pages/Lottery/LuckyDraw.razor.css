@@ -35,7 +35,7 @@
     height: 100px;
     /* background-color: #FF9800;*/
     background-color: rgba(0, 77, 255, 0.3);
-    border: 0px solid rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(0, 77, 255, 0.9);
 }
 
     .box-face:nth-child(1) {

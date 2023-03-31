@@ -5,38 +5,34 @@
         <MudContainer Style="Width: 70vw; height: 100vw;">
             <MudStack Spacing="3" Justify="Justify.Center"  Style="width:100%;height: 100%;">
                 
-                <div>
-                    <div class="box-container">
-                        <div class="box">
-                            <div class="box-face">1</div>
-                            <div class="box-face">2</div>
-                            <div class="box-face">3</div>
-                            <div class="box-face">4</div>
-                            <div class="box-face top @(IsOpenBox? "open-lid" : "")">5</div>
-                            <div class="box-face">6</div>
-                        </div>
+                <div class="box-container">
+                    <div class="box">
+                        <div class="box-face"></div>
+                        <div class="box-face"></div>
+                        <div class="box-face"></div>
+                        <div class="box-face"></div>
+                        <div class="box-face top @(IsOpenBox? "open-lid" : "")">5</div>
+                        <div class="box-face"></div>
                     </div>
                 </div>
                 <div>
                 @if (lotteryResult is not null)
                 {
+                        
                     if (lotteryResult.IsSuccess)
                     {
-                        
-
-                        <MudButton OnClick="@OpenBox">打开盒子</MudButton>
+                        OpenBox();
+                     
                     }
                     else
                     {
-                        <MudButton OnClick="@OpenBox">打开盒子</MudButton>
+                      
                         <MudText>很遗憾，您的选择的奖品未被抽中</MudText>
-                        
+                            OpenBox();
                     }
-                    
                 }
                 </div>
             </MudStack>
-
         </MudContainer>
     </DialogContent>
 </MudDialog>

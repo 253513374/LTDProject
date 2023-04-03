@@ -401,7 +401,7 @@
         try
         {
 
-            var response = await _httpClient.GetAsync($"ScanByQRCode/AntiFake?qrcode={qrcode}");
+            var response = await _httpClient.GetAsync($"AntiFake?qrcode={qrcode}");
             if (response.IsSuccessStatusCode)
             {
                 var stream = await response.Content.ReadAsStringAsync();
@@ -422,7 +422,7 @@
     {
         try
         {
-            var response = await _httpClient.GetAsync($"ScanByQRCode/Traceability?qrcode={qrcode}");
+            var response = await _httpClient.GetAsync($"Traceability?qrcode={qrcode}");
 
             if (response.IsSuccessStatusCode)
             {

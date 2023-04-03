@@ -12,15 +12,15 @@ using Wtdl.Repository;
 namespace Wtdl.Repository.Migrations
 {
     [DbContext(typeof(LotteryContext))]
-    [Migration("20230310165040_addDB")]
-    partial class addDB
+    [Migration("20230402061727_add-db")]
+    partial class adddb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -561,7 +561,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 3, 11, 0, 50, 40, 425, DateTimeKind.Local).AddTicks(6546));
+                        .HasDefaultValue(new DateTime(2023, 4, 2, 14, 17, 27, 911, DateTimeKind.Local).AddTicks(3387));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -578,6 +578,65 @@ namespace Wtdl.Repository.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("tUser", (string)null);
+                });
+
+            modelBuilder.Entity("Wtdl.Model.Entity.UserAwardInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AwardDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("AwardName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("DateReceived")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullAddress")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<bool>("IsShipped")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ProvinceOrState")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("WeChatOpenId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserAwardInfos", (string)null);
                 });
 
             modelBuilder.Entity("Wtdl.Model.Entity.VerificationCode", b =>
@@ -608,11 +667,19 @@ namespace Wtdl.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
                     b.HasIndex("QRCode")
                         .IsUnique()
                         .HasFilter("[QRCode] IS NOT NULL");
 
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("QRCode"), false);
+
                     b.ToTable("VerificationCodes");
+
+                    b.HasAnnotation("SqlServer:MemoryOptimizedSize", 1048576);
+
+                    SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
             modelBuilder.Entity("Wtdl.Model.Entity.W_LabelStorage", b =>

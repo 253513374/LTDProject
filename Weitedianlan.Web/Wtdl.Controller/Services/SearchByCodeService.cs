@@ -44,6 +44,7 @@ namespace Wtdl.Mvc.Services
             var ip = "13800000000";//电话？
             string url = $"{baseurl}?lang=cn&num={num}&code={code}&query_type=手机网络&username={username}&ip={ip}";
 
+            _logger.LogInformation($"防伪查询URL：{url}");
             var client = _clientFactory.CreateClient();
 
             try

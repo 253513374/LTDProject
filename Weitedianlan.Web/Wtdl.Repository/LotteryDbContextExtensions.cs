@@ -23,6 +23,7 @@ namespace Wtdl.Repository
             services.AddScoped<ActivityPrizeRepository>();
             services.AddScoped<EmailSender>();
             services.AddScoped<OutStorageRepository>();
+            services.AddScoped<UserAwardInfoRepository>();
 
             var assembly = new[] { Assembly.GetExecutingAssembly(), typeof(LotteryActivity).Assembly };
             services.AddMediatR(assembly);

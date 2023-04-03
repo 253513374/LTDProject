@@ -7,7 +7,7 @@ using Wtdl.Mvc.Services;
 namespace Wtdl.Mvc.Controllers.APIController
 {
     /// <summary>
-    /// 红包领取接口
+    /// 红包发放接口
     /// </summary>
     [Route("[controller]")]
     [ApiController]

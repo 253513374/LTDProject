@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,7 +11,7 @@ using Senparc.Weixin.TenPay;
 using Serilog;
 using System.Reflection;
 using System.Text;
-
+using Wtdl.Controller.Controllers.APIController;
 using Wtdl.Controller.Services;
 using Wtdl.Model.Entity;
 using Wtdl.Mvc.Services;
@@ -96,6 +97,14 @@ try
     // Add services to the container.
     builder.Services.AddControllersWithViews();
     builder.Services.AddControllers();
+
+    // builder.Services.AddAutoMapper(typeof());
+    builder.Services.AddScoped<RequestLoggingActionFilter>();
+    builder.Services.AddControllers(config =>
+    {
+        config.Filters.AddService<RequestLoggingActionFilter>();
+    });
+
     builder.Services.AddSignalR();
 
     builder.Services.AddHttpClient();

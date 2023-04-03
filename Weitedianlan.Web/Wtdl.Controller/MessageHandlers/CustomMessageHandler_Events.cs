@@ -22,10 +22,14 @@ namespace Wtdl.Mvc.MessageHandlers
     {
         private string GetWelcomeInfo()
         {
-            //获取Senparc.Weixin.MP.dll版本信息
-            var filePath = ServerUtility.ContentRootMapPath("bin/Debug/net7.0/Senparc.Weixin.MP.dll");//本地测试路径
-            //var filePath = ServerUtility.ContentRootMapPath("~/Senparc.Weixin.MP.dll");//发布路径
+            var filePath = ServerUtility.ContentRootMapPath("~/Senparc.Weixin.MP.dll");//发布路径
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(filePath);
+#if DEBUG
+            //获取Senparc.Weixin.MP.dll版本信息
+            filePath = ServerUtility.ContentRootMapPath("bin/Debug/net7.0/Senparc.Weixin.MP.dll");//本地测试路径
+#endif
+
+            //
 
             string version = fileVersionInfo == null
                 ? "-"

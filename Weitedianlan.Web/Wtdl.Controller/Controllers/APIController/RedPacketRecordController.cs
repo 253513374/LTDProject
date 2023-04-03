@@ -6,25 +6,25 @@ namespace Wtdl.Controller.Controllers.APIController
 {
     [Route("[controller]")]
     [ApiController]
-    public class UserItemsController : ControllerBase
+    public class RedPacketRecordController : ControllerBase
     {
         private readonly UserItemsService _userItemsService;
 
-        public UserItemsController(UserItemsService service)
+        public RedPacketRecordController(UserItemsService service)
         {
             _userItemsService = service;
         }
 
         /// <summary>
-        /// 返回用户抽奖记录与领取红包记录
+        /// 返回用户领取红包记录
         /// </summary>
         /// <param name="openid"></param>
         /// <returns></returns>
-        [HttpPost("GetUserItems")]
-        public async Task<UserItemsRecordResult> GetLotteryInfo(string openid)
+        [HttpPost("UserRedPackets")]
+        public async Task<UserRedPacketRecordResult> GetRedPacketRecord(string openid)
         {
             //var result
-            return await _userItemsService.GetUserLotteryinfo(openid);
+            return await _userItemsService.GetRedPacketRecord(openid);
         }
     }
 }

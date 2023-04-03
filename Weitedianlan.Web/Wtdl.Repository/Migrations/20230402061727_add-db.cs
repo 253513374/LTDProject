@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Wtdl.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class addDB : Migration
+    public partial class adddb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -227,11 +228,35 @@ namespace Wtdl.Repository.Migrations
                     PWD = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AgentID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Flag = table.Column<int>(type: "int", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 3, 11, 0, 50, 40, 425, DateTimeKind.Local).AddTicks(6546))
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValue: new DateTime(2023, 4, 2, 14, 17, 27, 911, DateTimeKind.Local).AddTicks(3387))
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tUser", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAwardInfos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WeChatOpenId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    AwardName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    AwardDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    DateReceived = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FullAddress = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ProvinceOrState = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    IsShipped = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAwardInfos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,8 +273,10 @@ namespace Wtdl.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VerificationCodes", x => x.Id);
-                });
+                    table.PrimaryKey("PK_VerificationCodes", x => x.Id)
+                        .Annotation("SqlServer:Clustered", false);
+                })
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.CreateTable(
                 name: "W_LabelStorage",
@@ -371,7 +398,8 @@ namespace Wtdl.Repository.Migrations
                 table: "VerificationCodes",
                 column: "QRCode",
                 unique: true,
-                filter: "[QRCode] IS NOT NULL");
+                filter: "[QRCode] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_W_LabelStorage_ID",
@@ -427,7 +455,11 @@ namespace Wtdl.Repository.Migrations
                 name: "tUser");
 
             migrationBuilder.DropTable(
-                name: "VerificationCodes");
+                name: "UserAwardInfos");
+
+            migrationBuilder.DropTable(
+                name: "VerificationCodes")
+                .Annotation("SqlServer:MemoryOptimized", true);
 
             migrationBuilder.DropTable(
                 name: "W_LabelStorage")

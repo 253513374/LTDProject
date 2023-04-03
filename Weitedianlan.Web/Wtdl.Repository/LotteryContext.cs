@@ -36,12 +36,7 @@ namespace Wtdl.Repository
 
             modelBuilder.ApplyConfiguration(new OutAnalysisConfig());
             modelBuilder.ApplyConfiguration(new UserConfig());
-            //modelBuilder.Entity<W_LabelStorage>()
-            //    .HasOne(p => p.Agent)
-            //    .WithMany(b => b.WLabelStorage)
-            //    .HasForeignKey(p => p.Dealers);
-
-            // modelBuilder.Entity<Agent>().HasNoKey();
+            modelBuilder.ApplyConfiguration(new UserAwardInfoConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -99,5 +94,6 @@ namespace Wtdl.Repository
         public DbSet<ScanRedPacket> ScanRedPackets { get; internal set; }
 
         public DbSet<ActivityPrize> ActivityPrizes { get; internal set; }
+        public DbSet<UserAwardInfo> UserAwardInfos { get; internal set; }
     }
 }

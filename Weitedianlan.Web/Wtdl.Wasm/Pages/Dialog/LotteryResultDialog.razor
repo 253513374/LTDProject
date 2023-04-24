@@ -1,0 +1,136 @@
+﻿@inherits ComponentBase
+
+<style>
+
+    .dialog {
+        border-radius: 25px;
+    }
+
+
+
+    .mudcontainer {
+        background-image: url('imgs/duihuakuang.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center bottom;
+        padding: 0px !important;
+        margin: 0px !important;
+        width: 100%;
+    }
+
+
+    .flex-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: -15%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .centered-text {
+        color: red;
+        font-weight: 900;
+        font-size: 2em;
+        z-index: 1;
+    }
+
+
+    .btn-dialog-radpack {
+        border-radius: 100px;
+        width: 55%;
+        padding: 10px;
+        height: 40px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        opacity: 0.860;
+        letter-spacing: .1em;
+        transition: transform 0.1s ease-in-out;
+        background-image: -moz-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        background-image: -webkit-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        background-image: -ms-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        box-shadow: 0px 5px 0px 0px rgba(20, 71, 172, 0.004);
+        z-index: 89;
+        color: white;
+    }
+
+    .right-button {
+        position: absolute;
+        right: 0;
+       
+        width: 15px;
+        height: 15px;
+        top: 15px;
+        border: 2px #579bf7 solid;
+    }
+
+</style>
+
+<MudDialog Class="dialog">
+    <DialogContent>
+        <div Class="image-container">
+            <img class="centered-image" src="imgs/tou2.png" style="width: 80%;" />
+            <MudIconButton OnClick="Cancel" Icon="@Icons.Material.Outlined.Close" Size="Size.Medium" Color="Color.Info" Class="right-button"></MudIconButton>
+        </div>
+        <MudContainer Class="mudcontainer" Style="max-height: 80vh; width: 100%; overflow-y: scroll">
+            <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="2" Style="overflow: hidden; ">
+
+                @if (LotteryResult.IsSuccess)
+                {
+                    var imgpath = $"http://admin.rewt.cn/{LotteryResult.PrizeImage.Replace('\\', '/')}";
+                    <img class="mt-5" src="@imgpath" style="width: 80%; height: auto" />
+
+                    <MudStack Class="my-8" Justify="Justify.Center" Spacing="2">
+                        <MudText Typo="Typo.h5" Align="Align.Center" Style="letter-spacing: .3em"> <strong>@LotteryResult.Message</strong></MudText>
+                        <MudText Typo="Typo.h6" Align="Align.Center" Style="letter-spacing: .3em"> 奖品： @LotteryResult.PrizeName</MudText>
+                    </MudStack>
+
+                    <MudButton Class="btn-dialog-radpack" OnClick="CollectPrize">领取奖品</MudButton>
+                }
+                else
+                {
+                    <MudImage ObjectFit="ObjectFit.Contain" Class="mt-5" Src="imgs/yihan.png" Style="width: 40%; height: auto;justify-content: center" />
+                    <MudStack Class="my-5" Justify="Justify.Center"  AlignItems="AlignItems.Center" Spacing="2">
+                        <MudText Typo="Typo.h6" Align="Align.Center" Style="letter-spacing: .3em"> <strong>@LotteryResult.Message</strong></MudText>
+                        <MudText Typo="Typo.h6" Align="Align.Center" Style="letter-spacing: .3em"> <strong>请继续努力！</strong></MudText>
+                        <MudButton Class="my-5 btn-dialog-radpack" OnClick="NavHome">返回首页</MudButton>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+
+
+    [CascadingParameter] public MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public LotteryResult LotteryResult { get; set; }
+
+
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+
+    private async Task CollectPrize()
+    {
+        _navigationManager.NavigateTo("/lottery/collect");
+    }
+
+    private async Task NavHome()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+}

@@ -558,7 +558,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 2, 14, 17, 27, 911, DateTimeKind.Local).AddTicks(3387));
+                        .HasDefaultValue(new DateTime(2023, 4, 24, 22, 59, 34, 40, DateTimeKind.Local).AddTicks(2724));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -584,6 +584,15 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ActivityNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Area")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AwardDescription")
                         .HasMaxLength(500)
@@ -615,9 +624,11 @@ namespace Wtdl.Repository.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<string>("PrizeNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PrizeType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProvinceOrState")
                         .HasMaxLength(50)

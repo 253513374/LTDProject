@@ -55,24 +55,6 @@ namespace Weitedianlan.SqlServer.Service
             }
         }
 
-        public ResponseModel GetUser()
-        {
-            using (var context = new WTDLContext())
-            {
-                var user = context.Users.AsNoTracking().ToList();
-
-                ResponseModel responseModel = new ResponseModel();
-
-                responseModel.code = 200;
-                responseModel.result = "用户账户获取成功";
-                responseModel.data = new List<User>();
-
-                responseModel.data = user;
-
-                return responseModel;
-            }
-        }
-
         /// <summary>
         /// 添加数据
         /// </summary>
@@ -80,7 +62,6 @@ namespace Weitedianlan.SqlServer.Service
         /// <returns></returns>
         public async Task<tLabelsxModel> AddtLabelX(AddtLabelx addtLabelx)
         {
-            //tLabelsxModel tLabelsxModel = new tLabelsxModel();
             var tlabelx = new W_LabelStorage()
             {
                 QRCode = addtLabelx.QRCode,
@@ -100,9 +81,9 @@ namespace Weitedianlan.SqlServer.Service
                     try
                     {
                         hubConnection = hubConnection.TryInitialize();
-                        hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
+                        _ = hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
                         //var result = await
-                        hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
+                        _ = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
 
                         //if (result.Successed)
                         //{
@@ -142,7 +123,6 @@ namespace Weitedianlan.SqlServer.Service
                 {
                     return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
                 }
-
                 return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
             }
         }

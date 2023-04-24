@@ -1,0 +1,113 @@
+﻿
+<style>
+    .card {
+        background-color: transparent;
+        background-image: url(imgs/banner.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+    /*    min-height: 180px;*/
+        justify-content: center;
+        display: flex;
+        border-radius: 0;
+        border: 0px solid #0087fe;
+        padding-bottom: 41%; /* 根据纵横比设置容器高度（例如，16:9的纵横比为56.25%） */
+        position: relative;
+    }
+/*    .card h2 {
+        position: relative;
+        top: 40px;
+        font-weight: 900;
+        font-size: 1.5rem;
+        color: #0087fe;
+        justify-content: center;
+        display: flex;
+        opacity: 0.860;
+    }*/
+
+    .card::after {
+        content: "福利大派送";
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        opacity: 0.860;
+        font-size: 2rem; 
+        font-weight: bold;
+        color: #0087fe;
+        letter-spacing: .1em;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+    }
+
+    .btn-left, .btn-right {
+        border-radius: 50px;
+        width: 35%; /* 设置按钮宽度为父容器宽度的四分之一 */
+        height: auto; /* 保持按钮高度与宽度成比例，例如 16:9 的纵横比， 可以根据需要调整这个比例*/
+        font-weight: 800;
+        font-size: 1.1rem;
+        opacity: 0.860;
+        white-space: nowrap;
+        letter-spacing: .1em;
+        transition: transform 0.1s ease-in-out;
+    }
+
+
+       
+
+    .btn-left {
+        background-image: -moz-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        background-image: -webkit-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        background-image: -ms-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        box-shadow: 0px 5px 0px 0px rgba(20, 71, 172, 0.004);
+
+        z-index: 89;
+        color:#9b3646;
+    }
+        .btn-left:active {
+            transform: scale(0.9);
+    }
+
+    .btn-right {
+        background-image: -moz-linear-gradient( -92deg, rgb(253,245,240) 0%, rgb(255,242,196) 100%);
+        background-image: -webkit-linear-gradient( -92deg, rgb(253,245,240) 0%, rgb(255,242,196) 100%);
+        background-image: -ms-linear-gradient( -92deg, rgb(253,245,240) 0%, rgb(255,242,196) 100%);
+        box-shadow: 0px 5px 0px 0px rgba(20, 71, 172, 0.004);
+        z-index: 90;
+        color :#da2f17;
+       
+    }
+        /* 添加这个伪类以实现点击动画 */
+        .btn-right:active {
+        transform: scale(0.9);
+    }
+
+    .stack {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        
+    }
+
+</style>
+<MudPaper Elevation="0" Class="card my-3 mb-2">
+    <MudStack Class=" px-2 stack" Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End">
+        <MudButton OnClick="@OpenRedPackedDialog" Class="btn-left">现金红包</MudButton>
+        <MudButton OnClick="@OpenLotteryDialog" Class="btn-right">幸运抽奖</MudButton>
+    </MudStack>
+
+</MudPaper>
+
+@code {
+
+
+
+    private async Task OpenRedPackedDialog()
+    {
+        _navigationManager.NavigateTo("/redpacked");
+    }
+
+    private async Task OpenLotteryDialog()
+    {
+        _navigationManager.NavigateTo("/lottery");
+    }
+}

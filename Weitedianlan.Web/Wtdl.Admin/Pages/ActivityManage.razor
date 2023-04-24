@@ -1,4 +1,6 @@
 ﻿@page "/activitymanage"
+@using Senparc.CO2NET.Extensions
+
 
 @attribute [Authorize(Policy = Permissions.Lotterys.LotteryActivityView)]
 
@@ -139,6 +141,8 @@ else
     private List<ActivityPrize> ActivityPrizes;
 
 
+    [Inject] private IRedisCache CacheService { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         //Participants = await _agentRepository.GetParticipantsAsync();
@@ -146,14 +150,16 @@ else
         //  return base.OnInitializedAsync();
     }
 
+
+    /// <summary>
+    /// 添加新建活动- 打开新建活动对话框
+    /// </summary>
+    /// <returns></returns>
     protected async Task OnAddActivity()
     {
         // AddModal = true;
-        var parameters = new DialogParameters();
+        var parameters = new DialogParameters();parameters.Add("ContentTitle", "建立新活动");
 
-        // parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
-        parameters.Add("ContentTitle", "建立新活动");
-        //parameters.Add("Color", Color.Error);
         var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
         var resultdialog = await DialogService.ShowAsync<AddActivityDialog>("Confirm", parameters, options);
         var result = await resultdialog.Result;
@@ -162,7 +168,7 @@ else
         {
             Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
         }
-        // _selectedPrize = new Prize();
+
     }
 
     private async Task ShowBtnPress(LotteryActivity selectedActivity)
@@ -172,7 +178,11 @@ else
         selectedActivity.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(selectedActivity.Id);
     }
 
-
+    /// <summary>
+    /// 编辑活动奖品
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     private async Task OnEditPrize(ActivityPrize value)
     {
         var parameters = new DialogParameters() { ["UpActivityPrize"] = value };
@@ -185,31 +195,40 @@ else
         {
             var resultPrize = result.Data as ActivityPrize;//需要更新的参加活动的奖品
 
-            var up = Activities.FirstOrDefault(x => x.Id == value.LotteryActivityId); //.FirstOrDefault(x => x.Id == value.Id).Name = resultPrize.Name;
+            var activitylottery = Activities.FirstOrDefault(x => x.Id == value.LotteryActivityId); //.FirstOrDefault(x => x.Id == value.Id).Name = resultPrize.Name;
 
-            var upprize = up.Prizes.FirstOrDefault(f => f.Id == value.Id);//.Name = resultPrize.Name;
+            var upprize = activitylottery.Prizes.FirstOrDefault(f => f.Id == value.Id);//.Name = resultPrize.Name;
 
             upprize = resultPrize;
 
-            var insertresult = await LotteryActivityRepository.UpdateAsync(up);
+            var insertresult = await LotteryActivityRepository.UpdateAsync(activitylottery);
             if (insertresult > 0)
             {
                 // up = await LotteryActivityRepository.GetByIdAsync(up.Id);
-
+                //更新完成重新获取活动列表，并且设置显示奖品编辑项
                 Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
                 var up2 = Activities.FirstOrDefault(x => x.Id == value.LotteryActivityId); //.FirstOrDefault(x => x.Id == value.Id).Name = resultPrize.Name;
-                up2.ShowPrizes = true;
+                up2.ShowPrizes = true;// 设置显示奖品编辑项
+
+                //重新获取修改后的奖品信息
                 up2.Prizes = await activityPrizeRepository.GetActivityPrizesAsync((int)value.LotteryActivityId);
-    // StateHasChanged();
+
+                ///更新的活动是当前活动，需要更新缓存
+                if (up2.IsActive)
+                {
+                    await CacheService.SetObjectAsync(CacheKeys.LoteryActive, up2);
+                }
+
+                Snackbar.Add($"活动奖品更新成功：{upprize.Name}", Severity.Success);
+                // StateHasChanged();
             }
 
-            //Activities.FirstOrDefault(f=>f.)
-            // Prizes = await _prizeRepository.GetLatestRecordsAsync(100);
         }
     }
 
     private async Task EditActivityPress(LotteryActivity value)
     {
+        value.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(value.Id);
         var parameters = new DialogParameters() { ["UplotteryActivity"] = value };
         parameters.Add("ContentTitle", "编辑活动");
         parameters.Add("IsDisable", false);
@@ -222,21 +241,26 @@ else
 
         if (!result.Canceled)
         {
+           var data =   result.Data as  LotteryActivity;
+            if (data.IsActive)
+            {
+                //data.
+                await CacheService.SetObjectAsync(CacheKeys.LoteryActive, data);
+            }
         }
-        // return Task.CompletedTask;
-        // throw new NotImplementedException();
     }
 
     private async Task EditActivity(LotteryActivity context)
     {
-
-
         context.IsActive = !context.IsActive;
         var insertresult = await LotteryActivityRepository.UpdateActiveStatus(context);
         if (insertresult > 0)
         {
+            context.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(context.Id);
+            await CacheService.SetObjectAsync(CacheKeys.LoteryActive, context);
             if (context.IsActive)
             {
+                
                 Snackbar.Add("活动上架更新成功", Severity.Success);
             }
             else
@@ -251,5 +275,4 @@ else
 
         Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
     }
-
 }

@@ -1,0 +1,70 @@
+﻿@page "/personal"
+
+
+<style>
+    body {
+        min-height: 100vh;
+        background-image: linear-gradient(rgb(255, 255, 255), rgb(255, 255, 255)), url('imgs/logo2.png'), url('imgs/bottom_image.png') !important;
+        background-repeat: no-repeat;
+        background-size: contain,contain,contain;
+        background-position: center top,center center,center bottom;
+
+    }
+    .mud-container {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .div_7 {
+        background-color: rgb(206, 227, 248);
+        width: 100%;
+    }
+
+
+</style>
+
+<div class="div_7">
+    <img src="imgs/bannerpersonal.png"  style="width: 100%;padding: 25px"  />
+</div>
+
+
+
+<MudList Clickable="true" Dense="false">
+
+    <MudListItem >
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudImage Src="imgs/shouhuo.png" ObjectFit="ObjectFit.Contain" Width="36" Height="36"></MudImage>
+            <MudText>收货地址</MudText>
+        </MudStack>
+    </MudListItem>
+    <MudDivider DividerType="DividerType.FullWidth" />
+    <MudListItem >
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudImage Src="imgs/jiangpin.png" ObjectFit="ObjectFit.Contain" Width="36" Height="36"></MudImage>
+            <MudText >获奖记录</MudText>
+        </MudStack>
+    </MudListItem>
+    <MudDivider DividerType="DividerType.FullWidth" />
+    <MudListItem>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudImage Src="imgs/wuliu.png" ObjectFit="ObjectFit.Contain" Width="36" Height="36"></MudImage>
+            <MudText>物流信息</MudText>
+        </MudStack>
+    </MudListItem>
+    <MudDivider DividerType="DividerType.FullWidth" />
+    <MudListItem >
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudImage Src="imgs/kefu.png" ObjectFit="ObjectFit.Contain" Width="36" Height="36"></MudImage>
+            <MudText>客服信息</MudText>
+            <MudText Color="Color.Info">0000-0000</MudText>
+        </MudStack>
+    </MudListItem>
+</MudList>
+
+
+
+

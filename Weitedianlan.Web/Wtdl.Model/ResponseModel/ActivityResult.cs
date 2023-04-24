@@ -4,18 +4,18 @@ using Wtdl.Model.Enum;
 
 namespace Wtdl.Model.ResponseModel
 {
-    public class ActivityResult
+    public class ActivityResult : TResult
     {
-        public ActivityResult()
+        public ActivityResult() : base()
         {
             Prizes = new List<PrizeResult>();
             IsSuccess = false;
         }
 
         /// <summary>
-        /// 活动ID
+        /// 活动编号
         /// </summary>
-        public int Id { get; set; }
+        public string ActivityNumber { get; set; }
 
         /// <summary>
         /// 查询状态

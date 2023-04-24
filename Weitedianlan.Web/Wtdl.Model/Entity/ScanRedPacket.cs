@@ -48,7 +48,7 @@ namespace Wtdl.Model.Entity
         public RedPacketType RedPacketType { get; set; }
 
         /// <summary>
-        /// 红包金额
+        /// 红包金额,单位（分）
         /// </summary>
         public int CashValue { get; set; } //s{ get; set; }
 

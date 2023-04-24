@@ -29,7 +29,6 @@ namespace Wtdl.Repository.EntityConfig
             builder.Property(u => u.City).HasMaxLength(50);
             builder.Property(u => u.ProvinceOrState).HasMaxLength(50);
             builder.Property(u => u.Country).HasMaxLength(50);
-            builder.Property(u => u.PostalCode).HasMaxLength(10);
 
             // 设置表名
             builder.ToTable("UserAwardInfos");

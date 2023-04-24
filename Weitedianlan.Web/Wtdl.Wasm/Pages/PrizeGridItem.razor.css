@@ -3,7 +3,7 @@
 
 /* 设置单元格样式 */
 .grid-item {
-    background-color: rgba(218,165,32,0.3);
+    background-color: rgba(255,255,255,0.8);
     border: 0px solid white;
     /* box-shadow: goldenrod 10px 10px inset;*/
     border-radius: 10px;
@@ -36,12 +36,12 @@
     }
 
     .grid-item.selected {
-        border: 2px solid #f0003c;
+        border: 2px solid #FFDE00;
         animation: scaleAndRotate 0.5s ease-in-out;
         transform: scale(1.2);
         /* transform: scale(1.2);
     transition: transform 1s ease;*/
-        /*z-index: 1;*/
+        z-index: 2;
     }
 
 @keyframes scaleAndRotate {
@@ -62,19 +62,19 @@
 .details-button {
     --curve-size: .5em;
     position: absolute;
-    width: 80%;
-    bottom: 10px;
+    width: 100%;
+    bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #f0003c;
     border: none;
-    padding: 4px 8px;
+    padding: 4px auto;
     text-align: center;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 0.6em;
     cursor: pointer;
     color: #F4EFEA;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: .3em;
     opacity: 0.9;
     transition: opacity 0.3s ease;

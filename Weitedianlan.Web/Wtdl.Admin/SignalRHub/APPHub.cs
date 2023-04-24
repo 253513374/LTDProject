@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
-using Wtdl.Admin.Data;
+using Microsoft.Identity.Client.Extensions.Msal;
+using Wtdl.Model;
 using Wtdl.Model.Entity;
+using Wtdl.Model.ResponseModel;
+using Wtdl.RedisCache;
 using Wtdl.Repository;
 using Wtdl.Share;
 using Wtdl.Share.SignalR;
@@ -24,9 +27,12 @@ namespace Wtdl.Admin.SignalRHub
 
         private ILogger<APPHub> _logger;
 
+        private readonly IRedisCache _redisCache;
+
         //构造函数
-        public APPHub(IMemoryCache cache, ILogger<APPHub> logger, WLabelStorageRepository repository, AgentRepository agentRepository)
+        public APPHub(IMemoryCache cache, IRedisCache redisCache, ILogger<APPHub> logger, WLabelStorageRepository repository, AgentRepository agentRepository)
         {
+            _redisCache = redisCache;
             _storageRepository = repository;
             _logger = logger;
             _cache = cache;
@@ -98,9 +104,17 @@ namespace Wtdl.Admin.SignalRHub
         {
             // var username = Context.User.Identity.Name;
             // storage.Adminaccount = username;
-            await _storageRepository.BulkInsertAsync(labelStorages);
+            try
+            {
+                await _storageRepository.BulkInsertAsync(labelStorages);
+                await _redisCache.SetBulkBitAsync(labelStorages.Select(s => s.QRCode).ToList());
 
-            return OutStorageResult.Success(DateTime.Now, labelStorages.Count, "BatchInsert");
+                return OutStorageResult.Success(DateTime.Now, labelStorages.Count, "BatchInsert");
+            }
+            catch (Exception e)
+            {
+                return OutStorageResult.FailList($"发货异常:{e.Message}", labelStorages);
+            }
         }
 
         /// <summary>
@@ -110,17 +124,29 @@ namespace Wtdl.Admin.SignalRHub
         /// <returns></returns>
         public async Task<OutStorageResult> SendOutStorageAsync(W_LabelStorage storage)
         {
-            //var username = Context.User.Identity.Name;
-            //storage.Adminaccount = username;
-            var result = await _storageRepository.AddAsync(storage);
-
-            if (result > 0)
+            var isOut = await _redisCache.GetBitAsync(storage.QRCode);
+            if (isOut)
             {
-                await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, 0);
-                return OutStorageResult.Success(DateTime.Now, result, storage.QRCode);
+                return OutStorageResult.Fail("重复发货", storage.QRCode);
             }
-            //发货失败
-            return OutStorageResult.Fail("发货失败", storage.QRCode);
+
+            try
+            {
+                var result = await _storageRepository.AddAsync(storage);
+
+                if (result > 0)
+                {
+                    await _redisCache.SetBitAsync(storage.QRCode);
+                    await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, 0);
+                    return OutStorageResult.Success(DateTime.Now, result, storage.QRCode);
+                }
+                return OutStorageResult.Fail("未知错误", storage.QRCode);
+            }
+            catch (Exception e)
+            {
+                //发货失败
+                return OutStorageResult.Fail($"发货异常:{e.Message}", storage.QRCode);
+            }
         }
 
         public async Task SendDeleteSynchronizationDataAsync(SynchState state)

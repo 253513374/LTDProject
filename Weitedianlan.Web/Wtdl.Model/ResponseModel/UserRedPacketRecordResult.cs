@@ -7,7 +7,7 @@ using Wtdl.Model.Entity;
 
 namespace Wtdl.Model.ResponseModel
 {
-    public class UserRedPacketRecordResult
+    public class UserRedPacketRecordResult : TResult
     {
         public UserRedPacketRecordResult()
         {

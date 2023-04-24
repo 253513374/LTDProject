@@ -16,21 +16,19 @@
                     </div>
                 </div>
                 <div>
-                @if (lotteryResult is not null)
-                {
-                        
-                    if (lotteryResult.IsSuccess)
+                    @if (lotteryResult is not null)
                     {
-                        OpenBox();
-                     
-                    }
-                    else
-                    {
-                      
-                        <MudText>很遗憾，您的选择的奖品未被抽中</MudText>
+                            
+                        if (lotteryResult.IsSuccess)
+                        {
                             OpenBox();
+                        }
+                        else
+                        {
+                            <MudText>很遗憾，您的选择的奖品未被抽中</MudText>
+                                OpenBox();
+                        }
                     }
-                }
                 </div>
             </MudStack>
         </MudContainer>
@@ -89,13 +87,13 @@
     {
         try
         {
-            
+            using  var httpClient = HttpClientFactory.CreateClient("weixin");
             if (string.IsNullOrEmpty(QRCode) && string.IsNullOrEmpty(OpenId) && string.IsNullOrEmpty(PrizeNumber))
             {
                 return null;
             }
             var url = $"Lottery?qrcode={QRCode}&openid={OpenId}&prizennumber={PrizeNumber}";
-            var response = await _httpClient.GetAsync(url);
+            var response = await httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var stream = await response.Content.ReadAsStringAsync();

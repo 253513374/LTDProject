@@ -13,6 +13,7 @@ using Radzen;
 using Serilog;
 using System.Reflection;
 using System.Text;
+using StackExchange.Redis;
 using Wtdl.Admin.Authenticated;
 using Wtdl.Admin.Authenticated.IdentityModel;
 using Wtdl.Admin.Authenticated.Services;
@@ -20,8 +21,10 @@ using Wtdl.Admin.Data;
 using Wtdl.Admin.Quartzs;
 using Wtdl.Admin.SignalRHub;
 using Wtdl.Model.Entity;
+using Wtdl.RedisCache;
 using Wtdl.Repository;
 using Wtdl.Repository.MediatRHandler.Events;
+using Wtdl.Share;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()//new JsonFormatter()
@@ -73,9 +76,16 @@ try
 
     builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-    //var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
-    //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
+#if DEBUG
+    var redisconnectionString = builder.Configuration.GetConnectionString("DebugRedisConnectionString");
+#else
+    var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
+
+#endif
+    builder.Services.AddRedisCache(redisconnectionString);
+    // builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
     //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
+    //builder.Services.AddScoped<IRedisCache, RedisCacheService>();
 
     builder.Services.AddSingleton<ExportService>();
     // Add services to the container.

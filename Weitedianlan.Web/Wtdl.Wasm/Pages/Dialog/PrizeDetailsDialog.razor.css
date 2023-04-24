@@ -1,0 +1,36 @@
+﻿body {
+}
+
+.image-hongbao-centered, .centered-image {
+    width: 80%; /* 设置图片宽度为容器宽度的一半 */
+    max-width: 100%; /* 确保图片不会超出其原始尺寸 */
+    display: inline-block; /* 使图片成为行内元素以便居中 */
+    vertical-align: middle; /* 垂直居中对齐 */
+}
+
+.image-hongbao, .image-container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    padding: 0px !important;
+    margin: 0px;
+    top: -8px;
+    display: grid;
+    display: flex;
+    /*
+            align-items: center;*/
+}
+
+    .image-container::after {
+        content: "奖品详情";
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        font-size: calc(0.6vw + 1em); /* 使用vw单位，并结合calc函数和em单位实现自适应调整 */
+        font-size: 1em;
+        font-weight: bold;
+        color: white;
+        letter-spacing: .3em;
+        transform: translate(-50%, -50%);
+    }

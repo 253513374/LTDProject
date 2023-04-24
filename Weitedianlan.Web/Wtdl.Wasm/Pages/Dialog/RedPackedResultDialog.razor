@@ -1,0 +1,203 @@
+﻿@inherits ComponentBase
+
+<style>
+    .image-hongbao-centered, .centered-image {
+        width: 80%; /* 设置图片宽度为容器宽度的一半 */
+        max-width: 100%; /* 确保图片不会超出其原始尺寸 */
+        display: inline-block; /* 使图片成为行内元素以便居中 */
+        vertical-align: middle; /* 垂直居中对齐 */
+    }
+
+    .image-hongbao,.image-container {
+        display: flex;
+        position: relative;
+        width: 100%;
+        justify-content: center;
+        padding: 0px !important;
+        margin: 0px;
+        top: -8px;
+        display: grid;
+        display: flex;
+/*  
+        align-items: center;*/
+     
+    }
+    .right-button {
+        position: absolute;
+        right: 0;
+        /*margin-left: 10px; /* 为按钮左侧添加间距 */*/
+        margin: 10px; /* 为按钮右侧添加间距 */
+        width: 15px;
+        height: 15px;
+        top: 15px;
+        border: 2px #579bf7 solid;
+    }
+    .image-container::after {
+        content: "现金红包";
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        font-size: calc(0.6vw + 1em); /* 使用vw单位，并结合calc函数和em单位实现自适应调整 */
+        font-size: 1em;
+        font-weight: bold;
+        color: white;
+        letter-spacing: .3em;
+        transform: translate(-50%, -50%);
+    }
+
+    .dialog {
+        border-radius: 25px;
+    }
+
+
+
+    .mudcontainer {
+        background-image: url('imgs/duihuakuang.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center bottom;
+        padding: 0px !important;
+        margin: 0px !important;
+        width: 100%;
+    }
+
+
+    .flex-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: -15%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .centered-text {
+        color: red;
+        font-weight: 900;
+        font-size: 2em;
+        z-index: 1;
+    }
+
+
+    .btn-dialog-radpack {
+       
+        border-radius: 100px;
+        width: 160px; 
+        padding: 10px;
+        height: 40px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        opacity: 0.860;
+        letter-spacing: .2em;
+        transition: transform 0.1s ease-in-out;
+        background-image: -moz-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        background-image: -webkit-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        background-image: -ms-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        box-shadow: 0px 5px 0px 0px rgba(20, 71, 172, 0.004);
+        z-index: 89;
+        color: white;
+    }
+
+ /*   .but_5 {
+        display: flex;
+        padding: 6px;
+        border-radius: 10px;
+        background-image: -moz-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        background-image: -webkit-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        background-image: -ms-linear-gradient( -86deg, rgb(94,166,251) 0%, rgb(56,118,236) 100%);
+        color: white;
+        font-weight: 800;
+        height: 30px;
+        width: 125px;
+        font-weight: bold;
+        letter-spacing: .3em;
+        align-items: center;
+    }*/
+
+    .left-button {
+        
+        margin: 1px; /* 为按钮右侧添加间距 */
+        
+        border: 2px aqua solid;
+    }
+
+</style>
+
+<MudDialog Class="dialog">
+
+    <DialogContent  >
+       
+       
+        <div Class="image-container">
+            
+            <img class="centered-image" src="imgs/tou2.png" style="width: 80%;"/>
+            <MudIconButton OnClick="Cancel" Icon="@Icons.Material.Outlined.Close" Size="Size.Medium" Color="Color.Info" Class="right-button"></MudIconButton>
+        </div>
+        <MudContainer Class="mudcontainer" >
+            
+            <MudStack Justify="Justify.Center" Spacing="1">
+                <MudStack Class="flex-text my-5 p-2" Style="word-break: break-word" Spacing="1" Justify="Justify.Center">
+                    
+                    <MudText Style="Color: red; font-weight: bold; font-size: 1.5rem;">@Message</MudText>
+                   
+                </MudStack>
+               
+                <div class="image-hongbao">
+                    <img class="image-hongbao-centered" src="imgs/zhongjiang.png" style="width: 100%;"/>
+                    <div class="flex-container">
+                        <p class="centered-text">@(string.IsNullOrWhiteSpace(Result.TotalAmount) ? "0" : $"{Result.TotalAmount}元")</p>
+                    </div>
+                </div>
+                
+            </MudStack>
+            
+            <MudStack Class="mt-8 mb-5" Justify="Justify.Center" AlignItems="AlignItems.Center" Row="true" >
+                <MudButton Class="btn-dialog-radpack" OnClick="ToLottery">幸运抽奖</MudButton>
+                <MudButton Class="btn-dialog-radpack" OnClick="Submit">返回首页</MudButton>
+            </MudStack>
+        </MudContainer>
+    </DialogContent>
+   
+</MudDialog>
+
+@code {
+
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+
+    [Parameter] public string Message { get; set; }
+
+    [Parameter] public RedPacketResult Result { get; set; }
+
+    [Inject] private DataStateContainer Container { get; set; }
+    /// <summary>
+    /// 返回首页
+    /// </summary>
+    void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+        _navigationManager.NavigateTo($"/{Container.QRCode}");
+    }
+    void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    /// <summary>
+    /// 跳转幸运抽奖
+    /// </summary>
+    private void ToLottery()
+    {
+        _navigationManager.NavigateTo("/lottery");
+       // MudDialog.Close(DialogResult.Ok(true));
+    }
+}

@@ -9,29 +9,43 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.TenPay;
 using Serilog;
+using Serilog.Events;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
 using Wtdl.Controller.Controllers.APIController;
 using Wtdl.Controller.Services;
 using Wtdl.Model.Entity;
 using Wtdl.Mvc.Services;
+using Wtdl.RedisCache;
 using Wtdl.Repository;
 using Wtdl.Repository.MediatRHandler.Events;
+using Wtdl.Share;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+//    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+//    .Enrich.FromLogContext()
+//    .WriteTo.Console()
+//    .CreateBootstrapLogger(); // <-- Change this line!
 
 try
 {
-    Log.Information("Starting web application");
+    //Log.Information("Starting web application");
     var builder = WebApplication.CreateBuilder(args);
 
-    // builder.Host.UseSerilog();
-    builder.Host.UseSerilog((ctx, lc) => lc
-        .WriteTo.Console()
-        .MinimumLevel.Debug()
-        .ReadFrom.Configuration(ctx.Configuration));
+    //Log.Logger = new LoggerConfiguration()
+    //    .ReadFrom.Configuration(configuration)
+    //    .CreateLogger();
+    var configuration = builder.Configuration;
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(configuration)
+        .CreateLogger();
+    builder.Host.UseSerilog();
+    // .WriteTo.Console()
+    //    .MinimumLevel.Debug()
+    //    .ReadFrom.Configuration(ctx.Configuration));
+    //builder.Host.UseSerilog((context, configuration) =>
+    //    configuration.ReadFrom.Configuration(context.Configuration));
 
     // 添加身份验证服务
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -76,27 +90,36 @@ try
 
         //使用 AddSecurityRequirement 方法添加安全要求，并引用前面定义的 "Bearer" 安全定义
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
                 },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
-    });
+                new List<string>()
+            }
+        });
     });
 
+#if DEBUG
+    var redisconnectionString = builder.Configuration.GetConnectionString("DebugRedisConnectionString");
+#else
+    var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
+
+#endif
+    builder.Services.AddRedisCache(redisconnectionString);
+
+    builder.Services.AddMemoryCache();
     // Add services to the container.
     builder.Services.AddControllersWithViews();
-    builder.Services.AddControllers();
+    //builder.Services.AddControllers();
 
     // builder.Services.AddAutoMapper(typeof());
     builder.Services.AddScoped<RequestLoggingActionFilter>();
@@ -109,48 +132,15 @@ try
 
     builder.Services.AddHttpClient();
 
-    //var hubUrl = builder.Configuration.GetValue<string>("SignalR:HubUrl");
-    //builder.Services.AddSingleton(provider => new HubConnectionBuilder()
-    //    .WithUrl(hubUrl, options =>
-    //    {
-    //        options.AccessTokenProvider = async () =>
-    //        {
-    //            return await GetSignalRAppToken();
-
-    //            static async Task<string?> GetSignalRAppToken()
-    //            {
-    //               // throw new NotImplementedException();
-    //               return "";
-    //            }
-    //        };
-    //    })
-    //    .WithAutomaticReconnect()
-    //    .Build());
-
-    //var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
-    //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
-    //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
-
-    //builder.Services.AddStackExchangeRedisCache(options =>
-    //{
-    //    options.Configuration = redisconnectionString;
-    //    // options.InstanceName = "MyRedisCache";
-    //});
-    // 添加缓存服务
-    //builder.Services.AddDistributedRedisCache(options =>
-    //{
-    //    options.Configuration = "redis-server:6379";
-    //    options.InstanceName = "SampleInstance";
-    //});
-
     builder.Services.AddResponseCaching();
-    builder.Services.AddMemoryCache();
-
-    ////Senparc.Weixin 注册（必须）
-    builder.Services.AddSenparcWeixinServices(builder.Configuration);
 
     var connectionString = builder.Configuration.GetConnectionString("LotteryDbConnection");
+
     builder.Services.AddLotteryDbContext(connectionString);
+
+    var oracleconnectionString = builder.Configuration.GetConnectionString("OracleDbConnection");
+
+    builder.Services.AddOracleContext(oracleconnectionString);
 
     builder.Services.AddSingleton<HubService>();
     builder.Services.AddScoped<UserItemsService>();
@@ -166,6 +156,9 @@ try
                 .AllowAnyMethod()
                 .AllowAnyHeader());
     });
+
+    ////Senparc.Weixin 注册（必须）
+    builder.Services.AddSenparcWeixinServices(builder.Configuration);
 
     var app = builder.Build();
 
@@ -187,6 +180,7 @@ try
 
     #endregion 启用微信配置
 
+    app.UseSerilogRequestLogging();
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
@@ -206,7 +200,6 @@ try
     // 配置 Redis 中间件
 
     app.UseResponseCaching();
-
     app.UseHttpsRedirection();
 
     app.UseStaticFiles();
@@ -217,7 +210,6 @@ try
     });
 
     app.UseAuthorization();
-
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");

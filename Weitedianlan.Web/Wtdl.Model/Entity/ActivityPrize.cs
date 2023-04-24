@@ -64,7 +64,7 @@ namespace Wtdl.Model.Entity
         /// <summary>
         /// 奖品图片
         /// </summary>
-        [JsonIgnore]
+        ///[JsonIgnore]
         public string ImageUrl { get; set; }//奖品图片
 
         /// <summary>

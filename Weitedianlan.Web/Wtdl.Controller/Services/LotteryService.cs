@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Wtdl.Controller.Services;
+using Wtdl.Model;
 using Wtdl.Model.Entity;
 using Wtdl.Model.Enum;
 using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Models;
+using Wtdl.RedisCache;
 using Wtdl.Repository;
 using Wtdl.Repository.Utility;
 
@@ -27,17 +29,21 @@ namespace Wtdl.Mvc.Services
 
         private HubService _hubService;
 
+        private IRedisCache _redisCache;
+
         public LotteryService(LotteryActivityRepository lotteryActivityRepository,
             WLabelStorageRepository wLabelStorageRepository,
             LotteryRecordRepository recordRepository,
             VerificationCodeRepository verificationCodeRepository,
             ActivityPrizeRepository repository,
             HubService hubService,
+            IRedisCache redisCache,
         //IDistributedCache distributedCache,
         //  IConnectionMultiplexer connectionMultiplexer,
         ILogger<LotteryService> logger,
             IMemoryCache cache)
         {
+            _redisCache = redisCache;
             _wLabelStorageRepository = wLabelStorageRepository;
             _memoryCache = cache;
             _hubService = hubService;
@@ -59,12 +65,12 @@ namespace Wtdl.Mvc.Services
         {
             try
             {
-                var result = await _lotteryActivityRepository.GetLotteryActivityAsync();
+                var result = await _redisCache.GetObjectAsync<LotteryActivity>(CacheKeys.LoteryActive); ///await _lotteryActivityRepository.GetLotteryActivityAsync();
 
-                var activiprize =
-                  await _activityPrizeRepository.FindAsync(f => f.LotteryActivityId == result.Id && f.IsActive == true);
+                //var activiprize =
+                //  await _activityPrizeRepository.FindAsync(f => f.LotteryActivityId == result.Id && f.IsActive == true);
 
-                result.Prizes = activiprize.ToList();
+                // result.Prizes = activiprize.ToList();
 
                 if (result is not null)
                 {
@@ -77,7 +83,7 @@ namespace Wtdl.Mvc.Services
                         Description = result.Description,
                         StartTime = result.StartTime,
                         EndTime = result.EndTime,
-                        Id = result.Id,
+                        ActivityNumber = result.ActivityNumber,
                         IsActive = result.IsActive
                         //Prizes = result.Prizes.ToList(),
                     };
@@ -105,15 +111,6 @@ namespace Wtdl.Mvc.Services
                 return new ActivityResult() { Msg = $"服务器错误：{e.Message}" };
             }
         }
-
-        /// <summary>
-        /// 返回活动奖品
-        /// </summary>
-        /// <param name="a"></param>
-        /// <returns></returns>
-        //private async Task<ActivityPrize> GetActivityPrize(string a)
-        //{
-        //}
 
         /// <summary>
         /// 抽取一个奖品
@@ -162,44 +159,6 @@ namespace Wtdl.Mvc.Services
                     Message = "可以参加活动",
                 };
             }
-
-            ////抽奖限制：出库24小时才能抽奖
-            //var qrcodekey = qrcode.Substring(0, 4);
-            //var offset = qrcode.Substring(4, 7);
-
-            ////获取出库状态 偏移量的位置为 1,说明已经出库
-            //var bitValue = (await _database.StringGetBitAsync(qrcodekey, Convert.ToInt32(offset)));//.get(100);
-            //if (bitValue)
-            //{
-            //    //获取出库数据是否超过24小时
-            //    var value = await _database.StringGetAsync(qrcode);
-            //    if (value.HasValue)
-            //    {
-            //        // key 存在，说明还没有超过24小时,继续处理
-            //        return new VerifyResult()
-            //        {
-            //            IsSuccess = false,
-            //            Message = "标签已经扫码出库，但是还没有到抽奖时间",
-            //        };
-            //    }
-            //    else
-            //    {
-            //        return new VerifyResult()
-            //        {
-            //            IsSuccess = true,
-            //            Message = "标签已经扫码出库，但是还没有到抽奖时间",
-            //        };
-            //    }
-            //}
-            //else
-            //{
-            //    // 偏移量的位置值为 0，说明数据还没有出库
-            //    return new VerifyResult()
-            //    {
-            //        IsSuccess = false,
-            //        Message = "标签还没有扫码出库，无法参与活动",
-            //    };
-            //}
         }
 
         /// <summary>
@@ -210,11 +169,11 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<VerifyResult> VerifyLottery(string openid, string qrcode, string prizenumber)
         {
-            var value = await VerifyOut(qrcode);
-            if (!value.IsSuccess)
-            {
-                return value;
-            }
+            //var value = await VerifyOut(qrcode);
+            //if (!value.IsSuccess)
+            //{
+            //    return value;
+            //}
 
             var activityPrize = await _activityPrizeRepository.ExistAsync(a => a.PrizeNumber == prizenumber && a.IsActive == true);
             if (!activityPrize)
@@ -244,7 +203,7 @@ namespace Wtdl.Mvc.Services
                 return new VerifyResult() { IsSuccess = false, Message = "当前用户已经对标签序号抽过奖了" };
             }
 
-            return new VerifyResult() { IsSuccess = true, Message = "" };
+            return new VerifyResult() { IsSuccess = true, Message = "可以参与抽奖活动" };
         }
 
         private async Task RecordLotterySuccess(string openid, string qrcode, ActivityPrize prize)
@@ -299,7 +258,8 @@ namespace Wtdl.Mvc.Services
         {
             try
             {
-                // var verify = await VerifyLottery(openid, qrcode // 验证是否有抽奖资格
+                // var verify = await VerifyLottery(openid, qrcode
+                // // 验证是否有抽奖资格
                 var verify = await VerifyLottery(openid, qrcode, prizenumber);
                 if (!verify.IsSuccess)
                 {
@@ -308,39 +268,44 @@ namespace Wtdl.Mvc.Services
 
                 // 随机抽取一个参加活动的奖品
                 var prize = await GetLuckyPrize(prizenumber);
-
-                await _hubService.SendLotteryCountAsync();
-
                 if (prize is null)
                 {
-                    return new LotteryResult() { IsSuccess = false, Message = "奖品已经抽完" };
+                    return new LotteryResult() { IsSuccess = false, Message = "奖品已经抽完,请重新抽奖" };
                 }
                 //根据奖品的中奖概率随机求得一个中奖数值号码
                 var randomPrizeNumber = await GlobalUtility.GetRandomInt(prize.Probability);
 
+                //发送信息,有人参与抽奖了
+                await _hubService.SendLotteryCountAsync();
                 if (randomPrizeNumber == prize.UniqueNumber)
                 {
+                    //发送信息,有人中奖了
                     await _hubService.SendLotteryWinCountAsync();
 
-                    // 记录抽奖数据
+                    // 记录中奖数据
                     await RecordLotterySuccess(openid, qrcode, prize);
 
                     //减少可抽奖奖品数量，更新到数据库
                     prize.Unredeemed++;
-                    await _activityPrizeRepository.UpdateActivityPrizeAsync(prize);
+                    var updateResult = await _activityPrizeRepository.UpdateActivityPrizeAsync(prize);
+
+                    //返回抽奖结果
                     return new LotteryResult()
                     {
                         IsSuccess = true,
-                        Message = $"恭喜你抽中了奖品:{prize.Name}",
+                        Message = $"恭喜你，中大奖啦",
                         PrizeType = prize.Type.ToString(),
                         PrizeName = prize.Name,
                         PrizeDescription = prize.Description,
                         PrizeImage = prize.ImageUrl,
+                        PrizeNumber = prize.PrizeNumber
                     };
                 }
                 else
                 {
+                    // 记录没有中奖数据
                     await RecordLotteryFail(openid, qrcode, prize);
+                    //返回抽奖结果
                     return new LotteryResult()
                     {
                         IsSuccess = false,

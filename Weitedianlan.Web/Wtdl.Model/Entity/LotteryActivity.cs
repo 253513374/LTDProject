@@ -13,7 +13,7 @@ namespace Wtdl.Model.Entity
         public LotteryActivity()
         {
             Prizes = new List<ActivityPrize>();
-            ActivityNumber = Guid.NewGuid().ToString().Replace("-", "");
+            ActivityNumber = Guid.NewGuid().ToString("N");
         }
 
         public int Id { get; set; }
@@ -54,7 +54,7 @@ namespace Wtdl.Model.Entity
         /// <summary>
         /// 活动启用或者禁用
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = false;
 
         /// <summary>
         /// 活动参与人数
@@ -80,7 +80,7 @@ namespace Wtdl.Model.Entity
         /// <summary>
         /// 活动图片
         /// </summary>
-        [JsonIgnore]
+        ///[JsonIgnore]
         public string ActivityImage { get; set; }
 
         /// <summary>

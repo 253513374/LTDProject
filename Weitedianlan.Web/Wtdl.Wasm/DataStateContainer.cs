@@ -1,20 +1,52 @@
-﻿using Wtdl.Model.ResponseModel;
+﻿using MudBlazor;
+using Wtdl.Controller.Models.ResponseModel;
+using Wtdl.Model.ResponseModel;
 
 namespace Wtdl.Wasm
 {
     public class DataStateContainer
     {
-        public string Code { get; set; }
+        /// <summary>
+        /// 标签二维码
+        /// </summary>
+        public string QRCode { get; set; }
 
+        /// <summary>
+        /// 微信用户openid
+        /// </summary>
         public string OpenId { get; set; }
 
-        public ActivityResult Activity { get; set; }
+        /// <summary>
+        /// 标签状态
+        /// </summary>
+        public RedStatusResult? UserStatus { get; set; }
 
-        public event Action OnChanged;
+        /// <summary>
+        /// 活动信息
+        /// </summary>
+        public ActivityResult? Activity { get; set; }
 
-        public Task SetCode(string code, string openid)
+        /// <summary>
+        /// 访问信息
+        /// </summary>
+        public AntiFakeResult? antiFakeResult { get; set; }
+
+        /// <summary>
+        /// 溯源信息
+        /// </summary>
+        public TraceabilityResult? traceabilityResult { get; set; }
+
+        public LotteryResult LotteryResult { get; set; }
+
+        /// <summary>
+        /// 订阅方法
+        /// </summary>
+
+        public event Action? OnChanged;
+
+        public Task SetCode(string qrcode, string openid)
         {
-            Code = code;
+            QRCode = qrcode;
             OpenId = openid;
             NotifyCodeChanged();
             return Task.CompletedTask;
@@ -28,5 +60,14 @@ namespace Wtdl.Wasm
         }
 
         private void NotifyCodeChanged() => OnChanged?.Invoke();
+
+        public bool IsVerify(string prizenumber)
+        {
+            if (string.IsNullOrEmpty(QRCode) || string.IsNullOrEmpty(OpenId) || string.IsNullOrEmpty(prizenumber))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

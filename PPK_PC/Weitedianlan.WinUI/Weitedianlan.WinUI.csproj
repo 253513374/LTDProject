@@ -187,7 +187,7 @@
       <HintPath>..\packages\PropertyChanged.Fody.2.6.0\lib\netstandard1.0\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="StackExchange.Redis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c219ff1ca8c2ce46, processorArchitecture=MSIL">
-      <HintPath>..\..\Weitedianlan.Web\packages\StackExchange.Redis.2.6.90\lib\net472\StackExchange.Redis.dll</HintPath>
+      <HintPath>..\..\Weitedianlan.Web\packages\StackExchange.Redis.2.6.104\lib\net472\StackExchange.Redis.dll</HintPath>
     </Reference>
     <Reference Include="Stylet, Version=1.1.22.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Stylet.1.1.22\lib\net45\Stylet.dll</HintPath>

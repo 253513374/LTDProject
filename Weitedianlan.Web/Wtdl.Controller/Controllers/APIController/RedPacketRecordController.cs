@@ -6,11 +6,11 @@ namespace Wtdl.Controller.Controllers.APIController
 {
     [Route("[controller]")]
     [ApiController]
-    public class RedPacketRecordController : ControllerBase
+    public class RedPacketRecordController : BaseController<RedPacketRecordController>
     {
         private readonly UserItemsService _userItemsService;
 
-        public RedPacketRecordController(UserItemsService service)
+        public RedPacketRecordController(UserItemsService service, ILogger<RedPacketRecordController> logger) : base(logger)
         {
             _userItemsService = service;
         }

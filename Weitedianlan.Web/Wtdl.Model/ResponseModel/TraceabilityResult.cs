@@ -5,7 +5,7 @@ namespace Wtdl.Model.ResponseModel
     /// <summary>
     /// 溯源信息
     /// </summary>
-    public class TraceabilityResult
+    public class TraceabilityResult : TResult
     {
         /// <summary>
         /// 查询状态
@@ -36,5 +36,10 @@ namespace Wtdl.Model.ResponseModel
         /// 出库时间
         /// </summary>
         public DateTime OutTime { get; set; }
+
+        /// <summary>
+        /// 数据是否已激活
+        /// </summary>
+        public bool IsActive { get; set; }
     }
 }

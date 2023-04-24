@@ -10,6 +10,7 @@ using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MessageContexts;
 using Senparc.Weixin.MP.MessageHandlers;
+using System.Security.Policy;
 
 namespace Wtdl.Mvc.MessageHandlers
 {
@@ -175,14 +176,15 @@ namespace Wtdl.Mvc.MessageHandlers
                     Title = "您刚才发送了图片信息",
                     Description = "您发送的图片将会显示在边上",
                     PicUrl = requestMessage.PicUrl,
-                    Url = "https://sdk.weixin.senparc.com"
+                    Url = ""
                 });
                 responseMessage.Articles.Add(new Article()
                 {
                     Title = "第二条",
                     Description = "第二条带连接的内容",
                     PicUrl = requestMessage.PicUrl,
-                    Url = "https://sdk.weixin.senparc.com"
+                    Url = ""
+                    //Url = "https://sdk.weixin.senparc.com"
                 });
 
                 return responseMessage;

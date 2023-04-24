@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
 using MudBlazor.Services;
 
 namespace Wtdl.Wasm
@@ -12,19 +13,18 @@ namespace Wtdl.Wasm
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient
-            {
-                //builder.HostEnvironment.BaseAddress
-                BaseAddress = new Uri("https://www.rewt.cn/")
-            });
+            //builder.Services.AddScoped(sp => new HttpClient
+            //{
+            //    BaseAddress = new Uri("https://www.rewt.cn/")
+            //});
 
             builder.Services.AddSingleton<DataStateContainer>();
 
-            //builder.Services.AddHttpClient("WeixinAPI", client =>
-            //    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient("local", client =>
+                client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
-            //builder.Services.AddHttpClient("WeixinAPI", client =>
-            //    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            builder.Services.AddHttpClient("weixin", client =>
+                client.BaseAddress = new Uri("https://www.rewt.cn/"));
 
             builder.Services.AddMudServices();
             builder.Services.AddLogging(logging =>

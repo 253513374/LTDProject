@@ -1,0 +1,288 @@
+﻿@page "/lottery/collect"
+@using Wtdl.Model.Entity
+
+
+<style>
+    body {
+        min-height: 100vh;
+        background-image: linear-gradient(rgb(109, 187, 255) 2%,rgba(109, 187, 255,0.3) 10%, rgba(0, 0, 254, 0.450)),url('imgs/top_image.png'),url('imgs/logo2.png'), url('imgs/bottom_image.png') !important
+    }
+</style>
+
+
+<MudForm Model="@UserAddress" @ref="form" Style="Width: 100%">
+    
+    <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.h5">请填写收货地址</MudText>
+    </MudStack>
+
+    <MudStack Class="pa-5" Style="background-color: white; border-radius: 25px;" Spacing="2" Justify="Justify.FlexStart" AlignItems="AlignItems.Start">
+
+
+        <MudListSubheader DisableGutters="true">个人信息</MudListSubheader>
+        <MudTextField @bind-Value="UserAddress.UserName" ErrorText="必须填写" Required="true" T="string" Label="姓名" Variant="Variant.Outlined" FullWidth="true" />
+        <MudTextField @bind-Value="UserAddress.PhoneNumber" ErrorText="必须填写" Required="true" T="string" Label="手机号码" Variant="Variant.Outlined" FullWidth="true" />
+
+
+
+        <MudListSubheader DisableGutters="true" Class="mt-5">地址</MudListSubheader>
+
+        <MudAutocomplete T="Provinec" Label="省份" Required="true" RequiredError="必填"  ValueChanged="OnProvinecChanged" Variant="Variant.Outlined"
+                         SearchFunc="@SearchAsync" Immediate="true" CoerceValue="@coerceValue" ResetValueOnEmptyText="true"
+                         CloseIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Tertiary" FullWidth="true"
+                         Validation="@(new Func<string, IEnumerable<string>>(Validate))" MaxItems="null"
+                         ToStringFunc="@(e => e == null ? null : $"{e.name}")"/>
+
+
+
+        <MudAutocomplete T="City" Label="城市" Required="true" RequiredError="必填" ValueChanged="OnCityChanged" Variant="Variant.Outlined"
+                         SearchFunc="@SearchCityAsync" Immediate="true" CoerceValue="@coerceValue" ResetValueOnEmptyText="true"
+                         CloseIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Tertiary" FullWidth="true"
+                         Validation="@(new Func<string, IEnumerable<string>>(Validate))" MaxItems="null"
+                         ToStringFunc="@(e => e == null ? null : $"{e.name}")"/>
+
+
+        <MudAutocomplete T="Area" Label="区县" Required="true" RequiredError="必填" ValueChanged="OnAreaChanged" Variant="Variant.Outlined"
+                         SearchFunc="@SearchAreaAsync" Immediate="true" CoerceValue="@coerceValue" ResetValueOnEmptyText="true"
+                         CloseIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Tertiary" FullWidth="true"
+                         Validation="@(new Func<string, IEnumerable<string>>(Validate))" MaxItems="null"
+                         ToStringFunc="@(e => e == null ? null : $"{e.name}")"/>
+
+        <MudTextField  @bind-Value="UserAddress.Fulladdress" T="string" ErrorText="必须填写" Required="true" RequiredError="必填" Label="详细地址" Variant="Variant.Outlined" Lines="3" FullWidth="true"/>
+
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3 mb-3"
+                   OnClick="@( async () => await Submit())">保存地址</MudButton>
+
+    </MudStack>
+</MudForm>
+
+@code {
+
+
+    private MudForm form;
+    private bool coerceValue;
+
+
+    private Provinec[]? _provinecs;
+    private List<City>? _cities = new ();
+    private List<Area>? _areas = new ();
+
+    Dictionary<int, List<City>> dictionarycities = new Dictionary<int, List<City>>();
+    Dictionary<int, List<Area>> dictionaryareas = new Dictionary<int, List<Area>>();
+
+    [Inject] private DataStateContainer Container { set; get; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var httpClient = HttpClientFactory.CreateClient("local");
+
+            _provinecs = await httpClient.GetFromJsonAsync<Provinec[]>("sample-data/provinec.json");
+           // _cities = await httpClient.GetFromJsonAsync<City[]>("sample-data/city.json");
+
+
+            var response = await httpClient.GetAsync("sample-data/city.json");
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            dictionarycities = JsonSerializer.Deserialize<Dictionary<int, List<City>>>(jsonString, jsonOptions);
+           
+            _cities = dictionarycities[23];
+
+
+            var arearesponse = await httpClient.GetAsync("sample-data/area.json");
+            var jsonareaString = await arearesponse.Content.ReadAsStringAsync();
+
+
+            dictionaryareas = JsonSerializer.Deserialize<Dictionary<int, List<Area>>>(jsonareaString, jsonOptions);
+
+            _areas = dictionaryareas[2121];
+           // _areas = await httpClient.GetFromJsonAsync<Area[]>("sample-data/area.json");
+        }
+       // return base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+    }
+
+    private void OnProvinecChanged(Provinec provinec)
+    {
+        if (provinec == null)
+        {
+            return;
+        }
+
+        UserAddress.Provinec = provinec;
+        if (dictionarycities.TryGetValue(provinec.id, out _cities))
+        {
+    // 使用 cities 列表执行其他操作
+        }
+        else
+        {
+            Console.WriteLine("Key not found in the dictionary.");
+        }
+      StateHasChanged();
+    }
+
+    private void OnCityChanged(City city)
+    {
+        if (city == null)
+        {
+            return;
+        }
+        UserAddress.City = city;
+        //_areas.Clear();
+        if (dictionaryareas.TryGetValue(city.id, out _areas))
+        {
+    // 使用 cities 列表执行其他操作
+        }
+        else
+        {
+            Console.WriteLine("Key not found in the dictionary.");
+        }
+        StateHasChanged();
+    }
+
+    private void OnAreaChanged(Area area)
+    {
+        if (area == null)
+        {
+            return;
+        }
+
+        UserAddress.Area = area;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// 地址
+    /// </summary>
+    public class Address
+    {
+        public int? Id { get; set; }
+        public Provinec? Provinec { get; set; }
+        public City? City { get; set; }
+        public Area? Area { get; set; }
+        public string Fulladdress { get; set; }
+        public string UserName { get; set; } // 用户名
+
+        public string PhoneNumber { get; set; } // 联系电话
+
+        public bool IsDefault { get; set; } // 是否默认地址
+    }
+    private Address UserAddress = new Address();
+
+    private async Task<IEnumerable<Provinec>> SearchAsync(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return _provinecs.ToList();
+        await Task.Delay(500);
+        return _provinecs.Where(x => x.name.Contains(searchText)).ToList();
+    }
+    
+    private async Task<IEnumerable<City>> SearchCityAsync(string arg)
+    {
+        if (string.IsNullOrWhiteSpace(arg))
+            return _cities.ToList();
+        await Task.Delay(100);
+        return _cities.Where(x => x.name.Contains(arg)).ToList();
+    }
+
+    private async Task<IEnumerable<Area>> SearchAreaAsync(string arg)
+    {
+        if (string.IsNullOrWhiteSpace(arg))
+            return _areas.ToList();
+        await Task.Delay(100);
+        return _areas.Where(x => x.name.Contains(arg)).ToList();
+    }
+
+
+    private IEnumerable<string> Validate(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return new[] { "必填" };
+        if (_provinecs.All(x => x.name != value))
+            return new[] { "无效" };
+        return Enumerable.Empty<string>();
+    }
+
+    
+    private async Task Submit()
+    {
+
+        await form.Validate();
+
+        if (form.IsTouched && form.IsValid)
+        {
+            var userAwardInfo = UserAwardInfo.Create();
+
+            userAwardInfo.UserName = UserAddress.UserName;
+            userAwardInfo.PhoneNumber = UserAddress.PhoneNumber;
+            userAwardInfo.ProvinceOrState = UserAddress.Provinec.name;
+            userAwardInfo.City = UserAddress.City.name;
+            userAwardInfo.Area = UserAddress.Area.name;
+            userAwardInfo.FullAddress = UserAddress.Fulladdress;
+
+            userAwardInfo.AwardName = Container.LotteryResult.PrizeName;
+            userAwardInfo.AwardDescription = Container.LotteryResult.PrizeDescription;
+            userAwardInfo.PrizeType = Container.LotteryResult.PrizeType;
+            userAwardInfo.PrizeNumber = Container.LotteryResult.PrizeNumber;
+
+            userAwardInfo.WeChatOpenId = Container.OpenId;
+            userAwardInfo.ActivityNumber = Container.Activity.ActivityNumber;
+            userAwardInfo.ActivityName = Container.Activity.Name;
+
+            //通过接口发送数据到后端
+
+            using  var httpClient = HttpClientFactory.CreateClient("weixin");
+            var response = await httpClient.PostAsJsonAsync("UserAwardInfo", userAwardInfo);
+            response.EnsureSuccessStatusCode();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var options = new DialogOptions
+                {
+                    CloseButton = true, 
+                    MaxWidth = MaxWidth.Large,
+                    FullWidth = true,
+                    DisableBackdropClick = true,
+                    CloseOnEscapeKey = true,
+                    NoHeader = true,
+                };
+                var parameters = new DialogParameters();
+                parameters.Add("Msg", $"奖品领取成功，关注【威特五金】公众号获取详细信息");
+                await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
+              //  return await response.Content.ReadFromJsonAsync<UserAwardInfo>();
+            }
+            
+
+            //var result = await UserAwardInfoService.CreateAsync(userawardinfo);
+            //if (result.Succeeded)
+            //{
+            //    await DialogService.CloseAsync(DialogResult.Ok(true));
+            //}
+            //else
+            //{
+            //    await DialogService.CloseAsync(DialogResult.Ok(false));
+            //}
+    //更新数据
+    //  <MudText Color="Color.Success">Success</MudText>
+        }
+        else
+        {
+    //  <MudText>IsTouched: @form.IsTouched, IsValid: @form.IsValid</MudText>
+        }
+    //await Task.Delay(1000);
+    //form.Reset();
+    }
+
+}
+

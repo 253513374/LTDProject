@@ -1,4 +1,4 @@
-﻿@page "/prizesshow"
+﻿@page "/lottery"
 
 
 
@@ -7,13 +7,67 @@
 @inject IJSRuntime JsRuntime
 @inject ILogger<PrizesShow> _logger
 
-<PageTitle>扫码抽大奖</PageTitle>
+<style>
+    body {
+        background-image: linear-gradient(rgb(109, 187, 255) 2%,rgba(109, 187, 255,0.3) 10%, rgba(0, 0, 254, 0.450)),url('imgs/hongbaobeijing.png'),url('imgs/middle_image.png'), url('imgs/bottom_image.png') !important
+    }
 
-<Header></Header>
+    .lotterycard {
+        background-color: rgba(255,255,255,0.5);
+        border-radius: 25px;
+        margin-bottom: 100px; /* 设置距离底部的距离为 100px */
+    }
+
+    .text-banner {
+        Position: absolute;
+        top: 18%;
+        /* align-content: center; */
+        /* justify-content: center; */
+        font-size:2rem;
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+    }
+    .text-banner2 {
+        Position: absolute;
+        top: 55%;
+        /* align-content: center; */
+        /* justify-content: center; */
+        font-size:0.8rem;
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+    }
+    .text-banner3 {
+        Position: absolute;
+        top: 70%;
+        /* align-content: center; */
+        /* justify-content: center; */
+        font-size:1rem;
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+    }
+</style>
+
+
+
 
 
 @if (Container.Activity is not null)
 {
+
+    <MudStack Class="position-relative" Justify="Justify.Center" AlignItems="AlignItems.Center">
+        
+        <img src="imgs/biaoti.png" style="width: 100%" />
+        <MudText Class="text-banner" >幸运大抽奖</MudText>
+        <MudText Class="text-banner2" >—活动倒计时—</MudText>
+        <MudText Class="text-banner3">@TimeRemaining.Days 天 @TimeRemaining.Hours 时 @TimeRemaining.Minutes 分 @TimeRemaining.Seconds 秒</MudText>
+        
+        
+    </MudStack>
+
+   
 
     <MudStack Spacing="3">
 
@@ -29,23 +83,27 @@
 
         <MudText Typo="Typo.body2"> @Container.Activity.Description</MudText>
 
-        <MudText Class="my-3" Typo="Typo.button" Style="letter-spacing:.3em">抽奖号码：@Container.Code</MudText>
+        <MudText Class="my-3" Typo="Typo.button" Style="letter-spacing:.3em">抽奖号码：@Container.QRCode</MudText>
     </MudStack>
-    <div class="grid-container">
-        @if (Container.Activity is not null)
-        {
-            foreach (var prize in Container.Activity.Prizes)
+
+    <div class="grid-background">
+        <div class="grid-container">
+            @if (Container.Activity is not null)
             {
-                <PrizeGridItem IsRound="false" PrizeItem="@prize" Class="image-container" DisplayMode="PrizeDisplayMode.Simple"
-                               Clicked="@((item) => OnGridItemClick(item))"
-                                OnShowDetails="@ShowPrizeDetailsDialog" />
+                foreach (var prize in Container.Activity.Prizes)
+                {
+                    <PrizeGridItem IsRound="false" PrizeItem="@prize" Class="image-container" DisplayMode="PrizeDisplayMode.Simple"
+                                   Clicked="@((item) => OnGridItemClick(item))"
+                                   OnShowDetails="@ShowPrizeDetailsDialog" />
+                }
             }
-        }
+        </div>
     </div>
+   
 
     if (SelectedPrizeItem is not null )
     {
-        <MudStack Style="height: 55px"  AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-10">
+        <MudStack Style="height: 55px"  AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-8">
             <button onclick="@OnLuckyDraw">
                 <span class="shadow"></span>
                 <span class="edge"></span>
@@ -56,28 +114,35 @@
     }
     else
     {
-        <MudStack Style="height: 55px" AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-10" />
+        <MudStack Style="height: 55px" AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-8" />
     }
-   
-    
+    <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>
 
-    <MudText Class="my-5" Typo="Typo.h6">活动结束倒计时：@TimeRemaining.Days 天 @TimeRemaining.Hours 小时 @TimeRemaining.Minutes 分钟 @TimeRemaining.Seconds 秒</MudText>
+    <MudCard Elevation="0" Class="lotterycard mt-8">
+        <div  Class="image-container">
+            <img class="centered-image" src="imgs/tou2.png" style="width: 50%;"/>
+        </div>
 
-    <MudStack Class="my-5" Justify="Justify.FlexStart" Spacing="0">
-        <MudText Typo="Typo.h6">抽奖规则</MudText>
-        <MudText Typo="Typo.caption ">1.抽奖活动的主题、奖品、时间和参与方式将在抽奖活动开始前公布。</MudText>
-        <MudText Typo="Typo.caption ">2.如果中奖者在规定时间内未领取奖品，或者无法提供真实、准确、完整的信息，其中奖资格将被取消。</MudText>
-        <MudText Typo="Typo.caption ">3.奖品将在规定的时间内发放。中奖者需要提供真实、准确、完整的联系信息以便奖品发放。</MudText>
-        <MudText Typo="Typo.caption ">4.抽奖活动的主办方有权根据实际情况对规则进行修改和解释。如有任何争议，主办方有最终决定权。</MudText>
-        <MudText Typo="Typo.caption ">5.参与者在参与抽奖活动的过程中应遵守相关法律法规和道德规范。如参与者违反相关规定，主办方有权取消其参与资格。</MudText>
-        <MudText Typo="Typo.caption ">6.抽奖活动的主办方有权根据实际情况对规则进行修改和解释。如有任何争议，主办方有最终决定权。</MudText>
-        <MudText Typo="Typo.caption ">7.参与者在参与抽奖活动的过程中产生的任何问题、损失或损害，主办方不承担任何责任。</MudText>
-        <MudText Typo="Typo.caption ">8.参与者在参与抽奖活动的过程中，主动或被动地向主办方提供的所有信息，主办方将严格保密，并仅用于抽奖活动及后续相关事宜。</MudText>
-    </MudStack>
+        <MudStack Class="my-5 pa-5" Justify="Justify.FlexStart" Spacing="2">
 
+            <MudText Typo="Typo.caption">1.抽奖活动的主题、奖品、时间和参与方式将在抽奖活动开始前公布。 </MudText>
+            <MudText Typo="Typo.caption">2.如果中奖者在规定时间内未领取奖品，或者无法提供真实、准确、完整的信息，其中奖资格将被取消。 </MudText>
+            <MudText Typo="Typo.caption">3.奖品将在规定的时间内发放。中奖者需要提供真实、准确、完整的联系信息以便奖品发放。 </MudText>
+            <MudText Typo="Typo.caption">4.抽奖活动的主办方有权根据实际情况对规则进行修改和解释。如有任何争议，主办方有最终决定权。 </MudText>
+            <MudText Typo="Typo.caption">5.参与者在参与抽奖活动的过程中应遵守相关法律法规和道德规范。如参与者违反相关规定，主办方有权取消其参与资格。 </MudText>
+            <MudText Typo="Typo.caption">6.抽奖活动的主办方有权根据实际情况对规则进行修改和解释。如有任何争议，主办方有最终决定权。 </MudText>
+            <MudText Typo="Typo.caption">7.参与者在参与抽奖活动的过程中产生的任何问题、损失或损害，主办方不承担任何责任。 </MudText>
+            <MudText Typo="Typo.caption">8.参与者在参与抽奖活动的过程中，主动或被动地向主办方提供的所有信息，主办方将严格保密，并仅用于抽奖活动及后续相关事宜。 </MudText>
+        </MudStack>
+    </MudCard>
 @*    <div class="spinner-container" style="@(isSpinning ? "display:flex;" : "display:none;")">
         <div class="spinner"></div>
     </div>*@
+
+    <div>.</div>
+    <MudOverlay ZIndex="Int32.MaxValue" Visible="_isProcessing" DarkBackground="true" Absolute="true">
+        <MudProgressCircular Size="Size.Large" Color="Color.Secondary" Indeterminate="true" />
+    </MudOverlay>
 
 
 }
@@ -93,7 +158,7 @@ else
 @code {
     //[CascadingParameter(Name = "qrcode")]
     //public string QRCode { get; set; }
-
+    private bool _isProcessing = false;
     //[CascadingParameter(Name = "openid")]
     //public string OpenId { set; get; }
     private PrizeGridItem SelectedPrizeItem { get; set; }
@@ -114,7 +179,7 @@ else
     [Inject]
     protected DataStateContainer Container { set; get; }
 
-    
+
 
 
     DialogParameters parameters = new();
@@ -139,8 +204,9 @@ else
     {
         try
         {
+            using  var httpClient = HttpClientFactory.CreateClient("weixin");
             var url = $"LotteryActivity";
-            var response = await _httpClient.GetAsync(url);
+            var response = await httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var stream = await response.Content.ReadAsStringAsync();
@@ -187,7 +253,15 @@ else
         {
                ["PrizeDetails"] = SelectedPrizeItem.PrizeItem
         };
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Large };
+        var options = new DialogOptions
+        {
+            CloseButton = true, 
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            DisableBackdropClick = true,
+            CloseOnEscapeKey = true,
+            NoHeader = true,
+        };
         await _dialogService.ShowAsync<PrizeDetailsDialog>("奖品详情",parameters, options);
     }
 
@@ -232,24 +306,110 @@ else
     }
 
 
-    private  Task OnLuckyDraw()
+    private async  Task OnLuckyDraw()
     {
+        // 如果 _isProcessing 为 true，直接返回
+        if (_isProcessing)
+        {
+            return;
+        }
+        // 设置 _isProcessing 为 true
+        _isProcessing = true;
+        try
+        {
+            var verifyresult = Container.IsVerify(SelectedPrizeItem.PrizeItem.PrizeNumber);
+
+#if DEBUG
+            await Task.Delay(3000);
+#endif
+
+            if (verifyresult)
+            {
+                var luckyresult = await LuckyDraw(Container.QRCode, Container.OpenId, SelectedPrizeItem.PrizeItem.PrizeNumber);
+        
+
+                var parameters = new DialogParameters
+                {
+                    ["LotteryResult"] = luckyresult
+                };
+                var options = new DialogOptions { 
+                    CloseButton = true,
+                    FullWidth = true, 
+                    MaxWidth = MaxWidth.Large,
+                    DisableBackdropClick = true,
+                    NoHeader = true,
+                };
+                var result= _dialogService.Show<LotteryResultDialog>("",parameters, options);
+
+            }
+        }
+        finally
+        {
+            // 将 _isProcessing 设置回 false
+            _isProcessing = false;
+        }
+
+       
+    }
+    /// <summary>
+    /// 开始抽奖
+    /// </summary>
+    /// <returns></returns>
+    private async Task<LotteryResult> LuckyDraw(string qrcode, string openid, string prizenumber)
+    {
+        try
+        {
+            using  var httpClient = HttpClientFactory.CreateClient("weixin");
+            var url = $"Lottery?qrcode={qrcode}&openid={openid}&prizennumber={prizenumber}";
+
+            var response = await httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var redstatusresult = await response.Content.ReadFromJsonAsync<ApiResponse<LotteryResult>>();
+
+                if (redstatusresult.IsSuccess)
+                {
+                    return redstatusresult.Data;
+                }
+              
+                return LotteryResult.Fail(redstatusresult.Message);
+
+            }
+            return LotteryResult.Fail(response.StatusCode.ToString());
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"抽奖异常：{e.Message}");
+
+            return LotteryResult.Fail(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// 测试中奖对话框
+    /// </summary>
+    private  async Task OpenDialogAsync()
+    {
+
+        var lotteryresult = LotteryResult.Success(SelectedPrizeItem.PrizeItem.Name,
+            "实物", 
+            SelectedPrizeItem.PrizeItem.ImageUrl,
+            SelectedPrizeItem.PrizeItem.Description,
+            SelectedPrizeItem.PrizeItem.PrizeNumber,
+            "恭喜你，中大奖啦!");
+
+        Container.LotteryResult = lotteryresult;
         var parameters = new DialogParameters
         {
-            ["QRCode"] =Container.Code,
-            ["OpenId"] = Container.OpenId,
-            ["PrizeNumber"] = SelectedPrizeItem.PrizeItem.PrizeNumber
+                ["LotteryResult"] = lotteryresult
         };
         var options = new DialogOptions { 
             CloseButton = true,
             FullWidth = true, 
             MaxWidth = MaxWidth.Large,
             DisableBackdropClick = true,
-            
+            NoHeader = true,
         };
-        var result= _dialogService.Show<LuckyDraw>("",parameters, options);
-
-        return Task.CompletedTask;
+        var result= _dialogService.Show<LotteryResultDialog>("",parameters, options);
     }
-
 }

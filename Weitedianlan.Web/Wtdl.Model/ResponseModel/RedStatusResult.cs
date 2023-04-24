@@ -1,6 +1,8 @@
-﻿namespace Wtdl.Controller.Models.ResponseModel
+﻿using Wtdl.Model.ResponseModel;
+
+namespace Wtdl.Controller.Models.ResponseModel
 {
-    public class RedStatusResult
+    public class RedStatusResult : TResult
     {
         /// <summary>
         /// 领取红包状态
@@ -23,6 +25,7 @@
         /// INVALIDCAPTCHA : 无效的验证码
         /// CAPTCHAUSED :验证已经使用过
         /// NOT: 禁止领取现金红包
+        /// NOTEXCEPTION : 异常信息
         /// </summary>
         public string StuteCode { get; set; }
 
@@ -35,6 +38,11 @@
             };
         }
 
+        /// <summary>
+        /// 活动还没开始
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailNotStarted(string message)
         {
             return new RedStatusResult
@@ -45,6 +53,11 @@
             };
         }
 
+        /// <summary>
+        /// 还未关注微信号
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailNotFollowed(string message)
         {
             return new RedStatusResult
@@ -55,6 +68,11 @@
             };
         }
 
+        /// <summary>
+        /// 活动还没激活
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailNotActivated(string message)
         {
             return new RedStatusResult
@@ -65,6 +83,11 @@
             };
         }
 
+        /// <summary>
+        /// 标签达到领取红包数量上限
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailMaximumLimit(string message)
         {
             return new RedStatusResult
@@ -75,6 +98,11 @@
             };
         }
 
+        /// <summary>
+        /// 用户领取红包数量达到上限
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailMaxUserLimit(string message)
         {
             return new RedStatusResult
@@ -85,6 +113,11 @@
             };
         }
 
+        /// <summary>
+        /// 红包数据还没有导入
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailNotImportData(string message)
         {
             return new RedStatusResult
@@ -95,6 +128,12 @@
             };
         }
 
+
+        /// <summary>
+        /// 数据还未到出库时间，出库数据还没有激活参加活动
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailNotOutTime(string message)
         {
             return new RedStatusResult
@@ -105,6 +144,11 @@
             };
         }
 
+        /// <summary>
+        ///  无效的验证码
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailInvalidCaptcha(string message)
         {
             return new RedStatusResult
@@ -115,6 +159,12 @@
             };
         }
 
+
+        /// <summary>
+        /// 验证已经使用过
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailCaptchaUsed(string message)
         {
             return new RedStatusResult
@@ -125,6 +175,11 @@
             };
         }
 
+        /// <summary>
+        /// 禁止领取现金红包
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static RedStatusResult FailNot(string message)
         {
             return new RedStatusResult
@@ -161,6 +216,21 @@
                 IsSuccess = true,
                 Message = message,
                 StuteCode = "CAPTCHA"
+            };
+        }
+
+        /// <summary>
+        /// 异常信息
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static RedStatusResult FailNotException(string message)
+        {
+            return new RedStatusResult
+            {
+                IsSuccess = false,
+                Message = message,
+                StuteCode = "NOTEXCEPTION"
             };
         }
     }

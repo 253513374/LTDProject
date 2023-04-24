@@ -8,7 +8,6 @@
 	<BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
 
 	  <PublishTrimmed>true</PublishTrimmed>
-	 
 	  <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
 
@@ -17,16 +16,24 @@
 		<PublishIISAssets>true</PublishIISAssets>
 		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
 	</PropertyGroup>
+	<Target Name="CopyWebConfig" AfterTargets="Publish">
+		<Copy SourceFiles="web.config" DestinationFolder="$(PublishDir)" />
+	</Target>
+	<ItemGroup>
+		<Content Update="web.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="MudBlazor" Version="6.2.0" />
   </ItemGroup>
 
-	<Target Name="CopyWebConfig" AfterTargets="Publish">
-		<Copy SourceFiles="web.config" DestinationFolder="$(PublishDir)" />
-	</Target>
 
 
   <ItemGroup>
@@ -36,17 +43,7 @@
 
 
 
-  <ItemGroup>
-    <Folder Include="Pages\新文件夹\" />
-  </ItemGroup>
-
-
-
-  <ItemGroup>
-    <Content Update="web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+ 
 
 
 

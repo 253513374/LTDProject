@@ -1,4 +1,4 @@
-﻿namespace Wtdl.Admin.Data
+﻿namespace Wtdl.Model
 {
     public static class CacheKeys
     {
@@ -8,5 +8,7 @@
         public const string DayCacheKey = "DayCacheKey";
 
         public const string YearChaeKey = "YearChaeKey";
+
+        public const string LoteryActive = "LoteryActiveCurrent";
     }
 }

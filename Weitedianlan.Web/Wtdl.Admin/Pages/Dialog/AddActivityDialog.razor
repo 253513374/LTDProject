@@ -1,5 +1,6 @@
 ﻿
 
+
 @inject LotteryActivityRepository _ActivityRepository
 @inject ISnackbar Snackbar
 
@@ -22,7 +23,7 @@
                         </MudPaper>
                     </MudStack>
                     <MudStack Row="true">
-                        <MudSwitch Label="立即激活活动" @bind-Checked="@AddlotteryActivity.IsActive" Color="Color.Primary" UnCheckedColor="Color.Dark"/>
+                        @*<MudSwitch Label="立即激活活动" @bind-Checked="@AddlotteryActivity.IsActive" Color="Color.Primary" UnCheckedColor="Color.Dark"/>*@
                         <MudSwitch Label="允许重复中奖" @bind-Checked="AddlotteryActivity.AllowDuplicate" Color="Color.Primary" UnCheckedColor="Color.Dark"/>
                         <MudSwitch Label="允许多次中奖" @bind-Checked="AddlotteryActivity.AllowMultipleWinning" Color="Color.Primary" UnCheckedColor="Color.Dark"/>
                     </MudStack>
@@ -53,6 +54,8 @@
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string ContentTitle { get; set; }
+
+    [Inject] private IRedisCache CacheService { get; set; }
 
     private LotteryActivity AddlotteryActivity { get; set; } = new ();
 

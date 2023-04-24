@@ -1,0 +1,382 @@
+﻿@page "/redpacked"
+
+@inherits ComponentBase
+@inject ILogger<RedPacked> _logger
+<style>
+    body {
+        background-image: linear-gradient(rgb(109, 187, 255) 2%,rgba(109, 187, 255,0.3) 10%, rgba(0, 0, 254, 0.450)),url('imgs/hongbaobeijing.png'),url('imgs/logo2.png'), url('imgs/bottom_image.png') !important
+    }
+
+    .hongbaocard {
+        border-radius: 25px;
+        margin-bottom: 100px; /* 设置距离底部的距离为 100px */
+    }
+
+    .btn-radpack-captcha {
+        border-radius: 100px;
+        width: 150px; 
+        padding: 10px;
+        /*  height: 35px;*/
+        font-weight: 700;
+        font-size: 1.2rem;
+        opacity: 0.860;
+        letter-spacing: .2em;
+        transition: transform 0.1s ease-in-out;
+        background-image: -moz-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        background-image: -webkit-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        background-image: -ms-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        box-shadow: 0px 5px 0px 0px rgba(20, 71, 172, 0.004);
+        z-index: 89;
+        color: #9b3646;
+    }
+    .btn-radpack {
+       
+        border-radius: 100px;
+        width: 200px; 
+        padding: 10px;
+      /*  height: 35px;*/
+        font-weight: 700;
+        font-size: 1.2rem;
+        opacity: 0.860;
+        letter-spacing: .2em;
+        transition: transform 0.1s ease-in-out;
+        background-image: -moz-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        background-image: -webkit-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        background-image: -ms-linear-gradient( -92deg, rgb(253,241,240) 0%, rgb(252,191,183) 100%);
+        box-shadow: 0px 5px 0px 0px rgba(20, 71, 172, 0.004);
+        z-index: 89;
+        color: #9b3646;
+    }
+
+        .btn-radpack:active {
+        transform: scale(0.9);
+    }
+
+    .btn-radpack-container {
+        display: flex;
+        justify-content: center;
+    }
+
+</style>
+
+
+<MudStack Spacing="2">
+    
+    <img src="imgs/dapaisong.png" class="image-container" style="margin-top: 50px" />
+    @*显示图片*@
+    <img src="imgs/hongbao.png" class="image-container" />
+</MudStack>
+
+<MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Class="my-8">
+        
+    
+    @switch (Container.UserStatus.StuteCode)
+    {
+        case "QRCODE":
+            <div class="btn-radpack-container">
+                <MudButton OnClick="@GetRedPacketAsync" Class="btn-radpack">立刻领取</MudButton>
+            </div>
+        break;
+        case "CAPTCHA":
+            <MudStack Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudTextField MaxLength="4" AutoFocus="true" Style="background-color: white"  Variant="Variant.Filled" FullWidth="false" T="string" @bind-Text="@Captcha" Label="红包验证码"></MudTextField>
+                <MudButton OnClick="@GetRedPacketCaptchaAsync" Class="btn-radpack">立刻领取</MudButton>
+            </MudStack>
+        break;
+        default:
+            <MudText Align="Align.Center" Style="font-weight: 700" Color="Color.Error">@Container.UserStatus.StuteCode : @Container.UserStatus.Message</MudText>
+        break;
+    }
+@*
+        <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>*@
+</MudStack>
+
+<MudCard Elevation="0" Class="hongbaocard mt-10" >
+    <div  Class="image-container">
+        <img class="centered-image" src="imgs/tou2.png" style="width: 50%;"/>
+    </div>
+    <MudStack Class="my-2 pa-5" Justify="Justify.FlexStart" Spacing="2">
+        
+        <MudText Typo="Typo.caption ">1.红包活动主题、奖品、时间和参与方式将在活动开始前通过公众号推文、官方网站等渠道公布。                                                     </MudText>
+        <MudText Typo="Typo.caption ">2.活动期间，用户需关注活动公众号并完成相应任务，即有机会赢取红包奖励。                          </MudText>
+        <MudText Typo="Typo.caption ">3.每位用户每天可参与活动一次，红包金额随机，具体金额将在用户领取后显示。                                  </MudText>
+        <MudText Typo="Typo.caption ">4.红包奖励将实时发放至用户的微信钱包，用户需确保微信钱包功能正常，以便顺利领取红包。                           </MudText>
+        <MudText Typo="Typo.caption ">5.活动主办方有权根据实际情况对活动规则进行修改和解释。如有任何争议，主办方有最终决定权。           </MudText>
+        <MudText Typo="Typo.caption ">6.参与者在参与红包活动过程中应遵守相关法律法规和道德规范。如参与者违反相关规定，主办方有权取消其参与资格。                           </MudText>
+        <MudText Typo="Typo.caption ">7.参与者在参与红包活动过程中，主动或被动地向主办方提供的所有信息，主办方将严格保密，并仅用于红包活动及后续相关事宜。                                    </MudText>
+        <MudText Typo="Typo.caption ">8.请密切关注活动公告，参与活动，赢取红包奖励，祝您好运！ </MudText>
+    </MudStack>
+</MudCard>
+
+<div>.</div>
+<MudOverlay ZIndex="Int32.MaxValue" Visible="_isProcessing" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Size="Size.Large" Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+
+@code {
+
+
+    [Inject]
+    protected DataStateContainer Container { set; get; }
+
+    private string Captcha { set; get; }
+
+
+    private bool _isProcessing = false;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isProcessing = false;
+            StateHasChanged();
+        }
+      //  return base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    //二维码领取领取红包
+    private async Task GetRedPacketAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QRCode))
+        {
+            return;
+        }
+
+
+        // 如果 _isProcessing 为 true，直接返回
+        if (_isProcessing)
+        {
+            return;
+        }
+        // 设置 _isProcessing 为 true
+        _isProcessing = true;
+        try
+        {
+            var options = new DialogOptions
+            {
+                CloseButton = true, 
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true,
+                DisableBackdropClick = true,
+                CloseOnEscapeKey = true,
+                NoHeader = true,
+            };
+
+#if DEBUG
+            await Task.Delay(3000);
+#endif
+           
+
+            var redpacketresult = await GetRedPacketResultQRCodeAsync(Container.OpenId, Container.QRCode);
+            if (redpacketresult.IsSuccess)
+            {
+                // redPacketResult = RedPacketResult.Success("100");
+                var parameters = new DialogParameters();
+                parameters.Add("Result", redpacketresult);
+                parameters.Add("Message","恭喜你！已领取红包");
+                await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情",parameters, options);
+            }
+            else
+            {
+                var parameters = new DialogParameters();
+                parameters.Add("Result", redpacketresult);
+                parameters.Add("Message",redpacketresult.Message);
+                await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情",parameters, options);
+            }
+        }
+        finally
+        {
+            // 将 _isProcessing 设置回 false
+            _isProcessing = false;
+        }
+
+    }
+
+    private async Task GetRedPacketCaptchaAsync()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true, 
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            DisableBackdropClick = true,
+            CloseOnEscapeKey = true,
+            NoHeader = true,
+        };
+        if (string.IsNullOrWhiteSpace(Captcha)||string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QRCode))
+        {
+#if DEBUG
+            var parameters = new DialogParameters();
+            parameters.Add("Msg", $"Captcha:{Captcha}  OpenId:{Container.OpenId}  QRCode:{Container.QRCode}");
+            await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
+#endif
+          
+            return;
+        }
+        
+        // 如果 _isProcessing 为 true，直接返回
+        if (_isProcessing)
+        {
+            return;
+        }
+    // 设置 _isProcessing 为 true
+        _isProcessing = true;
+        try
+        {
+            
+
+            var redpacketresult = await GetRedPacketResultCaptchaAsync(Container.OpenId, Container.QRCode,Captcha);
+            if (redpacketresult.IsSuccess)
+            {
+                var parameters = new DialogParameters();
+                parameters.Add("Result", redpacketresult);
+                parameters.Add("Message","恭喜你！已领取红包");
+                await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情",parameters, options);
+            }
+            else
+            {
+                var parameters = new DialogParameters();
+                parameters.Add("Result", redpacketresult);
+                parameters.Add("Message",redpacketresult.Message);
+                await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情",parameters, options);
+            }
+        }
+        finally
+        {
+    // 将 _isProcessing 设置回 false
+            _isProcessing = false;
+        }
+    }
+
+    /// <summary>
+    /// 扫码二维码直接领取红包
+    /// </summary>
+    /// <param name="openid"></param>
+    /// <param name="qrcode"></param>
+    /// <returns></returns>
+    private async Task<RedPacketResult> GetRedPacketResultQRCodeAsync(string openid, string qrcode)
+    {
+        try
+        {
+
+            using  var httpClient = HttpClientFactory.CreateClient("weixin");
+            var url = $"RedPacket/QRCode?openid={openid}&qrcode={qrcode}";
+
+            var response = await httpClient.PostAsync(url, null);
+            if (response.IsSuccessStatusCode)
+            {
+                var redpacketresult = await response.Content.ReadFromJsonAsync<ApiResponse<RedPacketResult>>();
+
+                if (redpacketresult.IsSuccess)
+                {
+                    return redpacketresult.Data;
+                }
+
+                return RedPacketResult.Fail(redpacketresult.Message);
+                //return new RedPacketResult() { Message = redpacketresult.Message };
+            }
+            _logger.LogError($"二维码领取现金红包失败：{response.StatusCode}");
+            return RedPacketResult.Fail(response.StatusCode.ToString());
+
+        }
+        catch (Exception e)
+        {
+            DialogParameters parameters = new();
+            parameters.Add("Msg", $"二维码领取现金红包异常：{e.Message}");
+            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
+            _logger.LogError($"二维码领取现金红包异常：{e.Message}");
+
+            return RedPacketResult.Fail(e.Message);
+        }
+
+    }
+
+    /// <summary>
+    /// 使用验证码领取红包
+    /// </summary>
+    /// <param name="openid"></param>
+    /// <param name="qrcode"></param>
+    /// <param name="captcha"></param>
+    /// <returns></returns>
+    private async Task<RedPacketResult> GetRedPacketResultCaptchaAsync(string openid, string qrcode, string captcha)
+    {
+        try
+        {
+
+            using  var httpClient = HttpClientFactory.CreateClient("weixin");
+            var url = $"RedPacket/Captcha?openid={openid}&qrcode={qrcode}&captcha={captcha}";
+
+            var response = await httpClient.PostAsync(url, null);
+            if (response.IsSuccessStatusCode)
+            {
+                var redpacketresult = await response.Content.ReadFromJsonAsync<ApiResponse<RedPacketResult>>();
+
+                if (redpacketresult.IsSuccess)
+                {
+                    return redpacketresult.Data;
+                }
+
+                return RedPacketResult.Fail(redpacketresult.Message);
+    //return new RedPacketResult() { Message = redpacketresult.Message };
+            }
+            _logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
+            return RedPacketResult.Fail(response.StatusCode.ToString());
+
+        }
+        catch (Exception e)
+        {
+            DialogParameters parameters = new();
+            parameters.Add("Msg", $"验证码领取红包异常：{e.Message}");
+            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
+            _logger.LogError($"验证码领取现金红包异常：{e.Message}");
+
+            return RedPacketResult.Fail(e.Message);
+        }
+        //    var response = await httpClient.PostAsync(url, null);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var redpacketresult = await response.Content.ReadFromJsonAsync<ApiResponse<RedPacketResult>>();
+
+        //        if (redpacketresult.IsSuccess)
+        //        {
+        //            return redpacketresult.Data;
+        //        }
+               
+        //        return RedPacketResult.Fail(redpacketresult.Message);
+        //    }
+        //    _logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
+        //    return RedPacketResult.Fail(response.StatusCode.ToString());
+        //}
+        //catch (Exception e)
+        //{
+        //    _logger.LogError($"验证码领取现金红包异常：{e.Message}");
+
+        //    return RedPacketResult.Fail(e.Message);
+        //}
+       
+    }
+
+
+    /// <summary>
+    /// 打开对话框
+    /// </summary>
+    private  async Task OpenDialogAsync()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Result", new RedPacketResult(){ IsSuccess = true,TotalAmount = "85"});
+        parameters.Add("Message","恭喜你！已领取红包");
+
+        var options = new DialogOptions
+        {
+            CloseButton = true, 
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            DisableBackdropClick = true,
+            CloseOnEscapeKey = true,
+            NoHeader = true,
+        };
+        await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情",parameters, options);
+    }
+}

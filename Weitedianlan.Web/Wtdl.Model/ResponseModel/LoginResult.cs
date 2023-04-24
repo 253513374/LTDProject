@@ -1,6 +1,6 @@
 ﻿namespace Wtdl.Model.ResponseModel
 {
-    public class LoginResult
+    public class LoginResult : TResult
     {
         /// <summary>
         /// 授权token

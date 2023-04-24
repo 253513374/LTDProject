@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.27.0" />
     <PackageReference Include="MiniExcel" Version="1.30.2" />
     <PackageReference Include="MudBlazor" Version="6.2.0" />
+    <PackageReference Include="NRedisStack" Version="0.6.0" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.2" />
     <PackageReference Include="Radzen.Blazor" Version="4.7.13" />
     <PackageReference Include="Senparc.Weixin" Version="6.15.8.7" />
@@ -35,11 +36,11 @@
     <PackageReference Include="Senparc.Weixin.TenPay" Version="1.12.5.7" />
     <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.6.8.13" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.96" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Wtdl.RedisCache\Wtdl.RedisCache.csproj" />
     <ProjectReference Include="..\Wtdl.Repository\Wtdl.Repository.csproj" />
     <ProjectReference Include="..\Wtdl.Share\Wtdl.Share.csproj" />
   </ItemGroup>

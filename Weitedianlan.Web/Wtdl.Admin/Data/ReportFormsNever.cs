@@ -3,7 +3,7 @@
 namespace Wtdl.Admin.Data
 {
     /// <summary>
-    /// 缓存不长变动的数据。
+    /// 往年数据统计表
     /// </summary>
     public class ReportFormsNever
     {

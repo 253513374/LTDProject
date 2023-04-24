@@ -66,6 +66,8 @@
 
     //private string ImageBase64 { set; get; }
 
+    [Inject] private IRedisCache CacheRedis { get; set; }
+
     protected override Task OnInitializedAsync()
     {
         return base.OnInitializedAsync();
@@ -85,11 +87,12 @@
             if (result > 0)
             {
                 Snackbar.Add($"活动【 {lotteryActivity.Name} 】编辑成功", Severity.Success);
-                MudDialog.Close(DialogResult.Ok(true));
+                MudDialog.Close(DialogResult.Ok(lotteryActivity));
             }
             else
             {
                 Snackbar.Add($"活动【 {lotteryActivity.Name} 】编辑失败", Severity.Error);
+                MudDialog.Close(DialogResult.Ok(false));
             }
 
             return;

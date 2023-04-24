@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Wtdl.Model.Entity;
 using Wtdl.Repository.Tools;
 
@@ -35,6 +36,17 @@ namespace Wtdl.Repository
 #else
             services.AddDbContextFactory<LotteryContext>(options => options.UseSqlServer(connectionString));
 #endif
+            return services;
+        }
+
+        public static IServiceCollection AddOracleContext(this IServiceCollection services,
+            string contextString)
+        {
+            services.AddDbContextFactory<ErpContext>(options =>
+                options.UseOracle(contextString, b =>
+                        b.UseOracleSQLCompatibility("11"))
+                    .EnableSensitiveDataLogging());
+            services.AddScoped<BdxOrderRepository>();
             return services;
         }
     }

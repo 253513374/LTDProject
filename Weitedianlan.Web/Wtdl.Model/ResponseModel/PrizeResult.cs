@@ -1,6 +1,6 @@
 ﻿namespace Wtdl.Model.ResponseModel
 {
-    public class PrizeResult
+    public class PrizeResult : TResult
     {
         /// <summary>
         /// 奖品编号。

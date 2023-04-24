@@ -9,7 +9,7 @@ namespace Wtdl.Model.ResponseModel
     /// <summary>
     /// 户抽奖信息
     /// <summary>
-    public class UserItemsRecordResult
+    public class UserItemsRecordResult : TResult
     {
         /// <summary>
         /// 是否请求成功

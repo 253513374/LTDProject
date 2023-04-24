@@ -1,11 +1,12 @@
-﻿using Wtdl.Model.Entity;
+﻿using System;
+using Wtdl.Model.Entity;
 
 namespace Wtdl.Model.ResponseModel
 {
     /// <summary>
     /// 防伪查询结果
     /// </summary>
-    public class AntiFakeResult
+    public class AntiFakeResult : TResult
     {
         /// <summary>
         /// 查询状态
@@ -17,14 +18,27 @@ namespace Wtdl.Model.ResponseModel
         /// </summary>
         public string Message { get; set; }
 
-        /// <summary>
-        /// 防伪数据
-        /// </summary>
-        public SearchByCode AntiFakeByData { get; set; }
+        public int Id { get; set; }
+        public string LabelNum { get; set; }
+        public string Results { get; set; }
+        public string FirstQueryTime { get; set; }
+        public string Lang { get; set; }
+        public string Info { get; set; }
+        public string? ImgUrl { get; set; }
+        public string ProductName { get; set; }
+        public string CorpName { get; set; }
+        public string ProductVoice { get; set; }
+        public string FibreColor { get; set; }
+        public string QueryCount { get; set; }
+        public string? WINNERPRODUCT { set; get; }
+        public string Email { set; get; }
+        public string UserName { set; get; }
+        public DateTime? QueryTime { get; set; }
+        public string? FIELD1 { set; get; }
 
-        public static AntiFakeResult Fail(string message)
+        public static AntiFakeResult Fail(string message, SearchByCode searchByCode = null)
         {
-            return new AntiFakeResult
+            return new AntiFakeResult()
             {
                 IsSuccess = false,
                 Message = message
@@ -37,7 +51,23 @@ namespace Wtdl.Model.ResponseModel
             {
                 IsSuccess = true,
                 Message = "",
-                AntiFakeByData = searchByCode
+                Id = searchByCode.Id,
+                LabelNum = searchByCode.LabelNum,
+                Results = searchByCode.Results,
+                FirstQueryTime = searchByCode.FirstQueryTime,
+                Lang = searchByCode.Lang,
+                Info = searchByCode.Info,
+                ImgUrl = searchByCode.ImgUrl,
+                ProductName = searchByCode.ProductName,
+                CorpName = searchByCode.CorpName,
+                ProductVoice = searchByCode.ProductVoice,
+                FibreColor = searchByCode.FibreColor,
+                QueryCount = searchByCode.QueryCount,
+                WINNERPRODUCT = searchByCode.WINNERPRODUCT,
+                Email = searchByCode.Email,
+                UserName = searchByCode.UserName,
+                QueryTime = searchByCode.QueryTime,
+                FIELD1 = searchByCode.FIELD1
             };
         }
     }

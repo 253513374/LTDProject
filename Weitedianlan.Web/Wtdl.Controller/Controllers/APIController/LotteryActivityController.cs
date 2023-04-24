@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Senparc.CO2NET.Extensions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Wtdl.Controller.Controllers.APIController;
 using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Services;
 
@@ -12,34 +15,35 @@ namespace Wtdl.Web.Api.Controllers
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    public class LotteryActivityController : ControllerBase
+    public class LotteryActivityController : BaseController<LotteryActivityController>
     {
-        // GET: api/<LotteryActivityController>
-
         private readonly LotteryService _lotteryService;
 
         private readonly ILogger<LotteryActivityController> _logger;
 
         public LotteryActivityController(LotteryService lotteryService,
-            ILogger<LotteryActivityController> logger)
+            ILogger<LotteryActivityController> logger) : base(logger)
         {
             _lotteryService = lotteryService;
             _logger = logger;
         }
 
         /// <summary>
-        /// 获取抽奖活动信息以及参与活动的产品信息。
+        /// 获取抽奖活动(活动奖品)信息。
         /// </summary>
         /// <param name="qrcode">标签序号</param>
         /// <returns>返回ActivityViewModel JSON对象</returns>
         [HttpGet]
-        public async Task<ActivityResult> GetLotteryActivity(string qrcode = "")
+        public async Task<ApiResponse<ActivityResult>> GetLotteryActivity(string qrcode = "")
         {
-            var result = await _lotteryService.GetLotteryActivityAsync();
+            ActivityResult result = await _lotteryService.GetLotteryActivityAsync();
 
-            _logger.LogInformation($"获取抽奖活动信息以及参与活动的产品信息:{result.ToJson()}");
+            if (result.IsSuccess)
+            {
+                return Success(result);
+            }
 
-            return result;
+            return Failure<ActivityResult>($"{result.Msg}");
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Senparc.CO2NET.Extensions;
 using Wtdl.Model.ResponseModel;
 using Wtdl.Mvc.Controllers.APIController;
 using Wtdl.Mvc.Services;
+using Wtdl.RedisCache;
+using Wtdl.Repository;
 
 namespace Wtdl.Controller.Controllers.APIController
 {
@@ -13,11 +16,19 @@ namespace Wtdl.Controller.Controllers.APIController
     {
         private readonly SearchByCodeService _searchByCodeService;
 
-        private ILogger<TraceabilityController> _logger;
+        private readonly BdxOrderRepository _bdxOrderRepository;
 
-        public TraceabilityController(SearchByCodeService codeService, ILogger<TraceabilityController> logger)
+        private ILogger<TraceabilityController> _logger;
+        private readonly IRedisCache _redisCache;
+
+        public TraceabilityController(SearchByCodeService codeService,
+            IRedisCache redisCache,
+            BdxOrderRepository bdxOrderRepository,
+            ILogger<TraceabilityController> logger)
             : base(logger)
         {
+            _bdxOrderRepository = bdxOrderRepository;
+            _redisCache = redisCache;
             _searchByCodeService = codeService;
             _logger = logger;
         }
@@ -28,20 +39,37 @@ namespace Wtdl.Controller.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns>
         /// </returns>
-        [ResponseCache(Duration = 300, VaryByQueryKeys = new string[] { "qrcode" })]
+        //[ResponseCache(Duration = 180, VaryByQueryKeys = new string[] { "qrcode" })]
         [HttpGet]
-        public async Task<TraceabilityResult> Get(string qrcode)
+        public async Task<ApiResponse<TraceabilityResult>> Get(string qrcode)
         {
             // your function code here
             if (string.IsNullOrEmpty(qrcode))
             {
-                return new TraceabilityResult() { Status = false, Msg = "查询标签序号不能为空" };
+                return Failure<TraceabilityResult>("查询标签序号不能为空");
+                // return new TraceabilityResult() { Status = false, Msg = "查询标签序号不能为空" };
             }
 
             qrcode = qrcode.Trim();
             var result = await _searchByCodeService.GetWLabelStorageAsync(qrcode);
+            _logger.LogInformation($"查询标签序号：{qrcode}，结果：{result.ToJson()}");
 
-            return result;
+            if (!result.Status)
+            {
+                return Failure<TraceabilityResult>(result.Msg);
+            }
+
+            //var erpresult = await _bdxOrderRepository.GetSingleAsync(result.OrderNumbels);
+            //_logger.LogInformation($"erp: {erpresult.ToJson()}");
+
+            //if (erpresult is not null)
+            //{
+            //   // _redisCache.
+            //}
+
+            _ = await _redisCache.SetBitAsync(qrcode);
+
+            return Success(result);
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Senparc.CO2NET.Extensions;
 using Wtdl.Controller.Controllers.APIController;
 using Wtdl.Model.ResponseModel;
+using System.Text.Json;
 
 public abstract class BaseController<T> : ControllerBase
 {
@@ -21,9 +23,11 @@ public abstract class BaseController<T> : ControllerBase
     /// <param name="data"></param>
     /// <param name="metadata"></param>
     /// <returns></returns>
-    protected ApiResponse<T> Success<T>(string message, T data, object metadata = null)
+    protected ApiResponse<T> Success<T>(T data, string message = "Success", object metadata = null)
     {
-        return new ApiResponse<T>(StatusCodes.Status200OK, message, data, metadata);
+        var sss = data.ToString();
+        _logger.LogInformation($"{typeof(T)}:Success   Data:{data.ToString()}");
+        return ApiResponse<T>.Success(data, message);
     }
 
     /// <summary>
@@ -34,8 +38,20 @@ public abstract class BaseController<T> : ControllerBase
     /// <param name="message"></param>
     /// <param name="errorDetails"></param>
     /// <returns></returns>
-    protected ApiResponse<T> Failure<T>(int statusCode, string message, List<string> errorDetails = null)
+    protected ApiResponse<T> Failure<T>(string message, T data = default, List<string> errorDetails = null)
     {
-        return new ApiResponse<T>(statusCode, message, default(T), null, errorDetails);
+        _logger.LogInformation($"{typeof(T)} Failure:{message}");
+
+        return ApiResponse<T>.Failure(data, message, errorDetails);
+    }
+
+    protected ApiResponse<List<TItem>> SuccessList<TItem>(List<TItem> dataList)
+    {
+        return ApiResponse<List<TItem>>.SuccessList<TItem>(dataList);
+    }
+
+    protected ApiResponse<List<TItem>> FailureList<TItem>(string message, List<TItem> data = default, List<string> errorDetails = null)
+    {
+        return ApiResponse<List<TItem>>.Failure(data, message, errorDetails);
     }
 }

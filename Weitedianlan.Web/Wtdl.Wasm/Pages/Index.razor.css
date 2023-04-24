@@ -3,11 +3,10 @@
 }
 */
 footer {
-    background-color: rgba(0,0,0,0.3);
+    background-color: transparent;
     margin: 0 auto;
     width: 100%;
     color: white;
-    margin-top: 50px;
     border-radius: 15px;
     font-size: 14px;
     /* color: #e2e1e4*/
@@ -17,7 +16,8 @@ footer {
     width: 100%;
     height: auto;
     border: 0px solid white;
-    padding: 20px;
+    padding: 0px;
+    margin: 0px;
     border-radius: 15px;
     /* background-color: rgba(255,255,255,0.5);*/
     /*background-color: rgba(127,127,127,0.8)*/
@@ -46,7 +46,7 @@ ul li span {
 }
 
 .footertext {
-    color: #EEA47F;
+    color: #0087fe;
 }
 
 /* 媒体查询：移动设备 */
@@ -144,20 +144,60 @@ ul li span {
     }
 }
 
+.image-container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+.centered-image {
+    width: 80%; /* 设置图片宽度为容器宽度的一半 */
+    max-width: 100%; /* 确保图片不会超出其原始尺寸 */
+    display: inline-block; /* 使图片成为行内元素以便居中 */
+    vertical-align: middle; /* 垂直居中对齐 */
+}
+
 /* 个性名片*/
-.container {
+.icon-heading {
+    position: relative;
+}
+
+    .icon-heading::after {
+        /*content: "";
+        display: inline-block;
+        width: 6px;*/ /* 设置图标宽度 */
+        /*height: 16px;*/ /* 设置图标高度 */
+        /*border-radius: 50%;*/ /* 使图标呈圆形 */
+        /*background-color: #000;*/ /* 设置图标颜色 */
+        /*margin-right: 8px;*/ /* 设置图标与标题之间的距离 */
+        /*vertical-align: middle;*/ /* 垂直居中对齐 */
+
+        content: "";
+        position: absolute;
+        height: 2rem;
+        top: 0;
+        left: 0;
+        border: 3px solid;
+        border-radius: 20px;
+    }
+
+.containerper {
     position: relative;
     font-family: sans-serif;
+    margin: 0px;
     padding: 0px;
 }
 
-    .container::before, .container::after {
+    /*    .container::before, .container::after {
         content: "";
         background-color: #fab5704c;
         position: absolute;
-    }
+    }*/
 
-    .container::before {
+    .containerper::before {
         border-radius: 50%;
         width: 6rem;
         height: 6rem;
@@ -165,7 +205,7 @@ ul li span {
         left: 7%;
     }
 
-    .container::after {
+    .containerper::after {
         content: "";
         position: absolute;
         height: 3rem;
@@ -174,53 +214,50 @@ ul li span {
         border: 1px solid;
     }
 
-    .container .box {
+    .containerper .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         width: 100%;
-        height: 8em;
+        height: auto;
         padding: 8px;
         background-color: rgba(255, 255, 255, 0.074);
         border: 1px solid rgba(255, 255, 255, 0.222);
-        -webkit-backdrop-filter: blur(20px);
-        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(3px);
+        backdrop-filter: blur(3px);
         border-radius: .7rem;
         transition: all ease .3s;
     }
 
-    .container .box {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-        .container .box .title {
-            font-size: 18px;
-            font-weight: 500;
+        .containerper .box .title {
+            font-size: 16px;
+            font-weight: 400;
             letter-spacing: .3em
         }
 
-        .container .box div strong {
+        .containerper .box div strong {
             display: block;
             margin-bottom: .5rem;
         }
 
-        .container .box div p {
+        .containerper .box div p {
             margin: 0;
             font-size: 14px;
             font-weight: 300;
             letter-spacing: .1em;
         }
 
-        .container .box div span {
+        .containerper .box div span {
             font-size: .7rem;
             font-weight: 300;
         }
 
-            .container .box div span:nth-child(3) {
+            .containerper .box div span:nth-child(3) {
                 font-weight: 500;
                 margin-right: .2rem;
             }
 
-        .container .box:hover {
+/*     .container .box:hover {
             box-shadow: 0px 0px 20px 1px #ffbb763f;
             border: 1px solid rgba(255, 255, 255, 0.454);
-        }
+        }*/

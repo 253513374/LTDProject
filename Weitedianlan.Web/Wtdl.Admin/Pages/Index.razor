@@ -2,6 +2,7 @@
 @using Radzen.Blazor
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Diagnostics.Contracts
+@using Wtdl.Share
 @using Wtdl.Share.SignalR
 
 
@@ -191,6 +192,10 @@
 
     [Inject] private AccountService Service { get; set; }
 
+
+    [Inject]
+    private IRedisCache RedisCache { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
@@ -245,15 +250,15 @@
     {
         var cacheKey = $"ReportFormsNever{DateTime.Now.Year}";
 
-        if (!_Cache.TryGetValue(cacheKey, out FormsNever))
+
+        FormsNever = await RedisCache.GetObjectAsync<ReportFormsNever>(cacheKey);
+
+        if (FormsNever is null)
         {
-            var cacheOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddYears(1).Year, 1, 1, 0, 0, 0, TimeSpan.Zero)
-                };
             FormsNever = await GetDataFromStorage();
-            _Cache.Set(cacheKey, FormsNever, cacheOptions);
+            await RedisCache.SetObjectAsync(cacheKey, FormsNever);
         }
+
 
         LotteryCount      = await _LotteryRecordRepository.GetLotteryRecordsCountAsync();
         LotteryWinCount   = await _LotteryRecordRepository.GetLotteryWinRecordsCountAsync();

@@ -1,7 +1,16 @@
-﻿namespace Wtdl.Admin.SignalRHub;
+﻿using System;
+using System.Collections.Generic;
+using Wtdl.Model.Entity;
+
+namespace Wtdl.Model.ResponseModel;
 
 public class OutStorageResult
 {
+    public OutStorageResult()
+    {
+        LabelStorages = new List<W_LabelStorage>(1000);
+    }
+
     public bool Successed { get; set; }
 
     public DateTime Time { get; set; }
@@ -9,6 +18,8 @@ public class OutStorageResult
     public int Count { get; set; }
 
     public string QRCode { get; set; }
+
+    public List<W_LabelStorage> LabelStorages { get; set; }
 
     public string Message { get; set; }
 
@@ -30,6 +41,16 @@ public class OutStorageResult
             Successed = false,
             Message = message,
             QRCode = qrCode
+        };
+    }
+
+    public static OutStorageResult FailList(string message, List<W_LabelStorage> labelStorages)
+    {
+        return new OutStorageResult()
+        {
+            Successed = false,
+            Message = message,//string.Join(",", messageList),
+            LabelStorages = labelStorages
         };
     }
 }

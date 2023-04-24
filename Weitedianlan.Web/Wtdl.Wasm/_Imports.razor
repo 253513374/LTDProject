@@ -1,4 +1,6 @@
 ﻿@using System.Net.Http
+@using Microsoft.Extensions.DependencyInjection;
+
 @using System.Net.Http.Json
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
@@ -15,6 +17,12 @@
 @using Wtdl.Wasm.Shared
 @using Wtdl.Wasm.Pages.Skeleton
 
+@using Wtdl.Wasm.Pages.Debug
+@using Wtdl.Wasm.Pages.Dialog
+@using Wtdl.Wasm.Data
+
+@inject IHttpClientFactory HttpClientFactory
+
 @inject NavigationManager _navigationManager
-@inject HttpClient _httpClient
+@*@inject HttpClient _httpClient*@
 @inject IDialogService _dialogService

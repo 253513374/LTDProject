@@ -1,6 +1,6 @@
 ﻿namespace Wtdl.Model.ResponseModel
 {
-    public class RedPacketResult
+    public class RedPacketResult : TResult
     {
         /// <summary>
         /// 领取红包状态

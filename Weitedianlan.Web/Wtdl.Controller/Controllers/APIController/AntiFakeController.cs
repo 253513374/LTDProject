@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Wtdl.Controller.Controllers.APIController;
 using Wtdl.Model.ResponseModel;
 
 using Wtdl.Mvc.Services;
+using Wtdl.RedisCache;
 
 namespace Wtdl.Mvc.Controllers.APIController
 {
@@ -16,10 +18,14 @@ namespace Wtdl.Mvc.Controllers.APIController
         private readonly SearchByCodeService _searchByCodeService;
 
         private ILogger<AntiFakeController> _logger;
+        private readonly IRedisCache _redisCache;
 
-        public AntiFakeController(SearchByCodeService codeService, ILogger<AntiFakeController> logger)
+        public AntiFakeController(SearchByCodeService codeService,
+            IRedisCache redisCache,
+            ILogger<AntiFakeController> logger)
         : base(logger)
         {
+            _redisCache = redisCache;
             _searchByCodeService = codeService;
             _logger = logger;
         }
@@ -31,18 +37,18 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <returns></returns>
         [HttpGet]
         [ResponseCache(Duration = 300, VaryByQueryKeys = new string[] { "qrcode" })]
-        public async Task<AntiFakeResult> GetSearchByCodeAsync(string qrcode)
+        public async Task<ApiResponse<AntiFakeResult>> GetSearchByCodeAsync(string qrcode)
         {
             if (string.IsNullOrEmpty(qrcode))
             {
-                return new AntiFakeResult
-                {
-                    IsSuccess = false,
-                    Message = "参数错误。"
-                };
+                return Failure<AntiFakeResult>("无效的防伪码");
             }
 
-            return await _searchByCodeService.QueryTag(qrcode);
+            var result = await _searchByCodeService.QueryTag(qrcode);
+
+            return result.IsSuccess
+                    ? Success(result, "查询成功")
+                    : Failure<AntiFakeResult>(result.Message);
         }
     }
 }

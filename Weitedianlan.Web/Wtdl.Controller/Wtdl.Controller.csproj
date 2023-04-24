@@ -22,11 +22,17 @@
     <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.12.5.7" />
     <PackageReference Include="Senparc.Weixin.TenPay" Version="1.12.5.7" />
     <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.6.8.13" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Wtdl.RedisCache\Wtdl.RedisCache.csproj" />
     <ProjectReference Include="..\Wtdl.Repository\Wtdl.Repository.csproj" />
     <ProjectReference Include="..\Wtdl.Share\Wtdl.Share.csproj" />
   </ItemGroup>

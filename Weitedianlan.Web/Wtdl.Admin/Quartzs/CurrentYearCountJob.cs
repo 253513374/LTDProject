@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Quartz;
 using Wtdl.Admin.Data;
+using Wtdl.Model;
 using Wtdl.Repository;
 
 namespace Wtdl.Admin.Quartzs

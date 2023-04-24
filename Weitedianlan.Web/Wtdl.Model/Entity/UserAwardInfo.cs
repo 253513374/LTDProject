@@ -3,65 +3,103 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wtdl.Model.ResponseModel;
 
 namespace Wtdl.Model.Entity
 {
-    public class UserAwardInfo
+    public class UserAwardInfo : TResult
     {
         public int Id { get; set; } // 用户获奖信息ID
 
-        // 用户信息
-        public string WeChatOpenId { get; set; } // 微信OpenID
+        /// <summary>
+        /// 微信OpenID
+        /// </summary>
+        public string WeChatOpenId { get; set; } //
 
-        public string UserName { get; set; } // 用户名
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        public string UserName { get; set; } //
 
+        /// <summary>
+        /// 联系电话
+        /// </summary>
         public string PhoneNumber { get; set; } // 联系电话
 
-        // 获奖奖品信息
+        /// <summary>
+        /// 获奖奖品名称
+        /// </summary>
         public string AwardName { get; set; } // 奖品名称
 
+        /// <summary>
+        /// 奖品描述
+        /// </summary>
         public string AwardDescription { get; set; } // 奖品描述
+
+        /// <summary>
+        /// 奖品类型
+        /// </summary>
+        public string PrizeType { get; set; }
+
+        /// <summary>
+        /// 奖品编号
+        /// </summary>
+        public string PrizeNumber { get; set; }
+
+        /// <summary>
+        /// 获奖日期
+        /// </summary>
         public DateTime DateReceived { get; set; } // 获奖日期
 
-        // 物流地址信息
+        /// <summary>
+        /// 物流详细地址
+        /// </summary>
         public string FullAddress { get; set; } // 完整地址（包括街道地址和小区/楼盘/单位）
 
+        /// <summary>
+        /// 城市
+        /// </summary>
         public string City { get; set; } = "海口市"; //城市
-        public string ProvinceOrState { get; set; } = "海南省"; //省份/州
-        public string Country { get; set; } = "中国"; //国家
-        public string PostalCode { get; set; } //邮政编码
 
-        // 是否已发货,默认未发货
+        /// <summary>
+        /// 省
+        /// </summary>
+        public string ProvinceOrState { get; set; } = "海南省"; //省份/州
+
+        /// <summary>
+        /// 国家
+        /// </summary>
+        public string Country { get; set; } = "中国"; //国家
+
+        /// <summary>
+        /// 区
+        /// </summary>
+        public string Area { get; set; }
+
+        /// <summary>
+        /// 是否已邮寄发货,默认未发货
+        /// </summary>
         public bool IsShipped { get; set; } = false;
+
+        /// <summary>
+        /// 活动编号
+        /// </summary>
+        public string ActivityNumber { get; set; }
+
+        /// <summary>
+        /// 活动名称
+        /// </summary>
+        public string ActivityName { get; set; }
 
         // 无参构造函数
         public UserAwardInfo()
         { }
 
         // 带参数的构造函数
-        public UserAwardInfo(
-            string weChatOpenId, string userName, string phoneNumber,
-            string awardName, string awardDescription, DateTime dateReceived,
-            string fullAddress, string city, string provinceOrState, string country, string postalCode, bool isShipped = false)
-        {
-            WeChatOpenId = weChatOpenId;
-            UserName = userName;
-            PhoneNumber = phoneNumber;
-            AwardName = awardName;
-            AwardDescription = awardDescription;
-            DateReceived = dateReceived;
-            FullAddress = fullAddress;
-            City = city;
-            ProvinceOrState = provinceOrState;
-            Country = country;
-            PostalCode = postalCode;
-            IsShipped = isShipped;
-        }
 
-        // 重写ToString()方法，方便调试和输出
-        public override string ToString()
+        public static UserAwardInfo Create()
         {
-            return $"用户获奖信息: {{ ID: {Id}, 微信OpenID: {WeChatOpenId}, 用户名: {UserName}, 联系电话: {PhoneNumber}, 奖品名称: {AwardName}, 奖品描述: {AwardDescription}, 获奖日期: {DateReceived}, 完整地址: {FullAddress}, 城市: {City}, 省份/州: {ProvinceOrState}, 国家: {Country}, 邮政编码: {PostalCode}, 是否已发货: {IsShipped} }}";
+            return new UserAwardInfo();
         }
     }
 }

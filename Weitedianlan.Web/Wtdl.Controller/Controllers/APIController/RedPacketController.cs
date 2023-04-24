@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Senparc.Weixin.TenPay.V3;
 using System.Diagnostics;
 using Wtdl.Controller.Models.ResponseModel;
 using Wtdl.Model.ResponseModel;
@@ -11,13 +12,13 @@ namespace Wtdl.Mvc.Controllers.APIController
     /// </summary>
     [Route("[controller]")]
     [ApiController]
-    public class RedPacketController : ControllerBase
+    public class RedPacketController : BaseController<RedPacketController>
     {
         private ScanByRedPacketService _scanByRedPacketService;
 
         private readonly ILogger _logger;
 
-        public RedPacketController(ScanByRedPacketService service, ILogger<RedPacketController> logger)
+        public RedPacketController(ScanByRedPacketService service, ILogger<RedPacketController> logger) : base(logger)
         {
             _scanByRedPacketService = service;
             _logger = logger;
@@ -30,40 +31,27 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
         [HttpPost("QRCode")]
-        public async Task<RedPacketResult> QRCode(string openid, string qrcode)
+        public async Task<ApiResponse<RedPacketResult>> QRCode(string openid, string qrcode)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
             _logger.LogInformation($"收到发放现金红包请求openid{openid}   qrcode:{qrcode}");
             //校验参数
             if (string.IsNullOrEmpty(openid) || string.IsNullOrEmpty(qrcode))
             {
-                return new RedPacketResult()
-                {
-                    Code = 400,
-                    Message = "参数错误,请检查参数。"
-                };
+                return Failure<RedPacketResult>("请输入正确参数");
             }
 
             if (qrcode.Length != 12)
             {
-                return new RedPacketResult()
-                {
-                    Code = 400,
-                    Message = "参数错误,请检查参数。"
-                };
+                Failure<RedPacketResult>("请输入正确的二维码序号");
             }
 
             var result = await _scanByRedPacketService.GrantQRCodeRedPackets(openid, qrcode);
 
-            stopwatch.Stop();
-            TimeSpan ts = stopwatch.Elapsed;
-
-            _logger.LogInformation("发放现金红包时间: {0}.{1:000} 秒",
-                ts.Seconds, ts.Milliseconds);
-
-            return result;
+            if (result.IsSuccess)
+            {
+                return Success(result);
+            }
+            return Failure<RedPacketResult>(result.Message);
             //  return Ok(result);
         }
 
@@ -75,27 +63,23 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <param name="captcha">验证码</param>
         /// <returns></returns>
         [HttpPost("Captcha")]
-        public async Task<RedPacketResult> Captcha(string openid, string qrcode, string captcha)
+        public async Task<ApiResponse<RedPacketResult>> Captcha(string openid, string qrcode, string captcha)
         {
             if (string.IsNullOrEmpty(openid) || string.IsNullOrEmpty(qrcode) || string.IsNullOrEmpty(captcha))
             {
-                return new RedPacketResult()
-                {
-                    Code = 400,
-                    Message = "参数错误,请检查参数。"
-                };
+                return Failure<RedPacketResult>("请输入正确参数");
             }
 
             if (qrcode.Length != 12)
             {
-                return new RedPacketResult()
-                {
-                    Code = 400,
-                    Message = "参数错误,请检查参数。"
-                };
+                Failure<RedPacketResult>("请输入正确的二维码序号");
             }
-            return await _scanByRedPacketService.GrantCaptchaRedPackets(openid, qrcode, captcha);
-            // return Ok(result);
+            var result = await _scanByRedPacketService.GrantCaptchaRedPackets(openid, qrcode, captcha);
+            if (result.IsSuccess)
+            {
+                return Success(result);
+            }
+            return Failure<RedPacketResult>(result.Message);
         }
 
         /// <summary>
@@ -105,20 +89,18 @@ namespace Wtdl.Mvc.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
         [HttpGet("RedPackStatus")]
-        public async Task<RedStatusResult> Get(string openid, string qrcode)
+        public async Task<ApiResponse<RedStatusResult>> Get(string openid, string qrcode, string ordernumbels)
         {
-            _logger.LogInformation($"用户的现金红包领取状态,openid{openid}   qrcode:{qrcode}");
             if (string.IsNullOrEmpty(openid) || string.IsNullOrEmpty(qrcode))
             {
-                return new RedStatusResult
-                {
-                    IsSuccess = false,
-                    Message = "参数错误,请检查参数。",
-                    StuteCode = "NOT"
-                };
+                return Failure<RedStatusResult>("请输入正确参数");
             }
-            return await _scanByRedPacketService.GetRedStatusResultAsync(openid, qrcode);
-            // return Ok(new RedPacketResult());
+            var result = await _scanByRedPacketService.GetRedStatusResultAsync(openid, qrcode, ordernumbels);
+            if (result.IsSuccess)
+            {
+                return Success(result);
+            }
+            return Failure<RedStatusResult>(result.Message, result);
         }
     }
 }

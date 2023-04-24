@@ -12,7 +12,7 @@ namespace Wtdl.Mvc.Services
         private readonly VerificationCodeRepository _verificationCodeRepository;
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _clientFactory;
-        private ILogger _logger;
+        private ILogger<SearchByCodeService> _logger;
 
         public SearchByCodeService(WLabelStorageRepository storageRepository,
             AgentRepository agentRepository,

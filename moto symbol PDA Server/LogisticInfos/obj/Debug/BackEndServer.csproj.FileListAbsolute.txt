@@ -20,3 +20,26 @@ F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Debu
 F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.csproj.CopyComplete
 F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.exe
 F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.pdb
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\BackEndServer.exe.config
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\BackEndServer.exe.manifest
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\BackEndServer.application
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\BackEndServer.exe
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\BackEndServer.pdb
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\NLog.dll
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\System.Numerics.dll
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\bin\Debug\NLog.xml
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.csproj.AssemblyReference.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\MainWindow.baml
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\MainWindow.g.cs
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\App.g.cs
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer_Content.g.cs
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer_MarkupCompile.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.g.resources
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.Properties.Resources.resources
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.csproj.GenerateResource.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.csproj.CoreCompileInputs.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.exe.manifest
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.application
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.csproj.CopyComplete
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.exe
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Debug\BackEndServer.pdb

@@ -86,7 +86,7 @@
 
                     <TextBlock  Grid.Row="1" Grid.Column="2"  Text="出库数量" />
                     <WrapPanel Grid.Row="2" Grid.Column="2" Grid.RowSpan="2">
-                        <TextBlock   Text="{Binding SL,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontSize="24" Style="{Binding }" />
+                        <TextBlock   Text="{Binding TotalSL,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontSize="24" Style="{Binding }" />
                         <TextBlock   Text="{Binding DW,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" VerticalAlignment="Bottom" ></TextBlock>
                     </WrapPanel>
                 </Grid>

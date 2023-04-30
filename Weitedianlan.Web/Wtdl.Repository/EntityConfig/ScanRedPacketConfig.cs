@@ -5,9 +5,9 @@ using Wtdl.Model.Enum;
 
 namespace Wtdl.Repository.EntityConfig
 {
-    public class ScanRedPacketConfig : EntityTypeConfiguration<ScanRedPacket>
+    public class ScanRedPacketConfig : EntityTypeConfiguration<RedPacketCinfig>
     {
-        public override void Configure(EntityTypeBuilder<ScanRedPacket> builder)
+        public override void Configure(EntityTypeBuilder<RedPacketCinfig> builder)
         {
             builder.HasKey(p => p.Id);//设置主键
             builder.Property(p => p.Id)//设置属性为自增长

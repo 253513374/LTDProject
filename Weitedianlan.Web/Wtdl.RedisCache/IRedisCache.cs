@@ -13,7 +13,7 @@
         /// <param name="status"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        Task<bool> SetBitAsync(string qrcode);
+        Task<bool> SetBitAsync(string qrcode, bool bit = true);
 
         /// <summary>
         /// 使用位图缓存数据出库状态，qrcode 存在于 Redis 位图中， 设置为true。

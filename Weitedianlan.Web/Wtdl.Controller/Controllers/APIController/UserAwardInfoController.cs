@@ -45,12 +45,25 @@ namespace Wtdl.Controller.Controllers.APIController
         [HttpPost]
         public async Task<ApiResponse<UserAwardInfo>> Add([FromBody] UserAwardInfo userAwardInfo)
         {
+            //var v = await _userAwardInfoRepository.FindSingleAsync(f => f.WeChatOpenId.Contains(userAwardInfo.WeChatOpenId) && f.QrCode.Contains(userAwardInfo.QrCode));
+            //if (v is not null)
+            //{
+            //    userAwardInfo.Id = v.Id;
+            //    var upresult = await _userAwardInfoRepository.UpdateAsync(userAwardInfo);
+            //    if (upresult > 0)
+            //    {
+            //        return Success(userAwardInfo, "更新领奖地址记录成功");
+            //    }
+
+            //    return Failure<UserAwardInfo>("更新地址添加失败", null, new List<string>() { "数据添加失败" });
+            //}
+
             var result = await _userAwardInfoRepository.AddAsync(userAwardInfo);
             if (result > 0)
             {
-                return Success(userAwardInfo, "添加UserAwardInfo记录");
+                return Success(userAwardInfo, "添加领奖地址记录成功");
             }
-            return Failure<UserAwardInfo>("领取奖品记录添加失败", null, new List<string>() { "数据添加失败" });
+            return Failure<UserAwardInfo>("领奖地址添加失败", null, new List<string>() { "数据添加失败" });
         }
 
         /// <summary>

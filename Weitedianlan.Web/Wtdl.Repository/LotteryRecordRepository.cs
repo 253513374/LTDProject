@@ -115,9 +115,22 @@ namespace Wtdl.Repository
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                //查询最大时间
+                // 检查数据库是否为空
+                if (!await context.LotteryRecords.AnyAsync())
+                {
+                    return new List<LotteryRecord>();
+                }
+
+                // 查询数据库中最大的CreateTime
                 var maxTime = await context.LotteryRecords.AsNoTracking().MaxAsync(x => x.CreateTime);
-                return await context.LotteryRecords.AsNoTracking().Where(x => x.CreateTime > maxTime.AddDays(-90)).ToListAsync();
+                var startTime = maxTime.AddDays(-90);
+
+                var latestLotteryRecords = await context.LotteryRecords
+                    .AsNoTracking()
+                    .Where(x => x.CreateTime >= startTime && x.CreateTime <= maxTime)
+                    .ToListAsync();
+
+                return latestLotteryRecords;
             }
         }
 

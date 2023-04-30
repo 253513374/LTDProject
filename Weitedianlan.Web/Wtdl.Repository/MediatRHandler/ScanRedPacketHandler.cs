@@ -3,9 +3,9 @@ using Wtdl.Model.Entity;
 
 namespace Wtdl.Repository.MediatRHandler
 {
-    internal class ScanRedPacketHandler : INotificationHandler<ScanRedPacket>
+    internal class ScanRedPacketHandler : INotificationHandler<RedPacketCinfig>
     {
-        public Task Handle(ScanRedPacket notification, CancellationToken cancellationToken)
+        public Task Handle(RedPacketCinfig notification, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

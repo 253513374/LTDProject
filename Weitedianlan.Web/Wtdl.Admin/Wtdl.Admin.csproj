@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EFCore.BulkExtensions" Version="7.0.1" />
-    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <PackageReference Include="FluentValidation" Version="11.5.2" />
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
@@ -17,14 +16,11 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
     <PackageReference Include="Microsoft.DotNet.Scaffolding.Shared" Version="7.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.27.0" />
     <PackageReference Include="MiniExcel" Version="1.30.2" />
-    <PackageReference Include="MudBlazor" Version="6.2.0" />
+    <PackageReference Include="MudBlazor" Version="6.2.2" />
+    <PackageReference Include="NetTopologySuite.IO.SqlServerBytes" Version="2.1.0" />
     <PackageReference Include="NRedisStack" Version="0.6.0" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.2" />
     <PackageReference Include="Radzen.Blazor" Version="4.7.13" />
@@ -34,7 +30,7 @@
     <PackageReference Include="Senparc.Weixin.MP.Middleware" Version="0.8.5.7" />
     <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.12.5.7" />
     <PackageReference Include="Senparc.Weixin.TenPay" Version="1.12.5.7" />
-    <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.6.8.13" />
+    <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.7.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
@@ -43,6 +39,10 @@
     <ProjectReference Include="..\Wtdl.RedisCache\Wtdl.RedisCache.csproj" />
     <ProjectReference Include="..\Wtdl.Repository\Wtdl.Repository.csproj" />
     <ProjectReference Include="..\Wtdl.Share\Wtdl.Share.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>

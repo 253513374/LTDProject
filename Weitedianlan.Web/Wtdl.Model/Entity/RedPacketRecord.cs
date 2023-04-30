@@ -22,6 +22,10 @@ namespace Wtdl.Model.Entity
         /// </summary>
         public string? Captcha { get; set; }
 
+        /// 活动名称
+        /// </summary>
+        public string ActivityName { get; set; }
+
         /// <summary>
         /// 红包金额
         /// </summary>

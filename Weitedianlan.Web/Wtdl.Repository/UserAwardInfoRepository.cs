@@ -36,5 +36,27 @@ namespace Wtdl.Repository
             return await context.UserAwardInfos.AsNoTracking().Where(x => x.WeChatOpenId == openid).ToListAsync();
             // throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 更新发货状态
+        /// </summary>
+        /// <param name="userAwardInfo"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<bool> ConfirmShipped(UserAwardInfo userAwardInfo)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var existingUserAwardInfo = await context.UserAwardInfos.FindAsync(userAwardInfo.Id);
+            if (existingUserAwardInfo != null)
+            {
+                existingUserAwardInfo.IsShipped = true; // 将IsShipped设置为true
+                // 在这里更新其他属性，如果需要的话
+                context.UserAwardInfos.Update(existingUserAwardInfo);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

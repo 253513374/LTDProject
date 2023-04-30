@@ -423,6 +423,9 @@ namespace Wtdl.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ActivityName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AdminUser")
                         .HasColumnType("nvarchar(max)");
 
@@ -527,6 +530,9 @@ namespace Wtdl.Repository.Migrations
                     b.Property<int>("MinCashValue")
                         .HasColumnType("int");
 
+                    b.Property<int>("RedPacketConfigType")
+                        .HasColumnType("int");
+
                     b.Property<int>("RedPacketType")
                         .HasColumnType("int");
 
@@ -558,7 +564,7 @@ namespace Wtdl.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 24, 22, 59, 34, 40, DateTimeKind.Local).AddTicks(2724));
+                        .HasDefaultValue(new DateTime(2023, 4, 26, 10, 36, 19, 163, DateTimeKind.Local).AddTicks(5624));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -634,6 +640,9 @@ namespace Wtdl.Repository.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("QrCode")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -643,6 +652,14 @@ namespace Wtdl.Repository.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("QrCode")
+                        .IsUnique()
+                        .HasFilter("[QrCode] IS NOT NULL");
+
+                    b.HasIndex("WeChatOpenId")
+                        .IsUnique()
+                        .HasFilter("[WeChatOpenId] IS NOT NULL");
 
                     b.ToTable("UserAwardInfos", (string)null);
                 });

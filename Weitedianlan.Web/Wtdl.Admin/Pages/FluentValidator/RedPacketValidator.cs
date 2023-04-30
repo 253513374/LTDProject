@@ -5,7 +5,7 @@ using Wtdl.Model.Enum;
 
 namespace Wtdl.Admin.Pages.FluentValidator
 {
-    public class RedPacketValidator : AbstractValidator<ScanRedPacket>
+    public class RedPacketValidator : AbstractValidator<RedPacketCinfig>
     {
         public RedPacketValidator()
         {
@@ -44,7 +44,7 @@ namespace Wtdl.Admin.Pages.FluentValidator
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
         {
-            var result = await ValidateAsync(ValidationContext<ScanRedPacket>.CreateWithOptions((ScanRedPacket)model, x => x.IncludeProperties(propertyName)));
+            var result = await ValidateAsync(ValidationContext<RedPacketCinfig>.CreateWithOptions((RedPacketCinfig)model, x => x.IncludeProperties(propertyName)));
             if (result.IsValid)
                 return Array.Empty<string>();
             return result.Errors.Select(e => e.ErrorMessage);

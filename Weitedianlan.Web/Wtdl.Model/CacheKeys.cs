@@ -10,5 +10,7 @@
         public const string YearChaeKey = "YearChaeKey";
 
         public const string LoteryActive = "LoteryActiveCurrent";
+
+        public const string REDPACKET_OPTIONS = "REDPACKET_OPTIONS";
     }
 }

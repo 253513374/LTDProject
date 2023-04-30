@@ -1,18 +1,19 @@
 ﻿using Weitedianlan.model.ReQuest;
 using Weitedianlan.SqlServer.Service;
+using Wtdl.Share;
 
 namespace Weitedianlan.WinUI
 {
     public class ScanCodeViewModel
     {
         private WtdlSqlService WtdlSqlService { set; get; }
-        private RequestOrder requestOrder { get; set; }
+        private GroupedBdxOrder GroupedBdxOrder { get; set; }
 
         // public ObservableCollection<tLabelsxModel> addtLabelxes;// = new ObservableCollection<tLabelsxModel>();
-        public ScanCodeViewModel(RequestOrder requestOrder, WtdlSqlService WtdlSqlService)
+        public ScanCodeViewModel(GroupedBdxOrder GroupedBdxOrder, WtdlSqlService WtdlSqlService)
         {
             this.WtdlSqlService = WtdlSqlService;
-            this.requestOrder = (RequestOrder)requestOrder;
+            this.GroupedBdxOrder = (GroupedBdxOrder)GroupedBdxOrder;
 
             //addtLabelxes = new ObservableCollection<tLabelsxModel>() {
             //     new tLabelsxModel { QRCode="000000" , OrderNumbel="111111", ResultStatus ="111", Aname="456456", },
@@ -26,12 +27,12 @@ namespace Weitedianlan.WinUI
         //    var AddtLabelx = new AddtLabelx
         //    {
         //        QRCode = sancode,
-        //        OrderTime = DateTime.Parse(this.requestOrder.DDRQ),
-        //        Dealers = WtdlSqlService.GetAgentId(this.requestOrder.KH),
-        //        DealersName = this.requestOrder.KH,
+        //        OrderTime = DateTime.Parse(this.GroupedBdxOrder.DDRQ),
+        //        Dealers = WtdlSqlService.GetAgentId(this.GroupedBdxOrder.KH),
+        //        DealersName = this.GroupedBdxOrder.KH,
         //        Adminaccount = "",
         //        ExtensionName = "",
-        //        OrderNumbels = this.requestOrder.DDNO,
+        //        OrderNumbels = this.GroupedBdxOrder.DDNO,
 
         //        OutType = "THFX",
         //    };

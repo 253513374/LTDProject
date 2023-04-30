@@ -72,7 +72,6 @@
     <Compile Include="ReQuest\OrderDetail.cs" />
     <Compile Include="ReQuest\RequestOrder.cs" />
     <Compile Include="Response\ResponseModel.cs" />
-    <Compile Include="Response\SendBackMode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

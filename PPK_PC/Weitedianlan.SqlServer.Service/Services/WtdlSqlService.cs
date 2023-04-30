@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
+using Weitedianlan.model.Entity;
 using Weitedianlan.model.ReQuest;
 using Weitedianlan.model.Response;
 using Wtdl.Share;
@@ -81,18 +82,11 @@ namespace Weitedianlan.SqlServer.Service
                     try
                     {
                         hubConnection = hubConnection.TryInitialize();
-                        _ = hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
+                        // _ = hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
                         //var result = await
                         _ = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
 
-                        //if (result.Successed)
-                        //{
                         return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
-                        //}
-                        //else
-                        //{
-                        //    return UPdateAddtLabelsxModel(addtLabelx, 400, "出库失败");
-                        //}
                     }
                     catch (Exception e)
                     {
@@ -221,81 +215,65 @@ namespace Weitedianlan.SqlServer.Service
                 await hubConnection.InvokeAsync(HubServerMethods.SendAgent, addAgent);
                 return new ResponseModel();
             }
-            else
-            {
-                using (var context = new WTDLContext())
-                {
-                    var addAgentcode = context.tAgents.AsNoTracking().Where(o => o.AID.Trim() == addAgent.AID.Trim())
-                        .Select(s => s.AID).ToList();
-                    if (addAgentcode.Count == 0)
-                    {
-                        var agent = new tAgent()
-                        {
-                            AID = addAgent.AID,
-                            AName = addAgent.AName,
-                            ABelong = addAgent.ABelong,
-                            AType = addAgent.AType
-                        };
-                        context.tAgents.Add(agent);
-                        int i = context.SaveChanges();
-                        if (i > 0)
-                        {
-                            return new ResponseModel { code = 200, result = "进销商或客户添加成功", data = agent };
-                        }
-                        else
-                        {
-                            return new ResponseModel { code = 400, result = "进销商或客户添加失败", data = agent };
-                        }
-                    }
 
-                    return new ResponseModel { code = 0, result = "已经存在" };
-                }
-            }
+            return new ResponseModel();
         }
 
         /// <summary>
         /// 删除tLabelX   用于退货操作
         /// </summary>
-        public async Task<SendBackMode> DeletetLabelX(string tLabelxId)
+        public async Task<ReturnsStorageResult> ReturnsLabelX(string qrcode)
         {
-            //var tLabelxcode = DbEntities.W_LabelStorages.AsNoTracking().Where(o => o.QRCode == tLabelxId||o.OrderNumbels.Trim()== tLabelxId.Trim()).FirstOrDefault();
-            using (var context = new WTDLContext())
+            if (hubConnection.State == HubConnectionState.Connected)
             {
-                var tLabelxcode = context.W_LabelStorages.AsNoTracking()
-                    .Where(o => o.QRCode == tLabelxId || o.OrderNumbels == tLabelxId).ToList();
-
                 try
                 {
-                    if (tLabelxcode != null && tLabelxcode.Count == 0)
-                    {
-                        return new SendBackMode
-                        { QrCode = tLabelxId, ReCount = "0", ResulCode = 0, ResultStatus = "还未发货" };
-                    }
+                    hubConnection = hubConnection.TryInitialize();
+                    // _ = hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
 
-                    context.W_LabelStorages.RemoveRange(tLabelxcode);
-                    int i = await context.SaveChangesAsync();
-                    if (i > 0)
-                    {
-                        await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, false);
-                        return new SendBackMode
-                        { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 200, ResultStatus = "退货成功" };
-                    }
-
-                    return new SendBackMode
-                    { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 400, ResultStatus = "退货失败" };
+                    //退货
+                    return await hubConnection.InvokeAsync<ReturnsStorageResult>(HubServerMethods.Returns_OutStorage, qrcode);
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    string strinfo = "AddtLabelX()：\n" + ex.InnerException;
-                    return new SendBackMode
-                    {
-                        QrCode = tLabelxId,
-                        ReCount = "0",
-                        ResulCode = 404,
-                        ResultStatus = "系统错误",
-                        Errorinfo = strinfo
-                    };
+                    return ReturnsStorageResult.Exception(qrcode, e.Message);
+                    //return await TLabelsxModelOffline(addtLabelx, tlabelx);
                 }
+            }
+            else
+            {
+                return ReturnsStorageResult.Offline(qrcode);
+                //var tLabelxcode = DbEntities.W_LabelStorages.AsNoTracking().Where(o => o.QRCode == tLabelxId||o.OrderNumbels.Trim()== tLabelxId.Trim()).FirstOrDefault();
+                //using (var context = new WTDLContext())
+                //{
+                //    var tLabelxcode = context.W_LabelStorages.AsNoTracking()
+                //        .Where(o => o.QRCode == tLabelxId || o.OrderNumbels == tLabelxId).ToList();
+
+                //    try
+                //    {
+                //        if (tLabelxcode != null && tLabelxcode.Count == 0)
+                //        {
+                //            return new +
+                //                { QrCode = tLabelxId, ReCount = "0", ResulCode = 0, ResultStatus = "还未发货" };
+                //        }
+
+                //        context.W_LabelStorages.RemoveRange(tLabelxcode);
+                //        int i = await context.SaveChangesAsync();
+                //        if (i > 0)
+                //        {
+                //            // await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, false);
+                //            return new ReturnsStorageResult
+                //            { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 200, ResultStatus = "退货成功" };
+                //        }
+
+                //        return new ReturnsStorageResult
+                //        { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 400, ResultStatus = "退货失败" };
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        return ReturnsStorageResult.Exception(tLabelxId, ex.Message);
+                //    }
+                //}
             }
         }
 
@@ -334,6 +312,43 @@ namespace Weitedianlan.SqlServer.Service
                 response.data = Ordercounts;
 
                 return response;
+            }
+        }
+
+        /// <summary>
+        /// 返回单个订单的实际扫码数量
+        /// </summary>
+        /// <param name="ddno"></param>
+        /// <returns></returns>
+        public async Task<int> GetBdxOrderTotalCountAsync(string ddno)
+        {
+            if (hubConnection.State == HubConnectionState.Connected)
+            {
+                hubConnection = hubConnection.TryInitialize();
+                return await hubConnection.InvokeAsync<int>(HubServerMethods.BDXORDER_TOTAL_COUNT, ddno);
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// 返回单个订单的详细信息
+        /// </summary>
+        /// <param name="ddno"></param>
+        /// <returns></returns>
+        public async Task<List<T_BDX_ORDER>> GetBdxOrdersAsync(string ddno)
+        {
+            try
+            {
+                if (hubConnection.State == HubConnectionState.Connected)
+                {
+                    hubConnection = hubConnection.TryInitialize();
+                    return await hubConnection.InvokeAsync<List<T_BDX_ORDER>>(HubServerMethods.BDXORDER_LIST, ddno);
+                }
+                return new List<T_BDX_ORDER>();
+            }
+            catch (Exception e)
+            {
+                return new List<T_BDX_ORDER>();
             }
         }
 
@@ -385,11 +400,11 @@ namespace Weitedianlan.SqlServer.Service
             }
             catch (Exception ex)
             {
-                if (!isonline)
-                {
-                    _ = ConnectWithRetryAsync();
-                    return UserResult.Success(new User() { UserName = loginData.Username, UserID = "OfflineUserId" });
-                }
+                //if (!isonline)
+                //{
+                //    _ = ConnectWithRetryAsync();
+                //    return UserResult.Success(new User() { UserName = loginData.Username, UserID = "OfflineUserId" });
+                //}
 
                 return UserResult.Failed(ex.Message);
             }
@@ -436,23 +451,14 @@ namespace Weitedianlan.SqlServer.Service
                     {
                         Console.WriteLine($"SignalR连接失败！:{ex.Message}");
                     }
-                    //if (retryAttempts < retryCount)
-                    //{
-                    //    Console.WriteLine($"连接失败：{ex.Message}，{retryCount - retryAttempts} 次尝试后将重试...");
-                    //    retryAttempts++;
-                    //    await Task.Delay(retryDelay);
-                    //}
-                    //else
-                    //{
-                    //    Console.WriteLine("连接失败：达到最大重试次数！");
-                    //    break;
-                    //}
                 }
             }
         }
 
-        ///
+        /// <summary>
         /// 把还未同步的列表数据分割成大小为1000的数据块，分批上传,只同步30天以内的离线数据
+        /// </summary>
+        /// <returns></returns>
         private async Task Synchronization()
         {
             using (var context = new WTDLContext())
@@ -499,6 +505,31 @@ namespace Weitedianlan.SqlServer.Service
                 context.W_LabelStorages.RemoveRange(context.W_LabelStorages.Where(w => w.ExtensionOrder.Contains(notput)));
                 await context.SaveChangesAsync();
             }
+        }
+
+        /// <summary>
+        /// 返回ERP 订单分组集合数据
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<GroupedBdxOrder>> GetGroupedBdxOrdersAsync(string ddno = "")
+        {
+            if (hubConnection.State == HubConnectionState.Connected)
+            {
+                hubConnection = hubConnection.TryInitialize();
+
+                // List < GroupedBdxOrder > groupe_orders = new List<GroupedBdxOrder>();
+                if (string.IsNullOrWhiteSpace(ddno))
+                {
+                    var groupe_orders = await hubConnection.InvokeAsync<List<GroupedBdxOrder>>(HubServerMethods.GROUPED_ORDERS);
+
+                    return groupe_orders;
+                }
+
+                var groupe_ddnos = await hubConnection.InvokeAsync<List<GroupedBdxOrder>>(HubServerMethods.Grouped_DDNO, ddno);
+
+                return groupe_ddnos;
+            }
+            return new List<GroupedBdxOrder>();
         }
     }
 }

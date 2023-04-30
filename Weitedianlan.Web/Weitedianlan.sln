@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Wasm", "Wtdl.Wasm\Wtdl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Model", "Wtdl.Model\Wtdl.Model.csproj", "{32DC449F-594C-494B-A517-A4B8693E73E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wtdl.RedisCache", "Wtdl.RedisCache\Wtdl.RedisCache.csproj", "{03937A17-83C6-4474-B18D-2C87D5A18A3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.RedisCache", "Wtdl.RedisCache\Wtdl.RedisCache.csproj", "{03937A17-83C6-4474-B18D-2C87D5A18A3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

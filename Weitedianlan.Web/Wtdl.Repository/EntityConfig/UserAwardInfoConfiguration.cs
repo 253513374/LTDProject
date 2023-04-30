@@ -30,6 +30,9 @@ namespace Wtdl.Repository.EntityConfig
             builder.Property(u => u.ProvinceOrState).HasMaxLength(50);
             builder.Property(u => u.Country).HasMaxLength(50);
 
+            //设置索引
+            builder.HasIndex(u => u.QrCode).IsUnique();
+            builder.HasIndex(h => h.WeChatOpenId).IsUnique();
             // 设置表名
             builder.ToTable("UserAwardInfos");
         }

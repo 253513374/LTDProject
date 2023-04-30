@@ -18,9 +18,20 @@
         public static string SendOutStorageBatch = "SendOutStorageBatchAsync";
 
         public static string SendOutStorage = "SendOutStorageAsync";
+        public static string Returns_OutStorage = "ReturnsOutStorage";
 
         public static string SendAgent = "SendAgentAsync";
 
         public static string SendDeleteSynchronizationData = "SendDeleteSynchronizationDataAsync";
+
+        /// <summary>
+        /// 获取erp 出库单统计集合列表
+        /// </summary>
+        public static string GROUPED_ORDERS = "SendGroupedBdxOrderAsync";
+
+        public static string BDXORDER_TOTAL_COUNT = "SendOrderCountByDDNOAsync";
+        public static string BDXORDER_LIST = "SendBdxOrderListAsync";
+
+        public static string Grouped_DDNO = "SendGroupedBdxOrdersDDNOAsync";
     }
 }

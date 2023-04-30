@@ -43,8 +43,6 @@
 }
 
 
-@*<MudStack Style="background-color: transparent;height: 1100px" ></MudStack>*@
-
 <MudCard Class="mt-5"  Elevation="0" Style="border-radius: 25px">
         <div  Class="image-container">
             <img class="centered-image" src="imgs/fangwei.png"/>
@@ -314,7 +312,7 @@
         }
         #if DEBUG
 
-            Id = Id ?? "236810001425";// "236810001499";
+        Id = Id ?? "236800000033";// "236810001499";
             QRCode = Id;
 
             if (string.IsNullOrWhiteSpace(Container.QRCode) )
@@ -419,11 +417,7 @@
             var response = await httpClient.GetAsync($"AntiFake?qrcode={qrcode}");
             if (response.IsSuccessStatusCode)
             {
-              //  var stream = await response.Content.ReadAsStringAsync();
                 var antifakeresult = await response.Content.ReadFromJsonAsync<ApiResponse<AntiFakeResult>>();
-              //  var stream = await response.Content.ReadFromJsonAsync<>();
-
-              //  var result= JsonSerializer.Deserialize<ApiResponse<AntiFakeResult>>(stream, options);
                 if (antifakeresult.IsSuccess)
                 {
                     return antifakeresult.Data;
@@ -479,15 +473,7 @@
             if (response.IsSuccessStatusCode)
             {
                 var redstatusresult = await response.Content.ReadFromJsonAsync<ApiResponse<RedStatusResult>>();
-              //  return JsonSerializer.Deserialize<RedStatusResult>(stream, options);
-
                 return redstatusresult.Data;
-                //if (redstatusresult.IsSuccess)
-                //{
-                    
-                //    return redstatusresult.Data;
-                //}
-                //return RedStatusResult.FailNot("");
             }
            
             _logger.LogError($"查询领取现金红包信息失败：{response.StatusCode}");
@@ -570,37 +556,4 @@
     {
         _navigationManager.NavigateTo("/lottery");
     }
-
-    //private async Task SubmitForm()
-    //{
-    //    // 点击领取红包
-    ////var parameters = new DialogParameters();
-    //    parameters.Add("Msg", $"OpenId：{OpenId}   QRCode：{QRCode}");
-    //    try
-    //    {
-
-    //        redPacketResult = await GetRedPacketResultQRCodeAsync(OpenId, QRCode);
-
-    //        if (redPacketResult.IsSuccess)
-    //        {
-    //            //parameters.Add("Msg", $"redPacketResult：{redPacketResult.IsSuccess}");
-    //            //await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
-
-    //            await JsRuntime.InvokeVoidAsync("closeDialog");
-    //        }
-    //        else
-    //        {
-    //            parameters.Add("Msg", $"redPacketResult：{redPacketResult.Message}");
-    //            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
-    //        }
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        //parameters.Add("Msg", $"异常：{e.StackTrace}");
-    //        //await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
-    //       _logger.LogError(e.Message);
-    //    }
-    //   // await JsRuntime.InvokeVoidAsync("closeDialog");
-    //    StateHasChanged();
-    //}
 }

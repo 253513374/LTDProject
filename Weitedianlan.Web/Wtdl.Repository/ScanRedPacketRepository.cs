@@ -12,22 +12,22 @@ namespace Wtdl.Repository
     /// <summary>
     /// 现金红包配置
     /// </summary>
-    public class ScanRedPacketRepository : RepositoryBase<ScanRedPacket>
+    public class ScanRedPacketRepository : RepositoryBase<RedPacketCinfig>
     {
         private readonly IDbContextFactory<LotteryContext> _contextFactory;
 
-        private readonly ILogger<ScanRedPacket> _logger;
+        private readonly ILogger<RedPacketCinfig> _logger;
         private readonly IMediator _mediator;
 
         public ScanRedPacketRepository(IDbContextFactory<LotteryContext> context, IMediator mediator,
-                ILogger<ScanRedPacket> logger) : base(context, mediator, logger)
+                ILogger<RedPacketCinfig> logger) : base(context, mediator, logger)
         {
             _contextFactory = context;
             _mediator = mediator;
             _logger = logger;
         }
 
-        public async Task<ScanRedPacket> FindScanRedPacketAsync()
+        public async Task<RedPacketCinfig> FindScanRedPacketAsync()
         {
             using (var context = _contextFactory.CreateDbContext())
             {
@@ -37,7 +37,7 @@ namespace Wtdl.Repository
                 }
                 else
                 {
-                    return new ScanRedPacket();
+                    return new RedPacketCinfig();
                 }
             }
         }
@@ -61,48 +61,61 @@ namespace Wtdl.Repository
             }
         }
 
-        public async Task<int> UpdateOrInsert(ScanRedPacket redPacket)
+        public async Task<(int, string)> UpdateOrInsert(List<RedPacketCinfig> redPackets)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var findresult = await context.ScanRedPackets.AsNoTracking().AnyAsync(x => x.ScanRedPacketGuid == redPacket.ScanRedPacketGuid);
+                //var findresult = await context.ScanRedPackets.AsNoTracking().AnyAsync(x => x.ScanRedPacketGuid == redPacket.ScanRedPacketGuid);
 
-                if (findresult)
+                try
                 {
-                    context.ScanRedPackets.Update(redPacket);
+                    await context.BulkInsertOrUpdateAsync(redPackets);
 
-                    var s = await context.SaveChangesAsync();
-                    if (s > 0)
-                    {
-                        await _mediator.Publish(new LoggerEvent()
-                        {
-                            TypeData = redPacket.GetType(),
-                            JsonData = GlobalUtility.SerializeObject(redPacket),
-                            OperationType = OperationType.Update
-                        });
-                        return s;
-                    }
+                    return (2, "");
                 }
-                else
+                catch (Exception e)
                 {
-                    await context.ScanRedPackets.AddAsync(redPacket);
-                    //  await _mediator.Publish(redPacket);
-                    //  return await context.SaveChangesAsync();
+                    _logger.LogError($"红包配置异常：{e.Message}");
+                    return (0, $"{e.Message}");
+                }
+            }
+        }
 
-                    var s = await context.SaveChangesAsync();
-                    if (s > 0)
-                    {
-                        await _mediator.Publish(new LoggerEvent()
-                        {
-                            TypeData = redPacket.GetType(),
-                            JsonData = GlobalUtility.SerializeObject(redPacket),
-                            OperationType = OperationType.Insert
-                        });
-                        return s;
-                    }
+        /// <summary>
+        /// 获取第一个红包的配置
+        /// </summary>
+        /// <returns></returns>
+        public async Task<RedPacketCinfig?> FindRedPacketQRCodeOptionsAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var QRCodeOptions = await context.ScanRedPackets.Where(w => w.RedPacketConfigType == RedPacketConfigType.QRCode).AsNoTracking().FirstOrDefaultAsync();
+
+                if (QRCodeOptions is null)
+                {
+                    return new RedPacketCinfig() { RedPacketConfigType = RedPacketConfigType.QRCode };
                 }
 
-                return 0;
+                return QRCodeOptions;
+            }
+        }
+
+        /// <summary>
+        /// 获取第二个红包的配置
+        /// </summary>
+        /// <returns></returns>
+        public async Task<RedPacketCinfig?> FindRedPacketCaptchaOptionsAsync()
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var CaptchaOptions = await context.ScanRedPackets.Where(w => w.RedPacketConfigType == RedPacketConfigType.Captcha).AsNoTracking().FirstOrDefaultAsync();
+
+                if (CaptchaOptions is null)
+                {
+                    return new RedPacketCinfig() { RedPacketConfigType = RedPacketConfigType.Captcha };
+                }
+
+                return CaptchaOptions;
             }
         }
     }

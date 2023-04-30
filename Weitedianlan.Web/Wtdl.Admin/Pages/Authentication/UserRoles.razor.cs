@@ -27,8 +27,9 @@ namespace Wtdl.Admin.Pages.Authentication
         private Task<AuthenticationState> authenticationStateTask { get; set; }
 
         private ClaimsPrincipal _currentUser;
-        private bool _canEditUsers;
-        private bool _canSearchRoles;
+
+        //private bool _canEditUsers;
+        //private bool _canSearchRoles;
         private bool _loaded;
 
         protected override async Task OnInitializedAsync()

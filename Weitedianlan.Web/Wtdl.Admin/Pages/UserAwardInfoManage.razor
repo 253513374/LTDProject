@@ -1,0 +1,204 @@
+﻿@page "/userawardinfo"
+
+
+
+@inject UserAwardInfoRepository  _AwardInfoRepository
+
+
+<MudPageTitle Title="中奖信息" Description="用户端扫码二维码标签抽奖，中奖数据详细信息"></MudPageTitle>
+
+
+<MudPaper MaxWidth="30%" >
+    <MudDateRangePicker   @ref="_picker" Label="查询时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+        <PickerActions>
+            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
+            <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
+            <MudButton Color="Color.Primary" OnClick="@(async () => await OnDateRangePickerOk())">确定</MudButton>
+        </PickerActions>
+    </MudDateRangePicker>
+</MudPaper>
+
+
+
+
+<MudTable @ref="@_table" Items="userAwardInfos" Dense="true" Striped="true"
+          Filter="new Func<UserAwardInfo, bool>(FilterFunc1)" @bind-SelectedItem="selecteduserAwardInfo"
+          Bordered="true" Hover="true">
+    <ToolBarContent>
+            
+        <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
+        <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+
+        @* <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddPrize())">添加奖品</MudButton>*@
+        @* <MudSpacer/>
+          *@
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Open ID</MudTh>
+        <MudTh>用户名称</MudTh>
+        <MudTh>移动号码</MudTh>
+        <MudTh>奖品名称</MudTh>
+        <MudTh>活动名称</MudTh>
+        <MudTh>领取时间</MudTh>
+        <MudTh>是否发货</MudTh>
+        
+        <MudTh>操作</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.WeChatOpenId</MudTd>
+        <MudTd>@context.UserName</MudTd>
+        <MudTd>@context.PhoneNumber</MudTd>
+        <MudTd>@context.AwardName</MudTd>
+        <MudTd>@context.ActivityName</MudTd>
+        <MudTd>@context.DateReceived</MudTd>
+        <MudTd>@(context.IsShipped ? "是" : "否")</MudTd>
+        
+        <MudTd>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(async ()=>await  OnConfirmShipped(context))">确认发货</MudButton>
+        </MudTd>
+    </RowTemplate>
+    
+    <PagerContent>
+        <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
+            <MudText Typo="Typo.button">@($"总数：{userAwardInfos.Count()} ")</MudText>
+            <MudPagination Style="justify-content: end" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
+        </MudStack>
+    </PagerContent>
+</MudTable>
+
+@code {
+
+
+    private MudDateRangePicker _picker;
+    private DateRange _dateRange = new DateRange(DateTime.Now.Date.AddDays(-7), DateTime.Now.Date);
+
+    private MudTable<UserAwardInfo> _table;
+
+    private IEnumerable<UserAwardInfo> userAwardInfos;
+
+    private UserAwardInfo selecteduserAwardInfo;
+    private string searchString = null;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadData();
+        }
+       // return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task OnDateRangePickerOk()
+    {
+        userAwardInfos = null;
+        _picker.Close();
+        userAwardInfos = await _AwardInfoRepository.FindAsync(f => f.DateReceived >= _dateRange.Start.Value && f.DateReceived <= _dateRange.End.Value);
+        return; 
+    }
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+    private bool FilterFunc1(UserAwardInfo element) => FilterFunc(element, searchString);
+
+    private bool FilterFunc(UserAwardInfo element,string arg)
+    {
+
+        if (string.IsNullOrWhiteSpace(arg))
+        {
+            return true;
+        }
+
+        if (element.UserName.Contains(arg, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.ActivityName.Contains(arg, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.QrCode.Contains(arg, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.WeChatOpenId.Contains(arg, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (element.AwardName.Contains(arg, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.PhoneNumber.Contains(arg, StringComparison.OrdinalIgnoreCase))
+            return true;
+      
+         ///综合过滤
+  
+        if ($"{element.UserName} {element.ActivityName} {element.QrCode} {element.WeChatOpenId} {element.AwardName} {element.PhoneNumber}".Contains(arg))
+            return true;
+        return false;
+    }
+
+
+    
+    private async Task LoadData()
+    {
+        userAwardInfos = await _AwardInfoRepository.FindAsync(f => f.DateReceived >= DateTime.Now.Date.AddDays(-90));
+
+        if (userAwardInfos is not null && userAwardInfos.Count() > 1)
+        {
+            _dateRange.Start = userAwardInfos.Min(s => s.DateReceived);
+            _dateRange.End = userAwardInfos.Max(s => s.DateReceived);
+        }
+        StateHasChanged();
+    }
+
+    private async Task ExportToExcel()
+    {
+        try
+        {
+            var fielter = _table.FilteredItems;
+            if (fielter.Count()!=0)
+            {
+                var excelData = ExportService.ExportToExcel(fielter);
+                var browserBase64 = Convert.ToBase64String(excelData);
+                var href = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{browserBase64}";
+                await _jsRuntime.InvokeVoidAsync("downloadFile", href, $"{nameof(RedPacketRecord).ToLower()}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx");
+
+                _snackBar.Add(string.IsNullOrWhiteSpace(searchString)
+                    ? "中奖记录导出"
+                    : "中奖记录过滤导出", Severity.Success);
+            }
+            else
+            {
+                _snackBar.Add($"中奖记录数据为null", Severity.Warning);
+            }
+        }
+        catch (Exception e)
+        {
+            _snackBar.Add(e.Message, Severity.Error);
+        }
+    }
+
+    //确认发货
+    private async Task OnConfirmShipped(UserAwardInfo userAwardInfo)
+    {
+        try
+        {
+            var result = await _AwardInfoRepository.ConfirmShipped(userAwardInfo);
+            if (result)
+            {
+                _snackBar.Add($"确认发货成功", Severity.Success);
+                await LoadData();
+            }
+            else
+            {
+                _snackBar.Add($"确认发货失败", Severity.Error);
+            }
+        }
+        catch (Exception e)
+        {
+            _snackBar.Add(e.Message, Severity.Error);
+        }
+    }
+}

@@ -2,93 +2,186 @@
 @page "/scanbyredpacketmanage"
 
 
+<style>
+    .redpacket-background {
+        background-image: url('images/a红包.jpg');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+       
+        border-radius: 10px;
+    }
+</style>
+
 @attribute [Authorize(Policy = Permissions.RedPackets.RedPacketConfigView)]
 
 @inject ScanRedPacketRepository _redPacketRepository
 @inject ISnackbar Snackbar
 
+
+
+
 <MudPageTitle Title="现金红包" Description="扫码得现金红包配置"></MudPageTitle>
 
-<MudStack >
-    <MudCard Elevation="24" Style="width: 500px" >
-        <MudForm Model="@RedPacket" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">
-            <MudCardHeader>
-                <CardHeaderAvatar>
-                    <MudAvatar Color="Color.Error"><b style="font-weight: 600">福</b></MudAvatar>
-                </CardHeaderAvatar>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.body1">扫码立即领取现金</MudText>
-                    <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.ActivityName" For="() => RedPacket.ActivityName" Label="活动名称">活动名称</MudTextField>
-                </CardHeaderContent>
-                <CardHeaderActions>
-                    <MudSwitch @bind-Checked="@RedPacket.IsActivity" Color="Color.Info">@(RedPacket.IsActivity?"已启用":"已禁用")</MudSwitch>
-                </CardHeaderActions>
-            </MudCardHeader>
-            <MudCardMedia Image="images/a红包.jpg" Height="200" />
-            <MudCardContent  >
-                <MudStack Row="true" Reverse="false">
-                    <MudText Class="mb-2" Typo="Typo.h5">配置红包</MudText>
-                    <MudSpacer></MudSpacer>
-                    <MudSwitch   @bind-Checked="@RedPacket.IsSubscribe" Color="Color.Success">关注公众号才能领取红包</MudSwitch>    
-                </MudStack>
-                   
-                <MudStack Spacing="3">
+<MudButton Variant="Variant.Filled" OnClick="@(() => UpdateRedPacket())" StartIcon="@Icons.Material.Filled.Update" Color="Color.Primary" > 配置立即生效</MudButton>
 
-                        <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.SenderName" For="() => RedPacket.SenderName" Label="发放红包人员名称"></MudTextField>
-                        <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.WishingWord" For="() => RedPacket.WishingWord" Label="红包祝福语"></MudTextField>
-                    <MudSelect Variant="Variant.Text" Label="红包类型" @bind-Value="RedPacket.RedPacketType" For="() => RedPacket.RedPacketType">
-                       
-                        <MudSelectItem Value="RedPacketType.AVERAGE">固定红包</MudSelectItem>
-                        <MudSelectItem Value="RedPacketType.RANDOM">随机红包</MudSelectItem>
-                    </MudSelect>
-                    @if (RedPacket.RedPacketType == RedPacketType.AVERAGE)
-                    {
-                        
-                        <MudTextField Variant="Variant.Outlined" 
+<MudDivider Class="my-5" DividerType="DividerType.FullWidth" FlexItem="true" ></MudDivider>
+<MudGrid Spacing="5" Justify="Justify.FlexStart">
+    <MudItem md="5" lg="5" sm="12" >
+
+        <MudCard Class="redpacket-background pa-3" Elevation="0" >
+            <MudForm Style="background-color: rgba(255,255,255,0.90);border-radius: 10px;" Model="@QRCodeOptions" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">
+                    <MudCardHeader>
+                        <CardHeaderAvatar>
+                            <MudAvatar Color="Color.Error"><b style="font-weight: 600">福</b></MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent >
+                        <MudText Style="font-weight: bold" Typo="Typo.h6">二维码(第一次)红包配置</MudText>
+                           
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudSwitch @bind-Checked="@QRCodeOptions.IsActivity" Color="Color.Info">@(QRCodeOptions.IsActivity ? "已启用" : "已禁用")</MudSwitch>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                       @* <MudCardMedia Image="images/a红包.jpg" Height="200" />*@
+                       <MudCardContent>
+                           
+                           <MudTextField Variant="Variant.Outlined" @bind-Value="QRCodeOptions.ActivityName" For="() => QRCodeOptions.ActivityName" Label="活动名称">活动名称</MudTextField>
+                           <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.End">
+
+                               <MudSwitch @bind-Checked="@QRCodeOptions.IsSubscribe" Color="Color.Success">关注公众号才能领取红包</MudSwitch>
+                           </MudStack>
+
+                           <MudStack Spacing="3">
+
+                               <MudTextField Variant="Variant.Outlined" @bind-Value="QRCodeOptions.SenderName" For="() => QRCodeOptions.SenderName" Label="发放红包人员名称"></MudTextField>
+                               <MudTextField Variant="Variant.Outlined" @bind-Value="QRCodeOptions.WishingWord" For="() => QRCodeOptions.WishingWord" Label="红包祝福语"></MudTextField>
+                               <MudSelect Variant="Variant.Text" Label="红包类型" @bind-Value="QRCodeOptions.RedPacketType" For="() => QRCodeOptions.RedPacketType">
+
+                                   <MudSelectItem Value="RedPacketType.AVERAGE">固定红包</MudSelectItem>
+                                   <MudSelectItem Value="RedPacketType.RANDOM">随机红包</MudSelectItem>
+                               </MudSelect>
+                               @if (QRCodeOptions.RedPacketType == RedPacketType.AVERAGE)
+                               {
+
+                                   <MudTextField Variant="Variant.Outlined"
+                                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                                 AdornmentColor="Color.Warning"
+                                                 HelperText="@($"输入的金额为：{((double)QRCodeOptions.CashValue) / 100}元")" Label="单个红包金额（分）" @bind-Value="QRCodeOptions.CashValue" For="() => QRCodeOptions.CashValue"></MudTextField>
+                               }
+                               @if (QRCodeOptions.RedPacketType == RedPacketType.RANDOM)
+                               {
+                                   <MudStack Row="true" Spacing="3">
+                                       <MudTextField Variant="Variant.Outlined"
+                                                     Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                                     AdornmentColor="Color.Warning"
+                                                     HelperText="@($"输入的金额为：{((double)QRCodeOptions.MinCashValue) / 100}元")" Label="最小红包金额（分）" @bind-Value="QRCodeOptions.MinCashValue" For="() => QRCodeOptions.MinCashValue"></MudTextField>
+                                       <MudTextField Variant="Variant.Outlined"
+                                                     Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                                                     AdornmentColor="Color.Warning"
+                                                     HelperText="@($"输入的金额为：{((double)QRCodeOptions.MaxCashValue) / 100}元")" Label="最大红包金额（分）" @bind-Value="QRCodeOptions.MaxCashValue" For="() => QRCodeOptions.MaxCashValue"></MudTextField>
+                                       @*                            <MudTextField Variant="Variant.Outlined" @bind-Value="QRCodeOptions.MinCashValue" For="() => QRCodeOptions.MinCashValue" Label="最小红包金额"></MudTextField>
+                                <MudTextField Variant="Variant.Outlined" @bind-Value="QRCodeOptions.MaxCashValue" For="() => QRCodeOptions.MaxCashValue" Label="最大红包金额"></MudTextField>*@
+                                   </MudStack>
+                               }
+                           </MudStack>
+
+                       </MudCardContent>
+
+                </MudForm>
+            </MudCard>
+     
+    </MudItem>
+    <MudItem md="6" lg="6" sm="12">
+        <MudCard Class="redpacket-background pa-3" Elevation="0">
+            <MudForm Style="background-color: rgba(255,255,255,0.90);border-radius: 10px;" Model="@CaptchaOptions" @ref="@form" Validation="@(PacketValidator.ValidateValue)" ValidationDelay="0">
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        <MudAvatar Color="Color.Error"><b style="font-weight: 600">福</b></MudAvatar>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Style="font-weight: bold" Typo="Typo.h6">验证码(第二次)红包配置</MudText>
+
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudSwitch @bind-Checked="@CaptchaOptions.IsActivity" Color="Color.Info">@(CaptchaOptions.IsActivity ? "已启用" : "已禁用")</MudSwitch>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    @* <MudCardMedia Image="images/a红包.jpg" Height="200" />*@
+                    <MudCardContent>
+
+                        <MudTextField Variant="Variant.Outlined" @bind-Value="CaptchaOptions.ActivityName" For="() => CaptchaOptions.ActivityName" Label="活动名称">活动名称</MudTextField>
+                        <MudStack Row="true" Justify="Justify.FlexEnd" AlignItems="AlignItems.End">
+
+                            <MudSwitch @bind-Checked="@CaptchaOptions.IsSubscribe" Color="Color.Success">关注公众号才能领取红包</MudSwitch>
+                        </MudStack>
+
+                        <MudStack Spacing="3">
+
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="CaptchaOptions.SenderName" For="() => CaptchaOptions.SenderName" Label="发放红包人员名称"></MudTextField>
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="CaptchaOptions.WishingWord" For="() => CaptchaOptions.WishingWord" Label="红包祝福语"></MudTextField>
+                            <MudSelect Variant="Variant.Text" Label="红包类型" @bind-Value="CaptchaOptions.RedPacketType" For="() => CaptchaOptions.RedPacketType">
+
+                                <MudSelectItem Value="RedPacketType.AVERAGE">固定红包</MudSelectItem>
+                                <MudSelectItem Value="RedPacketType.RANDOM">随机红包</MudSelectItem>
+                            </MudSelect>
+                            @if (CaptchaOptions.RedPacketType == RedPacketType.AVERAGE)
+                        {
+
+                            <MudTextField Variant="Variant.Outlined"
                                       Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
                                       AdornmentColor="Color.Warning"
-                                  HelperText="@($"输入的金额为：{((double)RedPacket.CashValue)/100}元")" Label="单个红包金额（分）" @bind-Value="RedPacket.CashValue" For="() => RedPacket.CashValue"></MudTextField>
-                    }
-                    @if (RedPacket.RedPacketType == RedPacketType.RANDOM)
-                    {
-                        <MudStack Row="true" Spacing="3">
-                            <MudTextField Variant="Variant.Outlined" 
+                                      HelperText="@($"输入的金额为：{((double)CaptchaOptions.CashValue) / 100}元")" Label="单个红包金额（分）" @bind-Value="CaptchaOptions.CashValue" For="() => CaptchaOptions.CashValue"></MudTextField>
+                        }
+                        @if (CaptchaOptions.RedPacketType == RedPacketType.RANDOM)
+                        {
+                            <MudStack Row="true" Spacing="3">
+                                <MudTextField Variant="Variant.Outlined"
                                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
                                           AdornmentColor="Color.Warning"
-                                      HelperText="@($"输入的金额为：{((double)RedPacket.MinCashValue)/100}元")" Label="最小红包金额（分）" @bind-Value="RedPacket.MinCashValue" For="() => RedPacket.MinCashValue"></MudTextField>
-                            <MudTextField Variant="Variant.Outlined" 
+                                          HelperText="@($"输入的金额为：{((double)CaptchaOptions.MinCashValue) / 100}元")" Label="最小红包金额（分）" @bind-Value="CaptchaOptions.MinCashValue" For="() => CaptchaOptions.MinCashValue"></MudTextField>
+                                <MudTextField Variant="Variant.Outlined"
                                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
                                           AdornmentColor="Color.Warning"
-                                      HelperText="@($"输入的金额为：{((double)RedPacket.MaxCashValue)/100}元")" Label="最大红包金额（分）" @bind-Value="RedPacket.MaxCashValue" For="() => RedPacket.MaxCashValue"></MudTextField>
-@*                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MinCashValue" For="() => RedPacket.MinCashValue" Label="最小红包金额"></MudTextField>
-                            <MudTextField Variant="Variant.Outlined" @bind-Value="RedPacket.MaxCashValue" For="() => RedPacket.MaxCashValue" Label="最大红包金额"></MudTextField>*@
-                        </MudStack>
-                    }
-                </MudStack>
+                                          HelperText="@($"输入的金额为：{((double)CaptchaOptions.MaxCashValue) / 100}元")" Label="最大红包金额（分）" @bind-Value="CaptchaOptions.MaxCashValue" For="() => CaptchaOptions.MaxCashValue"></MudTextField>
+                                @*                            <MudTextField Variant="Variant.Outlined" @bind-Value="CaptchaOptions.MinCashValue" For="() => CaptchaOptions.MinCashValue" Label="最小红包金额"></MudTextField>
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="CaptchaOptions.MaxCashValue" For="() => CaptchaOptions.MaxCashValue" Label="最大红包金额"></MudTextField>*@
+                            </MudStack>
+                        }
+                    </MudStack>
 
-            </MudCardContent>
-            <MudCardActions >
-                <MudButton Variant="Variant.Filled" OnClick="@(() => UpdateRedPacket())" StartIcon="@Icons.Material.Filled.Update" Color="Color.Primary" FullWidth="true"> 配置立即生效</MudButton>
-                
-            </MudCardActions>
-        </MudForm>
-    </MudCard>
-</MudStack>
+                </MudCardContent>
+
+            </MudForm>
+        </MudCard>
+    </MudItem>
+
+</MudGrid>
 
 @code {
 
-    private ScanRedPacket RedPacket = new ScanRedPacket();
+    private RedPacketCinfig? QRCodeOptions = new();
+
+    private RedPacketCinfig? CaptchaOptions = new();
 
     private MudForm form { set; get; }
 
-    RedPacketValidator PacketValidator = new RedPacketValidator();
+    RedPacketValidator PacketValidator = new ();
 
+    [Inject] private IRedisCache RedisCache { set; get; }
+
+    [CascadingParameter] 
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Inject] private ILogger<ScanByRedPacketManage> _logger { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            RedPacket = await _redPacketRepository.FindScanRedPacketAsync();
+            QRCodeOptions = await _redPacketRepository.FindRedPacketQRCodeOptionsAsync();
+
+            CaptchaOptions = await _redPacketRepository.FindRedPacketCaptchaOptionsAsync();
             StateHasChanged();
         }
         return;// base.OnAfterRenderAsync(firstRender);
@@ -103,15 +196,29 @@
         await form.Validate();
         if (form.IsValid)
         {
-            var result = await _redPacketRepository.UpdateOrInsert(RedPacket);
-            if (result>0)
+
+            var username = AuthenticationStateTask.Result.User.Identity.Name;
+
+            QRCodeOptions.AdminUser = username;
+            CaptchaOptions.AdminUser = username;
+    // AuthenticationState.User.Identity.Name;
+            var list = new List<RedPacketCinfig>();
+            list.Add(QRCodeOptions);
+            list.Add(CaptchaOptions);
+
+            var result = await _redPacketRepository.UpdateOrInsert(list);
+            if (result.Item1>0)
             {
                 Snackbar.Add("扫码得现金红包配置更新成功", Severity.Success);
             }
             else
             {
-                Snackbar.Add("扫码得现金红包配置更新失败", Severity.Error);
+                Snackbar.Add($"扫码得现金红包配置更新失败:{result.Item2}", Severity.Error);
             }
+
+            _logger.LogInformation($"扫码得现金红包配置更新成功");
+
+            await RedisCache.SetObjectAsync(CacheKeys.REDPACKET_OPTIONS, list);
         }
         return;
     

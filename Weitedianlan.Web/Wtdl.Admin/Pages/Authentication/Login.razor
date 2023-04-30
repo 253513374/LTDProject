@@ -90,6 +90,9 @@ else
 
     private bool showLoginView = false;
 
+    [Inject]
+    BdxOrderRepository _bdxOrderRepository { set; get; }
+
     protected override Task OnInitializedAsync()
     {
         showLoginView = false;
@@ -106,6 +109,10 @@ else
 
     private async Task SignInAsync()
     {
+
+        var sss = await _bdxOrderRepository.GetGroupedBdxOrdersAsync();
+       // var sss = await _bdxOrderRepository.GetBdxOrderListAsync("B2304592");
+        //var ss = await _bdxOrderRepository.GetBdxOrderLIKEListAsync("B2304");
         await mudForm.Validate();
 
         if (mudForm.IsValid)

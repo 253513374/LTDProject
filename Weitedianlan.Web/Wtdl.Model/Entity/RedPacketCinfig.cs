@@ -6,16 +6,22 @@ namespace Wtdl.Model.Entity
     /// <summary>
     /// 扫码得红包配置类
     /// </summary>
-    public class ScanRedPacket : IEntityBase
+    public class RedPacketCinfig : IEntityBase
     {
-        public ScanRedPacket()
+        public RedPacketCinfig()
         {
-            ScanRedPacketGuid = Guid.NewGuid().ToString().Replace("_", ""); //设置数据库中只有一条数据
+            CreateTime = DateTime.Now;
+            ScanRedPacketGuid = Guid.NewGuid().ToString("N"); //.Replace("_", ""); //设置数据库中只有一条数据
         }
 
         public string ScanRedPacketGuid { get; set; }
 
         public int Id { get; set; }
+
+        /// <summary>
+        /// 红包配置类型
+        /// </summary>
+        public RedPacketConfigType RedPacketConfigType { get; set; }
 
         /// <summary>
         /// 活动名称
@@ -61,5 +67,13 @@ namespace Wtdl.Model.Entity
         /// 最大金额
         /// </summary>
         public int MaxCashValue { get; set; }
+    }
+
+    public enum RedPacketConfigType
+    {
+        QRCode,
+
+        ///验证码
+        Captcha,
     }
 }

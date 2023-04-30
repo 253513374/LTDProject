@@ -43,11 +43,8 @@ namespace Weitedianlan.Oracle.service
             return _db.Database.SqlQuery<T_BDX_ORDER>(Commandtext).ToList().OrderByDescending(t => t.DDRQ);
         }
 
-        //public ResponseModel GetGroupByQuest(string orderNum)
-        //{
-        //}
         /// <summary>
-        /// 获取所有表单集合
+        /// 获取单号详细信息
         /// </summary>
         /// <returns></returns>
         public ResponseModel GetResponse(string beingtime, string endtime, string ordernum)
@@ -55,30 +52,26 @@ namespace Weitedianlan.Oracle.service
             var responsemodel = new ResponseModel();
             try
             {
-                if (ordernum != "")
-                {
-                    GetSqlQueryString(beingtime, endtime, QuestTypeEnum.OrderNumQuest, ordernum);
-                }
-                else
-                {
-                    GetSqlQueryString(beingtime, endtime, QuestTypeEnum.DefaultQuest, ordernum);
-                }
+                //if (ordernum != "")
+                //{
+                //    GetSqlQueryString(beingtime, endtime, QuestTypeEnum.OrderNumQuest, ordernum);
+                //}
+                //else
+                //{
+                //    GetSqlQueryString(beingtime, endtime, QuestTypeEnum.DefaultQuest, ordernum);
+                //}
 
                 var orders = GetOrderList<T_BDX_ORDER>(QuerySqlstr);//GetDatabase(sql);
                 //  var ordersfinish =
 
-                responsemodel.code = 200;
-                responsemodel.result = "出库单集合获取成功";
-                responsemodel.data = new List<T_BDX_ORDER>();
-                responsemodel.data = orders;
-
-                return responsemodel;
+                return ResponseModel.Success(orders);
             }
             catch (Exception e)
             {
-                responsemodel.code = 500;
-                responsemodel.result = $"系统错误,请联系管理员!{e.Message}";
-                return responsemodel;
+                //responsemodel.code = 500;
+                //responsemodel.result = $"系统错误,请联系管理员!{e.Message}";
+                return ResponseModel.Fail($"系统错误,请联系管理员!{e.Message}");
+                //    return responsemodel;
             }
         }
 

@@ -47,41 +47,6 @@ namespace Wtdl.Model.Entity
         public string PrizeNumber { get; set; }
 
         /// <summary>
-        /// 获奖日期
-        /// </summary>
-        public DateTime DateReceived { get; set; } // 获奖日期
-
-        /// <summary>
-        /// 物流详细地址
-        /// </summary>
-        public string FullAddress { get; set; } // 完整地址（包括街道地址和小区/楼盘/单位）
-
-        /// <summary>
-        /// 城市
-        /// </summary>
-        public string City { get; set; } = "海口市"; //城市
-
-        /// <summary>
-        /// 省
-        /// </summary>
-        public string ProvinceOrState { get; set; } = "海南省"; //省份/州
-
-        /// <summary>
-        /// 国家
-        /// </summary>
-        public string Country { get; set; } = "中国"; //国家
-
-        /// <summary>
-        /// 区
-        /// </summary>
-        public string Area { get; set; }
-
-        /// <summary>
-        /// 是否已邮寄发货,默认未发货
-        /// </summary>
-        public bool IsShipped { get; set; } = false;
-
-        /// <summary>
         /// 活动编号
         /// </summary>
         public string ActivityNumber { get; set; }
@@ -91,15 +56,52 @@ namespace Wtdl.Model.Entity
         /// </summary>
         public string ActivityName { get; set; }
 
-        // 无参构造函数
-        public UserAwardInfo()
-        { }
+        /// <summary>
+        /// 获奖日期
+        /// </summary>
+        public DateTime DateReceived { get; set; } // 获奖日期
 
-        // 带参数的构造函数
+        /// <summary>
+        /// 国家
+        /// </summary>
+        public string Country { get; set; } = "中国"; //国家
+
+        /// <summary>
+        /// 省
+        /// </summary>
+        public string ProvinceOrState { get; set; } = "海南省"; //省份/州
+
+        /// <summary>
+        /// 城市
+        /// </summary>
+        public string City { get; set; } = "海口市"; //城市
+
+        /// <summary>
+        /// 区
+        /// </summary>
+        public string Area { get; set; }
+
+        /// <summary>
+        /// 物流详细地址
+        /// </summary>
+        public string FullAddress { get; set; } // 完整地址（包括街道地址和小区/楼盘/单位）
+
+        /// <summary>
+        /// 抽奖二维码
+        /// </summary>
+        public string QrCode { get; set; }
+
+        /// <summary>
+        /// 是否已邮寄发货,默认未发货
+        /// </summary>
+        public bool IsShipped { get; set; } = false;
 
         public static UserAwardInfo Create()
         {
-            return new UserAwardInfo();
+            return new UserAwardInfo()
+            {
+                DateReceived = DateTime.Now
+            };
         }
     }
 }

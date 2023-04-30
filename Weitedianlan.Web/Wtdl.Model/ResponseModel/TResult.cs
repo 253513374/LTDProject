@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Wtdl.Model.Entity;
 
 namespace Wtdl.Model.ResponseModel
 {

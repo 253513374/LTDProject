@@ -21,3 +21,15 @@ F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Rele
 F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.csproj.CopyComplete
 F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.exe
 F:\Visual Studio 2015\威特电缆\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.pdb
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.csproj.AssemblyReference.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\MainWindow.baml
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\MainWindow.g.cs
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\App.g.cs
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer_Content.g.cs
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer_MarkupCompile.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.g.resources
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.Properties.Resources.resources
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.csproj.GenerateResource.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.csproj.CoreCompileInputs.cache
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.exe
+E:\ProjectCode\WTJTProject\moto symbol PDA Server\LogisticInfos\obj\Release\BackEndServer.pdb

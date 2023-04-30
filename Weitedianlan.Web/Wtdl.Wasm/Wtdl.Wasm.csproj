@@ -15,6 +15,9 @@
 
 		<PublishIISAssets>true</PublishIISAssets>
 		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+
+
+		<BlazorCacheBootResources>false</BlazorCacheBootResources>
 	</PropertyGroup>
 	<Target Name="CopyWebConfig" AfterTargets="Publish">
 		<Copy SourceFiles="web.config" DestinationFolder="$(PublishDir)" />
@@ -31,7 +34,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="MudBlazor" Version="6.2.0" />
+    <PackageReference Include="MudBlazor" Version="6.2.2" />
   </ItemGroup>
 
 

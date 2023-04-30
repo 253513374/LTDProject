@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using System;
+using Wtdl.Model.ResponseModel;
 
 namespace Wtdl.Model.Entity
 {
-    public abstract class IEntityBase : IRequest<string>, INotification
+    public abstract class IEntityBase : TResult, IRequest<string>, INotification
     {
         /// <summary>
         /// 创建时间

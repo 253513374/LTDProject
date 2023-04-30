@@ -76,16 +76,19 @@ try
 
     builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-#if DEBUG
-    var redisconnectionString = builder.Configuration.GetConnectionString("DebugRedisConnectionString");
-#else
     var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
 
+#if DEBUG
+    redisconnectionString = builder.Configuration.GetConnectionString("DebugRedisConnectionString");
 #endif
     builder.Services.AddRedisCache(redisconnectionString);
     // builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
     //builder.Services.AddSingleton<IDatabase>(sp => sp.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
     //builder.Services.AddScoped<IRedisCache, RedisCacheService>();
+
+    var oracleconnectionString = builder.Configuration.GetConnectionString("OracleDbConnection");
+
+    builder.Services.AddOracleContext(oracleconnectionString);
 
     builder.Services.AddSingleton<ExportService>();
     // Add services to the container.

@@ -50,8 +50,18 @@ namespace Wtdl.Admin.Authenticated
         /// <returns></returns>
         public async Task<IdentityResult> CreateUserAsync(WtdlUser user, string password)
         {
-            var result = await userManager.CreateAsync(user, password);
-            return result;
+            try
+            {
+                var result = await userManager.CreateAsync(user, password);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Console.WriteLine("Error: " + ex.Message);
+                // Console.WriteLine("Stack Trace: " + ex.StackTrace);
+                // 或者将错误记录到日志
+                return IdentityResult.Failed(new IdentityError { Description = ex.Message });
+            }
         }
 
         /// <summary>

@@ -1,17 +1,18 @@
 ﻿using Weitedianlan.model.ReQuest;
 using Weitedianlan.SqlServer.Service;
+using Wtdl.Share;
 
 namespace Weitedianlan.WinUI
 {
     public class ScanCodeReturnViewModel
     {
         private WtdlSqlService WtdlSqlService { set; get; }
-        private RequestOrder requestOrder { get; set; }
+        private GroupedBdxOrder GroupedBdxOrder { get; set; }
 
-        public ScanCodeReturnViewModel(RequestOrder requestOrder)
+        public ScanCodeReturnViewModel(GroupedBdxOrder GroupedBdxOrder)
         {
             this.WtdlSqlService = WtdlSqlService.TryGetSqlService();
-            this.requestOrder = requestOrder;
+            this.GroupedBdxOrder = GroupedBdxOrder;
         }
 
         public void SanCodeDeletecommand(AddtLabelx addtLabelx)

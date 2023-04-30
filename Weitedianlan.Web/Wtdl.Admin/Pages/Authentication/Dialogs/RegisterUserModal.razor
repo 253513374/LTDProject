@@ -96,6 +96,8 @@
             user.PhoneNumber = register.PhoneNumber;
             user.IsActive = register.IsActive;
             user.CreatedBy = adminuser;
+            user.LastModifiedOn = DateTime.Now;
+            user.LastModifiedBy = adminuser;
 
           var result=await  Service.CreateUserAsync(user, register.Password);
 

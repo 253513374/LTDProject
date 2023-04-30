@@ -12,8 +12,10 @@
 
 <MudForm Model="@UserAddress" @ref="form" Style="Width: 100%">
     
-    <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudStack Class="my-5 mt-3" Justify="Justify.Center" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.h5">请填写收货地址</MudText>
+        
+        <MudText Typo="Typo.caption" Color="Color.Error" >*请认真填写领奖收获地址，否则将无法收到需要快递邮寄的奖品.</MudText>
     </MudStack>
 
     <MudStack Class="pa-5" Style="background-color: white; border-radius: 25px;" Spacing="2" Justify="Justify.FlexStart" AlignItems="AlignItems.Start">
@@ -51,8 +53,8 @@
         <MudTextField  @bind-Value="UserAddress.Fulladdress" T="string" ErrorText="必须填写" Required="true" RequiredError="必填" Label="详细地址" Variant="Variant.Outlined" Lines="3" FullWidth="true"/>
 
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3 mb-3"
-                   OnClick="@( async () => await Submit())">保存地址</MudButton>
+        <MudButton FullWidth="true"  Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3 mb-3"
+                   OnClick="@( async () =>  await Submit())">提交领奖地址</MudButton>
 
     </MudStack>
 </MudForm>
@@ -239,6 +241,7 @@
             userAwardInfo.WeChatOpenId = Container.OpenId;
             userAwardInfo.ActivityNumber = Container.Activity.ActivityNumber;
             userAwardInfo.ActivityName = Container.Activity.Name;
+            userAwardInfo.QrCode = Container.QRCode;
 
             //通过接口发送数据到后端
 
@@ -259,8 +262,14 @@
                 };
                 var parameters = new DialogParameters();
                 parameters.Add("Msg", $"奖品领取成功，关注【威特五金】公众号获取详细信息");
-                await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
-              //  return await response.Content.ReadFromJsonAsync<UserAwardInfo>();
+               var resultdialog = await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
+               var result = await resultdialog.Result;
+                if (!result.Canceled)
+                {
+                    _navigationManager.NavigateTo($"/{Container.QRCode}");
+                }
+    
+    //  return await response.Content.ReadFromJsonAsync<UserAwardInfo>();
             }
             
 

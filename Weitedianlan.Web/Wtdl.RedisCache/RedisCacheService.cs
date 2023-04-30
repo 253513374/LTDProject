@@ -59,7 +59,7 @@ namespace Wtdl.RedisCache
             return Task.CompletedTask;
         }
 
-        public async Task<bool> SetBitAsync(string qrcode)
+        public async Task<bool> SetBitAsync(string qrcode, bool bit = true)
         {
             // var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
             //截取qrcode 中的偏移量
@@ -76,8 +76,8 @@ namespace Wtdl.RedisCache
 
                 await _database.ExecuteAsync("BITFIELD", key, "SET", "u32", "10000000", "0");
             }
-            ///设置位图状态为true
-            return await _database.StringSetBitAsync(key, Convert.ToInt64(offset), true);
+            ///设置位图状态
+            return await _database.StringSetBitAsync(key, Convert.ToInt64(offset), bit);
         }
 
         public async Task SetBulkBitAsync(List<string> qrcodesList)

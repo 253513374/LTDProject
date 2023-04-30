@@ -91,7 +91,7 @@ namespace Wtdl.Repository
         /// <summary>
         /// 红包配置表
         /// </summary>
-        public DbSet<ScanRedPacket> ScanRedPackets { get; internal set; }
+        public DbSet<RedPacketCinfig> ScanRedPackets { get; internal set; }
 
         public DbSet<ActivityPrize> ActivityPrizes { get; internal set; }
         public DbSet<UserAwardInfo> UserAwardInfos { get; internal set; }

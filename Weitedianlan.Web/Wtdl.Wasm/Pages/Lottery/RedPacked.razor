@@ -83,7 +83,15 @@
                 <MudButton OnClick="@GetRedPacketCaptchaAsync" Class="btn-radpack">立刻领取</MudButton>
             </MudStack>
         break;
+
+        case "MAXIMUMLIMIT":
+
+            _= OpenDialogAsync();
+            <MudText Align="Align.Center" Style="font-weight: 700" Color="Color.Error">@Container.UserStatus.StuteCode : @Container.UserStatus.Message</MudText>
+            break;
+
         default:
+           
             <MudText Align="Align.Center" Style="font-weight: 700" Color="Color.Error">@Container.UserStatus.StuteCode : @Container.UserStatus.Message</MudText>
         break;
     }
@@ -124,6 +132,16 @@
 
     private bool _isProcessing = false;
 
+
+    DialogOptions options = new DialogOptions
+    {
+        CloseButton = true, 
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        DisableBackdropClick = true,
+        CloseOnEscapeKey = true,
+        NoHeader = true,
+    };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -329,32 +347,11 @@
         {
             DialogParameters parameters = new();
             parameters.Add("Msg", $"验证码领取红包异常：{e.Message}");
-            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
+            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters,options);
             _logger.LogError($"验证码领取现金红包异常：{e.Message}");
 
             return RedPacketResult.Fail(e.Message);
         }
-        //    var response = await httpClient.PostAsync(url, null);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var redpacketresult = await response.Content.ReadFromJsonAsync<ApiResponse<RedPacketResult>>();
-
-        //        if (redpacketresult.IsSuccess)
-        //        {
-        //            return redpacketresult.Data;
-        //        }
-               
-        //        return RedPacketResult.Fail(redpacketresult.Message);
-        //    }
-        //    _logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
-        //    return RedPacketResult.Fail(response.StatusCode.ToString());
-        //}
-        //catch (Exception e)
-        //{
-        //    _logger.LogError($"验证码领取现金红包异常：{e.Message}");
-
-        //    return RedPacketResult.Fail(e.Message);
-        //}
        
     }
 
@@ -365,18 +362,8 @@
     private  async Task OpenDialogAsync()
     {
         var parameters = new DialogParameters();
-        parameters.Add("Result", new RedPacketResult(){ IsSuccess = true,TotalAmount = "85"});
-        parameters.Add("Message","恭喜你！已领取红包");
-
-        var options = new DialogOptions
-        {
-            CloseButton = true, 
-            MaxWidth = MaxWidth.Large,
-            FullWidth = true,
-            DisableBackdropClick = true,
-            CloseOnEscapeKey = true,
-            NoHeader = true,
-        };
-        await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情",parameters, options);
+      //  parameters.Add("Result", new RedPacketResult(){ IsSuccess = true,TotalAmount = ""});
+        parameters.Add("Msg","红包被领取完毕！");
+        await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
     }
 }

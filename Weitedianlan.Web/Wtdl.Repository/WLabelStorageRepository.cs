@@ -419,14 +419,14 @@ namespace Wtdl.Repository
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public int GetCount()
+        public async Task<int> GetCount()
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                var groupedData = context.WLabelStorages.AsNoTracking().Select(s => s.OutTime)
+                var groupedData = await context.WLabelStorages.AsNoTracking().Select(s => s.OutTime)
                     .Where(w => w.Date == DateTime.Now.Date)
                     //.Where(w => w.OrderTime.Year == DateTime.Now.Year && w.OrderTime.Month == DateTime.Now.Month && w.OrderTime.Day == DateTime.Now.Day)
-                    .Count();
+                    .CountAsync();
                 return groupedData;
             }
         }
@@ -466,6 +466,33 @@ namespace Wtdl.Repository
                 if (groupedData != null) return groupedData.OutTime;
             }
             return default;
+        }
+
+        ///删除指定数据
+        public async Task<bool> DeleteAsync(string qrcode)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                var data = await context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.QRCode == qrcode)
+                    .FirstOrDefaultAsync();
+                if (data != null)
+                {
+                    context.WLabelStorages.Remove(data);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        //返回订单号的数量
+        public async Task<int> GetOrderCountByDDNOAsync(string ddno)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.WLabelStorages.AsNoTracking()
+            .Where(order => order.OrderNumbels == ddno)
+            .CountAsync();
         }
     }
 }

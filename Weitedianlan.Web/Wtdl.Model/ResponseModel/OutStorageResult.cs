@@ -4,7 +4,7 @@ using Wtdl.Model.Entity;
 
 namespace Wtdl.Model.ResponseModel;
 
-public class OutStorageResult
+public class OutStorageResult : TResult
 {
     public OutStorageResult()
     {

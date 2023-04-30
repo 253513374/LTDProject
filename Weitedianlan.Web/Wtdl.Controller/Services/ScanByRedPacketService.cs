@@ -208,7 +208,7 @@ namespace Wtdl.Mvc.Services
         /// <returns></returns>
         private async Task<RedStatusResult> VerifyCaptchaRedPacket(string openid, string qrcode, string captcha)
         {
-            var vcode = await VerifyQRCodeRedPacket(openid, qrcode);
+            var vcode = await VerifyCaptchaRedPacket(openid, qrcode);
             if (vcode.IsSuccess)
             {
                 //判断验证码是否正确
@@ -237,6 +237,27 @@ namespace Wtdl.Mvc.Services
         private async Task<RedStatusResult> VerifyQRCodeRedPacket(string openid, string qrcode)
         {
             var list = await _redPacketRecordRepository.FindAsync(qrcode);
+            if (list == 1)
+            {
+                return RedStatusResult.FailMaximumLimit("红包已经领过啦!，请查看威特五金公众号红包信息。");
+            }
+
+            if (list == 2)
+            {
+                return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");
+            }
+            var userilmts = await _redPacketRecordRepository.FindUserLimt(openid);
+            if (userilmts == 10)
+            {
+                return RedStatusResult.FailMaxUserLimit("今日已经领取10个红包上限，请明日再参与扫码领现金红包活动");
+            }
+            return RedStatusResult.Success("可以参加扫码得现金活动");
+        }
+
+        private async Task<RedStatusResult> VerifyCaptchaRedPacket(string openid, string qrcode)
+        {
+            var list = await _redPacketRecordRepository.FindAsync(qrcode);
+
             if (list == 2)
             {
                 return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");

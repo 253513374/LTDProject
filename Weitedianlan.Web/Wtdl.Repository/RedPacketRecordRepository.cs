@@ -62,11 +62,11 @@ namespace Wtdl.Repository
 
         ///返回红包发放总金额,把分转成元
 
-        public async Task<decimal> GetRedPacketRecordsTotalAmountAsync()
+        public async Task<double> GetRedPacketRecordsTotalAmountAsync()
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.RedPacketRecords.SumAsync(x => Convert.ToInt32(x.TotalAmount)) / 100;
+                return await context.RedPacketRecords.SumAsync(x => Convert.ToDouble(x.TotalAmount)) / 100;
             }
             //   throw new NotImplementedException();
         }

@@ -95,8 +95,8 @@
             <MudText Align="Align.Center" Style="font-weight: 700" Color="Color.Error">@Container.UserStatus.StuteCode : @Container.UserStatus.Message</MudText>
         break;
     }
-@*
-        <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>*@
+
+  @*      <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>*@
 </MudStack>
 
 <MudCard Elevation="0" Class="hongbaocard mt-10" >
@@ -190,6 +190,19 @@
             var redpacketresult = await GetRedPacketResultQRCodeAsync(Container.OpenId, Container.QRCode);
             if (redpacketresult.IsSuccess)
             {
+
+                try
+                {
+                    double parsedDouble = Convert.ToDouble(redpacketresult.TotalAmount);
+
+                    double valueWithTwoDecimals = Math.Round(parsedDouble / 100, 2);
+                    redpacketresult.TotalAmount = $"¥{valueWithTwoDecimals}";
+                }
+                catch (FormatException)
+                {
+                    redpacketresult.TotalAmount = "¥0.00";
+    // Console.WriteLine("Failed to parse TotalAmount");
+                }
                 // redPacketResult = RedPacketResult.Success("100");
                 var parameters = new DialogParameters();
                 parameters.Add("Result", redpacketresult);
@@ -211,6 +224,8 @@
         }
 
     }
+
+
 
     private async Task GetRedPacketCaptchaAsync()
     {
@@ -248,6 +263,22 @@
             var redpacketresult = await GetRedPacketResultCaptchaAsync(Container.OpenId, Container.QRCode,Captcha);
             if (redpacketresult.IsSuccess)
             {
+                
+                
+                int parsedValue = 0;
+
+                try
+                {
+                    double parsedDouble = Convert.ToDouble(redpacketresult.TotalAmount);
+
+                    double valueWithTwoDecimals = Math.Round(parsedDouble / 100, 2);
+                    redpacketresult.TotalAmount = $"¥{valueWithTwoDecimals}";
+                }
+                catch (FormatException)
+                {
+                    redpacketresult.TotalAmount = "¥0.00";
+                   // Console.WriteLine("Failed to parse TotalAmount");
+                }
                 var parameters = new DialogParameters();
                 parameters.Add("Result", redpacketresult);
                 parameters.Add("Message","恭喜你！已领取红包");
@@ -361,9 +392,19 @@
     /// </summary>
     private  async Task OpenDialogAsync()
     {
+
+        double totalAmount = 1234567;
+        string expectedResult = "¥123.46";
+
+        // Act
+        double parsedDouble = Convert.ToDouble(totalAmount);
+        double valueWithTwoDecimals = Math.Round(parsedDouble / 100, 2);
+        string actualResult = $"¥{valueWithTwoDecimals}";
+
+
         var parameters = new DialogParameters();
-      //  parameters.Add("Result", new RedPacketResult(){ IsSuccess = true,TotalAmount = ""});
-        parameters.Add("Msg","红包被领取完毕！");
-        await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
+        parameters.Add("Result", new RedPacketResult() { IsSuccess = true, TotalAmount = actualResult });
+        parameters.Add("Message", "红包被领取完毕！");
+        await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情", parameters, options);
     }
 }

@@ -197,7 +197,7 @@
     private int LotteryCount;//抽奖数量
 
     private int RedPacketCount;//红包发放数量
-    private int TotalAmountSum;//红包发放金额
+    private double TotalAmountSum;//红包发放金额
 
     bool smooth = true;
     bool showDataLabels = true;
@@ -296,7 +296,7 @@
         LotteryCount      = await _LotteryRecordRepository.GetLotteryRecordsCountAsync();
         LotteryWinCount   = await _LotteryRecordRepository.GetLotteryWinRecordsCountAsync();
         RedPacketCount    = await _redPacketRecordRepository.GetRedPacketRecordsCountAsync();
-        TotalAmountSum    = (int) await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
+        TotalAmountSum    = await _redPacketRecordRepository.GetRedPacketRecordsTotalAmountAsync();
         OutStorageCount   = await _WLabelStorageRepository.GetTodayOutCountAsync(); 
    
         OutStorageThisYearCount = await _WLabelStorageRepository.GetThisYearOutCountAsync();

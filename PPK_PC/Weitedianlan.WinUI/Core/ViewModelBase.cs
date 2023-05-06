@@ -1,3 +1,0 @@
-﻿namespace Weitedianlan.WinUI.Core
-{
-}

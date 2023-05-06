@@ -1,0 +1,126 @@
+﻿@page "/outgoingordersdetail"
+
+
+@inject WLabelStorageRepository _labelStorageRepository
+@inject AgentRepository _agentRepository
+
+<MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+    <MudGrid   Class="mt-16 my-8">
+        <MudItem xs="12" sm="9" md="6" lg="5">
+            <MudTextField  T="string" @bind-Value="searchString" Label="请输入出库单号或者防伪编码"
+                           Adornment="Adornment.End" Variant="Variant.Outlined"
+                      FullWidth="true"
+                           AdornmentIcon="@Icons.Material.Filled.Search"
+                           OnAdornmentClick="@GetGroupByWLabelStorageAsync">
+            </MudTextField>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+<MudTable @ref="@_table" Items="wlabelStorage"
+          SortLabel="Sort By" Striped="true" Hover="true" Bordered="true">
+
+    <ToolBarContent>
+        <MudText Color="Color.Success" Typo="Typo.h6">@agentName</MudText> 
+        <MudSpacer></MudSpacer>
+        <MudText Align="Align.End" Typo="Typo.button">总数量: @wlabelStorageCount </MudText>
+
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>防伪编码</MudTh>
+        <MudTh>出库单号</MudTh>
+        <MudTh>ERP订单时间</MudTh>
+        <MudTh>发货时间</MudTh>
+        <MudTh>发货人</MudTh>
+    </HeaderContent>
+    <RowTemplate >
+        <MudTd DataLabel="防伪编码">@context.QRCode</MudTd>
+        <MudTd DataLabel="出库单号">@context.OrderNumbels</MudTd>
+        <MudTd DataLabel="ERP订单时间">@context.OrderTime</MudTd>
+        <MudTd DataLabel="发货时间">@context.OutTime</MudTd>
+        <MudTd DataLabel="发货人">@context.Adminaccount</MudTd>
+
+    </RowTemplate>
+    <PagerContent>
+        <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
+            <MudPagination Style="justify-content: end" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+        </MudStack>
+        
+    </PagerContent>
+</MudTable>
+
+
+<MudOverlay Visible="isVisible" DarkBackground="true">
+    <MudProgressCircular Size="Size.Large" StrokeWidth="5" Color="Color.Secondary" Indeterminate="true" />
+</MudOverlay>
+
+@code {
+
+    MudTable<W_LabelStorage> _table;
+
+    //private List<GroupByWLabelStorage> labelStorages;
+
+
+    public List<W_LabelStorage> wlabelStorage;//{ get; set; } = new List<W_LabelStorage>();
+    string? searchString;
+
+    string? agentName="";
+    bool isVisible;
+    int wlabelStorageCount;
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+
+
+    //查询GroupByWLabelStorage 出库单数据
+    private async Task GetGroupByWLabelStorageAsync()
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return;
+        }
+
+        isVisible = true;
+
+        try
+        {
+
+            wlabelStorage = new List<W_LabelStorage>();
+            var lisQRCode = await _labelStorageRepository.FindAsync(f => f.QRCode==searchString.Trim());
+            var listOrder = await _labelStorageRepository.FindAsync(f => f.OrderNumbels==searchString.Trim());
+
+            if (lisQRCode.Any())
+            {
+                wlabelStorage.AddRange(lisQRCode);
+            }
+            
+            if (listOrder.Any())
+            {
+                wlabelStorage.AddRange(listOrder);
+            }
+
+            wlabelStorageCount = wlabelStorage.Count();
+            if (wlabelStorage.Any())
+            {
+                var firstWlabelStorage = wlabelStorage.FirstOrDefault();
+                if (firstWlabelStorage != null)
+                {
+                    var result = await _agentRepository.GetAgentName(firstWlabelStorage.OrderNumbels);
+                    agentName = $"客户名称：{result}";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            StateHasChanged();
+            isVisible = false;
+        }
+    }
+
+
+}

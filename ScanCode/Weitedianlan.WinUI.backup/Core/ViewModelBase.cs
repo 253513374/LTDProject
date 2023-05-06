@@ -1,0 +1,3 @@
+﻿namespace ScanCode.WinUI.Core
+{
+}

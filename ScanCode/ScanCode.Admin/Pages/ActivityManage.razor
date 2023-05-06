@@ -1,0 +1,276 @@
+﻿@page "/activitymanage"
+
+@attribute [Authorize(Policy = Permissions.Lotterys.LotteryActivityView)]
+
+
+@inject IDialogService DialogService
+@inject LotteryActivityRepository LotteryActivityRepository
+@inject AgentRepository _agentRepository
+@inject ActivityPrizeRepository activityPrizeRepository
+
+@inject ISnackbar Snackbar
+
+
+
+@*活动管理页面*@
+
+<MudPageTitle Title="活动管理" Description="活动状态管理，只能有一个活动生效"></MudPageTitle>
+
+@if (Activities is null)
+{
+
+    <MudSkeletonComponent></MudSkeletonComponent>
+}
+else
+{
+
+<MudPaper Height="400" Elevation="1" Style="max-height: 600px; position: relative;">
+
+    <MudTable Items="Activities" CanCancelEdit="false">
+        <ToolBarContent>
+            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="@(()=>OnAddActivity())">创建活动</MudButton>
+            <MudSpacer></MudSpacer>
+            <MudTextField @bind-Value="searchString" Placeholder="请输入查询关键字..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+
+        <HeaderContent>
+            <MudTh>操作</MudTh>
+            <MudTh>活动名称</MudTh>
+            <MudTh>活动描述</MudTh>
+            <MudTh>活动状态</MudTh>
+            <MudTh>开始时间</MudTh>
+            <MudTh>结束时间</MudTh>
+            <MudTh>创建时间</MudTh>
+            <MudTh>操作</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="操作">
+                <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditActivity(context))">@(context.IsActive ? "已激活" : "未激活")</MudButton>
+                </MudTd>
+                <MudTd DataLabel="活动名称">@context.Name</MudTd>
+                <MudTd DataLabel="活动描述">@context.Description</MudTd>
+                <MudTd DataLabel="活动状态">@context.Status</MudTd>
+                <MudTd DataLabel="开始时间">@context.StartTime</MudTd>
+                <MudTd DataLabel="结束时间">@context.EndTime</MudTd>
+                <MudTd DataLabel="创建时间">@context.CreateTime</MudTd>
+                <MudTd DataLabel="操作">
+                    <MudStack Row="true" Spacing="1">
+                        <MudButton Style="Width: 120px" Variant="Variant.Outlined" Color="Color.Info" Size="Size.Small" OnClick="@(() => ShowBtnPress(context))">显示奖品信息</MudButton>
+                        <MudButton Style="Width: 80px" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditActivityPress(context))">编辑活动</MudButton>
+                    </MudStack>
+                </MudTd>
+
+            </RowTemplate>
+
+            <ChildRowContent>
+                @if (context.ShowPrizes)
+            {
+                <MudTr>
+                    <td colspan="7">
+                        <MudCard Elevation="3" Class="mx-5"  >
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.body1">活动【 <strong>@context.Name</strong> 】-奖品详细列表</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                                <MudCardContent Class="pa-0" Style="min-height: 200px">
+
+                                    @if (context.Prizes is null)
+                                    {
+                                        <MudSkeletonComponent></MudSkeletonComponent>
+                                    }
+                                    else
+                                    {
+                                        <MudTable Items="context.Prizes" Dense="true" Striped="true"
+                                                  Bordered="true" Hover="true" Context="prize">
+                                            <HeaderContent>
+                                                <MudTh>奖品名称</MudTh>
+                                                <MudTh>奖品类型</MudTh>
+                                                <MudTh>奖品数量</MudTh>
+                                                <MudTh>中奖概率</MudTh>
+                                                <MudTh>中奖红包(元)</MudTh>
+                                                <MudTh>奖品描述</MudTh>
+                                                <MudTh>奖品图片</MudTh>
+                                                <MudTh>奖品状态</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd>@prize.Name</MudTd>
+                                                <MudTd>@prize.Type</MudTd>
+                                                <MudTd>@prize.Amount</MudTd>
+                                                <MudTd>@prize.Probability</MudTd>
+                                                <MudTd>@prize.CashValue</MudTd>
+                                                <MudTd>@prize.Description</MudTd>
+                                                <MudTd><MudImage Src="@prize.ImageUrl" Alt="奖品图片" Height="100" Width="100"/></MudTd>
+                                                <MudTd>@(prize.IsActive ? "启用" : "禁用")</MudTd>
+                                                <MudTd>
+                                                    <MudStack Row="true" Spacing="1">
+                                                        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
+                                                    </MudStack>
+                                                </MudTd>
+                                            </RowTemplate>
+
+                                        </MudTable>
+                                    }
+                            </MudCardContent>
+                            </MudCard>
+                        </td>
+                    </MudTr>
+            }
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+
+
+    </MudTable>
+</MudPaper>
+}
+
+
+
+@code {
+
+    private IEnumerable<LotteryActivity> Activities;
+
+    private string searchString;
+    private bool ShowPrizesDetails { set; get; }
+
+
+    private List<ActivityPrize> ActivityPrizes;
+
+
+    [Inject] private IRedisCache CacheService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Participants = await _agentRepository.GetParticipantsAsync();
+        Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
+        //  return base.OnInitializedAsync();
+    }
+
+
+    /// <summary>
+    /// 添加新建活动- 打开新建活动对话框
+    /// </summary>
+    /// <returns></returns>
+    protected async Task OnAddActivity()
+    {
+        // AddModal = true;
+        var parameters = new DialogParameters();parameters.Add("ContentTitle", "建立新活动");
+
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var resultdialog = await DialogService.ShowAsync<AddActivityDialog>("Confirm", parameters, options);
+        var result = await resultdialog.Result;
+
+        if (!result.Canceled)
+        {
+            Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
+        }
+
+    }
+
+    private async Task ShowBtnPress(LotteryActivity selectedActivity)
+    {
+        selectedActivity.ShowPrizes = !selectedActivity.ShowPrizes;
+
+        selectedActivity.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(selectedActivity.Id);
+    }
+
+    /// <summary>
+    /// 编辑活动奖品
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    private async Task OnEditPrize(ActivityPrize value)
+    {
+        var parameters = new DialogParameters() { ["UpActivityPrize"] = value };
+        parameters.Add("ContentTitle", "编辑参加活动的奖品");
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var resultdialog = await DialogService.ShowAsync<EditActivityPrizeDialog>("编辑奖品", parameters, options);
+
+        var result = await resultdialog.Result;
+        if (!result.Canceled)
+        {
+            var resultPrize = result.Data as ActivityPrize;//需要更新的参加活动的奖品
+
+            var activitylottery = Activities.FirstOrDefault(x => x.Id == value.LotteryActivityId); //.FirstOrDefault(x => x.Id == value.Id).Name = resultPrize.Name;
+
+            var upprize = activitylottery.Prizes.FirstOrDefault(f => f.Id == value.Id);//.Name = resultPrize.Name;
+
+            upprize = resultPrize;
+
+            var insertresult = await LotteryActivityRepository.UpdateAsync(activitylottery);
+            if (insertresult > 0)
+            {
+                // up = await LotteryActivityRepository.GetByIdAsync(up.Id);
+                //更新完成重新获取活动列表，并且设置显示奖品编辑项
+                Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
+                var up2 = Activities.FirstOrDefault(x => x.Id == value.LotteryActivityId); //.FirstOrDefault(x => x.Id == value.Id).Name = resultPrize.Name;
+                up2.ShowPrizes = true;// 设置显示奖品编辑项
+
+                //重新获取修改后的奖品信息
+                up2.Prizes = await activityPrizeRepository.GetActivityPrizesAsync((int)value.LotteryActivityId);
+
+                ///更新的活动是当前活动，需要更新缓存
+                if (up2.IsActive)
+                {
+                    await CacheService.SetObjectAsync(CacheKeys.LoteryActive, up2);
+                }
+
+                Snackbar.Add($"活动奖品更新成功：{upprize.Name}", Severity.Success);
+                // StateHasChanged();
+            }
+
+        }
+    }
+
+    private async Task EditActivityPress(LotteryActivity value)
+    {
+        value.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(value.Id);
+        var parameters = new DialogParameters() { ["UplotteryActivity"] = value };
+        parameters.Add("ContentTitle", "编辑活动");
+        parameters.Add("IsDisable", false);
+
+
+        var options = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var resultdialog = await DialogService.ShowAsync<EditActivityDialog>("编辑奖品", parameters, options);
+
+        var result = await resultdialog.Result;
+
+        if (!result.Canceled)
+        {
+           var data =   result.Data as  LotteryActivity;
+            if (data.IsActive)
+            {
+                //data.
+                await CacheService.SetObjectAsync(CacheKeys.LoteryActive, data);
+            }
+        }
+    }
+
+    private async Task EditActivity(LotteryActivity context)
+    {
+        context.IsActive = !context.IsActive;
+        var insertresult = await LotteryActivityRepository.UpdateActiveStatus(context);
+        if (insertresult > 0)
+        {
+            context.Prizes = await activityPrizeRepository.GetActivityPrizesAsync(context.Id);
+            await CacheService.SetObjectAsync(CacheKeys.LoteryActive, context);
+            if (context.IsActive)
+            {
+                
+                Snackbar.Add("活动上架更新成功", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("活动下架更新成功", Severity.Success);
+            }
+        }
+        else
+        {
+            Snackbar.Add("活动状态更新失败", Severity.Error);
+        }
+
+        Activities = await LotteryActivityRepository.GetLatestRecordsAsync();
+    }
+}

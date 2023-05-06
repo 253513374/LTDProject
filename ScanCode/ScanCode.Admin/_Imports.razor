@@ -1,0 +1,72 @@
+﻿@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using MudBlazor
+
+@using ScanCode.Web
+
+
+@using Microsoft.AspNetCore.Components
+
+
+@using ScanCode.Share
+@using ScanCode.RedisCache
+
+@using ScanCode.Repository
+@using ScanCode.Repository.Utility
+@using ScanCode.Repository.Data
+
+@using ScanCode.Model
+@using ScanCode.Model.Entity.Analysis
+@using ScanCode.Model.Entity
+@using ScanCode.Model.Enum
+
+@using ScanCode.Web.Admin
+@using ScanCode.Web.Admin.Components
+@using ScanCode.Web.Admin.SignalRHub
+@using ScanCode.Web.Admin.Data
+@using ScanCode.Web.Admin.Shared.Components
+@using ScanCode.Web.Admin.Shared
+@using ScanCode.Web.Admin.Authenticated
+@using ScanCode.Web.Admin.Authenticated.IdentityModel
+@using ScanCode.Web.Admin.Pages.Dialog
+@using ScanCode.Web.Admin.Pages.FluentValidator
+@using ScanCode.Web.Admin.Pages.Dialog.Components
+@using ScanCode.Web.Admin.Pages.Dialog.Components.FileUpImage
+@using ScanCode.Web.Admin.Pages.Authentication
+@using ScanCode.Web.Admin.Pages.Authentication.Dialogs
+@using ScanCode.Web.Admin.Pages.Authentication.Fluent
+@using ScanCode.Web.Admin.Pages.Authentication.ViewModel
+
+@using MediatR
+
+
+
+
+@using Microsoft.Extensions.Caching.Memory;
+
+
+@using System.Globalization
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using ScanCode.Share.SignalR
+
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IAuthorizationService _authorizationService
+@inject ISnackbar _snackBar
+@inject IDialogService _dialogService
+@inject IJSRuntime _jsRuntime
+@inject ExportService ExportService
+
+@using Variant = MudBlazor.Variant;
+@using ButtonType = MudBlazor.ButtonType;
+@using AlignItems = MudBlazor.AlignItems;
+@using DialogOptions = MudBlazor.DialogOptions

@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.3" />
+    <PackageReference Include="Senparc.Weixin" Version="6.15.8.7" />
+    <PackageReference Include="Senparc.Weixin.AspNet" Version="0.8.5.8" />
+    <PackageReference Include="Senparc.Weixin.MP" Version="16.18.10.6" />
+    <PackageReference Include="Senparc.Weixin.MP.Middleware" Version="0.8.5.7" />
+    <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.12.5.7" />
+    <PackageReference Include="Senparc.Weixin.TenPay" Version="1.12.5.7" />
+    <PackageReference Include="Senparc.Weixin.TenPayV3" Version="0.7.0" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ScanCode.Model\ScanCode.Model.csproj" />
+    <ProjectReference Include="..\ScanCode.RedisCache\ScanCode.RedisCache.csproj" />
+    <ProjectReference Include="..\ScanCode.Repository\ScanCode.Repository.csproj" />
+    <ProjectReference Include="..\ScanCode.Share\ScanCode.Share.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="logs\" />
+  </ItemGroup>
+
+</Project>

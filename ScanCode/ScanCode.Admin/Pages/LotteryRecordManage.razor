@@ -1,0 +1,240 @@
+﻿@page "/lotteryrecordmanage"
+
+@attribute [Authorize(Policy = Permissions.Lotterys.LotteryRecrodView)]
+@inject LotteryRecordRepository _LotteryRecordRepository
+
+
+<MudPageTitle Title="抽奖数据" Description="扫码抽奖记录"></MudPageTitle>
+
+
+
+
+
+
+
+
+
+@if (lotteryRecords is null)
+{
+
+    <MudSkeletonComponent></MudSkeletonComponent>
+}
+else
+{
+    <MudHidden Breakpoint="Breakpoint.MdAndUp" >
+                    
+        <MudStack AlignItems="AlignItems.Stretch" Spacing="5">
+            <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+                <PickerActions>
+                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
+                    <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
+                    <MudButton Color="Color.Primary" OnClick="@(async () => await OnDateRangePickerOk())">确定</MudButton>
+                </PickerActions>
+            </MudDateRangePicker>
+            <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudStack Class="mt-2" Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
+                <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
+
+            </MudStack>
+        </MudStack>
+                   
+    </MudHidden>
+@*    <MudStack Class="my-5" Row="true">
+        <MudDateRangePicker   @ref="_picker" Label="查询时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
+                <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(async () => await OnDateRangePickerOk())">确定</MudButton>
+            </PickerActions>
+        </MudDateRangePicker>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+        <MudSpacer></MudSpacer>
+    </MudStack>
+*@
+    <MudTable @ref="@_table" Items="lotteryRecords" Dense="true" Striped="true"
+              Filter="new Func<LotteryRecord, bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
+              Bordered="true" Hover="true">
+        <ToolBarContent>
+            
+            
+            <MudHidden Breakpoint="Breakpoint.MdAndDown" >
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
+                    <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
+
+                </MudStack>
+                <MudSpacer></MudSpacer>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="16">
+                    <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+                        <PickerActions>
+                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
+                            <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
+                            <MudButton Color="Color.Primary" OnClick="@(async () => await OnDateRangePickerOk())">确定</MudButton>
+                        </PickerActions>
+                    </MudDateRangePicker>
+                    <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+                </MudStack>
+            </MudHidden>
+            @*  
+            <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
+            <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
+            <MudSpacer></MudSpacer>
+            <MudSpacer></MudSpacer>
+            <MudSpacer></MudSpacer>
+            <MudSpacer></MudSpacer>
+            <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+*@
+
+
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>微信OpenID</MudTh>
+            <MudTh>标签序号</MudTh>
+            <MudTh>抽奖时间</MudTh>
+            <MudTh>抽奖状态</MudTh>
+            <MudTh>活动名称</MudTh>
+            <MudTh>奖品名称</MudTh>
+            <MudTh>领奖状态</MudTh>
+        </HeaderContent>
+        <RowTemplate >
+            <MudTd>@context.OpenId</MudTd>
+            <MudTd>@context.QRCode</MudTd>
+
+            <MudTd>@context.Time</MudTd>
+            <MudTd>
+
+                <MudAvatar Variant="Variant.Outlined" Color="Color.Info">
+                    @if (context.IsSuccessPrize)
+                    {
+                        <MudIcon Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.CardGiftcard"/>
+                    }
+                    else
+                    {
+                        <MudIcon Color="Color.Dark" Size="Size.Small" Icon="@Icons.Material.Filled.DoNotDisturb"/>
+                    }
+                </MudAvatar>
+            </MudTd>
+            <MudTd>@context.ActivityName</MudTd>
+            <MudTd>@context.PrizeName</MudTd>
+            <MudTd>@context.Claimed</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
+                <MudText Typo="Typo.button">@($"总数：{lotteryRecords.Count()} ")</MudText>
+                <MudPagination Style="justify-content: end" SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4"/>
+            </MudStack>
+        </PagerContent>
+
+    </MudTable>
+}
+@code {
+
+    private MudDateRangePicker _picker;
+    private DateRange _dateRange = new DateRange(DateTime.Now.Date.AddDays(-7), DateTime.Now.Date);
+
+    private MudTable<LotteryRecord> _table;
+
+    // private MudTable<LotteryRecord> _table;
+    private IEnumerable<LotteryRecord> lotteryRecords;
+
+    private LotteryRecord selectedLotteryRecord;
+
+    private string searchString = "";
+
+    private bool FilterFunc1(LotteryRecord record) => FilterFunc(record, searchString);
+
+
+    private bool FilterFunc(LotteryRecord record, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (record.QRCode?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.OpenId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.PrizeName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.ActivityName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if (record.ActivityDescription?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (record.PrizeDescription?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+        if ($"{record.QRCode}{record.PrizeDescription}{record.OpenId}{record.PrizeName}{record.ActivityName} {record.ActivityDescription}".Contains(searchString))
+            return true;
+
+        return false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadData();
+            StateHasChanged();
+        }
+        return;//base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
+    private async Task OnDateRangePickerOk()
+    {
+        lotteryRecords = null;
+        _picker.Close();
+        lotteryRecords = await _LotteryRecordRepository.FindAsync(f => f.CreateTime >= _dateRange.Start.Value && f.CreateTime <= _dateRange.End.Value);
+        return; 
+    }
+
+  //  public const string OpenXml = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    private async Task ExportToExcel()
+    {
+        try
+        {
+            var fielter = _table.FilteredItems;
+            if (fielter.Count()!=0)
+            {
+            
+                var excelData = ExportService.ExportToExcel(fielter);
+
+                var browserBase64 = Convert.ToBase64String(excelData);
+                var href = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{browserBase64}";
+                await _jsRuntime.InvokeVoidAsync("downloadFile", href, $"{nameof(LotteryRecord).ToLower()}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx");
+
+                _snackBar.Add(string.IsNullOrWhiteSpace(searchString)
+                    ? "抽奖记录导出"
+                    : "抽奖记录过滤导出", Severity.Success);
+            }
+            else
+            {
+                _snackBar.Add($"抽奖记录数据为null", Severity.Warning);
+            }
+        }
+        catch (Exception e)
+        {
+            _snackBar.Add(e.Message, Severity.Error);
+        }
+    }
+
+    /// <summary>
+    /// 重新加载数据
+    /// </summary>
+    private async Task LoadData()
+    {
+        lotteryRecords = await _LotteryRecordRepository.GetLatestLotteryRecordsAsync();
+
+        if (lotteryRecords is not null && lotteryRecords.Count() > 1)
+        {
+            _dateRange.Start = lotteryRecords.Min(s => s.CreateTime);
+            _dateRange.End = lotteryRecords.Max(s => s.CreateTime);
+        }
+        StateHasChanged();
+    }
+}

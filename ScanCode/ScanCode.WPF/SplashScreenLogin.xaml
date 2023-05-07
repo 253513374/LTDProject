@@ -27,10 +27,11 @@
         <viewModels:LoginViewModel />
     </Window.DataContext>
     <Grid>
+
         <Border  DockPanel.Dock="Top"
                  materialDesign:ElevationAssist.Elevation="Dp5"
                  Margin="0,0,0,0" Background="#fafafa" CornerRadius="15"
-                BorderBrush="#c7c7c7" BorderThickness="5">
+                 BorderBrush="#c7c7c7" BorderThickness="5">
         </Border>
         <StackPanel  Margin="0,0,0,0"  DockPanel.Dock="Top"  Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
 
@@ -56,6 +57,10 @@
         </StackPanel>
 
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="55*"></ColumnDefinition>
                 <ColumnDefinition Width="45*"></ColumnDefinition>
@@ -93,6 +98,13 @@
                     Style="{StaticResource RoundedButton}"
                     Content="Login" Width="200" Height="45" Margin="0,50,0,0"
                         Command="{Binding  LoggedInCommand }" />
+            </StackPanel>
+
+            <StackPanel Margin="50,0,50,0" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Style="{StaticResource MaterialDesignBody2TextBlock}"
+                    Foreground="DarkRed" FontWeight="Bold"
+                    Text="{Binding Errorinfo,Mode=TwoWay}" />
             </StackPanel>
         </Grid>
     </Grid>

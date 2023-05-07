@@ -11,6 +11,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using ScanCode.WPF.HubServer.Services;
+using AutoMapper;
+using ScanCode.Share;
+using ScanCode.WPF.Model;
 
 namespace ScanCode.WPF
 {
@@ -43,6 +46,15 @@ namespace ScanCode.WPF
             var services = new ServiceCollection();
             ConfigureServices(services);
             ServiceProvider = services.BuildServiceProvider();
+
+            //var configuration = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.ConstructServicesUsing(ObjectFactory);
+
+            //    cfg.CreateMap<Source, Destination>();
+            //});
+            //IMapper mapper = config.CreateMapper();
+
             base.OnStartup(e);
         }
 
@@ -61,9 +73,11 @@ namespace ScanCode.WPF
 
             // 注册ViewModels
 
-            services.AddTransient<MainWindow>();
+            //services.AddTransient<MainWindow>();
+            services.AddTransient<HomeWindow>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<LoginViewModel>();
+            services.AddSingleton<HomeViewModel>();
             services.AddSingleton<WtdlSqlService>(sp => new WtdlSqlService(hub, login));
             //services.AddSingleton<IFilesService, FilesService>();
             //services.AddSingleton<ISettingsService, SettingsService>();
@@ -71,12 +85,16 @@ namespace ScanCode.WPF
             //services.AddSingleton<IShareService, ShareService>();
             //services.AddSingleton<IEmailService, EmailService>();
 
+            //services.Add();
+
+            services.AddAutoMapper(typeof(OrganizationProfile));
+
             return services.BuildServiceProvider();
         }
 
-        public static T GetService<T>()
+        public static T GetService<T>() where T : class
         {
-            return Current.ServiceProvider.GetService<T>();
+            return Current.ServiceProvider.GetRequiredService<T>();
 
             //return Services.GetRequiredService<T>();
         }

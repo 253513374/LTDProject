@@ -32,8 +32,12 @@ namespace ScanCode.WPF
         private void ViewModel_LoggedIn(object? sender, EventArgs e)
         {
             //先打开主窗口，再关闭登录窗口
-            var mainWindow = App.GetService<MainWindow>();//<>();
-            mainWindow.Show();
+            var mainWindow = App.GetService<HomeWindow>();//<>();
+            // 显示主窗口
+            Dispatcher.Invoke(() =>
+            {
+                mainWindow.Show();
+            });
 
             this.Close();
         }

@@ -10,29 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ScanCode.WPF.ViewModels;
 
 namespace ScanCode.WPF
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// HomeWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HomeWindow : Window
     {
-        public MainWindow()
+        public HomeWindow()
         {
             InitializeComponent();
-            //this.DataContext = new MainWindowViewModel();
+            this.DataContext = App.GetService<HomeViewModel>();
         }
 
-        /// <summary>
-        /// 拖动程序
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void HomeWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
@@ -42,7 +36,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        private void HomeMinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
@@ -52,7 +46,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        private void HomeMaximizeButton_Click(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)
             {
@@ -69,7 +63,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PinButton_Checked(object sender, RoutedEventArgs e)
+        private void HomePinButton_Checked(object sender, RoutedEventArgs e)
         {
             Topmost = true;
         }
@@ -79,7 +73,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PinButton_Unchecked(object sender, RoutedEventArgs e)
+        private void HomePinButton_Unchecked(object sender, RoutedEventArgs e)
         {
             Topmost = false;
         }
@@ -89,10 +83,22 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void HomeCloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
-            // Application.Current.Shutdown();
+        }
+
+        private void HomeWindow_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+            }
+            else
+            {
+                WindowState = WindowState.Maximized;
+            }
+            //throw new NotImplementedException();
         }
     }
 }

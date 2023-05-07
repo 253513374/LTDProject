@@ -14,6 +14,9 @@ namespace ScanCode.WPF.ViewModels;
 
 public partial class LoginViewModel : ObservableObject
 {
+    /// <summary>
+    /// 登录成功通知事件，登录成功打开主窗口
+    /// </summary>
     public event EventHandler EventLoggedIn;
 
     private readonly WtdlSqlService hubService;
@@ -29,7 +32,10 @@ public partial class LoginViewModel : ObservableObject
     private SecureString _securePassword;
 
     [ObservableProperty]
-    private string? username = "";
+    private string? username = "admin";
+
+    [ObservableProperty]
+    private string errorinfo = "";
 
     // [ObservableProperty]
     // private string? password;
@@ -52,15 +58,21 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(HasExecuted))]
     protected async Task LoggedIn()
     {
-        if (string.IsNullOrWhiteSpace(username) || SecurePassword is null)
+        if (string.IsNullOrWhiteSpace(username) || _securePassword is null)
         {
             return;
         }
-        string password = ConvertSecureStringToString(SecurePassword);
+        string password = ConvertSecureStringToString(_securePassword);
         //  string psw = PasswordHelper.SecureStringToString(SecurePassword);
-        // var loginResult = await hubService.UserLoging(new LoginData() { Username = username, Password = password }, true);
-
-        EventLoggedIn?.Invoke(this, EventArgs.Empty);
+        var loginResult = await hubService.UserLoging(new LoginData() { Username = username, Password = password }, true);
+        if (loginResult.Successed)
+        {
+            EventLoggedIn?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Errorinfo = $"登录失败：{loginResult.Message}";
+        }
     }
 
     private bool HasExecuted()

@@ -19,13 +19,13 @@ public partial class LoginViewModel : ObservableObject
     /// </summary>
     public event EventHandler EventLoggedIn;
 
-    private readonly WtdlSqlService hubService;
+    private readonly HubClientService hubService;
 
     private bool _hasExecuted;
 
-    public LoginViewModel()
+    public LoginViewModel(HubClientService hubservice)
     {
-        hubService = App.GetService<WtdlSqlService>();
+        hubService = hubservice; //App.GetService<HubClientService>();
     }
 
     [ObservableProperty]
@@ -48,11 +48,11 @@ public partial class LoginViewModel : ObservableObject
         // throw new NotImplementedException();
     }
 
-    [RelayCommand]
-    private void Close()
-    {
-        Application.Current.Shutdown();
-    }
+    //[RelayCommand]
+    //private void Close()
+    //{
+    //    Application.Current.Shutdown();
+    //}
 
     // 引发LoggedIn事件的方法
     [RelayCommand(CanExecute = nameof(HasExecuted))]

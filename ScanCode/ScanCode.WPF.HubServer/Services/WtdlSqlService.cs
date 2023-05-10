@@ -14,7 +14,7 @@ using ScanCode.WPF.HubServer.ViewModels;
 
 namespace ScanCode.WPF.HubServer.Services
 {
-    public class WtdlSqlService
+    public class HubClientService
     {
         // public static User _usernnfo = new User();
         // private WTDLContext DbEntities { set; get; }
@@ -36,7 +36,7 @@ namespace ScanCode.WPF.HubServer.Services
         /// </summary>
         private static bool OnlineOrOffline = true;
 
-        public WtdlSqlService(string huburl, string loginurl)
+        public HubClientService(string huburl, string loginurl)
         {
             HubUrl = huburl;
             LoginUrl = loginurl;
@@ -50,19 +50,8 @@ namespace ScanCode.WPF.HubServer.Services
         /// </summary>
         /// <param name="addtLabelx"></param>
         /// <returns></returns>
-        public async Task<tLabelsxModel> AddtLabelX(AddtLabelx addtLabelx)
+        public async Task<OutStorageResult> AddScanCodeAsync(W_LabelStorage storage)
         {
-            var tlabelx = new W_LabelStorage()
-            {
-                QRCode = addtLabelx.QRCode,
-                OrderTime = addtLabelx.OrderTime,
-                OutTime = DateTime.Now,
-                Dealers = addtLabelx.Dealers,
-                Adminaccount = addtLabelx.Adminaccount,
-                OutType = addtLabelx.OutType,
-                OrderNumbels = addtLabelx.OrderNumbels,
-                ExtensionName = addtLabelx.ExtensionName,
-            };
             try
             {
                 //判断是网络是Online还是Offline
@@ -71,26 +60,25 @@ namespace ScanCode.WPF.HubServer.Services
                     try
                     {
                         hubConnection = hubConnection.TryInitialize();
-                        // _ = hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
-                        //var result = await
-                        _ = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, tlabelx);
 
-                        return UPdateAddtLabelsxModel(addtLabelx, 200, "出库成功");
+                        storage.Adminaccount = hubConnection.TryGetUser().UserName;
+                        var result = await hubConnection.InvokeAsync<OutStorageResult>(HubServerMethods.SendOutStorage, storage);
+                        return result;
                     }
                     catch (Exception e)
                     {
-                        return await TLabelsxModelOffline(addtLabelx, tlabelx);
+                        return OutStorageResult.Fail($"{e.Message}", storage.QRCode);
                     }
                 }
                 else
                 {
-                    return await TLabelsxModelOffline(addtLabelx, tlabelx);
+                    return OutStorageResult.Fail($"网络断开，请检查网络是否正常", storage.QRCode);
                 }
             }
             catch (Exception ex)
             {
                 string strinfo = ex.Message;
-                return UPdateAddtLabelsxModel(addtLabelx, 404, "系统错误", strinfo);
+                return OutStorageResult.Fail($"出现异常：{strinfo}", storage.QRCode);
             }
         }
 
@@ -527,6 +515,23 @@ namespace ScanCode.WPF.HubServer.Services
                 return groupe_ddnos;
             }
             return new List<GroupedBdxOrder>();
+        }
+
+        public async Task<IEnumerable<T_BDX_ORDER>> GetOrderDetailAsync(string ddno)
+        {
+            try
+            {
+                if (hubConnection.State == HubConnectionState.Connected)
+                {
+                    hubConnection = hubConnection.TryInitialize();
+                    return await hubConnection.InvokeAsync<List<T_BDX_ORDER>>(HubServerMethods.BDXORDER_LIST, ddno);
+                }
+                return new List<T_BDX_ORDER>();
+            }
+            catch (Exception e)
+            {
+                return new List<T_BDX_ORDER>();
+            }
         }
     }
 }

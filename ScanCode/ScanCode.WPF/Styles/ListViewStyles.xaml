@@ -1,49 +1,213 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:model="clr-namespace:ScanCode.WPF.Model">
+                    xmlns:model="clr-namespace:ScanCode.WPF.Model"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+    xmlns:reQuest="clr-namespace:ScanCode.WPF.HubServer.ReQuest;assembly=ScanCode.WPF.HubServer">
 
-    <!-- 定义卡片样式 -->
-    <Style TargetType="Border" x:Key="CardStyle">
-        <Setter Property="Background" Value="LightGray" />
-        <Setter Property="BorderBrush" Value="Black" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="Padding" Value="10" />
-        <Setter Property="Margin" Value="5" />
-    </Style>
-    <Style x:Key="ItemsControlStyle1" TargetType="{x:Type ItemsControl}">
+    <ResourceDictionary.MergedDictionaries>
+        <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--定义内容容器-->
+    <ItemsPanelTemplate x:Key="CustomItemsPanelTemplate">
+        <WrapPanel Orientation="Horizontal"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                   Width="{Binding ElementName=MyListView, Path=ActualWidth}" />
+    </ItemsPanelTemplate>
+
+    <!--ListView鼠标选择项外观-->
+    <Style x:Key="CustomListViewItemStyle" TargetType="{x:Type ListViewItem}">
+
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ItemsControl}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <Border x:Name="Bd"
+                            Height="{TemplateBinding Height}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <ScrollViewer>
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter x:Name="Presenter" VerticalAlignment="Stretch" HorizontalAlignment="Center"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#161B21" />
+                            <!--<Setter TargetName="Presenter" Property="TextElement.Foreground" Value="#F3A950" />-->
+                            <Setter TargetName="Bd" Property="CornerRadius" Value="5" />
+                            <!-- Change this to the desired background color -->
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent" />
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="1" />
+                            <!--<Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.03" ScaleY="1.03" />
+                                </Setter.Value>
+                            </Setter>-->
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.03" ScaleY="1.03" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#161B21"></Setter>
+                            <Setter TargetName="Bd"  Property="CornerRadius" Value="5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- 定义数据模板 -->
-    <!--<DataTemplate x:Key="CardItemTemplate" DataType="{x:Type model:GroupOrdersDTO}">
-        <Border VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Height="180" Style="{StaticResource CardStyle}">
-            <StackPanel>
-                <TextBlock Text="{Binding Ddno}" FontWeight="Bold" FontSize="20" />
-                <TextBlock Text="{Binding Kh}" Margin="0,5,0,0" />
-                <TextBlock Text="{Binding Kh}" Margin="0,5,0,0" />
-                <TextBlock Text="{Binding Ddr}" Margin="0,5,0,0" />
-            </StackPanel>
-        </Border>
-    </DataTemplate>-->
 
-    <ItemsPanelTemplate x:Key="ItemsControlItemsPanel1">
-        <ScrollViewer x:Name="scrList" Margin="0" HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
-            <WrapPanel Margin="0" Width="{Binding ElementName=scrList, Path=Width, Mode=OneWay}"
-                       HorizontalAlignment="Stretch" Orientation="Horizontal" />
-        </ScrollViewer>
-    </ItemsPanelTemplate>
+    <!-- 定义ListView数据模板 -->
+    <DataTemplate x:Key="CustomItemTemplate" DataType="{x:Type model:GroupOrdersDTO}">
+        <materialDesign:Card x:Name="DataCard"
+                Background="#5A282D33"
+                Foreground="#ffffff"
+                Margin="8"
+                Padding="15"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                materialDesign:ElevationAssist.Elevation="Dp5"
+                Width="330"  Height="175">
+            <Grid x:Name="GridForeground"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="70"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                                 Grid.Row="0" TextWrapping="Wrap"
+                                 HorizontalAlignment="Left"  VerticalAlignment="Top"
+                                 Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                 Text="{Binding  Ddno}" FontWeight="Bold" />
+
+                    <TextBlock   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                 Grid.Column="1" FontWeight="Bold"
+                                 HorizontalAlignment="Left" VerticalAlignment="Top"
+                                 TextWrapping="Wrap" Text="{Binding Totalsl}" />
+                </Grid>
+                <!--<StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch">-->
+
+                <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding Kh}" Margin="0,10,0,0" />
+                <!--</StackPanel>-->
+                <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"
+
+                                   TextWrapping="Wrap" Text="{Binding Ddrq}" />
+
+                    <Button x:Name="ActionButton"
+                            Foreground="#161B21" Background="#F3A950" FontWeight="Bold"
+                            Content="开始扫码"  HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                            materialDesign:ButtonAssist.CornerRadius="12"
+                            Command="{Binding DataContext.ItemButtonClickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                            CommandParameter="{Binding}"
+                            Visibility="Collapsed" />
+                </Grid>
+            </Grid>
+        </materialDesign:Card>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                         Value="True">
+                <Setter TargetName="ActionButton" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <!--定义内容数据项 GridViewRowPresenter-->
+    <ControlTemplate x:Key="CustomGridViewTemplate" TargetType="ListView">
+        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Background="{TemplateBinding Background}"
+                Padding="10"
+                CornerRadius="15"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalAlignment="Center">
+                <GridViewRowPresenter />
+            </ScrollViewer>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="CustomListViewTemplate" TargetType="ListView">
+        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Background="{TemplateBinding Background}"
+                Padding="10"
+                CornerRadius="15"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalAlignment="Center">
+                <ItemsPresenter />
+            </ScrollViewer>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="ColoredGridViewRowPresenterStyle" TargetType="{x:Type GridViewRowPresenter}">
+        <Setter Property="TextElement.Foreground" Value="Blue" />
+    </Style>
+
+    <Style TargetType="ListViewItem">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <GridViewRowPresenter Content="{Binding}"
+                                          Style="{StaticResource ColoredGridViewRowPresenterStyle}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--自定义ListView表头颜色。继承原有属性的基础上修改字体颜色，
+    把表头字体颜色绑定到ListView的Foreground前景色-->
+    <Style x:Key="ColoredGridViewColumnHeaderStyle"
+           TargetType="{x:Type GridViewColumnHeader}"
+           BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+
+        <Setter Property="Foreground"
+                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=Foreground}" />
+    </Style>
+
+    <!--<DataTemplate   x:Key="CustomGridViewTemplateDetail" DataType="{x:Type reQuest:OrderDetail}">
+
+        <GridView>
+            <GridView.ColumnHeaderContainerStyle>
+                <StaticResource ResourceKey="ColoredGridViewColumnHeaderStyle" />
+            </GridView.ColumnHeaderContainerStyle>
+            <GridViewColumn Width="Auto" Header="型号"
+                                DisplayMemberBinding="{Binding GGXH}" />
+            <GridViewColumn Width="Auto" Header="数量"
+
+                                DisplayMemberBinding="{Binding SL}" />
+            <GridViewColumn Width="Auto" Header="单位"
+
+                                DisplayMemberBinding="{Binding DW}" />
+            <GridViewColumn Width="Auto" Header="颜色"
+
+                                DisplayMemberBinding="{Binding YS}" />
+        </GridView>
+    </DataTemplate>-->
 </ResourceDictionary>

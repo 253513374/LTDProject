@@ -50,10 +50,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="View\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ScanCode.WPF.HubServer\ScanCode.WPF.HubServer.csproj" />
   </ItemGroup>
 

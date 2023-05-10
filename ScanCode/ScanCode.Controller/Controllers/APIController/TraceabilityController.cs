@@ -37,7 +37,7 @@ namespace ScanCode.Controller.Controllers.APIController
         /// <returns>
         /// </returns>
         //[ResponseCache(Duration = 180, VaryByQueryKeys = new string[] { "qrcode" })]
-        [HttpGet]
+        [AcceptVerbs("GET", "POST")]
         public async Task<ApiResponse<TraceabilityResult>> Get(string qrcode)
         {
             // your function code here

@@ -19,7 +19,7 @@ namespace ScanCode.WPF.HubServer.Services
         private static string _password;
         private static User User { set; get; }
 
-        private static WtdlSqlService WtdlSqlService { set; get; }
+        private static HubClientService HubClientService { set; get; }
 
         public static HubConnection TryInitialize(this HubConnection hubConnection,
             string huburl = "",
@@ -115,18 +115,18 @@ namespace ScanCode.WPF.HubServer.Services
         }
 
         /// <summary>
-        /// 初始化 WtdlSqlService
+        /// 初始化 HubClientService
         /// </summary>
         /// <param name="wtdlSqlService"></param>
         /// <returns></returns>
-        //public static WtdlSqlService TryGetSqlService(this WtdlSqlService wtdlSqlService)
+        //public static HubClientService TryGetSqlService(this HubClientService wtdlSqlService)
         //{
-        //    if (WtdlSqlService is null)
+        //    if (HubClientService is null)
         //    {
-        //        WtdlSqlService = new WtdlSqlService();
+        //        HubClientService = new HubClientService();
         //    }
 
-        //    return WtdlSqlService;
+        //    return HubClientService;
         //}
     }
 

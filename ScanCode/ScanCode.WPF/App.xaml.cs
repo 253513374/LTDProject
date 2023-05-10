@@ -14,6 +14,9 @@ using ScanCode.WPF.HubServer.Services;
 using AutoMapper;
 using ScanCode.Share;
 using ScanCode.WPF.Model;
+using ScanCode.WPF.View;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace ScanCode.WPF
 {
@@ -71,14 +74,26 @@ namespace ScanCode.WPF
             var hub = Configuration.GetSection("HubUrl").Value;
             var login = Configuration.GetSection("LoginUrl").Value;
 
-            // 注册ViewModels
+            //注册View窗口与iewModels
 
-            //services.AddTransient<MainWindow>();
-            services.AddTransient<HomeWindow>();
-            services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<LoginViewModel>();
+            //主窗体注册使用AddSingleton 声明周期为单例，每次请求都会使用同一个实例
+            services.AddSingleton<HomeWindow>();
             services.AddSingleton<HomeViewModel>();
-            services.AddSingleton<WtdlSqlService>(sp => new WtdlSqlService(hub, login));
+
+            //子窗体注册使用AddTransient 声明周期为短暂，每次请求都会创建一个新的实例
+            services.AddTransient<ScanCodeOutWindow>();
+            services.AddTransient<ScanCodeOutViewModel>();
+
+            services.AddTransient<SplashScreenLoginWindow>();
+            services.AddTransient<LoginViewModel>();
+
+            services.AddTransient<ScanCodeReturnWindow>();
+            services.AddTransient<ScanCodeReturnViewModel>();
+
+            // 注册服务
+
+            services.AddSingleton<OutOrderService>();
+            services.AddSingleton<HubClientService>(sp => new HubClientService(hub, login));
             //services.AddSingleton<IFilesService, FilesService>();
             //services.AddSingleton<ISettingsService, SettingsService>();
             //services.AddSingleton<IClipboardService, ClipboardService>();
@@ -97,6 +112,15 @@ namespace ScanCode.WPF
             return Current.ServiceProvider.GetRequiredService<T>();
 
             //return Services.GetRequiredService<T>();
+        }
+
+        public static string ReplaceScanCode(string v)
+        {
+            string pattern = @"^[\w\W]*?(\b\d+\b)$";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);//正则表达式
+            Match match = regex.Match(v);
+            if (string.IsNullOrEmpty(match.Groups[1].Value)) return "";
+            return match.Groups[1].Value;
         }
     }
 }

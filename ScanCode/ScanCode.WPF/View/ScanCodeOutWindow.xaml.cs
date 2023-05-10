@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,21 +13,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ScanCode.WPF.ViewModels;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace ScanCode.WPF
+namespace ScanCode.WPF.View
 {
     /// <summary>
-    /// HomeWindow.xaml 的交互逻辑
+    /// ScanCodeOutWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class HomeWindow : Window
+    public partial class ScanCodeOutWindow : Window
     {
-        public HomeWindow()
+        public ScanCodeOutWindow()
         {
             InitializeComponent();
-            this.DataContext = App.GetService<HomeViewModel>();
+            this.DataContext = App.GetService<ScanCodeOutViewModel>();
         }
 
-        private void HomeWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ScanCodeOutWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
@@ -36,7 +38,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HomeMinimizeButton_Click(object sender, RoutedEventArgs e)
+        private void OutMinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
@@ -46,7 +48,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HomeMaximizeButton_Click(object sender, RoutedEventArgs e)
+        private void OutMaximizeButton_Click(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)
             {
@@ -63,7 +65,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HomePinButton_Checked(object sender, RoutedEventArgs e)
+        private void OutPinButton_Checked(object sender, RoutedEventArgs e)
         {
             Topmost = true;
         }
@@ -73,7 +75,7 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HomePinButton_Unchecked(object sender, RoutedEventArgs e)
+        private void OutPinButton_Unchecked(object sender, RoutedEventArgs e)
         {
             Topmost = false;
         }
@@ -83,22 +85,33 @@ namespace ScanCode.WPF
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HomeCloseButton_Click(object sender, RoutedEventArgs e)
+        private void OutCloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void HomeWindow_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ScanCodeTextBox_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (WindowState == WindowState.Maximized)
+            TextBox textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var viewModel = (ScanCodeOutViewModel)DataContext;
+
+            if (e.Key == Key.Enter)
             {
-                WindowState = WindowState.Normal;
+                if (string.IsNullOrWhiteSpace(textBox.Text) || textBox.Text.Length < 12)
+                {
+                    viewModel.ErrorInfo = $"请输入正确的二维码序号"; ;
+                    return;
+                }
+                var result = App.ReplaceScanCode(textBox.Text);
+
+                _ = viewModel.ExecuteScanCode(result);
+
+                textBox.Text = "";
             }
-            else
-            {
-                WindowState = WindowState.Maximized;
-            }
-            //throw new NotImplementedException();
+
+            // throw new NotImplementedException();
         }
     }
 }

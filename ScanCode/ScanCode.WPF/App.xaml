@@ -3,18 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:ScanCode.WPF"
-             StartupUri="SplashScreenLogin.xaml">
+             StartupUri="View/SplashScreenLoginWindow.xaml">
     <Application.Resources>
 
         <!--加载全局样式-->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <Style TargetType="{x:Type Control}">
-                        <Setter Property="FontFamily" Value="Segoe UI" />
-                        <Setter Property="FontSize" Value="16" />
-                    </Style>
-                </ResourceDictionary>
                 <ResourceDictionary Source="Styles/ButtonStyles.xaml" />
                 <ResourceDictionary Source="Styles/TextBoxStyles.xaml" />
                 <ResourceDictionary Source="Styles/ListViewStyles.xaml" />

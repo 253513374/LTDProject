@@ -1,0 +1,19 @@
+﻿<Window x:Class="ScanCode.WPF.View.ScanCodeReturnWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScanCode.WPF.View"
+        mc:Ignorable="d"
+        Title="ScanCodeReturnWindow" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        WindowStyle="None"
+        AllowsTransparency="True">
+
+    <Border Name="MyBorder" DockPanel.Dock="Top" Background="#282D33" CornerRadius="8,8,0,8"
+            BorderBrush="#3a4149" BorderThickness="5">
+        <Grid>
+        </Grid>
+    </Border>
+</Window>

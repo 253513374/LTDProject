@@ -16,13 +16,13 @@ namespace ScanCode.WPF.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        private WtdlSqlService hubService;
+        private HubClientService hubService;
         private IMapper Mapper;
 
         public MainWindowViewModel()
         {
             //  groupOrdersDTOs = new ObservableCollection<GroupOrdersDTO>();
-            hubService = App.GetService<WtdlSqlService>();
+            hubService = App.GetService<HubClientService>();
             Mapper = App.GetService<IMapper>();
         }
 

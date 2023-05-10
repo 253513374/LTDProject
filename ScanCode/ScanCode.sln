@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanCode.Model", "ScanCode.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanCode.Share", "ScanCode.Share\ScanCode.Share.csproj", "{AF22157B-8EAE-4AE6-BC64-2961486D2D3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wtdl.Controller", "ScanCode.Controller\Wtdl.Controller.csproj", "{50161898-CD1D-48F0-9B78-10490F6CB8F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanCode.Controller", "ScanCode.Controller\ScanCode.Controller.csproj", "{50161898-CD1D-48F0-9B78-10490F6CB8F9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanCode.Web.Admin", "ScanCode.Admin\ScanCode.Web.Admin.csproj", "{ED8BF633-C1E8-4C84-BB3C-FA62CC3350F3}"
 EndProject
@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanCode.WinUI.model", "Sca
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanCode.WPF", "ScanCode.WPF\ScanCode.WPF.csproj", "{023051D3-9E7F-477D-91B8-047AF09C2E35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanCode.WPF.HubServer", "ScanCode.WPF.HubServer\ScanCode.WPF.HubServer.csproj", "{0140F80D-CD06-4475-8E4B-A0B7700396E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanCode.WPF.HubServer", "ScanCode.WPF.HubServer\ScanCode.WPF.HubServer.csproj", "{0140F80D-CD06-4475-8E4B-A0B7700396E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

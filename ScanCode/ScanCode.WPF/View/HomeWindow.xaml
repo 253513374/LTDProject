@@ -21,6 +21,7 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
         WindowStyle="None"
+        WindowState="Maximized"
         AllowsTransparency="True"
         MinHeight="600"
         MinWidth="1000">
@@ -33,6 +34,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="155" />
+                <RowDefinition Height="50" />
                 <RowDefinition  x:Name="MyRow" Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"  DockPanel.Dock="Top"  Orientation="Horizontal"
@@ -60,49 +62,68 @@
                     Width="30" Height="30" Margin="0,10,10,0" Click="HomeCloseButton_Click" />
             </StackPanel>
 
-            <Image Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top"
-                   x:Name="CenteredImage" Source="/Images/logo3.png" />
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition  Width="70*" />
+                    <ColumnDefinition Width="30*" />
+                </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="CenteredTextBox" MinWidth="320" MaxWidth="430" Height="55"
-                             Text="{Binding Querykeywords ,Mode=TwoWay }"
-                             FontSize="20"
-                             materialDesign:HintAssist.Hint=""
-                             BorderBrush="#777472"  FontWeight="Bold"
-                             Foreground="White"   Background="#5Affffff"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Image Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       x:Name="CenteredImage" Source="/Images/logo3.png" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <Button Margin="10,0,10,0" Width="85" Height="45"
+                    <TextBox x:Name="CenteredTextBox" MinWidth="320" MaxWidth="430" Height="55"
+                                 Text="{Binding Querykeywords ,Mode=TwoWay }"
+                                 FontSize="20"
+                                 materialDesign:HintAssist.Hint=""
+                                 BorderBrush="#777472"  FontWeight="Bold"
+                                 Foreground="White"   Background="#5Affffff"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-                        materialDesign:ButtonAssist.CornerRadius="10"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
+                    <Button Margin="10,0,10,0" Width="85" Height="45"
 
-                        Command="{Binding SearchCommand }">
+                            materialDesign:ButtonAssist.CornerRadius="10"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+
+                            Command="{Binding SearchCommand }">
+                        <TextBlock
+                            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                            Text="搜 索" />
+                    </Button>
+                </StackPanel>
+
+                <Button Grid.Column="2" Command="{Binding ReturnButtonClickCommand}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch" Width="120" Height="120"
+                        materialDesign:ButtonAssist.CornerRadius="50"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                        ToolTip="MaterialDesignRaisedDarkButton with Round Corners">
                     <TextBlock
-                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                        Text="搜 索" />
+                        Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                        Text="退 货" />
                 </Button>
-            </StackPanel>
-
-            <TextBlock Grid.Row="1" HorizontalAlignment="Right" FontWeight="Bold"
-                       Margin="0,0,100,0"  VerticalAlignment="Center"
-                Style="{StaticResource MaterialDesignHeadline3TextBlock}"
-                Text="{Binding CollectionCount}" />
-
-            <ListView   Grid.Row="2" x:Name="MyListView"
-
-                        Margin="100,30,100,30"
-                        Background="#5Affffff"
-                        BorderThickness="5"
-                        BorderBrush="#3a4149"
-                        VerticalAlignment="Top" HorizontalAlignment="Stretch"
-                        ItemTemplate="{StaticResource CustomItemTemplate}"
-                        ItemsSource="{Binding GroupOrdersDTOs}"
-                        ItemContainerStyle="{StaticResource CustomListViewItemStyle}"
-                        ItemsPanel="{StaticResource CustomItemsPanelTemplate}"
-                        Template="{StaticResource CustomListViewTemplate}"
-                        d:ItemsSource="{d:SampleData ItemCount=10}" />
+            </Grid>
+            <Grid Grid.Row="2">
+                <TextBlock  HorizontalAlignment="Center" FontWeight="Bold"
+                            VerticalAlignment="Center" Foreground="#80FFFFFF" MinWidth="150"
+                           Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                           Text="{Binding CollectionCount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+            <ListView  x:Name="MyListView"
+                       Grid.Row="3"
+                       Margin="100,0,100,30"
+                       Background="#5Affffff"
+                       BorderThickness="5"
+                       BorderBrush="#3a4149"
+                       VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                       ItemTemplate="{StaticResource CustomItemTemplate}"
+                       ItemsSource="{Binding GroupOrdersDTOs}"
+                       ItemContainerStyle="{StaticResource CustomListViewItemStyle}"
+                       ItemsPanel="{StaticResource CustomItemsPanelTemplate}"
+                       Template="{StaticResource CustomListViewTemplate}"
+                       d:ItemsSource="{d:SampleData ItemCount=10}" />
         </Grid>
     </Border>
 </Window>

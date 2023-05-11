@@ -75,7 +75,20 @@ namespace ScanCode.WPF.ViewModels
                 return;
             }
 
-            await ExecuteScanCode(text);
+            var code = App.ReplaceScanCode(text);
+            bool isNumber = Regex.IsMatch(code, @"^[1-9]\d*$");
+            if (isNumber)
+            {
+                await ExecuteScanCode(code);
+            }
+            else
+            {
+                ErrorInfo = $"请输入正确的二维码序号";
+                return;
+            }
+
+            QrcodeKey = "";
+            return;
         }
 
         /// <summary>
@@ -84,7 +97,6 @@ namespace ScanCode.WPF.ViewModels
         /// <returns></returns>
         public async Task ExecuteScanCode(string text)
         {
-
             if (ActualOutCount >= SelectTotalsl)
             {
                 ErrorInfo = $"当前客户订单已完成扫码工作!";
@@ -94,7 +106,7 @@ namespace ScanCode.WPF.ViewModels
             var outstorage = new W_LabelStorage();
             outstorage.OutTime = DateTime.Now;
             outstorage.OrderNumbels = SelectDDNO;
-            outstorage.QRCode = qrcodeKey;
+            outstorage.QRCode = text;
             outstorage.OrderTime = DateTime.Parse(SelectDDRQ);
             outstorage.Dealers = SelectDDNO;
             outstorage.OutType = "THFX";
@@ -109,7 +121,7 @@ namespace ScanCode.WPF.ViewModels
             }
             else
             {
-                ErrorInfo = $"{qrcodeKey}发货失败：{result.Message}";
+                ErrorInfo = $"{text}：{result.Message}";
             }
 
             return;
@@ -148,7 +160,6 @@ namespace ScanCode.WPF.ViewModels
         {
             return await hubService.GetBdxOrderTotalCountAsync(SelectDDNO);
         }
-
 
         /// <summary>
         /// 当发货成功 通知发货数量自增1

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using MudBlazor.Services;
 
-namespace Wtdl.Wasm
+namespace ScanCode.Web.Wasm
 {
     public class Program
     {

@@ -29,6 +29,7 @@ namespace ScanCode.WPF.View
             viewModel.EventLoggedIn += ViewModel_LoggedIn;
 
             this.DataContext = viewModel;
+            this.LoginButton.IsDefault = true;
         }
 
         private void ViewModel_LoggedIn(object? sender, EventArgs e)

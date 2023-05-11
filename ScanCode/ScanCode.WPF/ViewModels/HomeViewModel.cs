@@ -13,6 +13,7 @@ using ScanCode.WPF.Model;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using ScanCode.WPF.HubServer.ReQuest;
 using ScanCode.WPF.View;
 
 namespace ScanCode.WPF.ViewModels
@@ -23,7 +24,7 @@ namespace ScanCode.WPF.ViewModels
 
         [ObservableProperty] private string? querykeywords = "";
 
-        [ObservableProperty] private string? collectionCount;
+        [ObservableProperty] private int? collectionCount = 0;
 
         private HubClientService hubService;
         private IMapper Mapper;
@@ -31,12 +32,19 @@ namespace ScanCode.WPF.ViewModels
         public HomeViewModel()
         {
             GroupOrdersDTOs = new ObservableCollection<GroupOrdersDTO>();
-            GroupOrdersDTOs.CollectionChanged +=
-                (_, _) => OnPropertyChanged(
-                    nameof(CollectionCount)); // CollectionCount = $"DDNO  {GroupOrdersDTOs.Count}";)
+            GroupOrdersDTOs.CollectionChanged += GroupOrdersDTOs_CollectionChanged;
+
             hubService = App.GetService<HubClientService>();
             Mapper = App.GetService<IMapper>();
             _ = Search();
+        }
+
+        private void GroupOrdersDTOs_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                CollectionCount += 1;
+            }
         }
 
         [RelayCommand]
@@ -77,7 +85,7 @@ namespace ScanCode.WPF.ViewModels
                 }
             }
 
-            CollectionCount = $"DDNO  {GroupOrdersDTOs.Count}";
+            //  CollectionCount = $"DDNO  {GroupOrdersDTOs.Count}";
             //  Mapper.Map(result, GroupOrdersDTOs);
             // throw new NotImplementedException();
         }
@@ -91,12 +99,38 @@ namespace ScanCode.WPF.ViewModels
             }
             var outOrder = App.GetService<OutOrderService>();
             outOrder.OrdersDto = selectedItem as GroupOrdersDTO;
+
+            _ = Task.Run(async () =>
+            {
+                await hubService.AddAgent(new AddAgent()
+                {
+                    AID = outOrder?.OrdersDto?.Ddno,
+                    AName = outOrder?.OrdersDto?.Kh,
+                    ABelong = "公司",
+                    AType = 0
+                });
+            });
             // 在这里处理按钮点击事件逻辑，并使用传递的选中项数据
 
             var scanCodeOutWindow = App.GetService<ScanCodeOutWindow>();
 
             scanCodeOutWindow.Owner = App.GetService<HomeWindow>();
             scanCodeOutWindow.ShowDialog();
+        }
+
+        [RelayCommand]
+        public Task ReturnButtonClick()
+        {
+            //var outOrder = App.GetService<OutOrderService>();
+            //outOrder.OrdersDto = selectedItem as GroupOrdersDTO;
+            // 在这里处理按钮点击事件逻辑，并使用传递的选中项数据
+
+            var scanCodeOutWindow = App.GetService<ScanCodeReturnWindow>();
+
+            scanCodeOutWindow.Owner = App.GetService<HomeWindow>();
+            scanCodeOutWindow.ShowDialog();
+
+            return Task.CompletedTask;
         }
 
         //[RelayCommand]

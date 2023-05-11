@@ -122,76 +122,6 @@ namespace ScanCode.WPF.HubServer.Services
             return tLabelsxModel;
         }
 
-        /// <summary>
-        /// 退货，更新数据库
-        /// </summary>
-        /// <param name="qrcode"></param>
-        /// <returns></returns>
-        public async Task<DBResult<int>> DeeletetLabelX(string qrcode)
-        {
-            try
-            {
-                await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, false);
-                return DBResult<int>.Success(1);
-                //using (var context = new WTDLContext())
-                //{
-                //    var w_LabelStorage = await context.W_LabelStorages.FirstOrDefaultAsync(x =>
-                //        x.OutTime.Year == DateTime.Now.Year && x.OutTime.Month == DateTime.Now.Month &&
-                //        x.OutTime.Day == DateTime.Now.Day && x.QRCode.Contains(qrcode));
-                //    if (w_LabelStorage != null)
-                //    {
-                //        context.W_LabelStorages.Remove(w_LabelStorage);
-                //        var delete = await context.SaveChangesAsync();
-
-                //        if (delete > 0)
-                //        {
-                //            await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, false);
-                //            return DBResult<int>.Success(delete);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        return DBResult<int>.Fail("数据还没有出库");
-                //    }
-                //}
-            }
-            catch (Exception e)
-            {
-                return DBResult<int>.Fail($"出现异常：{e.Message}");
-            }
-
-            return DBResult<int>.Fail($"失败");
-        }
-
-        /// <summary>
-        /// 记录已经完成得出库单
-        /// </summary>
-        public async void AddOrder(W_OrderTable orderTable)
-        {
-            try
-            {
-                //if (orderTable != null)
-                //{
-                //    W_OrderTable w_OrderTable = DbEntities.W_OrderTables.AsNoTracking()
-                //        .Where(w => w.OrderId.Trim().Contains(orderTable.OrderId.Trim())).FirstOrDefault();
-
-                //    if (w_OrderTable == null)
-                //    {
-                //        using (var context = new WTDLContext())
-                //        {
-                //            context.W_OrderTables.Add(orderTable);
-                //            int ret = await context.SaveChangesAsync();
-                //        }
-                //    }
-                //}
-            }
-            catch (Exception ex)
-            {
-                //  throw;
-            }
-            //你的代码
-        }
-
         public async Task<ResponseModel> AddAgent(AddAgent addAgent)
         {
             if (hubConnection.State == HubConnectionState.Connected)
@@ -205,16 +135,15 @@ namespace ScanCode.WPF.HubServer.Services
         }
 
         /// <summary>
-        /// 删除tLabelX   用于退货操作
+        /// 退货，返回退货状态
         /// </summary>
-        public async Task<ReturnsStorageResult> ReturnsLabelX(string qrcode)
+        public async Task<ReturnsStorageResult> ScanCodeReturnAsync(string qrcode)
         {
             if (hubConnection.State == HubConnectionState.Connected)
             {
                 try
                 {
                     hubConnection = hubConnection.TryInitialize();
-                    // _ = hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, true);
 
                     //退货
                     return await hubConnection.InvokeAsync<ReturnsStorageResult>(HubServerMethods.Returns_OutStorage, qrcode);
@@ -222,43 +151,11 @@ namespace ScanCode.WPF.HubServer.Services
                 catch (Exception e)
                 {
                     return ReturnsStorageResult.Exception(qrcode, e.Message);
-                    //return await TLabelsxModelOffline(addtLabelx, tlabelx);
                 }
             }
             else
             {
                 return ReturnsStorageResult.Offline(qrcode);
-                //var tLabelxcode = DbEntities.W_LabelStorages.AsNoTracking().Where(o => o.QRCode == tLabelxId||o.OrderNumbels.Trim()== tLabelxId.Trim()).FirstOrDefault();
-                //using (var context = new WTDLContext())
-                //{
-                //    var tLabelxcode = context.W_LabelStorages.AsNoTracking()
-                //        .Where(o => o.QRCode == tLabelxId || o.OrderNumbels == tLabelxId).ToList();
-
-                //    try
-                //    {
-                //        if (tLabelxcode != null && tLabelxcode.Count == 0)
-                //        {
-                //            return new +
-                //                { QrCode = tLabelxId, ReCount = "0", ResulCode = 0, ResultStatus = "还未发货" };
-                //        }
-
-                //        context.W_LabelStorages.RemoveRange(tLabelxcode);
-                //        int i = await context.SaveChangesAsync();
-                //        if (i > 0)
-                //        {
-                //            // await hubConnection.InvokeAsync(HubServerMethods.SendOutStorageDayCount, false);
-                //            return new ReturnsStorageResult
-                //            { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 200, ResultStatus = "退货成功" };
-                //        }
-
-                //        return new ReturnsStorageResult
-                //        { QrCode = tLabelxId, ReCount = i.ToString(), ResulCode = 400, ResultStatus = "退货失败" };
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        return ReturnsStorageResult.Exception(tLabelxId, ex.Message);
-                //    }
-                //}
             }
         }
 

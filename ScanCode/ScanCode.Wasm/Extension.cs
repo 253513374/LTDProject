@@ -1,4 +1,4 @@
-﻿namespace Wtdl.Wasm
+﻿namespace ScanCode.Web.Wasm
 {
     public static class Extension
     {

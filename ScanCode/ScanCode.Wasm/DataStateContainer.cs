@@ -1,4 +1,6 @@
-﻿namespace Wtdl.Wasm
+﻿using ScanCode.Model.ResponseModel;
+
+namespace ScanCode.Web.Wasm
 {
     public class DataStateContainer
     {

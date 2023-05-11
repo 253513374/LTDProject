@@ -95,8 +95,8 @@
             <MudText Align="Align.Center" Style="font-weight: 700" Color="Color.Error">@Container.UserStatus.StuteCode : @Container.UserStatus.Message</MudText>
         break;
     }
-
-  @*      <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>*@
+@*
+        <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>*@
 </MudStack>
 
 <MudCard Elevation="0" Class="hongbaocard mt-10" >
@@ -388,13 +388,13 @@
 
 
     /// <summary>
-    /// 打开对话框
+    /// 打开红包被领取完毕对话框
     /// </summary>
     private  async Task OpenDialogAsync()
     {
 
-        double totalAmount = 1234567;
-        string expectedResult = "¥123.46";
+        double totalAmount = 0;
+    //    string expectedResult = "¥123.46";
 
         // Act
         double parsedDouble = Convert.ToDouble(totalAmount);

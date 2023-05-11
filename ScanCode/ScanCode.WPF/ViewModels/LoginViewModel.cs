@@ -32,7 +32,7 @@ public partial class LoginViewModel : ObservableObject
     private SecureString _securePassword;
 
     [ObservableProperty]
-    private string? username = "admin";
+    private string? username = "011";
 
     [ObservableProperty]
     private string errorinfo = "";

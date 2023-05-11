@@ -1,4 +1,4 @@
-﻿namespace Wtdl.Wasm.Data
+﻿namespace ScanCode.Web.Wasm.Data
 {
     public class City
     {

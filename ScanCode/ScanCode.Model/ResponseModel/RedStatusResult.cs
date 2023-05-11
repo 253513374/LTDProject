@@ -1,6 +1,4 @@
-﻿using ScanCode.Model.ResponseModel;
-
-namespace ScanCode.Controller.Models.ResponseModel
+﻿namespace ScanCode.Model.ResponseModel
 {
     public class RedStatusResult : TResult
     {
@@ -128,7 +126,6 @@ namespace ScanCode.Controller.Models.ResponseModel
             };
         }
 
-
         /// <summary>
         /// 数据还未到出库时间，出库数据还没有激活参加活动
         /// </summary>
@@ -158,7 +155,6 @@ namespace ScanCode.Controller.Models.ResponseModel
                 StuteCode = "INVALIDCAPTCHA"
             };
         }
-
 
         /// <summary>
         /// 验证已经使用过

@@ -104,9 +104,10 @@ namespace ScanCode.WPF.View
                     viewModel.ErrorInfo = $"请输入正确的二维码序号"; ;
                     return;
                 }
-                var result = App.ReplaceScanCode(textBox.Text);
+                //var result = App.ReplaceScanCode(textBox.Text);
 
-                _ = viewModel.ExecuteScanCode(result);
+                ScanCodeButton.Command.Execute(textBox.Text);
+                //_ = App.GetService<ScanCodeOutViewModel>().ExecuteScanCode(result);
 
                 textBox.Text = "";
             }

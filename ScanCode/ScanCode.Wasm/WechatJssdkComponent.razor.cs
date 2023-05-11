@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace Wtdl.Wasm
+namespace ScanCode.Web.Wasm
 {
     public partial class WechatJssdkComponent : ComponentBase
     {

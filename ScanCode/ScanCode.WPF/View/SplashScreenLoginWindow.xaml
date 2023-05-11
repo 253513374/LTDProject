@@ -87,6 +87,7 @@
                                 FontSize="20" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" Height="55" x:Name="PasswordBox"
                                 local:PasswordHelper.Password="{Binding SecurePassword}" />
                     <Button FontWeight="Bold" FontSize="20"
+                            x:Name="LoginButton"
                             materialDesign:ButtonAssist.CornerRadius="20"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Content="L o g i n" Width="180" Height="45"

@@ -26,7 +26,8 @@ namespace ScanCode.WPF.ViewModels
 
         [ObservableProperty] private string? querykeywords = "";
 
-        [ObservableProperty] private int? collectionCount = 0;
+        [ObservableProperty] private int? collectionCount;
+        [ObservableProperty] private string? loadDataTime;
 
         private HubClientService hubService;
         private IMapper Mapper;
@@ -46,6 +47,10 @@ namespace ScanCode.WPF.ViewModels
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 CollectionCount += 1;
+            }
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+            {
+                CollectionCount = 0;
             }
         }
 
@@ -89,7 +94,6 @@ namespace ScanCode.WPF.ViewModels
                 {
                     // 在添加新元素之前清空集合
                     GroupOrdersDTOs.Clear();
-
                     foreach (var groupOrder in mappedResult.OrderByDescending(O => O.Ddrq))
                     {
                         GroupOrdersDTOs.Add(groupOrder);
@@ -101,6 +105,7 @@ namespace ScanCode.WPF.ViewModels
                 // 处理查询异常的代码
                 throw;
             }
+            LoadDataTime = $"刷新时间：{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
         }
 
         [RelayCommand]

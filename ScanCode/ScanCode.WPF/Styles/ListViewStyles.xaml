@@ -12,9 +12,12 @@
 
     <!--定义内容容器-->
     <ItemsPanelTemplate x:Key="CustomItemsPanelTemplate">
-        <WrapPanel Orientation="Horizontal"
+
+        <UniformGrid  Columns="4"   Width="Auto" Height="Auto"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+        <!--<WrapPanel Orientation="Horizontal"
                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                   Width="{Binding ElementName=MyListView, Path=ActualWidth}" />
+                   Width="{Binding ElementName=MyListView, Path=ActualWidth}" />-->
     </ItemsPanelTemplate>
 
     <!--ListView鼠标选择项外观-->
@@ -28,35 +31,31 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}">
-                        <ContentPresenter x:Name="Presenter" VerticalAlignment="Stretch" HorizontalAlignment="Center"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+                        <ContentPresenter x:Name="Presenter" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="#161B21" />
                             <!--<Setter TargetName="Presenter" Property="TextElement.Foreground" Value="#F3A950" />-->
-                            <Setter TargetName="Bd" Property="CornerRadius" Value="5" />
+                            <Setter TargetName="Bd" Property="CornerRadius" Value="8" />
                             <!-- Change this to the desired background color -->
                             <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent" />
                             <Setter TargetName="Bd" Property="BorderThickness" Value="1" />
-                            <!--<Setter Property="RenderTransform">
-                                <Setter.Value>
-                                    <ScaleTransform ScaleX="1.03" ScaleY="1.03" />
-                                </Setter.Value>
-                            </Setter>-->
                         </Trigger>
 
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="RenderTransform">
-                                <Setter.Value>
+                            <Setter TargetName="Bd" Property="Background" Value="#80FFFFFF" />
+                            <Setter TargetName="Bd" Property="CornerRadius" Value="8" />
+                            <!--<Setter.Value>
                                     <ScaleTransform ScaleX="1.03" ScaleY="1.03" />
-                                </Setter.Value>
-                            </Setter>
+                                </Setter.Value>-->
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="#161B21"></Setter>
-                            <Setter TargetName="Bd"  Property="CornerRadius" Value="5" />
+                            <Setter TargetName="Bd"  Property="CornerRadius" Value="8" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -66,24 +65,24 @@
 
     <!-- 定义ListView数据模板 -->
     <DataTemplate x:Key="CustomItemTemplate" DataType="{x:Type model:GroupOrdersDTO}">
-        <materialDesign:Card x:Name="DataCard"
+        <materialDesign:Card x:Name="DataCard" Height="175"
                 Background="#5A282D33"
                 Foreground="#ffffff"
-                Margin="8"
-                Padding="15"
-                VerticalAlignment="Top"
+
+                Margin="10"
+                Padding="25,10,25,0"
+                VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
-                materialDesign:ElevationAssist.Elevation="Dp5"
-                Width="330"  Height="175">
+                materialDesign:ElevationAssist.Elevation="Dp4">
             <Grid x:Name="GridForeground"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"></RowDefinition>
                     <RowDefinition Height="70"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="35"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -101,9 +100,12 @@
                 </Grid>
                 <!--<StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Stretch">-->
 
-                <TextBlock Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding Kh}" Margin="0,10,0,0" />
+                <TextBlock Grid.Row="1" TextWrapping="Wrap"
+                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                           Text="{Binding Kh}"
+                           Margin="0,10,0,0" />
                 <!--</StackPanel>-->
-                <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -138,15 +140,16 @@
         <Border BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 Background="{TemplateBinding Background}"
-                Padding="10"
-                CornerRadius="15"
+
+                CornerRadius="25"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Top">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                VerticalAlignment="Stretch">
+            <GridViewRowPresenter />
+            <!--<ScrollViewer HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalAlignment="Center">
-                <GridViewRowPresenter />
-            </ScrollViewer>
+                <GridViewRowPresenter Margin="20" />
+            </ScrollViewer>-->
         </Border>
     </ControlTemplate>
 

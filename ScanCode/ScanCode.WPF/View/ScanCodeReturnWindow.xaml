@@ -8,6 +8,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:wpf="clr-namespace:ScanCode.WPF"
         mc:Ignorable="d"
+        MouseLeftButtonDown="ScanCodeReturnWindow_OnMouseMove"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip"
         WindowStyle="None"

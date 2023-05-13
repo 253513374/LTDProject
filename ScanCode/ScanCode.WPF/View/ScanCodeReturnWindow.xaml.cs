@@ -80,5 +80,11 @@ namespace ScanCode.WPF.View
                 textBox.Text = "";
             }
         }
+
+        private void ScanCodeReturnWindow_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            DragMove();
+            // throw new NotImplementedException();
+        }
     }
 }

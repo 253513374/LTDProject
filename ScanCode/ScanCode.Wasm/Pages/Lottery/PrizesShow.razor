@@ -48,6 +48,113 @@
         font-weight: 700;
         letter-spacing: 0.1em;
     }
+    .prize-grid-background {
+        background-image: url('imgs/jiang.png');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        height: 100vw;
+        width: 100%;
+    }
+    /* 奖品9宫格展示设置网格布局 */
+    .prize-grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-gap: 5px;
+        position: relative;
+        top: 7%;
+        width: 72vw; /* 使用vw单位设置宽度 */
+        height: 68vw; /* 使用vw单位设置高度 */
+        --bs-aspect-ratio: 1 / 1; /* 设置宽高比为1:1 */
+        margin: 0 auto;
+    }
+
+    .prizegridi-image-container {
+        display: flex;
+        position: relative;
+        width: 100%;
+        justify-content: center;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    /*抽奖按钮*/
+    .lottery-button {
+        position: relative;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+        outline-offset: 4px;
+        transition: filter 250ms;
+        user-select: none;
+        touch-action: manipulation;
+    }
+
+    .lottery-button-shadow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: hsl(0deg 0% 0% / 0.25);
+        will-change: transform;
+        transform: translateY(2px);
+        transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+    }
+
+    .lottery-button-edge {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: linear-gradient( to left, hsl(340deg 100% 16%) 0%, hsl(340deg 100% 32%) 8%, hsl(340deg 100% 32%) 92%, hsl(340deg 100% 16%) 100% );
+    }
+
+    .lottery-button-front {
+        display: block;
+        position: relative;
+        padding: 12px 27px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        color: white;
+        background: hsl(345deg 100% 47%);
+        will-change: transform;
+        transform: translateY(-4px);
+        transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+    }
+
+    .lottery-button:hover {
+        filter: brightness(110%);
+    }
+
+    .lottery-button:hover .front {
+        transform: translateY(-6px);
+        transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+    }
+
+    .lottery-button:active .front {
+        transform: translateY(-2px);
+        transition: transform 34ms;
+    }
+
+    .lottery-button:hover .shadow {
+        transform: translateY(4px);
+        transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+    }
+
+    .lottery-button:active .shadow {
+        transform: translateY(1px);
+        transition: transform 34ms;
+    }
+
+    .lottery-button:focus:not(:focus-visible) {
+        outline: none;
+    }
 </style>
 
 
@@ -86,13 +193,13 @@
         <MudText Class="my-3" Typo="Typo.button" Style="letter-spacing:.3em">抽奖号码：@Container.QRCode</MudText>
     </MudStack>
 
-    <div class="grid-background">
-        <div class="grid-container">
+    <div class="prize-grid-background">
+        <div class="prize-grid-container">
             @if (Container.Activity is not null)
             {
                 foreach (var prize in Container.Activity.Prizes)
                 {
-                    <PrizeGridItem IsRound="false" PrizeItem="@prize" Class="image-container" DisplayMode="PrizeDisplayMode.Simple"
+                    <PrizeGridItem IsRound="false" PrizeItem="@prize" Class="prizegridi-image-container" DisplayMode="PrizeDisplayMode.Simple"
                                    Clicked="@((item) => OnGridItemClick(item))"
                                    OnShowDetails="@ShowPrizeDetailsDialog" />
                 }
@@ -104,10 +211,11 @@
     if (SelectedPrizeItem is not null )
     {
         <MudStack Style="height: 55px"  AlignItems="AlignItems.Center" Justify="Justify.Center" Class="my-8">
-            <button onclick="@OnLuckyDraw">
-                <span class="shadow"></span>
-                <span class="edge"></span>
-                <span class="front text"> 开始抽奖
+            <button class="lottery-button" onclick="@OnLuckyDraw">
+                <span class="lottery-button-shadow"></span>
+                <span class="lottery-button-edge"></span>
+                <span class="lottery-button-front text">
+                    开始抽奖
                 </span>
             </button>
         </MudStack>
@@ -119,8 +227,8 @@
 @*    <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>
 *@
     <MudCard Elevation="0" Class="lotterycard mt-8">
-        <div  Class="image-container">
-            <img class="centered-image" src="imgs/tou2.png" style="width: 50%;"/>
+        <div Class="Cardimage-container">
+            <img class="Cardimage-centered-image" src="imgs/tou.png"  />
         </div>
 
         <MudStack Class="my-5 pa-5" Justify="Justify.FlexStart" Spacing="2">
@@ -163,10 +271,10 @@ else
     //public string OpenId { set; get; }
     private PrizeGridItem SelectedPrizeItem { get; set; }
 
-    private int? selectedItem = null;
-    private bool isSpinning = false;
-    private string boxContainerClass;
-    private bool boxOpened = false;
+    //private int? selectedItem = null;
+    //private bool isSpinning = false;
+    //private string boxContainerClass;
+   // private bool boxOpened = false;
 
 
     private TimeSpan TimeRemaining { get; set; }
@@ -174,7 +282,7 @@ else
     /// <summary>
     /// 抽奖结果
     /// </summary>
-    private LotteryResult lotteryResult;
+    //private LotteryResult lotteryResult;
 
     [Inject]
     protected DataStateContainer Container { set; get; }

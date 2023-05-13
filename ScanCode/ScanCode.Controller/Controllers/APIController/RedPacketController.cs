@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ScanCode.Controller.Models.ResponseModel;
 using ScanCode.Model.ResponseModel;
 
 using ScanCode.Mvc.Services;

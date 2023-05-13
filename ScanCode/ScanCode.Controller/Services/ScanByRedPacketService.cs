@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using ScanCode.Controller.Models.ResponseModel;
 using ScanCode.Controller.Services;
 using ScanCode.Model;
 using ScanCode.Model.Entity;

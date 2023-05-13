@@ -43,8 +43,8 @@
 
 
 <MudCard Class="mt-5"  Elevation="0" Style="border-radius: 25px">
-        <div  Class="image-container">
-            <img class="centered-image" src="imgs/fangwei.png"/>
+    <div Class="Cardimage-container">
+        <img class="Cardimage-centered-image" src="imgs/fangwei.png" />
         </div>
         <MudContainer Class="homecard mt-10">
             <MudStack Spacing="2" Style="background-color: transparent;">
@@ -138,7 +138,7 @@
 <MudButton OnClick="@OpenLuckyDrawDialog"> 打开抽奖对话框</MudButton>*@
 
 
-<img class="weixinimg my-3" src="img/weixinlogo2.png" />
+<img class="index-weixinimg my-3" src="img/weixinlogo2.png" />
 <footer >
     
     <MudCard Class="mt-5" Elevation="0" Style=" color: #fffffe;background-color: transparent;border-radius:15px;padding: 0px ">
@@ -276,12 +276,12 @@
     /// <summary>
     /// 抽奖结果
     /// </summary>
-    private LotteryResult lotteryResult;
+    //private LotteryResult lotteryResult;
 
     /// <summary>
     /// 抽奖活动信息
     /// </summary>
-    private LotteryActivity lotteryActivity;
+    //private LotteryActivity lotteryActivity;
 
     /// <summary>
     /// 当前用户与标签的领取红包的状态
@@ -291,7 +291,7 @@
     /// <summary>
     /// 领取红包的结果
     /// </summary>
-    private RedPacketResult redPacketResult;
+   // private RedPacketResult redPacketResult;
 
 
 
@@ -346,42 +346,13 @@
                 OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
 #endif
 
-                if (Container.antiFakeResult is null)
-                {
-                    Container.antiFakeResult = await GetAntiFakeResultAsync(QRCode);
-                }
-                if (Container.traceabilityResult is null)
-                {
-                    Container.traceabilityResult = await GetTraceabilityResultAsync(QRCode);
-                }
+
+                //_=Task.Run(() =>
+                //{
+                    await LoadDataTaskAsync(QRCode);
+                //});
                
-                var lotteryActivity    = await GetLotteryActivityAsync();
 
-#if DEBUG
-                Container.UserStatus = RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
-#endif
-                if (!string.IsNullOrWhiteSpace(OpenId) && Container.traceabilityResult.Status)
-                {
-                    redStatusResult = await GetRedStatusResultAsync(OpenId, QRCode,Container.traceabilityResult.OrderNumbels);
-
-                    Container.UserStatus = redStatusResult;
-                    //if (redStatusResult.IsSuccess)
-                    //{
-                        ///保存当前用户参与活动的状态
-                        
-                       // await OpenDialog();
-                    //}
-                }
-
-                if (string.IsNullOrWhiteSpace(Container.QRCode) )
-                {
-                    Container.QRCode = QRCode;
-                }
-                if (string.IsNullOrWhiteSpace(Container.OpenId))
-                {
-                    Container.OpenId = OpenId;
-                }
-                await Container.SetActivity(lotteryActivity);
 
                 StateHasChanged();
             }
@@ -406,6 +377,40 @@
         }
 
         return "";
+    }
+
+    ///懒加载数据
+    private async Task LoadDataTaskAsync(string qrkey)
+    {
+        if (Container.antiFakeResult is null)
+        {
+            Container.antiFakeResult = await GetAntiFakeResultAsync(qrkey);
+        }
+        if (Container.traceabilityResult is null)
+        {
+            Container.traceabilityResult = await GetTraceabilityResultAsync(qrkey);
+        }
+
+#if DEBUG
+        Container.UserStatus = RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
+#endif
+        if (!string.IsNullOrWhiteSpace(OpenId) && Container.traceabilityResult.Status)
+        {
+            redStatusResult = await GetRedStatusResultAsync(OpenId, qrkey, Container.traceabilityResult.OrderNumbels);
+
+            Container.UserStatus = redStatusResult;
+        }
+
+        var lotteryActivity    = await GetLotteryActivityAsync();
+        if (string.IsNullOrWhiteSpace(Container.QRCode) )
+        {
+            Container.QRCode = qrkey;
+        }
+        if (string.IsNullOrWhiteSpace(Container.OpenId))
+        {
+            Container.OpenId = OpenId;
+        }
+        await Container.SetActivity(lotteryActivity);
     }
 
     private async Task<AntiFakeResult> GetAntiFakeResultAsync(string qrcode)

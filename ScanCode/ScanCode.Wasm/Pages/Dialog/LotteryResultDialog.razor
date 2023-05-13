@@ -45,8 +45,8 @@
 
 
     .btn-dialog-radpack {
-        border-radius: 100px;
-        width: 55%;
+        border-radius: 30px;
+        width: 100%;
         padding: 10px;
         height: 40px;
         font-weight: 700;
@@ -62,7 +62,37 @@
         color: white;
     }
 
-    .right-button {
+    .lotterydialog-centered-image {
+        width: 80%; /*设置图片宽度为容器宽度的一半 */
+        max-width: 100%; /* 确保图片不会超出其原始尺寸 */
+        display: inline-block; /*使图片成为行内元素以便居中 */
+        vertical-align: middle; /* 垂直居中对齐 */
+    }
+    .lotterydialog-image-container {
+        display: flex;
+        position: relative;
+        width: 100%;
+        justify-content: center;
+        padding: 0px !important;
+        margin: 0px;
+        top: -8px;
+        display: grid;
+        display: flex;
+        align-items: center;
+    }
+
+    .lotterydialog-image-container::after {
+        content: "抽奖结果";
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        font-size: 1em;
+        font-weight: bold;
+        color: white;
+        letter-spacing: .3em;
+        transform: translate(-50%, -50%);
+    }
+    .dialog-title-button {
         position: absolute;
         right: 0;
        
@@ -76,9 +106,9 @@
 
 <MudDialog Class="dialog">
     <DialogContent>
-        <div class="image-container">
-            <img class="centered-image" src="imgs/tou2.png" style="width: 80%;" />
-            <MudIconButton OnClick="Cancel" Icon="@Icons.Material.Outlined.Close" Size="Size.Medium" Color="Color.Info" Class="right-button"></MudIconButton>
+        <div class="lotterydialog-image-container">
+            <img class="lotterydialog-centered-image" src="imgs/tou.png" />
+            <MudIconButton OnClick="Cancel" Icon="@Icons.Material.Outlined.Close" Size="Size.Medium" Color="Color.Info" Class="dialog-title-button"></MudIconButton>
         </div>
         <MudContainer Class="mudcontainer" Style="max-height: 80vh; width: 100%; overflow-y: scroll">
             <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="2" Style="overflow: hidden; ">

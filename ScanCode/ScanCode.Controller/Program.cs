@@ -148,7 +148,10 @@ try
     builder.Services.AddCors(options =>
     {
         options.AddDefaultPolicy(builder =>
-            builder.WithOrigins(new string[] { "https://www.chn315.top", "https://localhost:5276" })
+            builder.WithOrigins(new string[] { "https://www.chn315.top",
+                    "https://localhost:5276",
+                    "https://localhost:44306"
+                })
                 .AllowAnyMethod()
                 .AllowAnyHeader());
     });

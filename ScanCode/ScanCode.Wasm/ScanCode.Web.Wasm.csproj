@@ -4,10 +4,10 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<RunAOTCompilation>true</RunAOTCompilation>
+	<RunAOTCompilation>false</RunAOTCompilation>
 	<BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
 
-	  <PublishTrimmed>true</PublishTrimmed>
+	  <PublishTrimmed>false</PublishTrimmed>
 	  <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
 
@@ -15,9 +15,7 @@
 
 		<PublishIISAssets>true</PublishIISAssets>
 		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
-
-
-		<BlazorCacheBootResources>false</BlazorCacheBootResources>
+		<BlazorCacheBootResources>true</BlazorCacheBootResources>
 	</PropertyGroup>
 	<Target Name="CopyWebConfig" AfterTargets="Publish">
 		<Copy SourceFiles="web.config" DestinationFolder="$(PublishDir)" />
@@ -31,10 +29,10 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="MudBlazor" Version="6.2.2" />
+    <PackageReference Include="MudBlazor" Version="6.2.3" />
   </ItemGroup>
 
 

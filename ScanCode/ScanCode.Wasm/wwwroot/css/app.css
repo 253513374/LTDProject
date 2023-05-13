@@ -19,7 +19,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -99,3 +99,287 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+/*首页*/
+footer {
+    background-color: transparent;
+    margin: 0 auto;
+    width: 100%;
+    color: white;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.index-weixinimg {
+    width: 100%;
+    height: auto;
+    border: 0px solid white;
+    padding: 0px;
+    margin: 0px;
+    border-radius: 15px;
+}
+
+.businesscard {
+    align-self: center;
+    font-size: 12px;
+    margin: 0;
+    padding: 16px;
+    height: 100px;
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    color: black;
+    background-image: url(img/Gradient_blob.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: -150px;
+    background-color: white;
+}
+
+ul li span {
+    /*color: #EEA47F;*/
+    color: #EEA47F;
+}
+
+.footertext {
+    color: #0087fe;
+}
+
+ul li span {
+    /*color: #EEA47F;*/
+    color: #EEA47F;
+}
+
+.footertext {
+    color: #0087fe;
+}
+
+/* 媒体查询：移动设备 */
+@media screen and (max-width: 767px) {
+    li {
+        display: block;
+    }
+}
+
+/* 媒体查询：桌面设备 */
+@media screen and (min-width: 768px) {
+    ul {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    li {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.modal-dialog {
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 350px;
+    z-index: 1001;
+    background-image: url('/img/金币礼盒720.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+.modal-content {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    /*box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.5);*/
+}
+
+.modal-header {
+    background-color: transparent;
+    position: relative;
+}
+
+    .modal-header .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+#modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+    display: none; /* 初始隐藏 */
+    z-index: 999; /* 放在最上层 */
+}
+
+.close {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.keyframesbtn {
+    /*2秒动画，无限循环*/
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.Cardimage-container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+.Cardimage-centered-image {
+    width: 80%; /* 设置图片宽度为容器宽度的一半 */
+    max-width: 100%; /* 确保图片不会超出其原始尺寸 */
+    display: inline-block; /* 使图片成为行内元素以便居中 */
+    vertical-align: middle; /* 垂直居中对齐 */
+}
+
+/* 个性名片*/
+.icon-heading {
+    position: relative;
+}
+
+    .icon-heading::after {
+        content: "";
+        position: absolute;
+        height: 2rem;
+        top: 0;
+        left: 0;
+        border: 3px solid;
+        border-radius: 20px;
+    }
+
+.containerper {
+    position: relative;
+    font-family: sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+    /*    .container::before, .container::after {
+        content: "";
+        background-color: #fab5704c;
+        position: absolute;
+    }*/
+
+    .containerper::before {
+        border-radius: 50%;
+        width: 6rem;
+        height: 6rem;
+        top: 10%;
+        left: 7%;
+    }
+
+    .containerper::after {
+        content: "";
+        position: absolute;
+        height: 3rem;
+        top: 8%;
+        right: 5%;
+        border: 1px solid;
+    }
+
+    .containerper .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: auto;
+        padding: 8px;
+        background-color: rgba(255, 255, 255, 0.074);
+        border: 1px solid rgba(255, 255, 255, 0.222);
+        -webkit-backdrop-filter: blur(3px);
+        backdrop-filter: blur(3px);
+        border-radius: .7rem;
+        transition: all ease .3s;
+    }
+
+        .containerper .box .title {
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: .3em
+        }
+
+        .containerper .box div strong {
+            display: block;
+            margin-bottom: .5rem;
+        }
+
+        .containerper .box div p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: .1em;
+        }
+
+        .containerper .box div span {
+            font-size: .7rem;
+            font-weight: 300;
+        }
+
+            .containerper .box div span:nth-child(3) {
+                font-weight: 500;
+                margin-right: .2rem;
+            }
+
+/*  红包*/
+
+.Redpack-image-container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+.Redpack-centered-image {
+    width: 80%; /* 设置图片宽度为容器宽度的一半 */
+    max-width: 100%; /* 确保图片不会超出其原始尺寸 */
+    display: inline-block; /* 使图片成为行内元素以便居中 */
+    vertical-align: middle; /* 垂直居中对齐 */
+}
+
+.Redpack-image-container::after {
+    content: "现金红包";
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    font-size: 1.4rem; /* 使用vw单位，并结合calc函数和em单位实现自适应调整 */
+    font-size: 1em;
+    font-weight: bold;
+    color: white;
+    letter-spacing: .1em;
+    transform: translate(-50%, -50%);
+}

@@ -1,4 +1,7 @@
-﻿namespace ScanCode.Model.ResponseModel
+﻿using ScanCode.Model.Entity;
+using System;
+
+namespace ScanCode.Model.ResponseModel
 {
     /// <summary>
     /// 抽奖结果
@@ -61,7 +64,69 @@
                 PrizeImage = prizeImage,
                 PrizeDescription = prizeDescription,
                 PrizeNumber = prizenumber
+            };
+        }
 
+        /// <summary>
+        /// 异常
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static LotteryResult ServerError(Exception e)
+        {
+            return new LotteryResult { IsSuccess = false, Message = $"服务器错误：{e.Message}" };
+        }
+
+        /// <summary>
+        /// 校验失败
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static LotteryResult VerificationFailed(string message)
+        {
+            return new LotteryResult { IsSuccess = false, Message = message };
+        }
+
+        /// <summary>
+        /// 奖品已经抽完,请重新抽奖
+        /// </summary>
+        /// <returns></returns>
+        public static LotteryResult NoPrizeAvailable()
+        {
+            return new LotteryResult { IsSuccess = false, Message = "奖品已经抽完,请重新抽奖" };
+        }
+
+        /// <summary>
+        /// 中奖
+        /// </summary>
+        /// <param name="prize"></param>
+        /// <returns></returns>
+        public static LotteryResult PrizeWon(ActivityPrize prize)
+        {
+            return new LotteryResult
+            {
+                IsSuccess = true,
+                Message = $"恭喜你，中大奖啦",
+                PrizeType = prize.Type.ToString(),
+                PrizeName = prize.Name,
+                PrizeDescription = prize.Description,
+                PrizeImage = prize.ImageUrl,
+                PrizeNumber = prize.PrizeNumber
+            };
+        }
+
+        /// <summary>
+        /// 没有中奖
+        /// </summary>
+        /// <param name="prize"></param>
+        /// <returns></returns>
+        public static LotteryResult PrizeNotWon(ActivityPrize prize)
+        {
+            return new LotteryResult
+            {
+                IsSuccess = false,
+                Message = $"很遗憾！没有中奖。",
+                PrizeType = prize.Type.ToString(),
             };
         }
     }

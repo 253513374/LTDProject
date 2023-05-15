@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using ScanCode.Controller.Models;
 using ScanCode.Controller.Services;
 using ScanCode.Model;
 using ScanCode.Model.Entity;
@@ -205,21 +206,24 @@ namespace ScanCode.Mvc.Services
         private async Task<RedStatusResult> VerifyCaptchaRedPacket(string openid, string qrcode, string captcha)
         {
             var vcode = await VerifyCaptchaRedPacket(openid, qrcode);
-            if (vcode.IsSuccess)
+            if (!vcode.IsSuccess)
             {
-                //判断验证码是否正确
-                var validation = await _verificationCodeRepository.AnyAsync(a => a.QRCode == qrcode && a.Captcha == captcha);
-                if (!validation)
-                {
-                    return RedStatusResult.FailInvalidCaptcha("验证码无效");
-                }
-                //一枚验证码只能领取一次红包
-                var reslut = await _redPacketRecordRepository.ExistAsync(a => a.Captcha == captcha);
-                if (reslut)
-                {
-                    return RedStatusResult.FailCaptchaUsed("验证码已经被使用过");
-                }
+                return vcode;
             }
+
+            //判断验证码是否正确
+            var validation = await _verificationCodeRepository.AnyAsync(a => a.QRCode == qrcode && a.Captcha == captcha);
+            if (!validation)
+            {
+                return RedStatusResult.FailInvalidCaptcha("验证码无效");
+            }
+            //一枚验证码只能领取一次红包
+            var reslut = await _redPacketRecordRepository.ExistAsync(a => a.Captcha == captcha);
+            if (reslut)
+            {
+                return RedStatusResult.FailCaptchaUsed("验证码已经被使用过");
+            }
+
             return vcode;
         }
 
@@ -250,16 +254,74 @@ namespace ScanCode.Mvc.Services
             return RedStatusResult.Success("可以参加扫码得现金活动");
         }
 
+        /// <summary>
+        /// 校验二维码的红包状态
+        /// </summary>
+        /// <param name="qrcode">待校验的二维码</param>
+        /// <returns>返回一个包含校验结果的异步任务</returns>
+        private async Task<RedPacketStatus> VerifyQrCodeStatus(string qrcode)
+        {
+            if (string.IsNullOrEmpty(qrcode))
+            {
+                throw new ArgumentNullException(nameof(qrcode), "二维码不能为空。");
+            }
+
+            var statusValue = await _redPacketRecordRepository.FindAsync(qrcode);
+
+            if (!Enum.IsDefined(typeof(RedPacketStatus), statusValue))
+            {
+                throw new ArgumentOutOfRangeException(nameof(statusValue), "返回的状态不是一个有效的RedPacketStatus。");
+            }
+
+            return (RedPacketStatus)statusValue;
+        }
+
+        /// <summary>
+        /// 校验用户的领取状态
+        /// </summary>
+        /// <param name="openid">用户的OpenID</param>
+        /// <returns>返回一个包含校验结果的异步任务</returns>
+        private async Task<int> VerifyUserLimit(string openid)
+        {
+            if (string.IsNullOrEmpty(openid))
+            {
+                throw new ArgumentNullException(nameof(openid), "OpenID不能为空。");
+            }
+
+            return await _redPacketRecordRepository.FindUserLimt(openid);
+        }
+
+        /// <summary>
+        /// 校验红包的二维码
+        /// </summary>
+        /// <param name="openid">用户的OpenID</param>
+        /// <param name="qrcode">待校验的二维码</param>
+        /// <returns>返回一个包含校验结果的异步任务</returns>
+        public async Task<RedStatusResult> VerifyQrCodeRedPacketAsync(string openid, string qrcode)
+        {
+            var status = await VerifyQrCodeStatus(qrcode);
+            var userilmts = await VerifyUserLimit(openid);
+
+            return status switch
+            {
+                RedPacketStatus.PacketAlreadyReceived => RedStatusResult.FailMaximumLimit(RedPacketMessages.AlreadyReceived),
+                RedPacketStatus.StockExhausted => RedStatusResult.FailMaximumLimit(RedPacketMessages.OutOfStock),
+                _ when userilmts == (int)RedPacketStatus.UserDailyLimitReached => RedStatusResult.FailMaxUserLimit(RedPacketMessages.UserLimitReached),
+                _ => RedStatusResult.Success(RedPacketMessages.Success)
+            };
+        }
+
         private async Task<RedStatusResult> VerifyCaptchaRedPacket(string openid, string qrcode)
         {
-            var list = await _redPacketRecordRepository.FindAsync(qrcode);
+            var list = await VerifyQrCodeStatus(qrcode);
+            var userilmts = await VerifyUserLimit(openid);
 
-            if (list == 2)
+            if (list == RedPacketStatus.StockExhausted)
             {
                 return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");
             }
-            var userilmts = await _redPacketRecordRepository.FindUserLimt(openid);
-            if (userilmts == 10)
+
+            if (userilmts == (int)RedPacketStatus.UserDailyLimitReached)
             {
                 return RedStatusResult.FailMaxUserLimit("今日已经领取10个红包上限，请明日再参与扫码领现金红包活动");
             }
@@ -275,10 +337,15 @@ namespace ScanCode.Mvc.Services
         {
             try
             {
-                var sss = await _redisCache.GetObjectAsync<List<RedPacketCinfig>>(CacheKeys.REDPACKET_OPTIONS);
-                var optioncode = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.QRCode);
-                var optioncaptch = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.Captcha);
+                //var sss = await _redisCache.GetObjectAsync<List<RedPacketCinfig>>(CacheKeys.REDPACKET_OPTIONS);
+                //var optioncode = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.QRCode);
+                //var optioncaptch = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.Captcha);
+                var (optioncode, optioncaptch) = await GetRedPacketOptionsAsync();
 
+                if (optioncode == null || optioncaptch == null)
+                {
+                    return RedStatusResult.FailNotActivated("无法获取红包配置");
+                }
                 if (!optioncode.IsActivity && !optioncaptch.IsActivity)
                 {
                     return RedStatusResult.FailNotActivated("扫码领红包活动还没有激活");
@@ -306,16 +373,13 @@ namespace ScanCode.Mvc.Services
                     {
                         return RedStatusResult.FailNot("标签还没有确认提货放行单");
                     }
-                    DateTime dateTime = DateTime.Parse(bdxOrder.THRQ);
-                    dateTime.AddHours(2);
-                    if (string.IsNullOrWhiteSpace(bdxOrder.THRQ))
+                    if (DateTime.TryParse(bdxOrder.THRQ, out DateTime dateTime))
                     {
-                        return RedStatusResult.FailNotActivated("扫码领现金红包活动时间还未开始");
-                    }
-                    //当前时间大于设置的激活时间，说明活动已经激活。
-                    if (DateTime.Now > dateTime)
-                    {
-                        //return RedStatusResult.Success("可以参加扫码得现金活动");
+                        dateTime = dateTime.AddHours(3);
+                        if (DateTime.Now <= dateTime)
+                        {
+                            return RedStatusResult.FailNotActivated("扫码领现金红包活动时间还未开始");
+                        }
                     }
                     else
                     {
@@ -327,31 +391,58 @@ namespace ScanCode.Mvc.Services
                     return RedStatusResult.FailNot("单号数据不存在");
                 }
 
-                //stopwatch.Restart();
                 var list = await _redPacketRecordRepository.FindAsync(qrcode);
 
-                if (list == 0)
+                return list switch
                 {
-                    return RedStatusResult.SuccessQrCode("首次参加扫码领现金红包活动");
-                }
+                    0 => RedStatusResult.SuccessQrCode("首次参加扫码领现金红包活动"),
+                    1 => RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动"),
+                    2 => RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕"),
+                    _ => RedStatusResult.FailNot("验证失败")
+                };
+                //stopwatch.Restart();
+                //var list = await _redPacketRecordRepository.FindAsync(qrcode);
 
-                if (list == 1)
-                {
-                    return RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
-                }
+                //if (list == 0)
+                //{
+                //    return RedStatusResult.SuccessQrCode("首次参加扫码领现金红包活动");
+                //}
 
-                if (list == 2)
-                {
-                    return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");
-                }
+                //if (list == 1)
+                //{
+                //    return RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
+                //}
 
-                return RedStatusResult.FailNot("验证失败");
+                //if (list == 2)
+                //{
+                //    return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");
+                //}
+
+                // return RedStatusResult.FailNot("验证失败");
             }
             catch (Exception e)
             {
                 _logger.LogError($"标签序号领取现金红包状态验证出现异常：{e.Message}");
                 return RedStatusResult.FailNotException($"标签序号领取现金红包状态验证出现异常：{e.Message}");
             }
+        }
+
+        /// <summary>
+        /// 获取红包配置
+        /// </summary>
+        /// <returns></returns>
+        private async Task<(RedPacketCinfig QRCodeOption, RedPacketCinfig CaptchaOption)> GetRedPacketOptionsAsync()
+        {
+            var sss = await _redisCache.GetObjectAsync<List<RedPacketCinfig>>(CacheKeys.REDPACKET_OPTIONS);
+            if (sss == null)
+            {
+                return (null, null);
+            }
+
+            var optioncode = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.QRCode);
+            var optioncaptch = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.Captcha);
+
+            return (optioncode, optioncaptch);
         }
 
         private async Task<RedPacketResult> SendRedPackAsync(WXRedPackRequest request)

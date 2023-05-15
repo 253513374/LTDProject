@@ -6,6 +6,7 @@
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
 	  <PlatformTarget>x64</PlatformTarget>
+	  <UserSecretsId>a1b5c58a-9d98-47bd-9b27-4c3f1cdbd1d6</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

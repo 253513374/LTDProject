@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <UserSecretsId>4eb9d7ea-7e19-4ee4-ae16-939823738626</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -95,28 +95,31 @@
                         else
                         {
                         <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small" Style="Width: 100%;">
-                                <ItemContent>
-                                    <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                            <ItemContent>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OrderNumbels</MudText>
+                                @* <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OrderNumbels</MudText>
-                                    </MudStack>
-                                </ItemContent>
+                                    </MudStack>*@
+                            </ItemContent>
                             </MudTimelineItem>
                         <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small">
-                                <ItemContent>
-                                    <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
+                            <ItemContent>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OutTime</MudText>
+                                @*<MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OutTime</MudText>
-                                    </MudStack>
-                                </ItemContent>
+                                    </MudStack>*@
+                            </ItemContent>
                             </MudTimelineItem>
                         <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small">
-                                <ItemContent>
-                                    <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
+                            <ItemContent>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.AgentName</MudText>
+                                @*<MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.AgentName</MudText>
-                                    </MudStack>
-                                </ItemContent>
+                                    </MudStack>*@
+                            </ItemContent>
                             </MudTimelineItem>
                         }
                     </MudStack>
@@ -138,8 +141,10 @@
 <MudButton OnClick="@OpenLuckyDrawDialog"> 打开抽奖对话框</MudButton>*@
 
 
-<img class="index-weixinimg my-3" src="img/weixinlogo2.png" />
-<footer >
+<img class="index-weixinimg mt-10 mb-16" src="img/weixinlogo2.png" />
+
+<p style="color: gray; margin-top: 50px;justify-content: center">&copy; 2023 chn315.top. 版权所有.</p>
+@*<footer >
     
     <MudCard Class="mt-5" Elevation="0" Style=" color: #fffffe;background-color: transparent;border-radius:15px;padding: 0px ">
        
@@ -214,13 +219,13 @@
     
     <p style="color: gray; margin-top: 50px;justify-content: center">&copy; 2023 chn315.top. 版权所有.</p>
 </footer>
-
+*@
 
 
 
 
 <!-- 遮罩层 -->
-<div id="modalOverlay"></div>
+@*<div id="modalOverlay"></div>
 <div id="exampleModal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -230,7 +235,7 @@
                 </MudIconButton>
             </div>
             <div class="modal-footer justify-content-center mt-auto" style="border: 0px;">
-                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>*@
+             
                 
                 @if (redStatusResult is not null && redStatusResult.StuteCode == "CAPTCHA")
                 {
@@ -242,7 +247,7 @@
         </div>
     </div>
 </div>
-
+*@
 @code
 {
 
@@ -311,7 +316,7 @@
         }
         #if DEBUG
 
-        Id = Id ?? "236800000033";// "236810001499";
+    Id = Id ?? "143887488819";// "236810001499";
             QRCode = Id;
 
             if (string.IsNullOrWhiteSpace(Container.QRCode) )

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
 using ScanCode.Model.Entity.ERP;
+using ScanCode.Repository.MediatRHandler.Events;
 using ScanCode.Share;
 using System.Data;
 
@@ -120,9 +121,15 @@ namespace ScanCode.Repository
 
                 return oders;
             }
-            catch (Exception e)
+            catch (OracleException e)
             {
                 _logger.LogError($"{e.Message}");
+                _ = _mediator?.Publish(new SendEmailEvent()
+                {
+                    Title = "重要通知：ERP-ORACLE 链接失败",
+                    Content = $"ORACLE链接异常：{e.Message}，请及时修复。",
+                    Email = ""
+                });
                 return new List<BdxOrder>();
             }
 
@@ -174,10 +181,15 @@ namespace ScanCode.Repository
 
                 return oders;
             }
-            catch (Exception e)
+            catch (OracleException e)
             {
                 //Console.WriteLine(e);
-
+                _ = _mediator?.Publish(new SendEmailEvent()
+                {
+                    Title = "重要通知：ERP-ORACLE 链接失败",
+                    Content = $"ORACLE链接异常：{e.Message}，请及时修复。",
+                    Email = ""
+                });
                 _logger.LogError($"模糊查询订单号异常：{e.Message}");
                 // throw;
                 return new List<BdxOrder>();

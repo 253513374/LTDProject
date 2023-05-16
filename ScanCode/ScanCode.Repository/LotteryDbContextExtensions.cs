@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ScanCode.Model.Entity;
+using ScanCode.Repository.MediatRHandler.Events;
 using ScanCode.Repository.Tools;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 
 namespace ScanCode.Repository
 {
@@ -46,6 +49,7 @@ namespace ScanCode.Repository
                         b.UseOracleSQLCompatibility("11"))
                     .EnableSensitiveDataLogging());
             services.AddScoped<BdxOrderRepository>();
+
             return services;
         }
     }

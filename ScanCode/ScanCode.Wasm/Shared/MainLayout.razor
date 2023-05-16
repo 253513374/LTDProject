@@ -1,6 +1,6 @@
 ﻿@using System.Text.RegularExpressions
 @inherits LayoutComponentBase
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
 
 
@@ -48,7 +48,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userAgent = await JSRuntime.InvokeAsync<string>("eval", "navigator.userAgent");
+        var userAgent = await JsRuntime.InvokeAsync<string>("eval", "navigator.userAgent");
         IsWeChat = userAgent.Contains("MicroMessenger");
     
         #if DEBUG

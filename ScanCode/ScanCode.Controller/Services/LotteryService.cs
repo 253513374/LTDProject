@@ -134,34 +134,6 @@ namespace ScanCode.Mvc.Services
         }
 
         /// <summary>
-        /// 验证产品是否已经扫码出库，并且已经出库超过指定间隔时间
-        /// </summary>
-        /// <param name="qrcode"></param>
-        /// <returns></returns>
-        private async Task<VerifyResult> VerifyOut(string qrcode)
-        {
-            // var outqrcode = await  _wLabelStorageRepository.FindSingleAsync(f => f.QRCode.Contains(qrcode));
-            var outqrcode = await _wLabelStorageRepository.AnyRedPacket(qrcode);
-            if (!outqrcode)
-            {
-                //var outOKTime =  outqrcode.OutTime.AddDays(1);
-                return new VerifyResult()
-                {
-                    IsSuccess = false,
-                    Message = "无法参与抽奖",
-                };
-            }
-            else
-            {
-                return new VerifyResult()
-                {
-                    IsSuccess = true,
-                    Message = "可以参加活动",
-                };
-            }
-        }
-
-        /// <summary>
         /// 抽奖之前验证用户与标签序号是否有抽奖资格
         /// </summary>
         /// <param name="openid"></param>
@@ -355,12 +327,13 @@ namespace ScanCode.Mvc.Services
                 return new LotteryResult() { IsSuccess = false, Message = $"服务器错误：{e.Message}" };
             }
         }
+
         public async Task<LotteryResult> ExecuteLotteryAsync(string openid, string qrcode, string prizenumber)
         {
             try
             {
                 // 验证是否有抽奖资格
-                var verify = await VerifyLottery(openid, qrcode, prizenumber);
+                var verify = await VerifyLotteryAsync(openid, qrcode, prizenumber);
                 if (!verify.IsSuccess)
                 {
                     return LotteryResult.VerificationFailed(verify.Message);
@@ -409,6 +382,5 @@ namespace ScanCode.Mvc.Services
                 return LotteryResult.ServerError(e);
             }
         }
-
     }
 }

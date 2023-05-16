@@ -6,6 +6,11 @@
     public enum RedPacketStatus
     {
         /// <summary>
+        /// 明确表示红包未被领取
+        /// </summary>
+        PacketNotReceived = 0,
+
+        /// <summary>
         /// 明确表示红包已被领取 1次
         /// </summary>
         PacketAlreadyReceived = 1,
@@ -16,9 +21,14 @@
         StockExhausted = 2,
 
         /// <summary>
+        /// 明确红包记录无效或者异常。
+        /// </summary>
+        Invalid = 3,
+
+        /// <summary>
         /// 明确表示用户已经达到了每日领取红包的上限。
         /// </summary>
-        UserDailyLimitReached = 10
+        UserDailyLimitReached = 10,
     }
 
     /// <summary>

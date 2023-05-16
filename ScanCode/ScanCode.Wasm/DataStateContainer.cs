@@ -7,7 +7,7 @@ namespace ScanCode.Web.Wasm
         /// <summary>
         /// 标签二维码
         /// </summary>
-        public string QRCode { get; set; }
+        public string? QrCode { get; set; }
 
         /// <summary>
         /// 微信用户openid
@@ -27,12 +27,12 @@ namespace ScanCode.Web.Wasm
         /// <summary>
         /// 访问信息
         /// </summary>
-        public AntiFakeResult? antiFakeResult { get; set; }
+        public AntiFakeResult? AntiFakeResult { get; set; }
 
         /// <summary>
         /// 溯源信息
         /// </summary>
-        public TraceabilityResult? traceabilityResult { get; set; }
+        public TraceabilityResult? TraceabilityResult { get; set; }
 
         public LotteryResult LotteryResult { get; set; }
 
@@ -44,7 +44,7 @@ namespace ScanCode.Web.Wasm
 
         public Task SetCode(string qrcode, string openid)
         {
-            QRCode = qrcode;
+            QrCode = qrcode;
             OpenId = openid;
             NotifyCodeChanged();
             return Task.CompletedTask;
@@ -61,7 +61,7 @@ namespace ScanCode.Web.Wasm
 
         public bool IsVerify(string prizenumber)
         {
-            if (string.IsNullOrEmpty(QRCode) || string.IsNullOrEmpty(OpenId) || string.IsNullOrEmpty(prizenumber))
+            if (string.IsNullOrEmpty(QrCode) || string.IsNullOrEmpty(OpenId) || string.IsNullOrEmpty(prizenumber))
             {
                 return false;
             }

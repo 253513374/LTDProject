@@ -1,5 +1,5 @@
 ﻿
-@inject ILogger<LuckyDraw> _logger
+@inject ILogger<LuckyDraw> Logger
 
 <MudDialog >
     <DialogContent>
@@ -12,15 +12,15 @@
                         <div class="box-face"></div>
                         <div class="box-face"></div>
                         <div class="box-face"></div>
-                        <div class="box-face top @(IsOpenBox? "open-lid" : "")">5</div>
+                        <div class="box-face top @(_isOpenBox? "open-lid" : "")">5</div>
                         <div class="box-face"></div>
                     </div>
                 </div>
                 <div>
-                    @if (lotteryResult is not null)
+                    @if (LotteryResult is not null)
                     {
                             
-                        if (lotteryResult.IsSuccess)
+                        if (LotteryResult.IsSuccess)
                         {
                             OpenBox();
                         }
@@ -44,19 +44,19 @@
     [CascadingParameter] public MudDialogInstance Instance { get; set; }
 
 
-    [Parameter] public string QRCode { set; get; }
+    [Parameter] public string QrCode { set; get; }
 
     [Parameter] public string OpenId { set; get; }
 
     [Parameter] public string PrizeNumber { set; get; }
 
-    private LotteryResult lotteryResult { set; get; }
+    private LotteryResult LotteryResult { set; get; }
 
-    private bool IsOpenBox = false;
+    private bool _isOpenBox = false;
 
 
-    DialogParameters parameters = new();
-    JsonSerializerOptions options = new JsonSerializerOptions
+    DialogParameters _parameters = new();
+    JsonSerializerOptions _options = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true
     };
@@ -65,7 +65,7 @@
     {
         if (firstRender)
         {
-            lotteryResult =  await  OnLuckyDraw();
+            LotteryResult =  await  OnLuckyDraw();
 
             StateHasChanged();
         }
@@ -76,7 +76,7 @@
     private async Task OpenBox()
     {
         //await Task.Delay(5000); // 等待动画完成，这里的 5000 是动画持续时间（5秒）的毫秒表示
-        IsOpenBox = true;
+        _isOpenBox = true;
         StateHasChanged();
     }
 
@@ -89,22 +89,22 @@
         try
         {
             using  var httpClient = HttpClientFactory.CreateClient("weixin");
-            if (string.IsNullOrEmpty(QRCode) && string.IsNullOrEmpty(OpenId) && string.IsNullOrEmpty(PrizeNumber))
+            if (string.IsNullOrEmpty(QrCode) && string.IsNullOrEmpty(OpenId) && string.IsNullOrEmpty(PrizeNumber))
             {
                 return null;
             }
-            var url = $"Lottery?qrcode={QRCode}&openid={OpenId}&prizennumber={PrizeNumber}";
+            var url = $"Lottery?qrcode={QrCode}&openid={OpenId}&prizennumber={PrizeNumber}";
             var response = await httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var stream = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<LotteryResult>(stream, options);
+                return JsonSerializer.Deserialize<LotteryResult>(stream, _options);
             }
             return null;
         }
         catch (Exception e)
         {
-            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
+            Logger.LogError($"获取抽奖活动信息异常：{e.Message}");
         }
         return null;
     }

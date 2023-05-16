@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ScanCode.Controller.Services;
 using ScanCode.Model.ResponseModel;
 
 using ScanCode.Mvc.Services;
@@ -12,14 +13,33 @@ namespace ScanCode.Mvc.Controllers.APIController
     [ApiController]
     public class RedPacketController : BaseController<RedPacketController>
     {
-        private ScanByRedPacketService _scanByRedPacketService;
+        // private ScanByRedPacketService _scanByRedPacketService;
+
+        private readonly RedPacketStatusService _redPacketStatusService;
+        private readonly CaptchaRedPacketDistributor _captchaRedPacketDistributor;
+        private readonly QrCodeRedPacketDistributor _qrCodeRedPacketDistributor;
 
         private readonly ILogger _logger;
 
-        public RedPacketController(ScanByRedPacketService service, ILogger<RedPacketController> logger) : base(logger)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="redPacketStatusService"></param>
+        /// <param name="captchaRedPacketDistributor"></param>
+        /// <param name="qrCodeRedPacketDistributor"></param>
+        public RedPacketController(ILogger<RedPacketController> logger,
+            RedPacketStatusService redPacketStatusService,
+            CaptchaRedPacketDistributor captchaRedPacketDistributor,
+            QrCodeRedPacketDistributor qrCodeRedPacketDistributor)
+            : base(logger)
         {
-            _scanByRedPacketService = service;
+            //  _scanByRedPacketService = service;
             _logger = logger;
+            _redPacketStatusService = redPacketStatusService;
+            // _redPacketStatusService = redPacketStatusService;
+            _captchaRedPacketDistributor = captchaRedPacketDistributor;
+            _qrCodeRedPacketDistributor = qrCodeRedPacketDistributor;
         }
 
         /// <summary>
@@ -43,7 +63,7 @@ namespace ScanCode.Mvc.Controllers.APIController
                 Failure<RedPacketResult>("请输入正确的二维码序号");
             }
 
-            var result = await _scanByRedPacketService.GrantQRCodeRedPackets(openid, qrcode);
+            var result = await _qrCodeRedPacketDistributor.GrantQrCodeRedPackets(openid, qrcode);
 
             if (result.IsSuccess)
             {
@@ -72,7 +92,7 @@ namespace ScanCode.Mvc.Controllers.APIController
             {
                 Failure<RedPacketResult>("请输入正确的二维码序号");
             }
-            var result = await _scanByRedPacketService.GrantCaptchaRedPackets(openid, qrcode, captcha);
+            var result = await _captchaRedPacketDistributor.GrantCaptchaRedPackets(openid, qrcode, captcha);
             if (result.IsSuccess)
             {
                 return Success(result);
@@ -87,13 +107,18 @@ namespace ScanCode.Mvc.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
         [HttpGet("RedPackStatus")]
-        public async Task<ApiResponse<RedStatusResult>> Get(string openid, string qrcode, string ordernumbels)
+        public async Task<ApiResponse<RedStatusResult>> Get(string openid = "", string qrcode = "", string ordernumbels = "")
         {
+#if DEBUG
+            openid = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
+            qrcode = "236809603213";
+            ordernumbels = "B23041531";
+#endif
             if (string.IsNullOrEmpty(openid) || string.IsNullOrEmpty(qrcode))
             {
                 return Failure<RedStatusResult>("请输入正确参数");
             }
-            var result = await _scanByRedPacketService.GetRedStatusResultAsync(openid, qrcode, ordernumbels);
+            var result = await _redPacketStatusService.RetrieveRedPacketStatusAsync(openid, qrcode, ordernumbels);
             if (result.IsSuccess)
             {
                 return Success(result);

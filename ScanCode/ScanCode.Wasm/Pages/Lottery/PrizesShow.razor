@@ -5,7 +5,7 @@
 @inherits ComponentBase
 
 @inject IJSRuntime JsRuntime
-@inject ILogger<PrizesShow> _logger
+@inject ILogger<PrizesShow> Logger
 
 <style>
     body {
@@ -190,7 +190,7 @@
 
         <MudText Typo="Typo.body2"> @Container.Activity.Description</MudText>
 
-        <MudText Class="my-3" Typo="Typo.button" Style="letter-spacing:.3em">抽奖号码：@Container.QRCode</MudText>
+        <MudText Class="my-3" Typo="Typo.button" Style="letter-spacing:.3em">抽奖号码：@Container.QrCode</MudText>
     </MudStack>
 
     <div class="prize-grid-background">
@@ -290,8 +290,8 @@ else
 
 
 
-    DialogParameters parameters = new();
-    JsonSerializerOptions options = new JsonSerializerOptions
+    DialogParameters _parameters = new();
+    JsonSerializerOptions _options = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true
     };
@@ -318,13 +318,13 @@ else
             if (response.IsSuccessStatusCode)
             {
                 var stream = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<ActivityResult>(stream, options);
+                return JsonSerializer.Deserialize<ActivityResult>(stream, _options);
             }
-            _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
+            Logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
         }
         catch (Exception e)
         {
-            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
+            Logger.LogError($"获取抽奖活动信息异常：{e.Message}");
         }
         return null;
     }
@@ -433,7 +433,7 @@ else
 
             if (verifyresult)
             {
-                var luckyresult = await LuckyDraw(Container.QRCode, Container.OpenId, SelectedPrizeItem.PrizeItem.PrizeNumber);
+                var luckyresult = await LuckyDraw(Container.QrCode, Container.OpenId, SelectedPrizeItem.PrizeItem.PrizeNumber);
         
 
                 var parameters = new DialogParameters
@@ -487,7 +487,7 @@ else
         }
         catch (Exception e)
         {
-            _logger.LogError($"抽奖异常：{e.Message}");
+            Logger.LogError($"抽奖异常：{e.Message}");
 
             return LotteryResult.Fail(e.Message);
         }

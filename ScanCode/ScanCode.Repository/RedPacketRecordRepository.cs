@@ -89,7 +89,7 @@ namespace ScanCode.Repository
         }
 
         /// <summary>
-        /// 返回二维码数量
+        /// 返回二维码领取红包的数量
         /// </summary>
         /// <param name="qrcode"></param>
         /// <returns></returns>

@@ -181,7 +181,9 @@ namespace ScanCode.Mvc.Services
         {
             try
             {
-                var result = await VerifyQRCodeRedPacket(openid, qrcode);
+                //  var result = await VerifyQRCodeRedPacket(openid, qrcode);
+                var result = await VerifyQrCodeRedPacketAsync(openid, qrcode);
+
                 if (result.IsSuccess)
                 {
                     var request = await CreateWxRequest(openid, qrcode, RedPacketConfigType.QRCode);
@@ -205,7 +207,7 @@ namespace ScanCode.Mvc.Services
         /// <returns></returns>
         private async Task<RedStatusResult> VerifyCaptchaRedPacket(string openid, string qrcode, string captcha)
         {
-            var vcode = await VerifyCaptchaRedPacket(openid, qrcode);
+            var vcode = await VerifyCaptchaRedPacketAsync(openid, qrcode);
             if (!vcode.IsSuccess)
             {
                 return vcode;
@@ -225,33 +227,6 @@ namespace ScanCode.Mvc.Services
             }
 
             return vcode;
-        }
-
-        /// <summary>
-        /// 验证二维码发放现金红包的资格
-        /// </summary>
-        /// <param name="openid"></param>
-        /// <param name="qrcode"></param>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        private async Task<RedStatusResult> VerifyQRCodeRedPacket(string openid, string qrcode)
-        {
-            var list = await _redPacketRecordRepository.FindAsync(qrcode);
-            if (list == 1)
-            {
-                return RedStatusResult.FailMaximumLimit("红包已经领过啦!，请查看威特五金公众号红包信息。");
-            }
-
-            if (list == 2)
-            {
-                return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");
-            }
-            var userilmts = await _redPacketRecordRepository.FindUserLimt(openid);
-            if (userilmts == 10)
-            {
-                return RedStatusResult.FailMaxUserLimit("今日已经领取10个红包上限，请明日再参与扫码领现金红包活动");
-            }
-            return RedStatusResult.Success("可以参加扫码得现金活动");
         }
 
         /// <summary>
@@ -311,7 +286,13 @@ namespace ScanCode.Mvc.Services
             };
         }
 
-        private async Task<RedStatusResult> VerifyCaptchaRedPacket(string openid, string qrcode)
+        /// <summary>
+        ///  验证二维码发放现金红包的资格
+        /// </summary>
+        /// <param name="openid"></param>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        private async Task<RedStatusResult> VerifyCaptchaRedPacketAsync(string openid, string qrcode)
         {
             var list = await VerifyQrCodeStatus(qrcode);
             var userilmts = await VerifyUserLimit(openid);
@@ -337,9 +318,6 @@ namespace ScanCode.Mvc.Services
         {
             try
             {
-                //var sss = await _redisCache.GetObjectAsync<List<RedPacketCinfig>>(CacheKeys.REDPACKET_OPTIONS);
-                //var optioncode = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.QRCode);
-                //var optioncaptch = sss.FirstOrDefault(f => f.RedPacketConfigType == RedPacketConfigType.Captcha);
                 var (optioncode, optioncaptch) = await GetRedPacketOptionsAsync();
 
                 if (optioncode == null || optioncaptch == null)
@@ -400,25 +378,6 @@ namespace ScanCode.Mvc.Services
                     2 => RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕"),
                     _ => RedStatusResult.FailNot("验证失败")
                 };
-                //stopwatch.Restart();
-                //var list = await _redPacketRecordRepository.FindAsync(qrcode);
-
-                //if (list == 0)
-                //{
-                //    return RedStatusResult.SuccessQrCode("首次参加扫码领现金红包活动");
-                //}
-
-                //if (list == 1)
-                //{
-                //    return RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
-                //}
-
-                //if (list == 2)
-                //{
-                //    return RedStatusResult.FailMaximumLimit("当前标签序号红包已经领取完毕");
-                //}
-
-                // return RedStatusResult.FailNot("验证失败");
             }
             catch (Exception e)
             {
@@ -526,87 +485,6 @@ namespace ScanCode.Mvc.Services
                         });
                     }
                 }
-                //else if (sendNormalRedPackResult.result_code == "SYSTEMERROR")
-                //{
-                //    // "系统繁忙，请稍后再试,使用原单号调用接口，查询发放结果";
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = msg;
-                //}
-                //else if (sendNormalRedPackResult.result_code == "SIGN_ERROR")
-                //{
-                //    // "参数签名结果不正确";
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = msg;
-                //}
-                //else if (sendNormalRedPackResult.result_code == "XML_ERROR")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "输入xml参数格式错误,请求参数未按指引进行填写";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "FATAL_ERROR")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "openid和原始单参数不一致";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "FREQ_LIMIT")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "超过频率限制，请稍后再试";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "SENDAMOUNT_LIMIT")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "商户号今日发放金额超过限制";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "MONEY_LIMIT")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "发送红包金额不在限制范围内";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "CA_ERROR")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "商户API证书校验出错";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "PARAM_ERROR")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message =
-                //        $"{sendNormalRedPackResult.err_code}:{sendNormalRedPackResult.err_code_des}";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "SENDNUM_LIMIT")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "今日领取红包个数超过限制";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "SEND_FAILED")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "红包发放失败,请更换单号再重试";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "API_METHOD_CLOSED")
-                //{
-                //    //请求接口失败
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "你的商户号API发放方式已关闭，请联系管理员在商户平台开启";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "PROCESSING")
-                //{
-                //    //请求接口失败
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "请求已受理，请稍后使用原单号调用接口查询发放结果";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "RCVDAMOUNT_LIMIT")
-                //{
-                //    //请求接口失败
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "该用户今日领取红包总金额超过您在微信支付商户平台配置的上限。";
-                //}
-                //else if (sendNormalRedPackResult.result_code == "PAYER_ACCOUNT_ABNORMAL")
-                //{
-                //    returnresult.IsSuccess = false;
-                //    returnresult.Message = "商户号被处罚、冻结";
-                //}
             }
             else
             {

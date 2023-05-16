@@ -6,9 +6,9 @@
 
 <h3>Code：  @Code</h3>
 
-<h3>QRCode： @QRCode</h3>
+<h3>QRCode： @QrCode</h3>
 
-<h3>url： @url</h3>
+<h3>url： @_url</h3>
 
 
 @code {
@@ -21,17 +21,17 @@
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "qrcode")]
-    public string? QRCode { get; set; }
+    public string? QrCode { get; set; }
 
 
-    private string url;
+    private string _url;
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             Console.WriteLine("Code:" + Code);
-            Console.WriteLine("QRCode:" + QRCode);
+            Console.WriteLine("QRCode:" + QrCode);
 
 
         }
@@ -40,9 +40,9 @@
 
     protected override void OnInitialized()
     {
-        url = _navigationManager.Uri;
+        _url = _navigationManager.Uri;
 
-        if (string.IsNullOrEmpty(Code)&& string.IsNullOrEmpty(QRCode))
+        if (string.IsNullOrEmpty(Code)&& string.IsNullOrEmpty(QrCode))
         {
             _navigationManager.NavigateTo("/");
         }

@@ -142,8 +142,14 @@ try
     builder.Services.AddScoped<UserItemsService>();
     builder.Services.AddScoped<LotteryService>();//注入抽奖服务
     builder.Services.AddScoped<SearchByCodeService>();//注入防伪溯源服务
-    builder.Services.AddScoped<ScanByRedPacketService>();//注入红包服务
+
     builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+    //注入红包服务
+    builder.Services.AddScoped<ScanByRedPacketService>();
+    builder.Services.AddScoped<QrCodeRedPacketDistributor>();
+    builder.Services.AddScoped<CaptchaRedPacketDistributor>();
+    builder.Services.AddScoped<RedPacketStatusService>();
 
     builder.Services.AddCors(options =>
     {

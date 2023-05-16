@@ -1,7 +1,7 @@
 ﻿@page "/redpacked"
 
 @inherits ComponentBase
-@inject ILogger<RedPacked> _logger
+@inject ILogger<RedPacked> Logger
 <style>
     body {
         background-image: linear-gradient(rgb(109, 187, 255) 2%,rgba(109, 187, 255,0.3) 10%, rgba(0, 0, 254, 0.450)),url('imgs/hongbaobeijing.png'),url('imgs/logo2.png'), url('imgs/bottom_image.png') !important
@@ -133,7 +133,7 @@
     private bool _isProcessing = false;
 
 
-    DialogOptions options = new DialogOptions
+    DialogOptions _options = new DialogOptions
     {
         CloseButton = true, 
         MaxWidth = MaxWidth.Large,
@@ -157,7 +157,7 @@
     //二维码领取领取红包
     private async Task GetRedPacketAsync()
     {
-        if (string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QRCode))
+        if (string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QrCode))
         {
             return;
         }
@@ -187,7 +187,7 @@
 #endif
            
 
-            var redpacketresult = await GetRedPacketResultQRCodeAsync(Container.OpenId, Container.QRCode);
+            var redpacketresult = await GetRedPacketResultQrCodeAsync(Container.OpenId, Container.QrCode);
             if (redpacketresult.IsSuccess)
             {
 
@@ -238,11 +238,11 @@
             CloseOnEscapeKey = true,
             NoHeader = true,
         };
-        if (string.IsNullOrWhiteSpace(Captcha)||string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QRCode))
+        if (string.IsNullOrWhiteSpace(Captcha)||string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QrCode))
         {
 #if DEBUG
             var parameters = new DialogParameters();
-            parameters.Add("Msg", $"Captcha:{Captcha}  OpenId:{Container.OpenId}  QRCode:{Container.QRCode}");
+            parameters.Add("Msg", $"Captcha:{Captcha}  OpenId:{Container.OpenId}  QRCode:{Container.QrCode}");
             await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
 #endif
           
@@ -260,7 +260,7 @@
         {
             
 
-            var redpacketresult = await GetRedPacketResultCaptchaAsync(Container.OpenId, Container.QRCode,Captcha);
+            var redpacketresult = await GetRedPacketResultCaptchaAsync(Container.OpenId, Container.QrCode,Captcha);
             if (redpacketresult.IsSuccess)
             {
                 
@@ -305,7 +305,7 @@
     /// <param name="openid"></param>
     /// <param name="qrcode"></param>
     /// <returns></returns>
-    private async Task<RedPacketResult> GetRedPacketResultQRCodeAsync(string openid, string qrcode)
+    private async Task<RedPacketResult> GetRedPacketResultQrCodeAsync(string openid, string qrcode)
     {
         try
         {
@@ -326,7 +326,7 @@
                 return RedPacketResult.Fail(redpacketresult.Message);
                 //return new RedPacketResult() { Message = redpacketresult.Message };
             }
-            _logger.LogError($"二维码领取现金红包失败：{response.StatusCode}");
+            Logger.LogError($"二维码领取现金红包失败：{response.StatusCode}");
             return RedPacketResult.Fail(response.StatusCode.ToString());
 
         }
@@ -335,7 +335,7 @@
             DialogParameters parameters = new();
             parameters.Add("Msg", $"二维码领取现金红包异常：{e.Message}");
             await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters);
-            _logger.LogError($"二维码领取现金红包异常：{e.Message}");
+            Logger.LogError($"二维码领取现金红包异常：{e.Message}");
 
             return RedPacketResult.Fail(e.Message);
         }
@@ -370,7 +370,7 @@
                 return RedPacketResult.Fail(redpacketresult.Message);
     //return new RedPacketResult() { Message = redpacketresult.Message };
             }
-            _logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
+            Logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
             return RedPacketResult.Fail(response.StatusCode.ToString());
 
         }
@@ -378,8 +378,8 @@
         {
             DialogParameters parameters = new();
             parameters.Add("Msg", $"验证码领取红包异常：{e.Message}");
-            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters,options);
-            _logger.LogError($"验证码领取现金红包异常：{e.Message}");
+            await _dialogService.ShowAsync<DeBugDialog>("DeBugDialog", parameters,_options);
+            Logger.LogError($"验证码领取现金红包异常：{e.Message}");
 
             return RedPacketResult.Fail(e.Message);
         }
@@ -405,6 +405,6 @@
         var parameters = new DialogParameters();
         parameters.Add("Result", new RedPacketResult() { IsSuccess = true, TotalAmount = actualResult });
         parameters.Add("Message", "红包被领取完毕！");
-        await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情", parameters, options);
+        await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情", parameters, _options);
     }
 }

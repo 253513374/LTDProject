@@ -10,7 +10,7 @@
 </style>
 
 
-<MudForm Model="@UserAddress" @ref="form" Style="Width: 100%">
+<MudForm Model="@_userAddress" @ref="_form" Style="Width: 100%">
     
     <MudStack Class="my-5 mt-3" Justify="Justify.Center" AlignItems="AlignItems.Center">
         <MudText Typo="Typo.h5">请填写收货地址</MudText>
@@ -22,35 +22,35 @@
 
 
         <MudListSubheader DisableGutters="true">个人信息</MudListSubheader>
-        <MudTextField @bind-Value="UserAddress.UserName" ErrorText="必须填写" Required="true" T="string" Label="姓名" Variant="Variant.Outlined" FullWidth="true" />
-        <MudTextField @bind-Value="UserAddress.PhoneNumber" ErrorText="必须填写" Required="true" T="string" Label="手机号码" Variant="Variant.Outlined" FullWidth="true" />
+        <MudTextField @bind-Value="_userAddress.UserName" ErrorText="必须填写" Required="true" T="string" Label="姓名" Variant="Variant.Outlined" FullWidth="true" />
+        <MudTextField @bind-Value="_userAddress.PhoneNumber" ErrorText="必须填写" Required="true" T="string" Label="手机号码" Variant="Variant.Outlined" FullWidth="true" />
 
 
 
         <MudListSubheader DisableGutters="true" Class="mt-5">地址</MudListSubheader>
 
         <MudAutocomplete T="Provinec" Label="省份" Required="true" RequiredError="必填"  ValueChanged="OnProvinecChanged" Variant="Variant.Outlined"
-                         SearchFunc="@SearchAsync" Immediate="true" CoerceValue="@coerceValue" ResetValueOnEmptyText="true"
+                         SearchFunc="@SearchAsync" Immediate="true" CoerceValue="@_coerceValue" ResetValueOnEmptyText="true"
                          CloseIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Tertiary" FullWidth="true"
                          Validation="@(new Func<string, IEnumerable<string>>(Validate))" MaxItems="null"
-                         ToStringFunc="@(e => e == null ? null : $"{e.name}")"/>
+                         ToStringFunc="@(e => e == null ? null : $"{e.Name}")"/>
 
 
 
         <MudAutocomplete T="City" Label="城市" Required="true" RequiredError="必填" ValueChanged="OnCityChanged" Variant="Variant.Outlined"
-                         SearchFunc="@SearchCityAsync" Immediate="true" CoerceValue="@coerceValue" ResetValueOnEmptyText="true"
+                         SearchFunc="@SearchCityAsync" Immediate="true" CoerceValue="@_coerceValue" ResetValueOnEmptyText="true"
                          CloseIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Tertiary" FullWidth="true"
                          Validation="@(new Func<string, IEnumerable<string>>(Validate))" MaxItems="null"
-                         ToStringFunc="@(e => e == null ? null : $"{e.name}")"/>
+                         ToStringFunc="@(e => e == null ? null : $"{e.Name}")"/>
 
 
         <MudAutocomplete T="Area" Label="区县" Required="true" RequiredError="必填" ValueChanged="OnAreaChanged" Variant="Variant.Outlined"
-                         SearchFunc="@SearchAreaAsync" Immediate="true" CoerceValue="@coerceValue" ResetValueOnEmptyText="true"
+                         SearchFunc="@SearchAreaAsync" Immediate="true" CoerceValue="@_coerceValue" ResetValueOnEmptyText="true"
                          CloseIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Tertiary" FullWidth="true"
                          Validation="@(new Func<string, IEnumerable<string>>(Validate))" MaxItems="null"
-                         ToStringFunc="@(e => e == null ? null : $"{e.name}")"/>
+                         ToStringFunc="@(e => e == null ? null : $"{e.Name}")"/>
 
-        <MudTextField  @bind-Value="UserAddress.Fulladdress" T="string" ErrorText="必须填写" Required="true" RequiredError="必填" Label="详细地址" Variant="Variant.Outlined" Lines="3" FullWidth="true"/>
+        <MudTextField  @bind-Value="_userAddress.Fulladdress" T="string" ErrorText="必须填写" Required="true" RequiredError="必填" Label="详细地址" Variant="Variant.Outlined" Lines="3" FullWidth="true"/>
 
 
         <MudButton FullWidth="true"  Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3 mb-3"
@@ -62,16 +62,16 @@
 @code {
 
 
-    private MudForm form;
-    private bool coerceValue;
+    private MudForm _form;
+    private bool _coerceValue;
 
 
     private Provinec[]? _provinecs;
     private List<City>? _cities = new ();
     private List<Area>? _areas = new ();
 
-    Dictionary<int, List<City>> dictionarycities = new Dictionary<int, List<City>>();
-    Dictionary<int, List<Area>> dictionaryareas = new Dictionary<int, List<Area>>();
+    Dictionary<int, List<City>> _dictionarycities = new Dictionary<int, List<City>>();
+    Dictionary<int, List<Area>> _dictionaryareas = new Dictionary<int, List<Area>>();
 
     [Inject] private DataStateContainer Container { set; get; }
 
@@ -93,18 +93,18 @@
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            dictionarycities = JsonSerializer.Deserialize<Dictionary<int, List<City>>>(jsonString, jsonOptions);
+            _dictionarycities = JsonSerializer.Deserialize<Dictionary<int, List<City>>>(jsonString, jsonOptions);
            
-            _cities = dictionarycities[23];
+            _cities = _dictionarycities[23];
 
 
             var arearesponse = await httpClient.GetAsync("sample-data/area.json");
             var jsonareaString = await arearesponse.Content.ReadAsStringAsync();
 
 
-            dictionaryareas = JsonSerializer.Deserialize<Dictionary<int, List<Area>>>(jsonareaString, jsonOptions);
+            _dictionaryareas = JsonSerializer.Deserialize<Dictionary<int, List<Area>>>(jsonareaString, jsonOptions);
 
-            _areas = dictionaryareas[2121];
+            _areas = _dictionaryareas[2121];
            // _areas = await httpClient.GetFromJsonAsync<Area[]>("sample-data/area.json");
         }
        // return base.OnAfterRenderAsync(firstRender);
@@ -122,8 +122,8 @@
             return;
         }
 
-        UserAddress.Provinec = provinec;
-        if (dictionarycities.TryGetValue(provinec.id, out _cities))
+        _userAddress.Provinec = provinec;
+        if (_dictionarycities.TryGetValue(provinec.Id, out _cities))
         {
     // 使用 cities 列表执行其他操作
         }
@@ -140,9 +140,9 @@
         {
             return;
         }
-        UserAddress.City = city;
+        _userAddress.City = city;
         //_areas.Clear();
-        if (dictionaryareas.TryGetValue(city.id, out _areas))
+        if (_dictionaryareas.TryGetValue(city.Id, out _areas))
         {
     // 使用 cities 列表执行其他操作
         }
@@ -160,7 +160,7 @@
             return;
         }
 
-        UserAddress.Area = area;
+        _userAddress.Area = area;
         StateHasChanged();
     }
 
@@ -180,14 +180,14 @@
 
         public bool IsDefault { get; set; } // 是否默认地址
     }
-    private Address UserAddress = new Address();
+    private Address _userAddress = new Address();
 
     private async Task<IEnumerable<Provinec>> SearchAsync(string searchText)
     {
         if (string.IsNullOrWhiteSpace(searchText))
             return _provinecs.ToList();
         await Task.Delay(500);
-        return _provinecs.Where(x => x.name.Contains(searchText)).ToList();
+        return _provinecs.Where(x => x.Name.Contains(searchText)).ToList();
     }
     
     private async Task<IEnumerable<City>> SearchCityAsync(string arg)
@@ -195,7 +195,7 @@
         if (string.IsNullOrWhiteSpace(arg))
             return _cities.ToList();
         await Task.Delay(100);
-        return _cities.Where(x => x.name.Contains(arg)).ToList();
+        return _cities.Where(x => x.Name.Contains(arg)).ToList();
     }
 
     private async Task<IEnumerable<Area>> SearchAreaAsync(string arg)
@@ -203,7 +203,7 @@
         if (string.IsNullOrWhiteSpace(arg))
             return _areas.ToList();
         await Task.Delay(100);
-        return _areas.Where(x => x.name.Contains(arg)).ToList();
+        return _areas.Where(x => x.Name.Contains(arg)).ToList();
     }
 
 
@@ -211,7 +211,7 @@
     {
         if (string.IsNullOrWhiteSpace(value))
             return new[] { "必填" };
-        if (_provinecs.All(x => x.name != value))
+        if (_provinecs.All(x => x.Name != value))
             return new[] { "无效" };
         return Enumerable.Empty<string>();
     }
@@ -220,18 +220,18 @@
     private async Task Submit()
     {
 
-        await form.Validate();
+        await _form.Validate();
 
-        if (form.IsTouched && form.IsValid)
+        if (_form.IsTouched && _form.IsValid)
         {
             var userAwardInfo = UserAwardInfo.Create();
 
-            userAwardInfo.UserName = UserAddress.UserName;
-            userAwardInfo.PhoneNumber = UserAddress.PhoneNumber;
-            userAwardInfo.ProvinceOrState = UserAddress.Provinec.name;
-            userAwardInfo.City = UserAddress.City.name;
-            userAwardInfo.Area = UserAddress.Area.name;
-            userAwardInfo.FullAddress = UserAddress.Fulladdress;
+            userAwardInfo.UserName = _userAddress.UserName;
+            userAwardInfo.PhoneNumber = _userAddress.PhoneNumber;
+            userAwardInfo.ProvinceOrState = _userAddress.Provinec.Name;
+            userAwardInfo.City = _userAddress.City.Name;
+            userAwardInfo.Area = _userAddress.Area.Name;
+            userAwardInfo.FullAddress = _userAddress.Fulladdress;
 
             userAwardInfo.AwardName = Container.LotteryResult.PrizeName;
             userAwardInfo.AwardDescription = Container.LotteryResult.PrizeDescription;
@@ -241,7 +241,7 @@
             userAwardInfo.WeChatOpenId = Container.OpenId;
             userAwardInfo.ActivityNumber = Container.Activity.ActivityNumber;
             userAwardInfo.ActivityName = Container.Activity.Name;
-            userAwardInfo.QrCode = Container.QRCode;
+            userAwardInfo.QrCode = Container.QrCode;
 
             //通过接口发送数据到后端
 
@@ -266,7 +266,7 @@
                var result = await resultdialog.Result;
                 if (!result.Canceled)
                 {
-                    _navigationManager.NavigateTo($"/{Container.QRCode}");
+                    _navigationManager.NavigateTo($"/{Container.QrCode}");
                 }
     
     //  return await response.Content.ReadFromJsonAsync<UserAwardInfo>();

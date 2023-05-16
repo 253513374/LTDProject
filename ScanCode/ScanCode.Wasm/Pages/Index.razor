@@ -7,7 +7,7 @@
 @inherits ComponentBase
 
 @inject IJSRuntime JsRuntime
-@inject ILogger<Index> _logger
+@inject ILogger<Index> Logger
 
 <style>
     .but_5 {
@@ -42,7 +42,7 @@
 }
 
 
-<MudCard Class="mt-5"  Elevation="0" Style="border-radius: 25px">
+<MudCard Class="mt-5"  Elevation="0" Style="border-radius: 25px;opacity: 0.8">
     <div Class="Cardimage-container">
         <img class="Cardimage-centered-image" src="imgs/fangwei.png" />
         </div>
@@ -50,17 +50,17 @@
             <MudStack Spacing="2" Style="background-color: transparent;">
                 <MudText  Align="Align.Center" Class="but_5" Typo="Typo.body2">尊敬的用户：</MudText>
             <MudText Typo="Typo.h6" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">        您所查询的防伪标签照片如下图所示，<span style="color:#0087fe">请随机抽查标签上的3-5粒亮片，观察其形状、位置、颜色是否与标签上的亮片相符</span>，若相符，则是真品；否则，谨防假冒。（请注意彩色亮片可挑出）!</MudText>
-            @if (Container.antiFakeResult is not null)
+            @if (Container.AntiFakeResult is not null)
                 {
                     <div style="max-width: 85%; margin: 2px auto; text-align: center">
-                        <img style="Width: 100%; height: auto; padding: 4px" src="@Container.antiFakeResult.ImgUrl" Alt="图片加载失败..." class="rounded-lg" />
+                        <img style="Width: 100%; height: auto; padding: 4px" src="@Container.AntiFakeResult.ImgUrl" Alt="图片加载失败..." class="rounded-lg" />
                     </div>
 
                     <MudStack Class="my-5 mx-0" Spacing="1">
-                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">产品信息：@Container.antiFakeResult.LabelNum</MudText>
-                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">首次查询:@Container.antiFakeResult.FirstQueryTime</MudText>
-                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">商品名称:@Container.antiFakeResult.ProductName</MudText>
-                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">纤维特征: @Container.antiFakeResult.FibreColor</MudText>
+                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">产品信息：@Container.AntiFakeResult.LabelNum</MudText>
+                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">首次查询:@Container.AntiFakeResult.FirstQueryTime</MudText>
+                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">商品名称:@Container.AntiFakeResult.ProductName</MudText>
+                        <MudText Align="Align.Left" Style="word-wrap: break-word; white-space: pre-wrap; font-size: 1rem">纤维特征: @Container.AntiFakeResult.FibreColor</MudText>
                     </MudStack>
                 }
                 else
@@ -76,13 +76,13 @@
 
 
             <MudText Align="Align.Center" Class="but_5 mt-16" Typo="Typo.body2"> 溯源信息 </MudText>
-        @if (Container.traceabilityResult is not null)
+        @if (Container.TraceabilityResult is not null)
             {
                 <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelineAlign="TimelineAlign.Start"
                          TimelinePosition="TimelinePosition.Left">
                     <MudStack Justify="Justify.FlexStart" Class="ml-3" >
 
-                        @if (string.IsNullOrEmpty(Container.traceabilityResult.OrderNumbels))
+                        @if (string.IsNullOrEmpty(Container.TraceabilityResult.OrderNumbels))
                         {
                             <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small" Style="Width: 100%;">
                                 <ItemContent>
@@ -96,7 +96,7 @@
                         {
                         <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small" Style="Width: 100%;">
                             <ItemContent>
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OrderNumbels</MudText>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.TraceabilityResult.OrderNumbels</MudText>
                                 @* <MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库单号:</MudText>
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OrderNumbels</MudText>
@@ -105,7 +105,7 @@
                             </MudTimelineItem>
                         <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small">
                             <ItemContent>
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OutTime</MudText>
+                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.TraceabilityResult.OutTime</MudText>
                                 @*<MudStack Row="true" Spacing="1" Justify="Justify.FlexStart" Style="Width: 100%">
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">出库时间:</MudText>
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.OutTime</MudText>
@@ -114,7 +114,7 @@
                             </MudTimelineItem>
                         <MudTimelineItem Color="Color.Info" Variant="Variant.Filled" Size="Size.Small">
                             <ItemContent>
-                                <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.AgentName</MudText>
+                                  <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.TraceabilityResult.AgentName</MudText>
                                 @*<MudStack Row="true" Spacing="1" Justify="Justify.FlexStart">
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word; width: 100px;">供应代理:</MudText>
                                         <MudText Typo="Typo.button" Align="Align.Left" Style="word-wrap: break-word;">@Container.traceabilityResult.AgentName</MudText>
@@ -276,7 +276,7 @@
     //private AntiFakeResult antiFakeResult;
     //private TraceabilityResult traceabilityResult;
 
-    private string captcha;
+    private string _captcha;
 
     /// <summary>
     /// 抽奖结果
@@ -291,7 +291,7 @@
     /// <summary>
     /// 当前用户与标签的领取红包的状态
     /// </summary>
-    private RedStatusResult redStatusResult;
+    private RedStatusResult _redStatusResult;
 
     /// <summary>
     /// 领取红包的结果
@@ -300,7 +300,7 @@
 
 
 
-    DialogParameters parameters = new ();
+    DialogParameters _parameters = new ();
     //JsonSerializerOptions options = new JsonSerializerOptions
     //{
     //    PropertyNameCaseInsensitive = true
@@ -310,61 +310,34 @@
     protected override async Task OnParametersSetAsync()
     {
 
-        if (!string.IsNullOrEmpty(QRCode))
+        if (!string.IsNullOrWhiteSpace(Container.QrCode))
         {
-            Container.QRCode = QRCode;
+            return;
         }
         #if DEBUG
+    Id = Id ?? "236809603213";// "236810001499";
+        QRCode = Id;
 
-    Id = Id ?? "143887488819";// "236810001499";
-            QRCode = Id;
-
-            if (string.IsNullOrWhiteSpace(Container.QRCode) )
+            if (string.IsNullOrWhiteSpace(Container.QrCode) )
             {
-                Container.QRCode = QRCode;
+            Container.QrCode = QRCode;
             }
             if (string.IsNullOrWhiteSpace(Container.OpenId))
             {
                 Container.OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
             }
         #endif
-        
-
-
-    }
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
+        Container.QrCode = QRCode;
+        if (!string.IsNullOrWhiteSpace(Container.QrCode))
         {
-            if (!string.IsNullOrEmpty(Container.QRCode))
-            {
+            await PreloadDataAsync(Container.QrCode);
 
-                if (!string.IsNullOrWhiteSpace(Code))
-                {
-                    OpenId = await GetWeixinUserOpenID(Code);
-                    Code = "";
-                }
-                
-
-#if DEBUG
-                OpenId = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
-#endif
-
-
-                //_=Task.Run(() =>
-                //{
-                    await LoadDataTaskAsync(QRCode);
-                //});
-               
-
-
-                StateHasChanged();
-            }
         }
     }
 
-    private async Task<string> GetWeixinUserOpenID(string code)
+
+
+    private async Task<string> GetWeixinUserOpenId(string code)
     {
 
         try
@@ -377,7 +350,7 @@
         }
         catch (Exception e)
         {
-            _logger.LogError($"微信获取openid异常：{e.Message}");
+            Logger.LogError($"微信获取openid异常：{e.Message}");
             throw;
         }
 
@@ -387,29 +360,29 @@
     ///懒加载数据
     private async Task LoadDataTaskAsync(string qrkey)
     {
-        if (Container.antiFakeResult is null)
+        if (Container.AntiFakeResult is null)
         {
-            Container.antiFakeResult = await GetAntiFakeResultAsync(qrkey);
+            Container.AntiFakeResult = await GetAntiFakeResultAsync(qrkey);
         }
-        if (Container.traceabilityResult is null)
+        if (Container.TraceabilityResult is null)
         {
-            Container.traceabilityResult = await GetTraceabilityResultAsync(qrkey);
+            Container.TraceabilityResult = await GetTraceabilityResultAsync(qrkey);
         }
 
 #if DEBUG
         Container.UserStatus = RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
 #endif
-        if (!string.IsNullOrWhiteSpace(OpenId) && Container.traceabilityResult.Status)
+        if (!string.IsNullOrWhiteSpace(OpenId) && Container.TraceabilityResult.Status)
         {
-            redStatusResult = await GetRedStatusResultAsync(OpenId, qrkey, Container.traceabilityResult.OrderNumbels);
+            _redStatusResult = await GetRedStatusResultAsync(OpenId, qrkey, Container.TraceabilityResult.OrderNumbels);
 
-            Container.UserStatus = redStatusResult;
+            Container.UserStatus = _redStatusResult;
         }
 
         var lotteryActivity    = await GetLotteryActivityAsync();
-        if (string.IsNullOrWhiteSpace(Container.QRCode) )
+        if (string.IsNullOrWhiteSpace(Container.QrCode) )
         {
-            Container.QRCode = qrkey;
+            Container.QrCode = qrkey;
         }
         if (string.IsNullOrWhiteSpace(Container.OpenId))
         {
@@ -434,11 +407,11 @@
                 return new AntiFakeResult();
             }
 
-            _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
+            Logger.LogError($"查询防伪信息失败：{response.StatusCode}");
         }
         catch (Exception e)
         {
-            _logger.LogError($"查询防伪信息异常：{e.Message}");
+            Logger.LogError($"查询防伪信息异常：{e.Message}");
         }
 
         return new AntiFakeResult();
@@ -463,11 +436,11 @@
                     return new TraceabilityResult();
                 }
             }
-            _logger.LogError($"查询防伪信息失败：{response.StatusCode}");
+            Logger.LogError($"查询防伪信息失败：{response.StatusCode}");
         }
         catch (Exception e)
         {
-            _logger.LogError($"查询溯源信息异常：{e.Message}");
+            Logger.LogError($"查询溯源信息异常：{e.Message}");
         }
         return new TraceabilityResult();
     }
@@ -485,12 +458,12 @@
                 return redstatusresult.Data;
             }
            
-            _logger.LogError($"查询领取现金红包信息失败：{response.StatusCode}");
+            Logger.LogError($"查询领取现金红包信息失败：{response.StatusCode}");
             return RedStatusResult.FailNot("");
         }
         catch (Exception e)
         {
-            _logger.LogError($"查询领取现金红包异常：{e.Message}");
+            Logger.LogError($"查询领取现金红包异常：{e.Message}");
             return RedStatusResult.FailNotException(e.Message);
         }
        // return null;
@@ -513,11 +486,11 @@
                 }
                 return new ActivityResult();
             }
-            _logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
+            Logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
         }
         catch (Exception e)
         {
-            _logger.LogError($"获取抽奖活动信息异常：{e.Message}");
+            Logger.LogError($"获取抽奖活动信息异常：{e.Message}");
         }
         return null;
     }
@@ -565,4 +538,60 @@
     {
         _navigationManager.NavigateTo("/lottery");
     }
+
+
+    private async Task PreloadDataAsync(string qrkey)
+    {
+        await LoadContainerDataAsync(qrkey);
+
+#if DEBUG
+        Container.UserStatus = RedStatusResult.SuccessCaptcha("扫码输入验证码参与扫码领现金红包活动");
+#endif
+
+        if (IsValidOpenIdAndTraceabilityResult())
+        {
+            _redStatusResult = await GetRedStatusResultAsync(Container.OpenId, qrkey, Container.TraceabilityResult.OrderNumbels);
+            Container.UserStatus = _redStatusResult;
+        }
+
+        await LoadActivityAndKeys(qrkey);
+    }
+
+    private async Task LoadContainerDataAsync(string qrkey)
+    {
+        if (string.IsNullOrWhiteSpace(Container.OpenId))
+        {
+            Container.OpenId = await GetWeixinUserOpenId(Code);
+            Code = "";
+        }
+        var antiFakeResultTask = Container.AntiFakeResult is null ? GetAntiFakeResultAsync(qrkey) : Task.FromResult(Container.AntiFakeResult);
+        var traceabilityResultTask = Container.TraceabilityResult is null ? GetTraceabilityResultAsync(qrkey) : Task.FromResult(Container.TraceabilityResult);
+
+        await Task.WhenAll(antiFakeResultTask, traceabilityResultTask);
+
+        Container.AntiFakeResult = await antiFakeResultTask;
+        Container.TraceabilityResult = await traceabilityResultTask;
+    }
+
+    private bool IsValidOpenIdAndTraceabilityResult()
+    {
+        return !string.IsNullOrWhiteSpace(Container.OpenId) && Container.TraceabilityResult.Status;
+    }
+
+    private async Task LoadActivityAndKeys(string qrkey)
+    {
+        var lotteryActivity = await GetLotteryActivityAsync();
+        await Container.SetActivity(lotteryActivity);
+
+        if (string.IsNullOrWhiteSpace(Container.QrCode))
+        {
+            Container.QrCode = qrkey;
+        }
+
+        if (string.IsNullOrWhiteSpace(Container.OpenId))
+        {
+            Container.OpenId = OpenId;
+        }
+    }
+
 }

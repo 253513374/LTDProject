@@ -107,8 +107,9 @@ namespace ScanCode.Mvc.Controllers.APIController
         /// <param name="qrcode">标签序号</param>
         /// <returns></returns>
         [HttpGet("RedPackStatus")]
-        public async Task<ApiResponse<RedStatusResult>> Get(string openid = "", string qrcode = "", string ordernumbels = "")
+        public async Task<ApiResponse<RedStatusResult>> Get(string openid, string qrcode, string ordernumbels)
         {
+            _logger.LogInformation($"查询红包状态 openid:{openid},qrcode:{qrcode},ordernumbels:{ordernumbels}");
 #if DEBUG
             openid = "oz0TXwTew5RmbnTa2aeMPfHfsDnY";
             qrcode = "236809603213";

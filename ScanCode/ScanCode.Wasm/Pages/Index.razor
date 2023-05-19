@@ -145,10 +145,6 @@
     <MudText>@QRCode</MudText>
     <MudText>@Code</MudText>
 
-    <MudText>@(Container.TraceabilityResult == null ? "没有查询溯源" : Container.TraceabilityResult.OrderNumbels)</MudText>
-
-
-    <MudText>@(Container.AntiFakeResult == null ? "没有查询防伪" : Container.AntiFakeResult.CorpName)</MudText>
 
 </MudStack>*@
 
@@ -315,9 +311,9 @@
 
         loaddatataskasync = "loaddatataskasync"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-        if (!string.IsNullOrEmpty(OpenId) && Container.TraceabilityResult.Status)
+        if (!string.IsNullOrEmpty(Container.OpenId) && Container.TraceabilityResult.Status)
         {
-            _redStatusResult = await GetRedStatusResultAsync(OpenId, qrkey, Container.TraceabilityResult.OrderNumbels);
+            _redStatusResult = await GetRedStatusResultAsync(Container.OpenId, qrkey, Container.TraceabilityResult.OrderNumbels);
 
             Container.UserStatus = _redStatusResult;
         }
@@ -325,8 +321,8 @@
         //var lotteryActivity = await GetLotteryActivityAsync();
         //await Container.SetActivity(lotteryActivity);
 
-        Container.QrCode ??= qrkey;
-        Container.OpenId ??= OpenId;
+       // Container.QrCode ??= qrkey;
+        //Container.OpenId ??= OpenId;
 
       
     }

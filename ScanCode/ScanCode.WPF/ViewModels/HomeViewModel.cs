@@ -22,23 +22,23 @@ namespace ScanCode.WPF.ViewModels
 {
     public partial class HomeViewModel : ObservableObject
     {
-        public ObservableCollection<GroupOrdersDTO> GroupOrdersDTOs { get; set; }
+        public ObservableCollection<GroupOrdersDto> GroupOrdersDtOs { get; set; }
 
-        [ObservableProperty] private string? querykeywords = "";
+        [ObservableProperty] private string? _querykeywords = "";
 
-        [ObservableProperty] private int? collectionCount;
-        [ObservableProperty] private string? loadDataTime;
+        [ObservableProperty] private int? _collectionCount;
+        [ObservableProperty] private string? _loadDataTime;
 
-        private HubClientService hubService;
-        private IMapper Mapper;
+        private HubClientService _hubService;
+        private IMapper _mapper;
 
         public HomeViewModel()
         {
-            GroupOrdersDTOs = new ObservableCollection<GroupOrdersDTO>();
-            GroupOrdersDTOs.CollectionChanged += GroupOrdersDTOs_CollectionChanged;
+            GroupOrdersDtOs = new ObservableCollection<GroupOrdersDto>();
+            GroupOrdersDtOs.CollectionChanged += GroupOrdersDTOs_CollectionChanged;
 
-            hubService = App.GetService<HubClientService>();
-            Mapper = App.GetService<IMapper>();
+            _hubService = App.GetService<HubClientService>();
+            _mapper = App.GetService<IMapper>();
             _ = Search();
         }
 
@@ -63,25 +63,25 @@ namespace ScanCode.WPF.ViewModels
                 if (string.IsNullOrWhiteSpace(Querykeywords))
                 {
                     // 使用ConfigureAwait(false)可以提高性能
-                    resultBdxOrder = await hubService.GetGroupedBdxOrdersAsync().ConfigureAwait(false);
+                    resultBdxOrder = await _hubService.GetGroupedBdxOrdersAsync().ConfigureAwait(false);
                 }
                 else
                 {
                     // 使用ConfigureAwait(false)可以提高性能，注意：由于ConfigureAwait(false)的使用，代码可能在非UI线程上运行，
-                    resultBdxOrder = await hubService.GetGroupedBdxOrdersAsync(Querykeywords).ConfigureAwait(false);
+                    resultBdxOrder = await _hubService.GetGroupedBdxOrdersAsync(Querykeywords).ConfigureAwait(false);
                 }
                 // 检查result是否为空，如果是，则创建一个新的List
                 resultBdxOrder = resultBdxOrder ?? new List<GroupedBdxOrder>();
                 // 如果Mapper.Map出错，使用try/catch捕获异常
-                ObservableCollection<GroupOrdersDTO> mappedResult;
+                ObservableCollection<GroupOrdersDto> mappedResult;
                 try
                 {
-                    mappedResult = Mapper.Map<ObservableCollection<GroupOrdersDTO>>(resultBdxOrder);
+                    mappedResult = _mapper.Map<ObservableCollection<GroupOrdersDto>>(resultBdxOrder);
                 }
                 catch (Exception ex)
                 {
                     // 处理映射异常的代码
-                    mappedResult = new ObservableCollection<GroupOrdersDTO>();
+                    mappedResult = new ObservableCollection<GroupOrdersDto>();
 
                     Debug.WriteLine(ex.Message);
                     //throw;
@@ -93,10 +93,10 @@ namespace ScanCode.WPF.ViewModels
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     // 在添加新元素之前清空集合
-                    GroupOrdersDTOs.Clear();
-                    foreach (var groupOrder in mappedResult.OrderByDescending(O => O.Ddrq))
+                    GroupOrdersDtOs.Clear();
+                    foreach (var groupOrder in mappedResult.OrderByDescending(o => o.Ddrq))
                     {
-                        GroupOrdersDTOs.Add(groupOrder);
+                        GroupOrdersDtOs.Add(groupOrder);
                     }
                 });
             }
@@ -116,13 +116,13 @@ namespace ScanCode.WPF.ViewModels
                 return;
             }
             var outOrder = App.GetService<OutOrderService>();
-            outOrder.OrdersDto = selectedItem as GroupOrdersDTO;
+            outOrder.OrdersDto = selectedItem as GroupOrdersDto;
 
             /*此代码段创建了一个新的任务来执行异步操作，并没有等待该任务完成。
              Task.Run方法会在另一个线程上运行操作，并立即返回一个任务，而_ =表示忽略这个返回的任务。*/
             _ = Task.Run(async () =>
             {
-                await hubService.AddAgent(new AddAgent()
+                await _hubService.AddAgent(new AddAgent()
                 {
                     AID = outOrder?.OrdersDto?.Ddno,
                     AName = outOrder?.OrdersDto?.Kh,
@@ -132,7 +132,7 @@ namespace ScanCode.WPF.ViewModels
             });
             // 在这里处理按钮点击事件逻辑，并使用传递的选中项数据
 
-            var scanCodeOutWindow = App.GetService<ScanCodeOutWindow>();
+            ScanCodeOutWindow scanCodeOutWindow = App.GetService<ScanCodeOutWindow>();
             scanCodeOutWindow.Owner = App.GetService<HomeWindow>();
             scanCodeOutWindow.ShowDialog();
         }

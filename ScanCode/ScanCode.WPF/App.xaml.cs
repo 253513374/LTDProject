@@ -90,6 +90,8 @@ namespace ScanCode.WPF
             services.AddTransient<ScanCodeReturnWindow>();
             services.AddTransient<ScanCodeReturnViewModel>();
 
+            services.AddTransient<DialogWindow>();
+            services.AddTransient<DialogViewModel>();
             // 注册服务
 
             services.AddSingleton<OutOrderService>();
@@ -99,7 +101,7 @@ namespace ScanCode.WPF
             //services.AddSingleton<IClipboardService, ClipboardService>();
             //services.AddSingleton<IShareService, ShareService>();
             //services.AddSingleton<IEmailService, EmailService>();
-
+            services.AddSingleton<ObjectFileStorage>();
             //services.Add();
 
             services.AddAutoMapper(typeof(OrganizationProfile));

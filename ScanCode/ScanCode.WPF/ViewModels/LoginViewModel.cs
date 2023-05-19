@@ -19,23 +19,23 @@ public partial class LoginViewModel : ObservableObject
     /// </summary>
     public event EventHandler EventLoggedIn;
 
-    private readonly HubClientService hubService;
+    private readonly HubClientService _hubService;
 
     private bool _hasExecuted;
 
     public LoginViewModel(HubClientService hubservice)
     {
-        hubService = hubservice; //App.GetService<HubClientService>();
+        _hubService = hubservice; //App.GetService<HubClientService>();
     }
 
     [ObservableProperty]
     private SecureString _securePassword;
 
     [ObservableProperty]
-    private string? username = "011";
+    private string? _username = "011";
 
     [ObservableProperty]
-    private string errorinfo = "";
+    private string _errorinfo = "";
 
     // [ObservableProperty]
     // private string? password;
@@ -58,13 +58,13 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(HasExecuted))]
     protected async Task LoggedIn()
     {
-        if (string.IsNullOrWhiteSpace(username) || _securePassword is null)
+        if (string.IsNullOrWhiteSpace(_username) || _securePassword is null)
         {
             return;
         }
         string password = ConvertSecureStringToString(_securePassword);
         //  string psw = PasswordHelper.SecureStringToString(SecurePassword);
-        var loginResult = await hubService.UserLoging(new LoginData() { Username = username, Password = password }, true);
+        var loginResult = await _hubService.UserLoging(new LoginData() { Username = _username, Password = password }, true);
         if (loginResult.Successed)
         {
             EventLoggedIn?.Invoke(this, EventArgs.Empty);

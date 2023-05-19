@@ -9,6 +9,7 @@ using ScanCode.RedisCache;
 using ScanCode.Repository;
 using ScanCode.Share;
 using ScanCode.Share.SignalR;
+using Senparc.Weixin.TenPay.V2;
 
 namespace ScanCode.Web.Admin.SignalRHub
 {
@@ -174,6 +175,34 @@ namespace ScanCode.Web.Admin.SignalRHub
             var list = await _storageRepository.GetOrderCountByDDNOAsync(ddno);
             // await Clients.All.SendAsync(HubClientMethods., list);
             return list;
+        }
+
+        /// <summary>
+        /// 返回二维码详细出库信息
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        public async Task<TraceabilityResult?> SendGetWLabelStorageAsync(string qrcode)
+        {
+            var lisQRCode = await _storageRepository.GetWLabelStorageAsync(qrcode);
+
+            if (lisQRCode is null)
+            {
+                _logger.LogWarning($"查询二维码{qrcode}，返回null");
+                return null;
+            }
+            var outqrcode = await _agentRepository.FindSingleAgentAsync(lisQRCode.OrderNumbels.Trim()).ConfigureAwait(false);
+
+            return new TraceabilityResult
+            {
+                Status = true,
+                AgentName = outqrcode.AName,
+                OrderNumbels = lisQRCode.OrderNumbels,
+                OutTime = lisQRCode.OutTime,
+                QRCode = lisQRCode.QRCode
+            };
+            // await Clients.All.SendAsync(HubClientMethods., list);
+            // return lisQRCode;
         }
 
         /// <summary>

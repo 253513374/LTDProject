@@ -22,10 +22,10 @@ namespace ScanCode.WPF.View
     /// </summary>
     public partial class ScanCodeOutWindow : Window
     {
-        public ScanCodeOutWindow()
+        public ScanCodeOutWindow(ScanCodeOutViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext = App.GetService<ScanCodeOutViewModel>();
+            this.DataContext = viewModel; //App.GetService<ScanCodeOutViewModel>();
         }
 
         private void ScanCodeOutWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

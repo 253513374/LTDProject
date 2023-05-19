@@ -16,26 +16,29 @@ namespace ScanCode.WPF.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        private HubClientService hubService;
-        private IMapper Mapper;
+        private HubClientService _hubService;
+        private IMapper _mapper;
+        private readonly ObjectFileStorage _fileStorage;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(ObjectFileStorage fileStorage)
         {
+            _fileStorage = fileStorage;
+
             //  groupOrdersDTOs = new ObservableCollection<GroupOrdersDTO>();
-            hubService = App.GetService<HubClientService>();
-            Mapper = App.GetService<IMapper>();
+            _hubService = App.GetService<HubClientService>();
+            _mapper = App.GetService<IMapper>();
         }
 
-        public BindingList<GroupOrdersDTO> GroupOrdersDTOs { get; }
+        public BindingList<GroupOrdersDto> GroupOrdersDtOs { get; }
 
         [ObservableProperty]
-        private string? searchString;
+        private string? _searchString;
 
         [RelayCommand]
         public async Task Search()
         {
-            var result = await hubService.GetGroupedBdxOrdersAsync();
-            Mapper.Map(result, GroupOrdersDTOs);
+            var result = await _hubService.GetGroupedBdxOrdersAsync();
+            // Mapper.Map(result, GroupOrdersDTOs);
             // throw new NotImplementedException();
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Senparc.Weixin;
+using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.OAuth;
 
@@ -19,12 +20,22 @@ namespace ScanCode.Controller.Controllers.OAuth
         /// <param name="state">微信授权state</param>
         /// <returns></returns>
         [HttpGet("WXLogin")]
-        public async Task<IActionResult> Get(string code)
+        public IActionResult Get(string code)
         {
             OAuthAccessTokenResult result = null;
             try
             {
                 result = OAuthApi.GetAccessToken(appId, appSecret, code);
+
+                //var token = "yourJwtToken";
+
+                //// 将 token 存储到 cookie 中
+                //Response.Cookies.Append("token", token, new CookieOptions { HttpOnly = true });
+
+                //// 将用户重定向到前端应用
+                //return Redirect("https://www.chn315.top/");
+
+                return Ok(result.openid);
             }
             catch (Exception ex)
             {
@@ -35,7 +46,6 @@ namespace ScanCode.Controller.Controllers.OAuth
                 return Content("错误：" + result.errmsg);
             }
             //Console.WriteLine($"code:{code},state:{state}");
-            return Ok(result.openid);
         }
     }
 }

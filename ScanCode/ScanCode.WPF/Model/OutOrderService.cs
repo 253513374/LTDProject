@@ -8,6 +8,6 @@ namespace ScanCode.WPF.Model
 {
     public class OutOrderService
     {
-        public GroupOrdersDTO? OrdersDto { set; get; }
+        public GroupOrdersDto? OrdersDto { set; get; }
     }
 }

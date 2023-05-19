@@ -136,7 +136,7 @@
                       BorderBrush="#3a4149"
                       VerticalAlignment="Center"
                       ItemTemplate="{StaticResource CustomItemTemplate}"
-                      ItemsSource="{Binding GroupOrdersDTOs}"
+                      ItemsSource="{Binding GroupOrdersDtOs}"
                       ItemContainerStyle="{StaticResource CustomListViewItemStyle}"
                       ItemsPanel="{StaticResource CustomItemsPanelTemplate}"
                       Template="{StaticResource CustomListViewTemplate}"

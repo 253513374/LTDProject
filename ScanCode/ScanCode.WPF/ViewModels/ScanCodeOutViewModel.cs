@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xaml.Behaviors.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,6 +16,9 @@ using ScanCode.WPF.HubServer.Model;
 using ScanCode.WPF.HubServer.ReQuest;
 using ScanCode.WPF.HubServer.Services;
 using ScanCode.WPF.Model;
+using System.Windows.Input;
+using ScanCode.WPF.View;
+using System.Windows;
 
 namespace ScanCode.WPF.ViewModels
 {
@@ -28,39 +32,52 @@ namespace ScanCode.WPF.ViewModels
         /// <summary>
         /// 出库单的详细单品信息  一个出库单有多个单品出库
         /// </summary>
-        public ObservableCollection<W_LabelStorage> ScanOrderOutDetails { set; get; } = new();
+        public ObservableCollection<W_LabelStorage> ScanOrderOutDetails { set; get; }
 
-        private readonly HubClientService? hubService;
-        private readonly OutOrderService? outOrderService;
+        public ObservableCollection<W_LabelStorage> ScanOrderOutDetailsError { set; get; } = new();
 
-        public ScanCodeOutViewModel(HubClientService service, OutOrderService orderService)
+        private readonly HubClientService? _hubService;
+        private readonly OutOrderService? _outOrderService;
+        private readonly ObjectFileStorage? _fileStorage;
+
+        public ScanCodeOutViewModel(HubClientService service, OutOrderService orderService, ObjectFileStorage fileStorage)
         {
-            hubService = service;
-            outOrderService = orderService;
+            _hubService = service;
+            _outOrderService = orderService;
+            _fileStorage = fileStorage;
 
+            ScanOrderOutDetails = new();
             ScanOrderOutDetails.CollectionChanged += ScanOrderOutDetails_CollectionChanged;
-            if (!string.IsNullOrWhiteSpace(outOrderService?.OrdersDto?.Ddno))
+            if (!string.IsNullOrWhiteSpace(_outOrderService?.OrdersDto?.Ddno))
             {
-                _ = GetOrderDetail(outOrderService?.OrdersDto?.Ddno);
+                _ = GetOrderDetail(_outOrderService?.OrdersDto?.Ddno);
             }
+
+            _ = LoadFileData();
         }
 
-        public string? SelectDDNO => outOrderService?.OrdersDto?.Ddno;
+        public string? SelectDdno => _outOrderService?.OrdersDto?.Ddno;
 
-        public string? SelectKH => outOrderService?.OrdersDto?.Kh;
+        public string? SelectKh => _outOrderService?.OrdersDto?.Kh;
 
-        public string? SelectDDRQ => outOrderService?.OrdersDto?.Ddrq;
+        public string? SelectDdrq => _outOrderService?.OrdersDto?.Ddrq;
 
-        public int? SelectTotalsl => outOrderService?.OrdersDto?.Totalsl;
-
-        [ObservableProperty]
-        private string? qrcodeKey;
+        public int? SelectTotalsl => _outOrderService?.OrdersDto?.Totalsl;
 
         [ObservableProperty]
-        private int? actualOutCount;
+        private string? _qrcodeKey;
 
         [ObservableProperty]
-        private string? errorInfo;
+        private int? _actualOutCount;
+
+        [ObservableProperty]
+        private int? _actualOutCountError;
+
+        [ObservableProperty]
+        private string? _errorInfo;
+
+        [ObservableProperty]
+        private string? _foregroundColor;
 
         /// <summary>
         /// 点击按钮扫码发货
@@ -69,6 +86,7 @@ namespace ScanCode.WPF.ViewModels
         [RelayCommand]
         private async Task ExecuteTextBox(string text)
         {
+            ErrorInfo = "";
             if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
             {
                 ErrorInfo = $"请输入正确的二维码序号";
@@ -79,6 +97,17 @@ namespace ScanCode.WPF.ViewModels
             bool isNumber = Regex.IsMatch(code, @"^[1-9]\d*$");
             if (isNumber)
             {
+                if (ActualOutCount >= SelectTotalsl)
+                {
+                    ErrorInfo = $"当前客户订单已完成扫码工作!";
+                    return;
+                }
+
+                if (ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
+                {
+                    ErrorInfo = "请不要重复扫码";
+                    return;// ScanOrderOutDetailsError.Insert(0, new W_LabelStorageError(text, ));
+                }
                 await ExecuteScanCode(code);
             }
             else
@@ -95,36 +124,50 @@ namespace ScanCode.WPF.ViewModels
         ///Enter按键自动扫码发货
         /// </summary>
         /// <returns></returns>
-        public async Task ExecuteScanCode(string text)
+        private async Task<bool> ExecuteScanCode(string text)
         {
-            if (ActualOutCount >= SelectTotalsl)
-            {
-                ErrorInfo = $"当前客户订单已完成扫码工作!";
-                return;
-            }
-
             var outstorage = new W_LabelStorage();
             outstorage.OutTime = DateTime.Now;
-            outstorage.OrderNumbels = SelectDDNO;
+            outstorage.OrderNumbels = SelectDdno;
             outstorage.QRCode = text;
-            outstorage.OrderTime = DateTime.Parse(SelectDDRQ);
-            outstorage.Dealers = SelectDDNO;
+            outstorage.OrderTime = DateTime.Parse(SelectDdrq);
+            outstorage.Dealers = SelectDdno;
             outstorage.OutType = "THFX";
             outstorage.ExtensionName = "";
 
-            var result = await hubService.AddScanCodeAsync(outstorage);
+            var result = await _hubService.AddScanCodeAsync(outstorage);
 
             if (result.Successed)
             {
-                outstorage.ExtensionName = SelectKH;
-                ScanOrderOutDetails.Insert(0, outstorage);
+                outstorage.ExtensionName = "出库成功";
+                ErrorInfo = "出库成功";
+
+                if (!ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
+                {
+                    ScanOrderOutDetails.Insert(0, outstorage);
+                }
             }
             else
             {
                 ErrorInfo = $"{text}：{result.Message}";
+                if (ScanOrderOutDetailsError.Any(a => a.QRCode.Contains(text)))
+                {
+                    return false;
+                }
+
+                outstorage.ExtensionName = result.Message;
+                ScanOrderOutDetailsError.Insert(0, outstorage);
+
+                return false;
             }
 
-            return;
+            if (_fileStorage != null)
+            {
+                _fileStorage.Save(ScanOrderOutDetails, SelectDdno);
+                _fileStorage.Save(ScanOrderOutDetailsError, $"{SelectDdno}-Error");
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -134,7 +177,7 @@ namespace ScanCode.WPF.ViewModels
         /// <returns></returns>
         public async Task GetOrderDetail(string? ddno)
         {
-            var result = await hubService.GetOrderDetailAsync(ddno);
+            var result = await _hubService.GetOrderDetailAsync(ddno);
             OrderListDetail.Clear();
             foreach (var item in result)
             {
@@ -158,7 +201,7 @@ namespace ScanCode.WPF.ViewModels
         //返回实际出库扫码数量
         public async Task<int> GetActualOutCount()
         {
-            return await hubService.GetBdxOrderTotalCountAsync(SelectDDNO);
+            return await _hubService.GetBdxOrderTotalCountAsync(SelectDdno);
         }
 
         /// <summary>
@@ -166,12 +209,107 @@ namespace ScanCode.WPF.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ScanOrderOutDetails_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ScanOrderOutDetails_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 ActualOutCount += 1;
             }
         }
+
+        //初始化加载本地文件数据数据
+        private Task LoadFileData()
+        {
+            if (_fileStorage != null)
+            {
+                var data = _fileStorage.Load<ObservableCollection<W_LabelStorage>>(SelectDdno)!;
+                if (data != null)
+                {
+                    //ScanOrderOutDetails = data;
+
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        ScanOrderOutDetails.Add(data[i]);
+                    }
+                }
+                var dataError = _fileStorage.Load<ObservableCollection<W_LabelStorage>>($"{SelectDdno}-Error")!;
+                if (dataError != null)
+                {
+                    for (int i = 0; i < dataError.Count; i++)
+                    {
+                        ScanOrderOutDetailsError.Add(data[i]);
+                    }
+                    //ScanOrderOutDetailsError = dataError;
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand]
+        private async Task RowButton(W_LabelStorage storage)
+        {
+            if (_hubService != null)
+            {
+                var t = await _hubService.GetTraceabilityResultAsync(storage.QRCode.Trim());
+                var dialogWindow = App.GetService<DialogWindow>();
+                dialogWindow.Owner = Application.Current.Windows.OfType<ScanCodeOutWindow>().FirstOrDefault();
+
+                var datacontext = dialogWindow.DataContext as DialogViewModel;
+
+                if (datacontext != null)
+                {
+                    datacontext.LabelStorage = storage;
+                    datacontext.TraceabilityResultDto = t;
+                }
+                //scanCodeOutWindow.Owner = App.GetService<ScanCodeOutWindow>();
+
+                bool? result = dialogWindow.ShowDialog();
+
+                if (result == true)
+                {
+                    var returnResult = await _hubService.ScanCodeReturnAsync(storage.QRCode);
+
+                    if (returnResult.ResulCode == 200)
+                    {
+                        var execute = await ExecuteScanCode(storage.QRCode);
+                        if (execute)
+                        {
+                            ScanOrderOutDetailsError.Remove(storage);
+                        }
+                    }
+                    else
+                    {
+                        ErrorInfo = $"强制覆盖出库失败：{returnResult.ResultStatus}";
+                    }
+                    // 用户点击了OK按钮或者其他标识成功的操作
+                }
+                else
+                {
+                    // 用户点击了取消按钮，关闭窗口，或者其他标识失败或取消的操作
+                }
+            }
+
+            // return Task.CompletedTask;
+        }
+
+        ///该方法清空ScanOrderOutDetails数据列表
+        ///
+        [RelayCommand]
+        private void ClearScanOrderOutDetails()
+        {
+            ScanOrderOutDetails.Clear();
+            if (_fileStorage != null) _fileStorage.Save(ScanOrderOutDetails, SelectDdno);
+        }
+
+        [RelayCommand]
+        private void ClearScanOrderOutDetailsError()
+        {
+            ScanOrderOutDetailsError.Clear();
+            if (_fileStorage != null) _fileStorage.Save(ScanOrderOutDetailsError, $"{SelectDdno}-Error");
+        }
+
+        // private ActionCommand executeTextBoxCommand;
+        // public ICommand ExecuteTextBoxCommand => executeTextBoxCommand ??= new ActionCommand(ExecuteTextBox1);
     }
 }

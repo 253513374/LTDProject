@@ -17,19 +17,19 @@ namespace ScanCode.WPF.ViewModels
 {
     public partial class ScanCodeReturnViewModel : ObservableObject
     {
-        [ObservableProperty] private string? errorInfo;
+        [ObservableProperty] private string? _errorInfo;
 
-        [ObservableProperty] private int actualReturnCount;
+        [ObservableProperty] private int _actualReturnCount;
 
-        [ObservableProperty] private string? qrcodeKey;
+        [ObservableProperty] private string? _qrcodeKey;
         public ObservableCollection<ReturnsStorageResult> StorageResults { set; get; }
 
-        private readonly HubClientService? hubService;
+        private readonly HubClientService? _hubService;
 
         //private readonly OutOrderService? outOrderService;
         public ScanCodeReturnViewModel(HubClientService service)
         {
-            hubService = service;
+            _hubService = service;
             //outOrderService = orderService;
             StorageResults = new ObservableCollection<ReturnsStorageResult>();
             StorageResults.CollectionChanged += StorageResults_CollectionChanged;
@@ -49,8 +49,9 @@ namespace ScanCode.WPF.ViewModels
         /// </summary>
         /// <param name="text"></param>
         [RelayCommand]
-        private async Task ExecuteTextBox(string text)
+        private async Task ExecuteReturnTextBox(string text)
         {
+            ErrorInfo = "";
             if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
             {
                 ErrorInfo = $"请输入正确的二维码序号";
@@ -75,11 +76,12 @@ namespace ScanCode.WPF.ViewModels
 
         private async Task ExecuteScanCode(string text)
         {
-            var result = await hubService.ScanCodeReturnAsync(text);
+            var result = await _hubService.ScanCodeReturnAsync(text);
 
             if (result.ResulCode == 200)
             {
                 StorageResults.Insert(0, result);
+                ErrorInfo = "退货成功";
             }
             else
             {

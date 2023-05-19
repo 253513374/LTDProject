@@ -85,7 +85,7 @@ namespace ScanCode.Repository
 
                 if (resultList is null || resultList.Count == 0)
                 {
-                    //匹配18年以前的数据
+                    //匹配2018年以前的数据
                     var groupedDataold = context.WLabelStorages.AsNoTracking()
                         .Where(x => x.OrderTime >= startTime && x.OrderTime <= endTime)
                         .OrderByDescending(o => o.OrderTime)
@@ -214,7 +214,7 @@ namespace ScanCode.Repository
             }
         }
 
-        public async Task<W_LabelStorage> GetWLabelStorageAsync(string qrcode)
+        public async Task<W_LabelStorage?> GetWLabelStorageAsync(string qrcode)
         {
             try
             {

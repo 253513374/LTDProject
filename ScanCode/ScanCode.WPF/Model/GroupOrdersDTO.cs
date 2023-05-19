@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ScanCode.WPF.Model
 {
-    public partial class GroupOrdersDTO : ObservableObject
+    public partial class GroupOrdersDto : ObservableObject
     {
         /// <summary>
         /// 出库订单号

@@ -31,7 +31,7 @@
         /// <returns></returns>
         Task<bool> GetBitAsync(string qrcode);
 
-        Task SetObjectAsync(string key, object data);
+        Task SetObjectAsync(string key, object data, TimeSpan? expiry = null);
 
         Task<bool> SetRedPacketAsync(string qrcode);
     }

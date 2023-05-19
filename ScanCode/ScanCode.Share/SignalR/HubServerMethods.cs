@@ -33,5 +33,7 @@
         public static string BDXORDER_LIST = "SendBdxOrderListAsync";
 
         public static string Grouped_DDNO = "SendGroupedBdxOrdersDDNOAsync";
+
+        public static string SENDTRACEABILITYRESULT = "SendGetWLabelStorageAsync";
     }
 }

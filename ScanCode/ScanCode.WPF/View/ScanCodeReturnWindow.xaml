@@ -7,6 +7,7 @@
         xmlns:viewModels="clr-namespace:ScanCode.WPF.ViewModels"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:wpf="clr-namespace:ScanCode.WPF"
+        xmlns:converter="clr-namespace:ScanCode.WPF.Converter"
         mc:Ignorable="d"
         MouseLeftButtonDown="ScanCodeReturnWindow_OnMouseMove"
         WindowStartupLocation="CenterScreen"
@@ -23,6 +24,9 @@
         Title="ScanCodeOutWindow"  Width="1350" Height="600" MinWidth="1350" MinHeight="900"
         FocusManager.FocusedElement="{Binding ElementName=ScanCodeReturnTextBox}">
 
+    <Window.Resources>
+        <converter:ErrorInfoToColorConverter x:Key="ErrorInfoToColorConverter" />
+    </Window.Resources>
     <Border Name="MyBorder"
             Background="#282D33" CornerRadius="8,8,0,8"
             BorderBrush="#3a4149"
@@ -94,18 +98,18 @@
                     <StackPanel Grid.Row="0" Margin="10">
                         <Border   BorderBrush="White" Margin="10"
                                 BorderThickness="1"
-                                Background="DarkGreen"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Height="100"
+                                Background="#FFFFFF"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+
                                 CornerRadius="50">
                             <TextBlock Text="{Binding ActualReturnCount, Mode=OneWay}"
-                                       FontSize="96" FontWeight="Bold"
-                                       VerticalAlignment="Center" Padding="50"
-                                       HorizontalAlignment="Right">
+                                       FontSize="145" FontWeight="Bold" Margin="10"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">
                                 <TextBlock.Style>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignHeadline1TextBlock}">
-                                        <Setter Property="Foreground" Value="White"></Setter>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock }}">
+                                        <Setter Property="Foreground" Value="Black"></Setter>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
@@ -133,7 +137,7 @@
                                         x:Name="ScanCodeReturnButton"
                                             materialDesign:ButtonAssist.CornerRadius="10"
                                             Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Command="{Binding ExecuteTextBoxCommand}"
+                                            Command="{Binding ExecuteReturnTextBoxCommand}"
                                             CommandParameter="{Binding ElementName=ScanCodeReturnTextBox,Path=Text}">
                                     <TextBlock
                                             Style="{StaticResource MaterialDesignHeadline6TextBlock}"
@@ -144,12 +148,18 @@
 
                         <Grid x:Name="ErrorGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-                            <TextBlock  Foreground="Red"
+                            <TextBlock  Foreground="{Binding ErrorInfo, Converter={StaticResource ErrorInfoToColorConverter}}"
+                                        HorizontalAlignment="Left" VerticalAlignment="Center"
+                                        FontWeight="Bold" TextWrapping="Wrap"
+                                        Width="{Binding ElementName=ErrorGrid,Path=ActualWidth}"
+                                        Style="{StaticResource MaterialDesignHeadline2TextBlock}"
+                                        Text="{Binding ErrorInfo}" />
+                            <!--<TextBlock  Foreground="Red"
                                        HorizontalAlignment="Left" VerticalAlignment="Center"
                                        FontWeight="Bold" TextWrapping="Wrap"
                                        Width="{Binding ElementName=ErrorGrid,Path=ActualWidth}"
                                        Style="{StaticResource MaterialDesignHeadline2TextBlock}"
-                                       Text="{Binding ErrorInfo}" />
+                                       Text="{Binding ErrorInfo}" />-->
                         </Grid>
                     </StackPanel>
                 </Grid>

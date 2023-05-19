@@ -13,8 +13,8 @@ namespace ScanCode.WPF
     {
         public OrganizationProfile()
         {
-            CreateMap<GroupOrdersDTO, GroupedBdxOrder>();
-            CreateMap<GroupedBdxOrder, GroupOrdersDTO>();
+            CreateMap<GroupOrdersDto, GroupedBdxOrder>();
+            CreateMap<GroupedBdxOrder, GroupOrdersDto>();
         }
     }
 }

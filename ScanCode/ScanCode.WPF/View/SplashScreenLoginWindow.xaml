@@ -18,7 +18,7 @@
         WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-
+        Topmost="True"
         AllowsTransparency="True"
 
         MouseLeftButtonDown="SplashScreenLogin_OnMouseLeftButtonDown">

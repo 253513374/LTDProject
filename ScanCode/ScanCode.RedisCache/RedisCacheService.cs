@@ -9,14 +9,14 @@ namespace ScanCode.RedisCache
     public class RedisCacheService : IRedisCache
     {
         private readonly IDatabase _database;
-        private readonly WLabelStorageRepository _WLabelStorageRepository;
+        private readonly WLabelStorageRepository _wLabelStorageRepository;
         private readonly OutStorageRepository _outStorageRepository;
 
         public RedisCacheService(IConnectionMultiplexer multiplexer,
             WLabelStorageRepository wLabelStorageRepository,
                 OutStorageRepository outStorageRepository)
         {
-            _WLabelStorageRepository = wLabelStorageRepository;
+            _wLabelStorageRepository = wLabelStorageRepository;
             _outStorageRepository = outStorageRepository;
             _database = multiplexer.GetDatabase();
         }
@@ -43,8 +43,10 @@ namespace ScanCode.RedisCache
             // return JsonConvert.DeserializeObject<ReportFormsNever>(jsonData);
         }
 
-        public Task SetObjectAsync(string key, object data)
+        public Task SetObjectAsync(string key, object data, TimeSpan? expiry = null)
         {
+            // 如果没有提供过期时间，那么设置为2年
+            expiry ??= TimeSpan.FromDays(365 * 2);
             var options = new JsonSerializerOptions
             {
                 ReferenceHandler = ReferenceHandler.Preserve, // 处理循环引用
@@ -53,20 +55,35 @@ namespace ScanCode.RedisCache
             };
 
             string jsonData = JsonSerializer.Serialize(data, options); // JsonConvert.SerializeObject(data, settings);
-            _database.StringSet(key, jsonData);
+            _database.StringSet(key, jsonData, expiry);
 
             return Task.CompletedTask;
         }
+
+        //public Task SetObjectAsync(string key, object data)
+        //{
+        //    var options = new JsonSerializerOptions
+        //    {
+        //        ReferenceHandler = ReferenceHandler.Preserve, // 处理循环引用
+        //        PropertyNameCaseInsensitive = true, // 忽略属性名大小写
+        //        WriteIndented = true // 使输出的 JSON 格式化，可选
+        //    };
+
+        //    string jsonData = JsonSerializer.Serialize(data, options); // JsonConvert.SerializeObject(data, settings);
+        //    _database.StringSet(key, jsonData);
+
+        //    return Task.CompletedTask;
+        //}
 
         public async Task<bool> SetBitAsync(string qrcode, bool bit = true)
         {
             // var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
             //截取qrcode 中的偏移量
-            var offset = qrcode.Substring(4, 7);//位图下标
+            var offsetString = qrcode.Substring(4, 7);//位图下标
             var key = qrcode.Substring(0, 4);
 
             //判断是否存在该key
-            if (!_database.KeyExists(key))
+            if (!await _database.KeyExistsAsync(key))
             {
                 /*使用 BITFIELD 命令初始化一个名为 [key] 的位图，使用 CREATE 子命令指定创建一个新的位图，
                  使用 u32 类型表示位图使用 32 位整数存储，使用 #10000000 表示位图的大小为 10000000。
@@ -76,7 +93,7 @@ namespace ScanCode.RedisCache
                 await _database.ExecuteAsync("BITFIELD", key, "SET", "u32", "10000000", "0");
             }
             ///设置位图状态
-            return await _database.StringSetBitAsync(key, Convert.ToInt64(offset), bit);
+            return await _database.StringSetBitAsync(key, long.Parse(offsetString), bit);
         }
 
         public async Task SetBulkBitAsync(List<string> qrcodesList)

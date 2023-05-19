@@ -234,6 +234,26 @@ namespace ScanCode.WPF.HubServer.Services
             }
         }
 
+        //返回二维码详细出库信息
+        public async Task<TraceabilityResultDto?> GetTraceabilityResultAsync(string qrcode)
+        {
+            try
+            {
+                if (hubConnection.State == HubConnectionState.Connected)
+                {
+                    hubConnection = hubConnection.TryInitialize();
+
+                    return await hubConnection.InvokeAsync<TraceabilityResultDto>(HubServerMethods.SENDTRACEABILITYRESULT, qrcode);
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// 用户登录系统
         /// </summary>

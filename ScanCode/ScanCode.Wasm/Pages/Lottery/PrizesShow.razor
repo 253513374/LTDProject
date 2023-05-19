@@ -308,17 +308,38 @@ else
 
         return base.OnAfterRenderAsync(firstRender);
     }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //var traceabilityResultTask = Container.LotteryResult != null ? Task.FromResult(Container.LotteryResult) : GetLotteryActivityAsync(Container.QrCode);
+
+        if (Container.Activity is  null)
+        {
+            var lotteryActivity = await GetLotteryActivityAsync();
+            await Container.SetActivity(lotteryActivity);
+        }
+    
+        await base.OnInitializedAsync();
+    }
+
     private async Task<ActivityResult> GetLotteryActivityAsync()
     {
         try
         {
-            using  var httpClient = HttpClientFactory.CreateClient("weixin");
+            using var httpClient = HttpClientFactory.CreateClient("weixin");
             var url = $"LotteryActivity";
             var response = await httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                var stream = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<ActivityResult>(stream, _options);
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<ActivityResult>>();
+    // var result= JsonSerializer.Deserialize<LotteryActivity>(stream, options);
+                if (result.IsSuccess)
+                {
+                    return result.Data;
+                }
+                return new ActivityResult();
             }
             Logger.LogError($"获取抽奖活动信息失败：{response.StatusCode}");
         }
@@ -328,6 +349,7 @@ else
         }
         return null;
     }
+
 
 
 

@@ -56,14 +56,6 @@ namespace ScanCode.Controller.Controllers.APIController
                 return Failure<TraceabilityResult>(result.Msg);
             }
 
-            //var erpresult = await _bdxOrderRepository.GetSingleAsync(result.OrderNumbels);
-            //_logger.LogInformation($"erp: {erpresult.ToJson()}");
-
-            //if (erpresult is not null)
-            //{
-            //   // _redisCache.
-            //}
-
             _ = await _redisCache.SetBitAsync(qrcode);
 
             return Success(result);

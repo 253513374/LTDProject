@@ -135,17 +135,17 @@ namespace ScanCode.Mvc.Services
         {
             try
             {
-                var wqrcode = await _labelStorageRepository.GetWLabelStorageAsync(qrcode);
+                var wqrcode = await _labelStorageRepository.GetWLabelStorageAsync(qrcode).ConfigureAwait(false);
 
                 if (wqrcode is not null)
                 {
-                    var outqrcode = await _agentRepository.FindSingleAgentAsync(wqrcode.Dealers.Trim());
+                    var outqrcode = await _agentRepository.FindSingleAgentAsync(wqrcode.Dealers.Trim()).ConfigureAwait(false);
 
                     return new TraceabilityResult
                     {
                         Status = true,
-                        AgentName = outqrcode.AName.Trim(),
-                        OrderNumbels = wqrcode.OrderNumbels.Trim(),
+                        AgentName = outqrcode.AName,
+                        OrderNumbels = wqrcode.OrderNumbels,
                         OutTime = wqrcode.OutTime,
                         QRCode = wqrcode.QRCode
                     };
@@ -163,6 +163,65 @@ namespace ScanCode.Mvc.Services
             {
                 _logger.LogError($"查询溯源信息出现异常：{e.Message}");
                 return new TraceabilityResult();
+            }
+        }
+
+        //public async Task<TraceabilityResult> GetWLabelStorageAsync(string qrcode)
+        //{
+        //    try
+        //    {
+        //        var wqrcode = await _labelStorageRepository.GetWLabelStorageAsync(qrcode);
+
+        //        if (wqrcode is not null)
+        //        {
+        //            var outqrcode = await _agentRepository.FindSingleAgentAsync(wqrcode.Dealers.Trim());
+
+        //            return new TraceabilityResult
+        //            {
+        //                Status = true,
+        //                AgentName = outqrcode.AName.Trim(),
+        //                OrderNumbels = wqrcode.OrderNumbels.Trim(),
+        //                OutTime = wqrcode.OutTime,
+        //                QRCode = wqrcode.QRCode
+        //            };
+        //        }
+        //        else
+        //        {
+        //            return new TraceabilityResult
+        //            {
+        //                Status = false,
+        //                Msg = "标签还未出库"
+        //            };
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _logger.LogError($"查询溯源信息出现异常：{e.Message}");
+        //        return new TraceabilityResult();
+        //    }
+        //}
+
+        //
+        /// <summary>
+        /// 返回订单号
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        public async Task<string> GetOrderNumbelsAsync(string qrcode)
+        {
+            try
+            {
+                var labelStorage = await _labelStorageRepository.GetWLabelStorageAsync(qrcode);
+                if (labelStorage != null)
+                    return labelStorage.OrderNumbels.Trim();
+
+                _logger.LogWarning($"未找到与二维码 {qrcode} 相关的标签存储信息。");
+                return "";
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"查询溯源信息出现异常：{e.Message}");
+                return "";
             }
         }
 

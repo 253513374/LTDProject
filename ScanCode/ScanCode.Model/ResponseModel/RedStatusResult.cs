@@ -1,5 +1,8 @@
 ﻿namespace ScanCode.Model.ResponseModel
 {
+    /// <summary>
+    /// 红包状态：包含用户的领取状态， 二维码标签的领取状态
+    /// </summary>
     public class RedStatusResult : TResult
     {
         /// <summary>

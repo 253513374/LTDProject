@@ -153,8 +153,8 @@ try
 
     builder.Services.AddCors(options =>
     {
-        options.AddDefaultPolicy(builder =>
-            builder.WithOrigins(new string[] { "https://www.chn315.top",
+        options.AddDefaultPolicy(corsPolicyBuilder =>
+            corsPolicyBuilder.WithOrigins(new string[] { "https://www.chn315.top",
                     "https://localhost:5276",
                     "https://localhost:44306"
                 })

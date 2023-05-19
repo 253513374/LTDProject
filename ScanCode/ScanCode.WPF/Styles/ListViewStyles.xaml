@@ -64,7 +64,7 @@
     </Style>
 
     <!-- 定义ListView数据模板 -->
-    <DataTemplate x:Key="CustomItemTemplate" DataType="{x:Type model:GroupOrdersDTO}">
+    <DataTemplate x:Key="CustomItemTemplate" DataType="{x:Type model:GroupOrdersDto}">
         <materialDesign:Card x:Name="DataCard" Height="175"
                 Background="#5A282D33"
                 Foreground="#ffffff"

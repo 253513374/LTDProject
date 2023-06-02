@@ -69,7 +69,7 @@ namespace ScanCode.WPF.View
             {
                 if (string.IsNullOrWhiteSpace(textBox.Text) || textBox.Text.Length < 12)
                 {
-                    viewModel.ErrorInfo = $"请输入正确的二维码序号"; ;
+                    viewModel.ErrorReturnInfo = $"请输入正确的二维码序号"; ;
                     return;
                 }
                 // var result = App.ReplaceScanCode(textBox.Text);

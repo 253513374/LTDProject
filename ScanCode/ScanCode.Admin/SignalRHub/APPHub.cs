@@ -45,8 +45,6 @@ namespace ScanCode.Web.Admin.SignalRHub
             _agentRepository = agentRepository;
         }
 
-        #region 发送信息
-
         public async Task SendAgentAsync(Agent agent)
         {
             //判断Agent 中是否存在
@@ -59,7 +57,7 @@ namespace ScanCode.Web.Admin.SignalRHub
         }
 
         /// <summary>
-        /// 退货
+        /// 扫码退货
         /// </summary>
         /// <param name="qrcode"></param>
         /// <returns></returns>
@@ -85,6 +83,37 @@ namespace ScanCode.Web.Admin.SignalRHub
             return ReturnsStorageResult.NotOutFail(qrcode);
         }
 
+        /// <summary>
+        /// 订单退货,这是一个批量退货操作
+        /// </summary>
+        /// <param name="ddno"></param>
+        /// <returns></returns>
+        public async Task<ReturnsStorageResult> ReturnsOutStorageDdnoAsync(string ddno)
+        {
+            var anyOrder = await _storageRepository.AnyAsync(a => a.OrderNumbels == ddno);
+
+            if (!anyOrder)
+            {
+                return ReturnsStorageResult.NotOutFail(ddno, "找不到订单号");
+            }
+            //已经发货，可以退货
+            var result = await _storageRepository.DeleteDdnoAsync(ddno);
+            if (result.Item2 > 0)
+            {
+                //退货成功
+                await _redisCache.SetBulkBitAsync(result.Item1, false);//设置出库缓存状态
+                await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, false);
+                return ReturnsStorageResult.SuccessList(result.Item1);
+            }
+
+            return ReturnsStorageResult.FailList(result.Item1);
+        }
+
+        /// <summary>
+        /// 批量发货
+        /// </summary>
+        /// <param name="labelStorages"></param>
+        /// <returns></returns>
         public async Task<OutStorageResult> SendOutStorageBatchAsync(List<W_LabelStorage> labelStorages)
         {
             // var username = Context.User.Identity.Name;
@@ -221,8 +250,6 @@ namespace ScanCode.Web.Admin.SignalRHub
         {
             await Clients.All.SendAsync(HubClientMethods.OnDeleteSynchronizationData, state.SynchDataKey);
         }
-
-        #endregion 发送信息
 
         public async Task SendLotteryWinCount()
         {

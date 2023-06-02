@@ -21,7 +21,7 @@
 }
 else
 {
-    <MudHidden Breakpoint="Breakpoint.MdAndUp" >
+    <MudHidden Breakpoint="Breakpoint.SmAndUp">
                     
         <MudStack AlignItems="AlignItems.Stretch" Spacing="5">
             <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
@@ -58,9 +58,9 @@ else
               Filter="new Func<LotteryRecord, bool>(FilterFunc1)" @bind-SelectedItem="selectedLotteryRecord"
               Bordered="true" Hover="true">
         <ToolBarContent>
-            
-            
-            <MudHidden Breakpoint="Breakpoint.MdAndDown" >
+
+
+            <MudHidden Breakpoint="Breakpoint.Xs">
                 <MudStack Row="true" AlignItems="AlignItems.Center">
                     <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
                     <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>

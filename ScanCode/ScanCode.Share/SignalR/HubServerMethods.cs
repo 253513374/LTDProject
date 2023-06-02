@@ -17,8 +17,20 @@
         /// </summary>
         public static string SendOutStorageBatch = "SendOutStorageBatchAsync";
 
+        /// <summary>
+        /// 扫码出库
+        /// </summary>
         public static string SendOutStorage = "SendOutStorageAsync";
-        public static string Returns_OutStorage = "ReturnsOutStorage";
+
+        /// <summary>
+        /// 单二维码退货
+        /// </summary>
+        public static string REURNWLABELSTORAGE_QRCODE = "ReturnsOutStorage";
+
+        /// <summary>
+        /// 订单退货
+        /// </summary>
+        public static string REURNWLABELSTORAGE_DDNO = "ReturnsOutStorageDdnoAsync";
 
         public static string SendAgent = "SendAgentAsync";
 
@@ -30,6 +42,7 @@
         public static string GROUPED_ORDERS = "SendGroupedBdxOrderAsync";
 
         public static string BDXORDER_TOTAL_COUNT = "SendOrderCountByDDNOAsync";
+
         public static string BDXORDER_LIST = "SendBdxOrderListAsync";
 
         public static string Grouped_DDNO = "SendGroupedBdxOrdersDDNOAsync";

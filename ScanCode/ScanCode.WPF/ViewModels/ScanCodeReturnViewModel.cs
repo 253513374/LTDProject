@@ -17,7 +17,7 @@ namespace ScanCode.WPF.ViewModels
 {
     public partial class ScanCodeReturnViewModel : ObservableObject
     {
-        [ObservableProperty] private string? _errorInfo;
+        [ObservableProperty] private string? _errorReturnInfo;
 
         [ObservableProperty] private int _actualReturnCount;
 
@@ -51,10 +51,10 @@ namespace ScanCode.WPF.ViewModels
         [RelayCommand]
         private async Task ExecuteReturnTextBox(string text)
         {
-            ErrorInfo = "";
+            ErrorReturnInfo = "";
             if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
             {
-                ErrorInfo = $"请输入正确的二维码序号";
+                ErrorReturnInfo = $"请输入正确的二维码序号";
                 return;
             }
             var code = App.ReplaceScanCode(text);
@@ -65,7 +65,7 @@ namespace ScanCode.WPF.ViewModels
             }
             else
             {
-                ErrorInfo = $"请输入正确的二维码序号";
+                ErrorReturnInfo = $"请输入正确的二维码序号";
                 return;
             }
 
@@ -80,12 +80,24 @@ namespace ScanCode.WPF.ViewModels
 
             if (result.ResulCode == 200)
             {
-                StorageResults.Insert(0, result);
-                ErrorInfo = "退货成功";
+                if (result.IsDdno)
+                {
+                    for (int i = 0; i < result.QrCodeList.Count; i++)
+                    {
+                        StorageResults.Insert(0, ReturnsStorageResult.Success(result.QrCodeList[i]));
+                    }
+                    ErrorReturnInfo = "退货成功";
+                }
+                else
+                {
+                    StorageResults.Insert(0, result);
+                    ErrorReturnInfo = "退货成功";
+                }
+             
             }
             else
             {
-                ErrorInfo = $"{text}退货失败：{result.ResultStatus}";
+                ErrorReturnInfo = $"{text}退货失败：{result.ResultStatus}";
             }
             //throw new NotImplementedException();
         }

@@ -488,6 +488,27 @@ namespace ScanCode.Repository
             }
         }
 
+        /// <summary>
+        /// 删除指定订单数据
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <returns></returns>
+        public async Task<(List<string>, int)> DeleteDdnoAsync(string ddno)
+        {
+            using (var context = await _contextFactory.CreateDbContextAsync())
+            {
+                var dle = context.WLabelStorages.AsNoTracking()
+                    .Where(w => w.OrderNumbels == ddno);
+
+                var qrcodes = await dle.Select(s => s.QRCode).ToListAsync();
+
+                //context.WLabelStorages.RemoveRange(dle);
+                var dleCount = await dle.ExecuteDeleteAsync();
+
+                return (qrcodes, dleCount);
+            }
+        }
+
         //返回订单号的数量
         public async Task<int> GetOrderCountByDDNOAsync(string ddno)
         {

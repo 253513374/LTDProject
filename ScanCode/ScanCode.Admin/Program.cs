@@ -243,6 +243,8 @@ try
         app.UseHsts();
     }
 
+    app.UseWebSockets();
+
     app.UseHttpsRedirection();
     app.UseStaticFiles();
     app.UseRouting();

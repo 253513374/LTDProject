@@ -135,9 +135,11 @@ namespace ScanCode.WPF.HubServer.Services
         }
 
         /// <summary>
-        /// 退货，返回退货状态
+        /// 退货，输入二维码或者订单号
         /// </summary>
-        public async Task<ReturnsStorageResult> ScanCodeReturnAsync(string qrcode)
+        /// <param name="code">二维码序号或者订单号</param>
+        /// <returns></returns>
+        public async Task<ReturnsStorageResult> ScanCodeReturnAsync(string code)
         {
             if (hubConnection.State == HubConnectionState.Connected)
             {
@@ -145,17 +147,25 @@ namespace ScanCode.WPF.HubServer.Services
                 {
                     hubConnection = hubConnection.TryInitialize();
 
+                    var stringType = StringAnalyzer.AnalyzeString(code);
+
+                    return stringType switch
+                    {
+                        StringType.Numeric => await hubConnection.InvokeAsync<ReturnsStorageResult>(HubServerMethods.REURNWLABELSTORAGE_QRCODE, code),
+                        StringType.Alphanumeric => await hubConnection.InvokeAsync<ReturnsStorageResult>(HubServerMethods.REURNWLABELSTORAGE_DDNO, code),
+                        _ => ReturnsStorageResult.Fail(code, "二维码格式错误")
+                    };
                     //退货
-                    return await hubConnection.InvokeAsync<ReturnsStorageResult>(HubServerMethods.Returns_OutStorage, qrcode);
+                    // return await hubConnection.InvokeAsync<ReturnsStorageResult>(HubServerMethods.REURNWLABELSTORAGE_QRCODE, qrcode);
                 }
                 catch (Exception e)
                 {
-                    return ReturnsStorageResult.Exception(qrcode, e.Message);
+                    return ReturnsStorageResult.Exception(code, e.Message);
                 }
             }
             else
             {
-                return ReturnsStorageResult.Offline(qrcode);
+                return ReturnsStorageResult.Offline(code);
             }
         }
 
@@ -450,5 +460,30 @@ namespace ScanCode.WPF.HubServer.Services
                 return new List<T_BDX_ORDER>();
             }
         }
+
+        //public async Task<IEnumerable<T_BDX_ORDER>> GetOrderDetailAsync(string ddno)
+        //{
+        //    try
+        //    {
+        //        if (hubConnection.State == HubConnectionState.Connected)
+        //        {
+        //            hubConnection = hubConnection.TryInitialize();
+
+        //            var stringType = StringAnalyzer.AnalyzeString(ddno);
+
+        //            return stringType switch
+        //            {
+        //                StringType.Numeric => await hubConnection.InvokeAsync<List<T_BDX_ORDER>>(HubServerMethods.BDXORDER_LIST, ddno),
+        //                StringType.Alphanumeric => await hubConnection.InvokeAsync<List<T_BDX_ORDER>>(HubServerMethods.REURNWLABELSTORAGE_DDNO, ddno),
+        //                _ => new List<T_BDX_ORDER>()
+        //            };
+        //        }
+        //        return new List<T_BDX_ORDER>();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return new List<T_BDX_ORDER>();
+        //    }
+        //}
     }
 }

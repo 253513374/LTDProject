@@ -19,6 +19,7 @@ using ScanCode.WPF.Model;
 using System.Windows.Input;
 using ScanCode.WPF.View;
 using System.Windows;
+using ScanCode.WPF.HubServer.ViewModels;
 
 namespace ScanCode.WPF.ViewModels
 {
@@ -87,37 +88,86 @@ namespace ScanCode.WPF.ViewModels
         private async Task ExecuteTextBox(string text)
         {
             ErrorInfo = "";
-            if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
+            if (IsInvalidInput(text))
             {
                 ErrorInfo = $"请输入正确的二维码序号";
                 return;
             }
 
-            var code = App.ReplaceScanCode(text);
-            bool isNumber = Regex.IsMatch(code, @"^[1-9]\d*$");
-            if (isNumber)
-            {
-                if (ActualOutCount >= SelectTotalsl)
-                {
-                    ErrorInfo = $"当前客户订单已完成扫码工作!";
-                    return;
-                }
+            string code = App.ReplaceScanCode(text);
 
-                if (ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
-                {
-                    ErrorInfo = "请不要重复扫码";
-                    return;// ScanOrderOutDetailsError.Insert(0, new W_LabelStorageError(text, ));
-                }
-                await ExecuteScanCode(code);
-            }
-            else
+            if (!IsNumeric(code))
             {
                 ErrorInfo = $"请输入正确的二维码序号";
                 return;
             }
 
+            if (!IsValidScan(code, text))
+            {
+                return;
+            }
+
+            await ExecuteScanCode(code);
             QrcodeKey = "";
-            return;
+            //ErrorInfo = "";
+            //if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
+            //{
+            //    ErrorInfo = $"请输入正确的二维码序号";
+            //    return;
+            //}
+
+            //var code = App.ReplaceScanCode(text);
+            //bool isNumber = Regex.IsMatch(code, @"^[1-9]\d*$");
+            //if (isNumber)
+            //{
+            //    if (ActualOutCount >= SelectTotalsl)
+            //    {
+            //        ErrorInfo = $"当前客户订单已完成扫码工作!";
+            //        return;
+            //    }
+
+            //    if (ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
+            //    {
+            //        ErrorInfo = "请不要重复扫码";
+            //        return;// ScanOrderOutDetailsError.Insert(0, new W_LabelStorageError(text, ));
+            //    }
+            //    await ExecuteScanCode(code);
+            //}
+            //else
+            //{
+            //    ErrorInfo = $"请输入正确的二维码序号";
+            //    return;
+            //}
+
+            //QrcodeKey = "";
+            //return;
+        }
+
+        private bool IsInvalidInput(string text)
+        {
+            return string.IsNullOrWhiteSpace(text) || text.Length < 12;
+        }
+
+        private bool IsNumeric(string code)
+        {
+            return Regex.IsMatch(code, @"^[1-9]\d*$");
+        }
+
+        private bool IsValidScan(string code, string text)
+        {
+            if (ActualOutCount >= SelectTotalsl)
+            {
+                ErrorInfo = $"当前客户订单已完成扫码工作!";
+                return false;
+            }
+
+            if (ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
+            {
+                ErrorInfo = "请不要重复扫码";
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -126,48 +176,98 @@ namespace ScanCode.WPF.ViewModels
         /// <returns></returns>
         private async Task<bool> ExecuteScanCode(string text)
         {
-            var outstorage = new W_LabelStorage();
-            outstorage.OutTime = DateTime.Now;
-            outstorage.OrderNumbels = SelectDdno;
-            outstorage.QRCode = text;
-            outstorage.OrderTime = DateTime.Parse(SelectDdrq);
-            outstorage.Dealers = SelectDdno;
-            outstorage.OutType = "THFX";
-            outstorage.ExtensionName = "";
+            var outstorage = CreateLabelStorage(text);
 
             var result = await _hubService.AddScanCodeAsync(outstorage);
 
-            if (result.Successed)
+            if (!result.Successed)
             {
-                outstorage.ExtensionName = "出库成功";
-                ErrorInfo = "出库成功";
-
-                if (!ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
-                {
-                    ScanOrderOutDetails.Insert(0, outstorage);
-                }
+                return HandleFailure(result, outstorage);
             }
-            else
+
+            outstorage.ExtensionName = "出库成功";
+            ErrorInfo = "出库成功";
+
+            AddToScanOrderIfNotExist(text, outstorage);
+
+            SaveStorageToFile();
+            //if (result.Successed)
+            //{
+            //    outstorage.ExtensionName = "出库成功";
+            //    ErrorInfo = "出库成功";
+
+            //    if (!ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
+            //    {
+            //        ScanOrderOutDetails.Insert(0, outstorage);
+            //    }
+            //}
+            //else
+            //{
+            //    ErrorInfo = $"{text}：{result.Message}";
+            //    if (ScanOrderOutDetailsError.Any(a => a.QRCode.Contains(text)))
+            //    {
+            //        return false;
+            //    }
+
+            //    outstorage.ExtensionName = result.Message;
+            //    ScanOrderOutDetailsError.Insert(0, outstorage);
+
+            //    return false;
+            //}
+
+            //if (_fileStorage != null)
+            //{
+            //    _fileStorage.Save(ScanOrderOutDetails, SelectDdno);
+            //    _fileStorage.Save(ScanOrderOutDetailsError, $"{SelectDdno}-Error");
+            //}
+
+            return true;
+        }
+
+        private W_LabelStorage CreateLabelStorage(string text)
+        {
+            return new W_LabelStorage
             {
-                ErrorInfo = $"{text}：{result.Message}";
-                if (ScanOrderOutDetailsError.Any(a => a.QRCode.Contains(text)))
-                {
-                    return false;
-                }
+                OutTime = DateTime.Now,
+                OrderNumbels = SelectDdno,
+                QRCode = text,
+                OrderTime = DateTime.Parse(SelectDdrq),
+                Dealers = SelectDdno,
+                OutType = "THFX",
+                ExtensionName = ""
+            };
+        }
 
-                outstorage.ExtensionName = result.Message;
-                ScanOrderOutDetailsError.Insert(0, outstorage);
+        private bool HandleFailure(OutStorageResult result, W_LabelStorage outstorage)
+        {
+            ErrorInfo = $"{result.QRCode}：{result.Message}";
 
+            if (ScanOrderOutDetailsError.Any(a => a.QRCode.Contains(result.QRCode)))
+            {
                 return false;
             }
 
+            outstorage.ExtensionName = result.Message;
+            ScanOrderOutDetailsError.Insert(0, outstorage);
+
+            return false;
+        }
+
+        private void AddToScanOrderIfNotExist(string text, W_LabelStorage outstorage)
+        {
+            if (!ScanOrderOutDetails.Any(a => a.QRCode.Contains(text)))
+            {
+                ScanOrderOutDetails.Insert(0, outstorage);
+            }
+        }
+
+        private void SaveStorageToFile()
+        {
             if (_fileStorage != null)
             {
                 _fileStorage.Save(ScanOrderOutDetails, SelectDdno);
                 _fileStorage.Save(ScanOrderOutDetailsError, $"{SelectDdno}-Error");
             }
-
-            return true;
         }
 
         /// <summary>

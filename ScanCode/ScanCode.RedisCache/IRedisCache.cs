@@ -22,7 +22,7 @@
         /// <param name="status"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        Task SetBulkBitAsync(List<string> qrcodesList);
+        Task SetBulkBitAsync(List<string> qrcodesList, bool offset = true);
 
         /// <summary>
         /// 在位图中查找标签数据，如果给定的 qrcode 存在于 Redis 位图中，返回 true。

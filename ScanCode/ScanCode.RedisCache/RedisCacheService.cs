@@ -75,6 +75,12 @@ namespace ScanCode.RedisCache
         //    return Task.CompletedTask;
         //}
 
+        /// <summary>
+        /// 设置出库状态，该方法使用位图来保存状态
+        /// </summary>
+        /// <param name="qrcode"></param>
+        /// <param name="bit"></param>
+        /// <returns></returns>
         public async Task<bool> SetBitAsync(string qrcode, bool bit = true)
         {
             // var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
@@ -96,28 +102,37 @@ namespace ScanCode.RedisCache
             return await _database.StringSetBitAsync(key, long.Parse(offsetString), bit);
         }
 
-        public async Task SetBulkBitAsync(List<string> qrcodesList)
+        /// <summary>
+        /// 批量设置出库状态，该方法使用位图来保存状态
+        /// </summary>
+        /// <param name="qrcodesList"></param>
+        /// <returns></returns>
+        public async Task SetBulkBitAsync(List<string> qrcodesList, bool bitstatus)
         {
+            //for (int i = 0; i < qrcodesList.Count; i++)
+            //{
+            //    var qrcode = qrcodesList[i];
+            //    // var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
+            //    //截取qrcode 中的偏移量
+            //    var offset = qrcode.Substring(4, 7);//位图下标
+            //    var key = qrcode.Substring(0, 4);
+
+            //    ///设置位图状态为true
+            //    await _database.StringSetBitAsync(key, Convert.ToInt64(offset), true);
+            //}
+
+            var tran = _database.CreateTransaction();
             for (int i = 0; i < qrcodesList.Count; i++)
             {
-                var qrcode = qrcodesList[i];
-                // var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
-                //截取qrcode 中的偏移量
-                var offset = qrcode.Substring(4, 7);//位图下标
-                var key = qrcode.Substring(0, 4);
+                var codekey = qrcodesList[i].Substring(0, 4);
+                var offset = qrcodesList[i].Substring(4, 7);
 
-                //判断是否存在该key
-                //if (!_database.KeyExists(key))
-                //{
-                //    /*使用 BITFIELD 命令初始化一个名为 [key] 的位图，使用 CREATE 子命令指定创建一个新的位图，
-                //     使用 u32 类型表示位图使用 32 位整数存储，使用 #10000000 表示位图的大小为 10000000。
-                //    执行完成后，位图的初始状态全部为 0。*/
-                //    _database.Execute("BITFIELD", key, "CREATE", "u32", "#10000000");
-                //}
-
-                ///设置位图状态为true
-                await _database.StringSetBitAsync(key, Convert.ToInt64(offset), true);
+                if (Int64.TryParse(offset, out long longOffset))
+                {
+                    await tran.StringSetBitAsync(codekey, longOffset, bitstatus);
+                }
             }
+            await tran.ExecuteAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> GetBitAsync(string qrcode)

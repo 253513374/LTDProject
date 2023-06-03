@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using ScanCode.Model.Entity;
 using ScanCode.Model.Entity.ERP;
 using ScanCode.Model.ResponseModel;
@@ -10,6 +11,7 @@ using ScanCode.Repository;
 using ScanCode.Share;
 using ScanCode.Share.SignalR;
 using Senparc.Weixin.TenPay.V2;
+using System.Reflection.Emit;
 
 namespace ScanCode.Web.Admin.SignalRHub
 {
@@ -94,15 +96,20 @@ namespace ScanCode.Web.Admin.SignalRHub
 
             if (!anyOrder)
             {
+                _logger.LogWarning(ddno, "找不到订单号");
                 return ReturnsStorageResult.NotOutFail(ddno, "找不到订单号");
             }
             //已经发货，可以退货
             var result = await _storageRepository.DeleteDdnoAsync(ddno);
-            if (result.Item2 > 0)
+
+            _logger.LogInformation($"删除信息数量：{result.Item1.Count}");
+            _logger.LogInformation($"删除信息：{result.Item1}");
+
+            if (result.Item1.Count > 0)
             {
                 //退货成功
                 await _redisCache.SetBulkBitAsync(result.Item1, false);//设置出库缓存状态
-                await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, false);
+                //await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, false);
                 return ReturnsStorageResult.SuccessList(result.Item1);
             }
 
@@ -114,22 +121,22 @@ namespace ScanCode.Web.Admin.SignalRHub
         /// </summary>
         /// <param name="labelStorages"></param>
         /// <returns></returns>
-        public async Task<OutStorageResult> SendOutStorageBatchAsync(List<W_LabelStorage> labelStorages)
-        {
-            // var username = Context.User.Identity.Name;
-            // storage.Adminaccount = username;
-            try
-            {
-                await _storageRepository.BulkInsertAsync(labelStorages);
-                await _redisCache.SetBulkBitAsync(labelStorages.Select(s => s.QRCode).ToList());
+        //public async Task<OutStorageResult> SendOutStorageBatchAsync(List<W_LabelStorage> labelStorages)
+        //{
+        //    // var username = Context.User.Identity.Name;
+        //    // storage.Adminaccount = username;
+        //    try
+        //    {
+        //        await _storageRepository.BulkInsertAsync(labelStorages);
+        //        await _redisCache.SetBulkBitAsync(labelStorages.Select(s => s.QRCode).ToList());
 
-                return OutStorageResult.Success(DateTime.Now, labelStorages.Count, "BatchInsert");
-            }
-            catch (Exception e)
-            {
-                return OutStorageResult.FailList($"发货异常:{e.Message}", labelStorages);
-            }
-        }
+        //        return OutStorageResult.Success(DateTime.Now, labelStorages.Count, "BatchInsert");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return OutStorageResult.FailList($"发货异常:{e.Message}", labelStorages);
+        //    }
+        //}
 
         /// <summary>
         /// 实时出库。数据写入数据库

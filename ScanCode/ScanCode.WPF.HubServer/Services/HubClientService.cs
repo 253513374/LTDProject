@@ -139,7 +139,7 @@ namespace ScanCode.WPF.HubServer.Services
         /// </summary>
         /// <param name="code">二维码序号或者订单号</param>
         /// <returns></returns>
-        public async Task<ReturnsStorageResult> ScanCodeReturnAsync(string code)
+        public async Task<ReturnsStorageResult> ScanCodeReturnAsync(string code, StringType stringType = StringType.Numeric)
         {
             if (hubConnection.State == HubConnectionState.Connected)
             {
@@ -147,7 +147,7 @@ namespace ScanCode.WPF.HubServer.Services
                 {
                     hubConnection = hubConnection.TryInitialize();
 
-                    var stringType = StringAnalyzer.AnalyzeString(code);
+                    //var stringType = StringAnalyzer.AnalyzeString(code);
 
                     return stringType switch
                     {

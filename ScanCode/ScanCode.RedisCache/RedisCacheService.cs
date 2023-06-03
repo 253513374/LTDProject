@@ -2,6 +2,7 @@
 using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ScanCode.RedisCache
@@ -11,13 +12,15 @@ namespace ScanCode.RedisCache
         private readonly IDatabase _database;
         private readonly WLabelStorageRepository _wLabelStorageRepository;
         private readonly OutStorageRepository _outStorageRepository;
+        private readonly ILogger _logger;
 
         public RedisCacheService(IConnectionMultiplexer multiplexer,
             WLabelStorageRepository wLabelStorageRepository,
-                OutStorageRepository outStorageRepository)
+                OutStorageRepository outStorageRepository, ILogger<RedisCacheService> logger)
         {
             _wLabelStorageRepository = wLabelStorageRepository;
             _outStorageRepository = outStorageRepository;
+            _logger = logger;
             _database = multiplexer.GetDatabase();
         }
 
@@ -60,21 +63,6 @@ namespace ScanCode.RedisCache
             return Task.CompletedTask;
         }
 
-        //public Task SetObjectAsync(string key, object data)
-        //{
-        //    var options = new JsonSerializerOptions
-        //    {
-        //        ReferenceHandler = ReferenceHandler.Preserve, // 处理循环引用
-        //        PropertyNameCaseInsensitive = true, // 忽略属性名大小写
-        //        WriteIndented = true // 使输出的 JSON 格式化，可选
-        //    };
-
-        //    string jsonData = JsonSerializer.Serialize(data, options); // JsonConvert.SerializeObject(data, settings);
-        //    _database.StringSet(key, jsonData);
-
-        //    return Task.CompletedTask;
-        //}
-
         /// <summary>
         /// 设置出库状态，该方法使用位图来保存状态
         /// </summary>
@@ -102,37 +90,43 @@ namespace ScanCode.RedisCache
             return await _database.StringSetBitAsync(key, long.Parse(offsetString), bit);
         }
 
-        /// <summary>
-        /// 批量设置出库状态，该方法使用位图来保存状态
-        /// </summary>
-        /// <param name="qrcodesList"></param>
-        /// <returns></returns>
         public async Task SetBulkBitAsync(List<string> qrcodesList, bool bitstatus)
         {
-            //for (int i = 0; i < qrcodesList.Count; i++)
-            //{
-            //    var qrcode = qrcodesList[i];
-            //    // var redisdb = _redis.GetDatabase(); //RedisClientFactory.GetDatabase();
-            //    //截取qrcode 中的偏移量
-            //    var offset = qrcode.Substring(4, 7);//位图下标
-            //    var key = qrcode.Substring(0, 4);
-
-            //    ///设置位图状态为true
-            //    await _database.StringSetBitAsync(key, Convert.ToInt64(offset), true);
-            //}
-
-            var tran = _database.CreateTransaction();
-            for (int i = 0; i < qrcodesList.Count; i++)
+            try
             {
-                var codekey = qrcodesList[i].Substring(0, 4);
-                var offset = qrcodesList[i].Substring(4, 7);
+                // var tran = _database.CreateTransaction();
 
-                if (Int64.TryParse(offset, out long longOffset))
+                //var tasks = new List<Task>();
+
+                foreach (var code in qrcodesList)
                 {
-                    await tran.StringSetBitAsync(codekey, longOffset, bitstatus);
+                    if (code.Length < 11)
+                    {
+                        _logger.LogWarning($"跳过代码 {code} 因为它太短了。");
+                        continue;
+                    }
+
+                    var key = code.Substring(0, 4);
+                    var offset = code.Substring(4, 7);
+
+                    _logger.LogInformation($"代码 {code} 的设置位。key:{key},offset:{offset},bitstatus:{bitstatus}");
+                    await _database.StringSetBitAsync(key, long.Parse(offset), bitstatus);
+                    //.ContinueWith(t =>
+                    //    _logger.LogInformation($"代码 {code} 的位设置为 {bitstatus}"));
+
+                    // tasks.Add(task);
                 }
+
+                //await Task.WhenAll(tasks);
+                //await tran.ExecuteAsync().ConfigureAwait(true);
+
+                _logger.LogInformation("批量完成订单退货位图状态设置");
             }
-            await tran.ExecuteAsync().ConfigureAwait(false);
+            catch (Exception e)
+            {
+                _logger.LogError(e, "设置位时出错。");
+                throw;
+            }
         }
 
         public async Task<bool> GetBitAsync(string qrcode)

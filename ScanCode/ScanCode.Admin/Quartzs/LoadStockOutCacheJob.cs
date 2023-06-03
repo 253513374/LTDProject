@@ -52,7 +52,7 @@ namespace ScanCode.Web.Admin.Quartzs
 
                     if (Int64.TryParse(offset, out long longOffset))
                     {
-                        tran.StringSetBitAsync(codekey, longOffset, true);
+                        _ = tran.StringSetBitAsync(codekey, longOffset, true);
                     }
                     else
                     {

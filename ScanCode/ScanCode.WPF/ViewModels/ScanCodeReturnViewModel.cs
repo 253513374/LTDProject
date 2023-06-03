@@ -52,22 +52,20 @@ namespace ScanCode.WPF.ViewModels
         private async Task ExecuteReturnTextBox(string text)
         {
             ErrorReturnInfo = "";
-            if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
-            {
-                ErrorReturnInfo = $"请输入正确的二维码序号";
-                return;
-            }
-            var code = App.ReplaceScanCode(text);
-            bool isNumber = Regex.IsMatch(code, @"^[1-9]\d*$");
-            if (isNumber)
-            {
-                await ExecuteScanCode(code);
-            }
-            else
-            {
-                ErrorReturnInfo = $"请输入正确的二维码序号";
-                return;
-            }
+
+            var code = App.ReplaceScanCodeDdnoLenth(text);
+
+            await ExecuteScanCode(code);
+            //bool isNumber = Regex.IsMatch(code, @"^[1-9]\d*$");
+            //if (isNumber)
+            //{
+            //    await ExecuteScanCode(code);
+            //}
+            //else
+            //{
+            //    ErrorReturnInfo = $"请输入正确的二维码序号";
+            //    return;
+            //}
 
             QrcodeKey = "";
             return;
@@ -76,29 +74,59 @@ namespace ScanCode.WPF.ViewModels
 
         private async Task ExecuteScanCode(string text)
         {
-            var result = await _hubService.ScanCodeReturnAsync(text);
-
-            if (result.ResulCode == 200)
+            try
             {
-                if (result.IsDdno)
+                var stringType = StringAnalyzer.AnalyzeString(text);
+                if (stringType == StringType.Numeric)
                 {
-                    for (int i = 0; i < result.QrCodeList.Count; i++)
+                    if (string.IsNullOrWhiteSpace(text) || text.Length < 12)
                     {
-                        StorageResults.Insert(0, ReturnsStorageResult.Success(result.QrCodeList[i]));
+                        ErrorReturnInfo = $"请输入正确的二维码序号";
+                        return;
                     }
-                    ErrorReturnInfo = "退货成功";
+                }
+
+                if (stringType == StringType.Alphanumeric)
+                {
+                    if (string.IsNullOrWhiteSpace(text) || text.Length < 6)
+                    {
+                        ErrorReturnInfo = $"请输入正确的二维码序号";
+                        return;
+                    }
+                }
+
+                var result = await _hubService.ScanCodeReturnAsync(text, stringType);
+
+                if (result.ResulCode == 200)
+                {
+                    if (result.IsDdno)
+                    {
+                        //订单批量退货
+                        for (int i = 0; i < result.QrCodeList.Count; i++)
+                        {
+                            StorageResults.Insert(0, ReturnsStorageResult.Success(result.QrCodeList[i]));
+                        }
+                        ErrorReturnInfo = "退货成功";
+                    }
+                    else
+                    {
+                        //单码退货
+                        StorageResults.Insert(0, result);
+                        ErrorReturnInfo = "退货成功";
+                    }
                 }
                 else
                 {
-                    StorageResults.Insert(0, result);
-                    ErrorReturnInfo = "退货成功";
+                    ErrorReturnInfo = $"{text}退货失败：{result.ResultStatus}";
                 }
-             
             }
-            else
+            catch (Exception e)
             {
-                ErrorReturnInfo = $"{text}退货失败：{result.ResultStatus}";
+                ErrorReturnInfo = $"{e.Message}";
+                Console.WriteLine(e);
+                throw;
             }
+
             //throw new NotImplementedException();
         }
     }

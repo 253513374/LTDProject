@@ -2,11 +2,13 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Quartz.Logging;
 using ScanCode.Model.Entity;
 using ScanCode.Model.Entity.Analysis;
 using ScanCode.Repository.Data;
 using ScanCode.Repository.Interface;
 using System.Linq.Expressions;
+using StackExchange.Redis;
 
 namespace ScanCode.Repository
 {

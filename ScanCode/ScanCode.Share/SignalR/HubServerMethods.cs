@@ -23,9 +23,14 @@
         public static string SendOutStorage = "SendOutStorageAsync";
 
         /// <summary>
-        /// 单二维码退货
+        /// ，新版本，单二维码退货
         /// </summary>
         public static string REURNWLABELSTORAGE_QRCODE = "ReturnsOutStorage";
+
+        /// <summary>
+        /// 老版本，单二维码退货（放弃）
+        /// </summary>
+        public static string Returns_OutStorage = "ReturnsOutStorage";
 
         /// <summary>
         /// 订单退货

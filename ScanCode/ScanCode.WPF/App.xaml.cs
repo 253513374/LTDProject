@@ -116,10 +116,29 @@ namespace ScanCode.WPF
             //return Services.GetRequiredService<T>();
         }
 
-        public static string ReplaceScanCode(string v)
+        public static string ReplaceScanCodeQrLenth(string v)
         {
             string pattern = @"^[\w\W]*?(\b\d+\b)$";
-            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);//正则表达式
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);//正则表达式,返回纯数字
+            Match match = regex.Match(v);
+            if (string.IsNullOrEmpty(match.Groups[1].Value)) return "";
+            return match.Groups[1].Value;
+            //string pattern = @"(\b[\da-zA-Z]{12,19}\b)$";
+            //Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);//正则表达式
+            //Match match = regex.Match(v);
+            //if (string.IsNullOrEmpty(match.Groups[1].Value)) return "";
+            //return match.Groups[1].Value;
+        }
+
+        public static string ReplaceScanCodeDdnoLenth(string v)
+        {
+            //string pattern = @"^[\w\W]*?(\b\d+\b)$";
+            //Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);//正则表达式
+            //Match match = regex.Match(v);
+            //if (string.IsNullOrEmpty(match.Groups[1].Value)) return "";
+            //return match.Groups[1].Value;
+            string pattern = @"(\b[\da-zA-Z]{5,19}\b)$";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);//正则表达式，返回数字或者字母数据混合字符串
             Match match = regex.Match(v);
             if (string.IsNullOrEmpty(match.Groups[1].Value)) return "";
             return match.Groups[1].Value;

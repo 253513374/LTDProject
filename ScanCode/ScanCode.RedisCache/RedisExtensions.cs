@@ -13,7 +13,7 @@ namespace ScanCode.RedisCache
             //    options.InstanceName = "ScanCode";
             //});
             services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisconnectionString));
-            services.AddScoped<IRedisCache, RedisCacheService>();
+            services.AddTransient<IRedisCache, RedisCacheService>();
 
             return services;
         }

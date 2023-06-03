@@ -94,7 +94,7 @@ namespace ScanCode.WPF.ViewModels
                 return;
             }
 
-            string code = App.ReplaceScanCode(text);
+            string code = App.ReplaceScanCodeQrLenth(text);
 
             if (!IsNumeric(code))
             {
@@ -337,7 +337,7 @@ namespace ScanCode.WPF.ViewModels
                 {
                     for (int i = 0; i < dataError.Count; i++)
                     {
-                        ScanOrderOutDetailsError.Add(data[i]);
+                        ScanOrderOutDetailsError.Add(dataError[i]);
                     }
                     //ScanOrderOutDetailsError = dataError;
                 }

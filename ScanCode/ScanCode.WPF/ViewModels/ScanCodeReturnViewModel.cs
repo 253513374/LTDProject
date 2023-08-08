@@ -123,8 +123,8 @@ namespace ScanCode.WPF.ViewModels
             catch (Exception e)
             {
                 ErrorReturnInfo = $"{e.Message}";
-                Console.WriteLine(e);
-                throw;
+
+                //  throw;
             }
 
             //throw new NotImplementedException();

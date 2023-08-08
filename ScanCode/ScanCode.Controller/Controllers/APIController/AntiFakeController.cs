@@ -41,7 +41,14 @@ namespace ScanCode.Mvc.Controllers.APIController
                 return Failure<AntiFakeResult>("无效的防伪码");
             }
 
-            var result = await _searchByCodeService.QueryTag(qrcode);
+            //获取远程访问客户端IP 地址
+
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+            if (remoteIpAddress is null)
+            {
+                remoteIpAddress = HttpContext.Connection.LocalIpAddress;
+            }
+            var result = await _searchByCodeService.QueryTag(qrcode, remoteIpAddress?.ToString());
 
             return result.IsSuccess
                     ? Success(result, "查询成功")

@@ -162,7 +162,7 @@ namespace ScanCode.Repository
             {
                 using var context = _contextFactory.CreateDbContext();
 
-                DateTime startDate = DateTime.Now.AddDays(-60);
+                DateTime startDate = DateTime.Now.AddDays(-180);
 
                 // 您可能需要根据您的表结构和字段类型调整此 SQL 查询
                 var sql = @"

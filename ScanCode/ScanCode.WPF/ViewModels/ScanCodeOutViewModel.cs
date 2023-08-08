@@ -326,7 +326,6 @@ namespace ScanCode.WPF.ViewModels
                 if (data != null)
                 {
                     //ScanOrderOutDetails = data;
-
                     for (int i = 0; i < data.Count; i++)
                     {
                         ScanOrderOutDetails.Add(data[i]);

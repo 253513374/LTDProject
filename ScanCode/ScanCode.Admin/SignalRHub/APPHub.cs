@@ -75,7 +75,8 @@ namespace ScanCode.Web.Admin.SignalRHub
                 {
                     //退货成功
                     await _redisCache.SetBitAsync(qrcode, false);//设置出库缓存状态
-                    await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, false);
+
+                    // await Clients.All.SendAsync(HubClientMethods.OnOutStorageDayCount, false);
                     return ReturnsStorageResult.Success(qrcode);
                 }
 

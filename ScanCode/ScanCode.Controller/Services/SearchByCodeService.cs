@@ -29,9 +29,9 @@ namespace ScanCode.Mvc.Services
             _logger = logger;
         }
 
-        public async Task<AntiFakeResult> QueryTag(string qrcode)
+        public async Task<AntiFakeResult> QueryTag(string qrcode, string ipaddress = "")
         {
-            var url = BuildUrl(qrcode);
+            var url = BuildUrl(qrcode, ipaddress);
             _logger.LogInformation($"防伪查询URL：{url}");
 
             try
@@ -64,14 +64,14 @@ namespace ScanCode.Mvc.Services
             }
         }
 
-        private string BuildUrl(string qrcode)
+        private string BuildUrl(string qrcode, string ipaddress = "")
         {
             var baseurl = _configuration.GetSection("QueryQRCode").Value;
             var num = qrcode;
             var code = qrcode.Substring(0, 4);
             var query_type = "手机网络";
             var username = "wt";
-            var ip = "13800000000";
+            var ip = ipaddress;
 
             return $"{baseurl}?lang=cn&num={num}&code={code}&query_type={query_type}&username={username}&ip={ip}";
         }

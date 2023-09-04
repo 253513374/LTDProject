@@ -20,7 +20,7 @@
 <MudHidden Breakpoint="Breakpoint.MdAndUp" >
                     
     <MudStack AlignItems="AlignItems.Stretch" Spacing="5">
-        <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+        <MudDateRangePicker @ref="_picker"  PickerVariant="PickerVariant.Dialog"   Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
                 <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
@@ -51,7 +51,7 @@
             </MudStack>
             <MudSpacer></MudSpacer>
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="16">
-                <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+                <MudDateRangePicker @ref="_picker"  PickerVariant="PickerVariant.Dialog"   Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
                     <PickerActions>
                         <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
                         <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>

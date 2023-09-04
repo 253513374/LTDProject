@@ -18,7 +18,7 @@ else
     <MudHidden Breakpoint="Breakpoint.SmAndUp">
 
         <MudStack AlignItems="AlignItems.Stretch" Spacing="5">
-            <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+            <MudDateRangePicker @ref="_picker"   PickerVariant="PickerVariant.Dialog" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
                 <PickerActions>
                     <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
                     <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
@@ -61,7 +61,7 @@ else
                 </MudStack>
                 <MudSpacer></MudSpacer>
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="16">
-                    <MudDateRangePicker @ref="_picker" Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
+                    <MudDateRangePicker @ref="_picker"  PickerVariant="PickerVariant.Dialog"    Label="扫码出库时间范围" @bind-DateRange="_dateRange" AutoClose="false">
                         <PickerActions>
                             <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">清除</MudButton>
                             <MudButton OnClick="@(() => _picker.Close(false))">取消</MudButton>
@@ -135,7 +135,7 @@ else
 
     private IEnumerable<RedPacketRecord> PacketRecords { set; get; }
 
-   // private MudTable<RedPacketRecord> mtable;
+    // private MudTable<RedPacketRecord> mtable;
     //private MudTable<Element> table;
     private string searchString = null;
     private int redPacketRecordCunt;
@@ -146,8 +146,8 @@ else
         if (firstRender)
         {
             await LoadData();
-    //PacketRecords = await _PacketRecordRepository.FindAsync(f=>f.CreateTime>=DateTime.Now.Date.AddDays(-90));
-    //StateHasChanged();
+            //PacketRecords = await _PacketRecordRepository.FindAsync(f=>f.CreateTime>=DateTime.Now.Date.AddDays(-90));
+            //StateHasChanged();
         }
         return;// base.OnAfterRenderAsync(firstRender);
     }
@@ -218,7 +218,7 @@ else
         {
             return true;
         }
-               
+
         if (element.ReOpenId.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         if (element.Captcha.Contains(searchString, StringComparison.OrdinalIgnoreCase))
@@ -246,7 +246,7 @@ else
 
     private async Task LoadData()
     {
-        PacketRecords = await _PacketRecordRepository.FindAsync(f=>f.CreateTime>=DateTime.Now.Date.AddDays(-90));
+        PacketRecords = (await _PacketRecordRepository.FindAsync(f=>f.CreateTime>=DateTime.Now.Date.AddDays(-90))).OrderByDescending(o=>o.IssueTime).ToList();
 
         if (PacketRecords is not null && PacketRecords.Count()>1)
         {
@@ -264,8 +264,10 @@ else
             var fielter = _table.FilteredItems;
             if (fielter.Count()!=0)
             {
-             
-                var excelData = ExportService.ExportToExcel(fielter);
+
+                var excelList = FormatDateTime(fielter.ToList());
+
+                var excelData = ExportService.ExportToExcel(excelList);
                 var browserBase64 = Convert.ToBase64String(excelData);
                 var href = $"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{browserBase64}";
                 await _jsRuntime.InvokeVoidAsync("downloadFile", href, $"{nameof(RedPacketRecord).ToLower()}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx");
@@ -284,4 +286,104 @@ else
             _snackBar.Add(e.Message, Severity.Error);
         }
     }
+
+    public List<RedPacketRecordExcel> FormatDateTime(List<RedPacketRecord> dt)
+    {
+        return dt.Select(r => new RedPacketRecordExcel
+            {
+                Id = r.Id,
+                QrCode = r.QrCode,
+                Captcha = r.Captcha,
+                ActivityName = r.ActivityName,
+                CashAmount = r.CashAmount,
+                ReceiveTime = r.ReceiveTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                IssueTime = r.IssueTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                MchbillNo = r.MchbillNo,
+                MchId = r.MchId,
+                WxAppId = r.WxAppId,
+                ReOpenId = r.ReOpenId,
+                TotalAmount = r.TotalAmount,
+                SendListid = r.SendListid,
+                NonceStr = r.NonceStr,
+                PaySign = r.PaySign
+            }).OrderByDescending(o => o.IssueTime).ToList();
+    }
+
+    public class RedPacketRecordExcel
+    {
+        /// <summary>
+        /// 主键key
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 标签序号
+        /// </summary>
+        public string QrCode { get; set; }
+
+        /// <summary>
+        /// 验证码
+        /// </summary>
+        public string? Captcha { get; set; }
+
+        /// 活动名称
+        /// </summary>
+        public string ActivityName { get; set; }
+
+        /// <summary>
+        /// 红包金额
+        /// </summary>
+        public decimal CashAmount { get; set; }
+
+        /// <summary>
+        /// 领取红包的时间
+        /// </summary>
+        public string ReceiveTime { get; set; }  // Note the type change
+
+        /// <summary>
+        /// 红包发放时间
+        /// </summary>
+        public string IssueTime { get; set; }  // Note the type change
+
+        /// <summary>
+        /// 商户订单号
+        /// </summary>
+        public string MchbillNo { get; set; }
+
+        /// <summary>
+        /// 商户号
+        /// </summary>
+        public string MchId { get; set; }
+
+        /// <summary>
+        /// 公众账号appid
+        /// </summary>
+        public string WxAppId { get; set; }
+
+        /// <summary>
+        /// 用户openid
+        /// </summary>
+        public string ReOpenId { get; set; }
+
+        /// <summary>
+        /// 付款金额
+        /// </summary>
+        public string TotalAmount { get; set; }
+
+        /// <summary>
+        /// 红包订单的微信单号
+        /// </summary>
+        public string SendListid { get; set; }
+
+        /// <summary>
+        /// 随机字符串
+        /// </summary>
+        public string NonceStr { get; set; }
+
+        /// <summary>
+        /// 签名
+        /// </summary>
+        public string PaySign { get; set; }
+    }
+
 }

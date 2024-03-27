@@ -1,0 +1,113 @@
+﻿
+
+
+
+
+@* 生成手机验证码表单，输入手机号，发送验证码（验证码有效期60秒），输入验证码等 
+    1. 输入手机号，点击发送验证码，发送验证码到手机
+    2. 输入验证码，点击确认，验证验证码是否正确，正确则关闭对话框，否则提示错误信息
+    3. 点击取消，关闭对话框*@
+
+
+
+
+@inject IJSRuntime JsRuntime
+
+<MudDialog >
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTextField Label="手机号" @bind-Value="_phoneNumber" />
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Disabled="@_isDisabled" OnClick="SendVerificationCode">@_buttonName</MudButton>
+            </MudItem>
+        </MudGrid>
+        <MudTextField Label="验证码" @bind-Value="_verificationCode" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="VerifyCode">确认</MudButton>
+        <MudButton OnClick="Close">取消</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Close() => MudDialog.Close(DialogResult.Ok(true));
+
+
+    [Inject]
+    protected DataStateContainer Container { set; get; }
+
+
+    private string OpenId{ set; get; }  = string.Empty ;
+    private string _phoneNumber;
+    private string _verificationCode;
+
+    //按钮名称
+    private string _buttonName = "发送验证码";
+
+    private bool _isDisabled=false;
+
+    //计时器
+    private System.Timers.Timer _timer;
+    
+
+    private async Task SendVerificationCode()
+    {
+
+        // 在这里实现发送验证码的逻辑
+        // 例如，你可以调用一个API来发送验证码
+        // 记得设置验证码的有效期为60秒
+
+        //访问后端接口发送验证码
+
+        var Http= HttpClientFactory.CreateClient();
+        var response = await Http.PostAsJsonAsync("api/VerifyCode/SendVerificationCode", new { PhoneNumber = _phoneNumber });
+
+        if (response.IsSuccessStatusCode)
+        {
+            //发送成功
+            //显示提示信息
+            await JsRuntime.InvokeVoidAsync("alert", "验证码已发送，请查收");
+
+            //禁用按钮60秒
+
+        }
+        else
+        {
+            //发送失败
+            //显示提示信息
+            await JsRuntime.InvokeVoidAsync("alert", "验证码发送失败，请重试");
+        }
+    }
+
+    private async Task VerifyCode()
+    {
+        // 在这里实现验证验证码的逻辑
+        // 如果验证码正确，关闭对话框
+        // 如果验证码错误，显示错误信息
+
+        //访问后端接口验证验证码
+        var Http = HttpClientFactory.CreateClient();
+        var response = await Http.PostAsJsonAsync("api/VerifyCode/VerifyCode", new { PhoneNumber = _phoneNumber, VerificationCode = _verificationCode, OpenId = Container.OpenId });
+    
+        if (response.IsSuccessStatusCode)
+        {
+            //验证成功
+            //关闭对话框
+            Close();
+        }
+        else
+        {
+            //验证失败
+            //显示提示信息
+            await JsRuntime.InvokeVoidAsync("alert", "验证码错误，请重试");
+        }
+    
+    }
+
+
+}

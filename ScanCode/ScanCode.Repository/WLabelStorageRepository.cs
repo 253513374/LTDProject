@@ -351,17 +351,30 @@ namespace ScanCode.Repository
         }
 
         //按年月分组统计订单号的数量
-        public async Task<IEnumerable<YMDGroupByCount>> GetYMOrderListAsync()
+        public async Task<IEnumerable<YMDGroupByCount>> GetYMOrderListAsync(int queryFlag = 0, int year = 0)
         {
+            // 如果年份参数未指定，设置为当前年份
+            if (year == 0)
+            {
+                year = DateTime.Now.Year - 1;
+            }
+
             using (var context = _contextFactory.CreateDbContext())
             {
-                var groupedData = await context.WLabelStorages.AsNoTracking()
+                var query = context.WLabelStorages.AsNoTracking();
+
+                // 如果查询标识为0，添加按年份查询的条件
+                if (queryFlag == 2)
+                {
+                    query = query.Where(x => x.OrderTime.Year == year);
+                }
+
+                var groupedData = await query
                     .GroupBy(x => new { x.OrderTime.Year, x.OrderTime.Month, x.OrderNumbels })
                     .Select(g => new YMDGroupByCount()
                     {
                         Year = g.Key.Year.ToString(),
                         Month = g.Key.Month.ToString(),
-
                         OrderNumbels = g.Key.OrderNumbels,
                         Count = g.Count(),
                     })

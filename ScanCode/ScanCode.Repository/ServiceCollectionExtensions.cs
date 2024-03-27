@@ -22,6 +22,7 @@ namespace ScanCode.Repository
             services.AddScoped<EmailSender>();
             services.AddScoped<OutStorageRepository>();
             services.AddScoped<UserAwardInfoRepository>();
+            services.AddScoped<UserVerifyInfoRepository>();
 
             // var assembly = new[] { Assembly.GetExecutingAssembly(), typeof(LotteryActivity).Assembly };
             // services.AddMediatR(assembly);
@@ -43,11 +44,11 @@ namespace ScanCode.Repository
         public static IServiceCollection AddOracleContext(this IServiceCollection services, string contextString)
         {
             services.AddDbContextFactory<ErpContext>(options =>
-                options.UseOracle(contextString, b =>
-                        b.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19))
+                options.UseOracle(contextString)
                     .EnableSensitiveDataLogging());
-            services.AddScoped<BdxOrderRepository>();
 
+            services.AddScoped<BdxOrderRepository>();
+            //, b => b.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19)
             return services;
         }
     }

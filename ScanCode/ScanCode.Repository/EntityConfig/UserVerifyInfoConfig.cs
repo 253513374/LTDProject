@@ -8,7 +8,8 @@ namespace ScanCode.Repository.EntityConfig
     {
         public override void Configure(EntityTypeBuilder<UserVerifyInfo> builder)
         {
-            builder.HasKey(p => p.PhoneNumber); // 设置主键
+            builder.HasKey(p => p.WxOpenId); // 设置主键为 WxOpenId
+
             builder.Property(p => p.PhoneNumber) // 设置属性
                 .IsRequired()
                 .HasMaxLength(20);

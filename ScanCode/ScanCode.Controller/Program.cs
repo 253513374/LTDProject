@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ScanCode.Controller.AlibabaCloudSMS;
 using ScanCode.Controller.Controllers.APIController;
 using ScanCode.Controller.Services;
 using ScanCode.Model.Entity;
@@ -104,6 +105,9 @@ try
         });
     });
 
+    //≈‰÷√AlibabaCloudConfig∞Û∂®Configuration
+    builder.Services.Configure<AlibabaCloudConfig>(builder.Configuration.GetSection("AlibabaCloudConfig"));
+
 #if DEBUG
     var redisconnectionString = builder.Configuration.GetConnectionString("DebugRedisConnectionString");
 #else
@@ -150,6 +154,8 @@ try
     builder.Services.AddScoped<QrCodeRedPacketDistributor>();
     builder.Services.AddScoped<CaptchaRedPacketDistributor>();
     builder.Services.AddScoped<RedPacketStatusService>();
+
+    builder.Services.AddTransient<AlibabaCloudService>();
 
     builder.Services.AddCors(options =>
     {

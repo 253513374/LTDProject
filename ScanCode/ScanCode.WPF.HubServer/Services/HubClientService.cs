@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using ScanCode.Share;
 using ScanCode.Share.SignalR;
 using ScanCode.WPF.HubServer.Entity;
@@ -11,6 +6,7 @@ using ScanCode.WPF.HubServer.Model;
 using ScanCode.WPF.HubServer.ReQuest;
 using ScanCode.WPF.HubServer.Response;
 using ScanCode.WPF.HubServer.ViewModels;
+using System.Security.Claims;
 
 namespace ScanCode.WPF.HubServer.Services
 {

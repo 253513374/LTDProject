@@ -112,5 +112,36 @@ namespace ScanCode.Repository
                 //.Where(x => x.ReOpenId == openid).Select(x => x.ReOpenId).ToListAsync();
             }
         }
+
+        //这个函数根据字段ReOpenId分组统计，每个ReOpenId领取红包金额TotalAmount（这个需要转换int才能使用sum,保留两位小数）
+        public async Task<List<RedPacketRecord>> GetRedPacketRecordsGroupByReOpenIdAsync(int topCount)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.AsNoTracking()
+
+                    .GroupBy(g => g.ReOpenId)
+                    .Select(s => new RedPacketRecord()
+                    {
+                        ReOpenId = s.Key,
+                        TotalAmount = Math.Round(s.Sum(s => int.Parse(s.TotalAmount)) / 100.0, 2).ToString()
+                    })
+                    .OrderByDescending(t => t.TotalAmount)
+                    .Take(topCount)
+                    .ToListAsync();
+            }
+        }
+
+        //返回指定用户领取红包的明细
+        public async Task<List<RedPacketRecord>> GetUserRedPacketDetailAsync(string openid)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.RedPacketRecords.AsNoTracking()
+                    .Where(x => x.ReOpenId == openid)
+
+                    .ToListAsync();
+            }
+        }
     }
 }

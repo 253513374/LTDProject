@@ -17,7 +17,7 @@ namespace ScanCode.Repository.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -415,6 +415,58 @@ namespace ScanCode.Repository.Migrations
                     b.ToTable("Prize", (string)null);
                 });
 
+            modelBuilder.Entity("ScanCode.Model.Entity.RedPacketCinfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AdminUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CashValue")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActivity")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSubscribe")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxCashValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinCashValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RedPacketConfigType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RedPacketType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ScanRedPacketGuid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WishingWord")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScanRedPackets");
+                });
+
             modelBuilder.Entity("ScanCode.Model.Entity.RedPacketRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -498,58 +550,6 @@ namespace ScanCode.Repository.Migrations
                     SqlServerEntityTypeBuilderExtensions.IsMemoryOptimized(b);
                 });
 
-            modelBuilder.Entity("ScanCode.Model.Entity.ScanRedPacket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ActivityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AdminUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CashValue")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActivity")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSubscribe")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MaxCashValue")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinCashValue")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RedPacketConfigType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RedPacketType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ScanRedPacketGuid")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WishingWord")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ScanRedPackets");
-                });
-
             modelBuilder.Entity("ScanCode.Model.Entity.User", b =>
                 {
                     b.Property<int>("ID")
@@ -564,7 +564,7 @@ namespace ScanCode.Repository.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 26, 10, 36, 19, 163, DateTimeKind.Local).AddTicks(5624));
+                        .HasDefaultValue(new DateTime(2024, 3, 24, 14, 20, 29, 466, DateTimeKind.Local).AddTicks(4701));
 
                     b.Property<int>("Flag")
                         .HasColumnType("int");
@@ -662,6 +662,32 @@ namespace ScanCode.Repository.Migrations
                         .HasFilter("[WeChatOpenId] IS NOT NULL");
 
                     b.ToTable("UserAwardInfos", (string)null);
+                });
+
+            modelBuilder.Entity("ScanCode.Model.Entity.UserVerifyInfo", b =>
+                {
+                    b.Property<string>("WxOpenId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CodeSentTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("VerificationCode")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.HasKey("WxOpenId");
+
+                    b.ToTable("UserVerifyInfo", (string)null);
                 });
 
             modelBuilder.Entity("ScanCode.Model.Entity.VerificationCode", b =>

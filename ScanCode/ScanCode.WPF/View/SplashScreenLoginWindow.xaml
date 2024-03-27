@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:ScanCode.WPF"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:viewModels="clr-namespace:ScanCode.WPF.ViewModels"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" d:DataContext="{d:DesignInstance Type=viewModels:LoginViewModel}"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+
+        d:DataContext="{d:DesignInstance Type=viewModels:LoginViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{x:Null}"
         TextElement.FontWeight="Medium"
@@ -25,7 +27,6 @@
     <materialDesign:Card  Margin="25"
         UniformCornerRadius="15"
 
-        materialDesign:ShadowAssist.ShadowEdges="Bottom,Right,Left,Top"
         Background="{DynamicResource MaterialDesignLightBackground}"
         materialDesign:ElevationAssist.Elevation="Dp16">
         <Grid>

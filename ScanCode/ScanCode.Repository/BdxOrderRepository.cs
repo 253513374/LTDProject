@@ -24,13 +24,34 @@ namespace ScanCode.Repository
         }
 
         ///根据表达式树条件返回单个对象结果
+        //public async Task<BdxOrder> GetSingleAsync(string ddno)
+        //{
+        //    using var context = _contextFactory.CreateDbContext();
+
+        //    DateTime time = DateTime.Now.AddDays(-180);
+        //    var oders = await context.BdxOrders.AsNoTracking().Where(w => w.DDNO.Contains(ddno)).FirstOrDefaultAsync();
+        //    return oders;
+        //}
         public async Task<BdxOrder> GetSingleAsync(string ddno)
         {
-            using var context = _contextFactory.CreateDbContext();
+            try
+            {
+                using var context = _contextFactory.CreateDbContext();
 
-            DateTime time = DateTime.Now.AddDays(-180);
-            var oders = await context.BdxOrders.AsNoTracking().Where(w => w.DDNO.Contains(ddno)).FirstOrDefaultAsync();
-            return oders; //await Task.Run(() => context.BdxOrders.AsNoTracking().Where(w=>w.DDRQ>= time.ToString()).FirstOrDefault(where));
+                DateTime startDate = DateTime.Now.AddDays(-180);
+
+                var results = await GetBdxOrderListAsync(ddno.Trim());
+
+                var order = results.Where(w => w.DDNO.Contains(ddno)).FirstOrDefault();
+
+                return order;
+            }
+            catch (OracleException e)
+            {
+                _logger.LogError($"查询订单异常{ddno}：{e.Message}");
+                // Handle exception...
+                return null;
+            }
         }
 
         public async Task<List<GroupedBdxOrder>> GetGroupedBdxOrdersDDNOAsync(string ddno)

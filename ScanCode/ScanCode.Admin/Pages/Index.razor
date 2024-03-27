@@ -190,13 +190,36 @@
     private bool isgetyear = false;
     private bool isgetorder = false;
 
-    private int OutStorageThisYearCount;//今年出库数量
-    private int OutStorageCount;//今日出库数量
-    private int LotteryWinCount;//中奖数量
-    private int LotteryCount;//抽奖数量
+    /// <summary>
+    /// 今年出库数量
+    /// </summary>
+    private int OutStorageThisYearCount;
 
-    private int RedPacketCount;//红包发放数量
-    private double TotalAmountSum;//红包发放金额
+    /// <summary>
+    /// 今日出库数量
+    /// </summary>
+    private int OutStorageCount;
+
+    /// <summary>
+    /// 中奖数量
+    /// </summary>
+    private int LotteryWinCount;
+
+    /// <summary>
+    /// 抽奖数量
+    /// </summary>
+    private int LotteryCount;
+
+
+    /// <summary>
+    /// 红包发放数量
+    /// </summary>
+    private int RedPacketCount;
+
+    /// <summary>
+    /// 红包发放金额
+    /// </summary>
+    private double TotalAmountSum;
 
     bool smooth = true;
     bool showDataLabels = true;
@@ -223,55 +246,65 @@
         {
             return;
         }
-        if (auTask.Result.User is not null)
+        try
         {
-            var claims = auTask.Result.User.Claims.ToList();
-            var token = Service.GenerateJwtToken(claims);
-            hubConnection = hubConnection.TryInitialize(_navigationManager, token);
-
-            hubConnection.On<bool>(HubClientMethods.OnOutStorageDayCount, (bit) =>
+            if (auTask.Result.User is not null)
             {
+                var claims = auTask.Result.User.Claims.ToList();
+                var token = Service.GenerateJwtToken(claims);
+                hubConnection = hubConnection.TryInitialize(_navigationManager, token);
 
-                if (bit)
+                hubConnection.On<bool>(HubClientMethods.OnOutStorageDayCount, (bit) =>
                 {
-                    Interlocked.Increment(ref OutStorageCount);
-                }
-                else
-                {
-                    Interlocked.Decrement(ref OutStorageCount);
-                }
 
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>
-            {
-                RedPacketCount = Interlocked.Increment(ref RedPacketCount);
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<int>(HubClientMethods.OnRedpacketTotalAmount, (count) =>
-            {
-                TotalAmountSum += (count/100);
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<int>(HubClientMethods.OnLotteryCount, (count) =>
-            {
-                LotteryCount = Interlocked.Increment(ref LotteryCount);
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<int>(HubClientMethods.OnLotteryWinCount, (count) =>
-            {
-                //中奖人数
-                LotteryWinCount = Interlocked.Increment(ref LotteryWinCount);
-                InvokeAsync(StateHasChanged);
-            });
-            await hubConnection.StartAsync();
+                    if (bit)
+                    {
+                        Interlocked.Increment(ref OutStorageCount);
+                    }
+                    else
+                    {
+                        Interlocked.Decrement(ref OutStorageCount);
+                    }
+
+                    InvokeAsync(StateHasChanged);
+                });
+                hubConnection.On<int>(HubClientMethods.OnRedPackedCount, (count) =>
+                {
+                    RedPacketCount = Interlocked.Increment(ref RedPacketCount);
+                    InvokeAsync(StateHasChanged);
+                });
+                hubConnection.On<int>(HubClientMethods.OnRedpacketTotalAmount, (count) =>
+                {
+                    TotalAmountSum += (count / 100);
+                    InvokeAsync(StateHasChanged);
+                });
+                hubConnection.On<int>(HubClientMethods.OnLotteryCount, (count) =>
+                {
+                    LotteryCount = Interlocked.Increment(ref LotteryCount);
+                    InvokeAsync(StateHasChanged);
+                });
+                hubConnection.On<int>(HubClientMethods.OnLotteryWinCount, (count) =>
+                {
+                    //中奖人数
+                    LotteryWinCount = Interlocked.Increment(ref LotteryWinCount);
+                    InvokeAsync(StateHasChanged);
+                });
+                await hubConnection.StartAsync();
+            }
+
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.StackTrace);
+            // throw;
+        }
+        
         //if (FormsNever is null)
         //{
         //    FormsNever = new ReportFormsNever();
         //}
         await GetAllYearCountAsync();
-       // await LoadCache();
+        // await LoadCache();
         StateHasChanged();
         // await GetOrderNumberAsync();
     }
@@ -289,6 +322,15 @@
         {
             FormsNever = await GetDataFromStorage();
             await RedisCache.SetObjectAsync(cacheKey, FormsNever);
+        }
+        else
+        {
+            //判断FormsNever最大年份是否为当年年份，不是则重新获取
+            if (FormsNever.GroupByYearCounts.Max(m => m.Year) != DateTime.Now.Year)
+            {
+                FormsNever = await GetDataFromStorage();
+                await RedisCache.SetObjectAsync(cacheKey, FormsNever);
+            }
         }
 
 
@@ -330,7 +372,10 @@
     //    return formsNever;
     //}
 
-
+    /// <summary>
+    /// 从存储中获取数据
+    /// </summary>
+    /// <returns>返回一个 ReportFormsNever 对象，该对象包含了订单和年度销售数据</returns>
     private async Task<ReportFormsNever> GetDataFromStorage()
     {
         var formsNever = new ReportFormsNever();

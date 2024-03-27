@@ -18,7 +18,7 @@ namespace ScanCode.Web.Admin.SignalRHub
     /// <summary>
     /// 指定策略才能访问
     /// </summary>
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class APPHub : Hub
     {
         private readonly IMemoryCache _cache;

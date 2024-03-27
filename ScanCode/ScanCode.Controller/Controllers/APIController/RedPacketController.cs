@@ -2,8 +2,6 @@
 using ScanCode.Controller.Services;
 using ScanCode.Model.ResponseModel;
 
-using ScanCode.Mvc.Services;
-
 namespace ScanCode.Mvc.Controllers.APIController
 {
     /// <summary>

@@ -312,7 +312,9 @@ namespace ScanCode.Mvc.Services
         /// <summary>
         /// 返回该标签序号领取现金红包状态
         /// </summary>
+        /// <param name="openid"></param>
         /// <param name="qrcode"></param>
+        /// <param name="ordernumbels"></param>
         /// <returns></returns>
         public async Task<RedStatusResult> GetRedStatusResultAsync(string openid, string qrcode, string ordernumbels)
         {
@@ -381,7 +383,7 @@ namespace ScanCode.Mvc.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"标签序号领取现金红包状态验证出现异常：{e.Message}");
+                _logger.LogError(e, $"标签序号领取现金红包状态验证出现异常：{e.Message}");
                 return RedStatusResult.FailNotException($"标签序号领取现金红包状态验证出现异常：{e.Message}");
             }
         }

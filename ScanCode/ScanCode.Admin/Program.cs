@@ -62,17 +62,30 @@ try
     // Add services to the container.
     StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
-    //builder.Services.AddQuartz(q =>
-    //{
-    //    q.UseMicrosoftDependencyInjectionJobFactory();
-    //    q.AddJob<LoadStockOutCacheJob>(j => j.WithIdentity("MyJob"));
-    //    q.AddTrigger(t => t
-    //        .WithIdentity("MyJobTrigger")
-    //        .ForJob("MyJob")
-    //        .WithCronSchedule("0 * * ? * *")); // 没年1月1日
-    //});
+    builder.Services.AddQuartz(q =>
+    {
+        q.UseMicrosoftDependencyInjectionJobFactory();
 
-    // builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+        //添加LoadStockOutCacheJob任务
+        //q.AddJob<LoadStockOutCacheJob>(j => j.WithIdentity("MyJob"));
+        //q.AddTrigger(t => t
+        //    .WithIdentity("MyJobTrigger")
+        //    .ForJob("MyJob")
+        //    .WithCronSchedule("0 0 0 1 1 ?"));//每年1月1日
+        //.WithCronSchedule("0 * * ? * *")); // 每分钟的第0秒触发一次
+
+        // 添加AnalyzeDataJob任务
+        q.AddJob<AnalyzeDataJob>(opts => opts.WithIdentity("AnalyzeDataJob"));
+
+        // 添加触发器
+        q.AddTrigger(opts => opts
+            .ForJob("AnalyzeDataJob") // 关联到AnalyzeDataJob
+            .WithIdentity("AnalyzeDataJobTrigger") // 触发器的标识符
+                                                   //.StartNow()
+            .WithCronSchedule("0 0 0 1 1 ?"));//每年1月1日
+    });
+
+    builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
     var redisconnectionString = builder.Configuration.GetConnectionString("RedisConnectionString");
 
@@ -120,10 +133,6 @@ try
 
     builder.Services.AddMudServices(config =>
     {
-        // config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
-
-        //config.SnackbarConfiguration.PreventDuplicates = false;
-        //config.SnackbarConfiguration.NewestOnTop = false;
         config.SnackbarConfiguration.ShowCloseIcon = true;
         config.SnackbarConfiguration.VisibleStateDuration = 10000;
         config.SnackbarConfiguration.HideTransitionDuration = 500;
@@ -213,27 +222,9 @@ try
 
     var app = builder.Build();
 
-    //#region 启用微信配置
-
-    //var senparcWeixinSetting = app.Services.GetService<IOptions<SenparcWeixinSetting>>()!.Value;
-
-    ////启用微信配置（必须）
-    //var registerService = app.UseSenparcWeixin(app.Environment,
-    //    null /* 不为 null 则覆盖 appsettings  中的 SenpacSetting 配置*/,
-    //    null /* 不为 null 则覆盖 appsettings  中的 SenpacWeixinSetting 配置*/,
-    //    register => { /* CO2NET 全局配置 */ },
-    //    (register, weixinSetting) =>
-    //    {
-    //        //注册公众号信息（可以执行多次，注册多个公众号）
-    //        register.RegisterMpAccount(weixinSetting, "【威特电缆】公众号");
-    //        register.RegisterTenpayV3(weixinSetting, "【威特电缆】微信支付（V2）");
-    //    });
-    //#endregion 启用微信配置
-
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        //c.SwaggerEndpoint("/swagger/v1/swagger.json", "微信H5后台API");
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "抽奖系统 API 接口");
     });
 

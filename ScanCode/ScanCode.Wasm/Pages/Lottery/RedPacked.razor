@@ -97,7 +97,13 @@
     }
 @*
         <MudButton OnClick="OpenDialogAsync">测试领取红包成功</MudButton>*@
+
+    
 </MudStack>
+
+@* <MudButton OnClick="OpenPhoneCaptchaDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
+    Open Simple Dialog
+</MudButton> *@
 
 <MudCard Elevation="0" Class="hongbaocard mt-10" >
     <div Class="Cardimage-container">
@@ -150,11 +156,22 @@
             _isProcessing = false;
             StateHasChanged();
         }
-      //  return base.OnAfterRenderAsync(firstRender);
+        //  return base.OnAfterRenderAsync(firstRender);
     }
 
 
-    //二维码领取领取红包
+    /// <summary>
+    /// 异步方法，用于通过扫描二维码领取红包。
+    /// </summary>
+    /// <remarks>
+    /// 此方法首先检查 OpenId 和 QRCode 是否为空。如果其中任何一个为空，方法将直接返回。
+    /// 然后，它会检查是否正在处理其他请求（由 _isProcessing 变量表示）。如果是，则直接返回。
+    /// 如果不是，它将设置 _isProcessing 为 true，表示开始处理请求。
+    /// 接着，它会尝试调用 GetRedPacketResultQrCodeAsync 方法来领取红包。
+    /// 如果领取成功，它会将红包金额转换为两位小数的字符串，并显示一个包含红包金额的对话框。
+    /// 如果领取失败，它会显示一个包含错误消息的对话框。
+    /// 最后，无论成功还是失败，它都会将 _isProcessing 设置回 false，表示请求处理完毕。
+    /// </remarks>
     private async Task GetRedPacketAsync()
     {
         if (string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QrCode))
@@ -163,15 +180,32 @@
         }
 
 
-        // 如果 _isProcessing 为 true，直接返回
+        var result = await IsNeedPhoneCaptchaAsync(Container.OpenId);
+        if (result)
+        {
+            var isPhoneCaptchaResult = await OpenPhoneCaptchaDialogAsync();
+
+            if (!isPhoneCaptchaResult)
+            {
+               
+                return;
+            }
+        }
+
+
+        //截流，每次只能点击一次
         if (_isProcessing)
         {
             return;
         }
-        // 设置 _isProcessing 为 true
         _isProcessing = true;
+
+
         try
         {
+
+            
+
             var options = new DialogOptions
             {
                 CloseButton = true, 
@@ -181,11 +215,6 @@
                 CloseOnEscapeKey = true,
                 NoHeader = true,
             };
-
-#if DEBUG
-            await Task.Delay(3000);
-#endif
-           
 
             var redpacketresult = await GetRedPacketResultQrCodeAsync(Container.OpenId, Container.QrCode);
             if (redpacketresult.IsSuccess)
@@ -201,9 +230,7 @@
                 catch (FormatException)
                 {
                     redpacketresult.TotalAmount = "¥0.00";
-    // Console.WriteLine("Failed to parse TotalAmount");
                 }
-                // redPacketResult = RedPacketResult.Success("100");
                 var parameters = new DialogParameters();
                 parameters.Add("Result", redpacketresult);
                 parameters.Add("Message","恭喜你！已领取红包");
@@ -226,9 +253,34 @@
     }
 
 
-
+    /// <summary>
+    /// 使用验证码领取红包的异步方法。
+    /// </summary>
+    /// <remarks>
+    /// 此方法首先检查验证码、OpenId 和 QRCode 是否为空。如果其中任何一个为空，方法将直接返回。
+    /// 然后，它会检查是否正在处理其他请求（由 _isProcessing 变量表示）。如果是，则直接返回。
+    /// 如果不是，它将设置 _isProcessing 为 true，表示开始处理请求。
+    /// 接着，它会尝试调用 GetRedPacketResultCaptchaAsync 方法来领取红包。
+    /// 如果领取成功，它会将红包金额转换为两位小数的字符串，并显示一个包含红包金额的对话框。
+    /// 如果领取失败，它会显示一个包含错误消息的对话框。
+    /// 最后，无论成功还是失败，它都会将 _isProcessing 设置回 false，表示请求处理完毕。
+    /// </remarks>
     private async Task GetRedPacketCaptchaAsync()
     {
+
+        var result = await IsNeedPhoneCaptchaAsync(Container.OpenId);
+        if (result)
+        {
+            var isPhoneCaptchaResult = await OpenPhoneCaptchaDialogAsync();
+
+            if (!isPhoneCaptchaResult)
+            {
+                return;
+            }
+        }
+
+
+
         var options = new DialogOptions
         {
             CloseButton = true, 
@@ -241,30 +293,30 @@
         if (string.IsNullOrWhiteSpace(Captcha)||string.IsNullOrWhiteSpace(Container.OpenId) || string.IsNullOrWhiteSpace(Container.QrCode))
         {
 #if DEBUG
-            var parameters = new DialogParameters();
-            parameters.Add("Msg", $"Captcha:{Captcha}  OpenId:{Container.OpenId}  QRCode:{Container.QrCode}");
-            await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
+    var parameters = new DialogParameters();
+    parameters.Add("Msg", $"Captcha:{Captcha}  OpenId:{Container.OpenId}  QRCode:{Container.QrCode}");
+    await _dialogService.ShowAsync<DeBugDialog>("红包详情",parameters, options);
 #endif
-          
+
             return;
         }
-        
+
         // 如果 _isProcessing 为 true，直接返回
         if (_isProcessing)
         {
             return;
         }
-    // 设置 _isProcessing 为 true
+        // 设置 _isProcessing 为 true
         _isProcessing = true;
         try
         {
-            
+
 
             var redpacketresult = await GetRedPacketResultCaptchaAsync(Container.OpenId, Container.QrCode,Captcha);
             if (redpacketresult.IsSuccess)
             {
-                
-                
+
+
                 //int parsedValue = 0;
 
                 try
@@ -277,7 +329,7 @@
                 catch (FormatException)
                 {
                     redpacketresult.TotalAmount = "¥0.00";
-                   // Console.WriteLine("Failed to parse TotalAmount");
+                    // Console.WriteLine("Failed to parse TotalAmount");
                 }
                 var parameters = new DialogParameters();
                 parameters.Add("Result", redpacketresult);
@@ -294,17 +346,77 @@
         }
         finally
         {
-    // 将 _isProcessing 设置回 false
+            // 将 _isProcessing 设置回 false
             _isProcessing = false;
         }
     }
 
+
+
+    [Inject] private IDialogService DialogService { get; set; }
     /// <summary>
-    /// 扫码二维码直接领取红包
+    /// 异步方法，用于判断是否需要手机验证码。
     /// </summary>
-    /// <param name="openid"></param>
-    /// <param name="qrcode"></param>
-    /// <returns></returns>
+    /// <param name="openid">用户的 OpenId。</param>
+    /// <returns>如果需要手机验证码，返回 true；否则返回 false。</returns>
+    /// <remarks>
+    /// 此方法首先创建一个 HttpClient 实例，然后向指定的 URL 发送 GET 请求。
+    /// URL 的格式为 "AliyunSmsVerifyCode/Exists?openid={openid}"，其中 {openid} 是方法的参数。
+    /// 如果请求成功，方法将从响应中读取 JSON 字符串，然后将其反序列化为 bool 值。
+    /// 如果请求失败，方法将抛出一个包含错误状态码的异常。
+    /// </remarks>
+    private async Task<bool> IsNeedPhoneCaptchaAsync(string openid)
+    {
+
+        try
+        {
+            using var httpClient = HttpClientFactory.CreateClient("weixin");
+
+            var response = await httpClient.GetAsync($"AliyunSmsVerifyCode/Exists?openid={openid}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                // var jsonString = await response.Content.ReadAsStringAsync();
+                // var result = JsonSerializer.Deserialize<bool>(jsonString);
+
+                var redpacketresult = await response.Content.ReadFromJsonAsync<AliyunSmsResult>();
+
+                return !redpacketresult.IsSuccess;
+            }
+            else
+            {
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            bool? result = await DialogService.ShowMessageBox(
+          "Warning",
+          $"{ex.Message}",
+          yesText: "Delete!", cancelText: "Cancel");
+            // throw;
+
+            return true;
+        }
+        
+    }
+
+
+
+
+
+    /// <summary>
+    /// 异步方法，用于通过扫描二维码领取红包。
+    /// </summary>
+    /// <param name="openid">用户的 OpenId。</param>
+    /// <param name="qrcode">二维码信息。</param>
+    /// <returns>领取红包的结果。</returns>
+    /// <remarks>
+    /// 此方法首先创建一个 HttpClient 实例，然后向指定的 URL 发送 POST 请求。
+    /// URL 的格式为 "RedPacket/QRCode?openid={openid}&qrcode={qrcode}"，其中 {openid} 和 {qrcode} 是方法的参数。
+    /// 如果请求成功，方法将从响应中读取 JSON 字符串，然后将其反序列化为 RedPacketResult 对象。
+    /// 如果请求失败，方法将记录错误信息，并返回一个包含错误状态码的 RedPacketResult 对象。
+    /// </remarks>
     private async Task<RedPacketResult> GetRedPacketResultQrCodeAsync(string openid, string qrcode)
     {
         try
@@ -343,12 +455,18 @@
     }
 
     /// <summary>
-    /// 使用验证码领取红包
+    /// 异步方法，用于通过输入验证码领取红包。
     /// </summary>
-    /// <param name="openid"></param>
-    /// <param name="qrcode"></param>
-    /// <param name="captcha"></param>
-    /// <returns></returns>
+    /// <param name="openid">用户的 OpenId。</param>
+    /// <param name="qrcode">二维码信息。</param>
+    /// <param name="captcha">用户输入的验证码。</param>
+    /// <returns>领取红包的结果。</returns>
+    /// <remarks>
+    /// 此方法首先创建一个 HttpClient 实例，然后向指定的 URL 发送 POST 请求。
+    /// URL 的格式为 "RedPacket/Captcha?openid={openid}&qrcode={qrcode}&captcha={captcha}"，其中 {openid}、{qrcode} 和 {captcha} 是方法的参数。
+    /// 如果请求成功，方法将从响应中读取 JSON 字符串，然后将其反序列化为 RedPacketResult 对象。
+    /// 如果请求失败，方法将记录错误信息，并返回一个包含错误状态码的 RedPacketResult 对象。
+    /// </remarks>
     private async Task<RedPacketResult> GetRedPacketResultCaptchaAsync(string openid, string qrcode, string captcha)
     {
         try
@@ -368,7 +486,7 @@
                 }
 
                 return RedPacketResult.Fail(redpacketresult.Message);
-    //return new RedPacketResult() { Message = redpacketresult.Message };
+                //return new RedPacketResult() { Message = redpacketresult.Message };
             }
             Logger.LogError($"验证码领取现金红包失败：{response.StatusCode}");
             return RedPacketResult.Fail(response.StatusCode.ToString());
@@ -383,7 +501,7 @@
 
             return RedPacketResult.Fail(e.Message);
         }
-       
+
     }
 
 
@@ -394,9 +512,7 @@
     {
 
         double totalAmount = 0;
-    //    string expectedResult = "¥123.46";
 
-        // Act
         double parsedDouble = Convert.ToDouble(totalAmount);
         double valueWithTwoDecimals = Math.Round(parsedDouble / 100, 2);
         string actualResult = $"¥{valueWithTwoDecimals}";
@@ -406,5 +522,37 @@
         parameters.Add("Result", new RedPacketResult() { IsSuccess = true, TotalAmount = actualResult });
         parameters.Add("Message", "红包被领取完毕！");
         await _dialogService.ShowAsync<RedPackedResultDialog>("红包详情", parameters, _options);
+    }
+
+    /// <summary>
+    /// 打开手机验证码对话框
+    /// </summary>
+    /// <returns>验证码校验通过返回true,否则返回false</returns>
+    private async Task<bool> OpenPhoneCaptchaDialogAsync()
+    {
+
+        DialogOptions _options = new DialogOptions
+            {
+                CloseButton = true,
+                FullWidth = true,
+                DisableBackdropClick = true,
+                CloseOnEscapeKey = true,
+                NoHeader = true,
+            };
+
+        var parameters = new DialogParameters();
+     
+        var dialog = _dialogService.Show<VerifyCodeDialog>("验证手机号", parameters, _options);
+
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            return true;
+
+        }
+
+        return false;
+
     }
 }

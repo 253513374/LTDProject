@@ -34,5 +34,9 @@
         Task SetObjectAsync(string key, object data, TimeSpan? expiry = null);
 
         Task<bool> SetRedPacketAsync(string qrcode);
+
+        Task SaveVerificationCodeAsync(string phoneNumber, string verificationCode, TimeSpan? expiry = null);
+
+        Task<VerificationResult> VerifyCodeAsync(string phoneNumber, string userEnteredCode);
     }
 }

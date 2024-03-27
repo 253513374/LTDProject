@@ -38,6 +38,8 @@ namespace ScanCode.Repository
             modelBuilder.ApplyConfiguration(new UserConfig());
             modelBuilder.ApplyConfiguration(new UserAwardInfoConfiguration());
 
+            modelBuilder.ApplyConfiguration(new UserVerifyInfoConfig());
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -95,5 +97,6 @@ namespace ScanCode.Repository
 
         public DbSet<ActivityPrize> ActivityPrizes { get; internal set; }
         public DbSet<UserAwardInfo> UserAwardInfos { get; internal set; }
+        public DbSet<UserVerifyInfo> UserVerifyInfos { get; internal set; }
     }
 }

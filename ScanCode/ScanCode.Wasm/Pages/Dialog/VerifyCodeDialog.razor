@@ -11,25 +11,31 @@
 
 
 
-@inject IJSRuntime JsRuntime
 
-<MudDialog >
+<MudDialog>
     <DialogContent>
-        <MudGrid>
-            <MudItem xs="6">
-                <MudTextField Label="手机号" @bind-Value="_phoneNumber" />
-            </MudItem>
-            <MudItem xs="6">
-                <MudButton Disabled="@_isDisabled" OnClick="SendVerificationCode">@_buttonName</MudButton>
-            </MudItem>
-        </MudGrid>
-        <MudTextField Label="验证码" @bind-Value="_verificationCode" />
+        <MudStack Class="mt-5" Row="true" Spacing=3>
+            <MudTextField Class="align-bottom" Clearable="true"
+                          Variant="Variant.Outlined" Immediate="true"
+                          Label="手机号码"
+                          @bind-Value="PhoneNumber"
+                          Error="@(!string.IsNullOrWhiteSpace(_phoneNumberError))"
+                          ErrorText="@_phoneNumberError" />
+            <MudButton Class="align-bottom" Variant="Variant.Text" Color="Color.Primary"
+                       Size="Size.Small"
+                       Disabled="@_isDisabled" OnClick="SendVerificationCode">@_buttonName</MudButton>
+
+        </MudStack>
+        <MudTextField Class="w-100" Clearable="true" Label="验证码" @bind-Value="VerificationCode" Immediate="true"
+                      Error="@(!string.IsNullOrWhiteSpace(_verificationError))"
+                      ErrorText="@_verificationError"
+                      Variant="Variant.Outlined" Color="Color.Error" />
+
+        <MudButton Class="mt-5 mb-5" Size="Size.Medium" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="VerifyCode">确认</MudButton>
+
     </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="VerifyCode">确认</MudButton>
-        <MudButton OnClick="Close">取消</MudButton>
-    </DialogActions>
 </MudDialog>
+
 
 @code {
 
@@ -42,72 +48,199 @@
     protected DataStateContainer Container { set; get; }
 
 
-    private string OpenId{ set; get; }  = string.Empty ;
+    private string OpenId{ set; get; }  = string.Empty;
+
     private string _phoneNumber;
+
+    public string PhoneNumber
+    {
+        get => _phoneNumber;
+        set
+        {
+            _phoneNumber = value;
+
+            if (!IsPhoneNumber(_phoneNumber))
+            {
+                // 如果手机号不合法，你可以在这里设置一个错误信息
+                // 例如：
+                _phoneNumberError = "请输入有效的手机号";
+            }
+            else
+            {
+                // 如果手机号合法，清除错误信息
+                _phoneNumberError = null;
+            }
+        }
+    }
+    private string _phoneNumberError;
+
+
+
     private string _verificationCode;
+    public string VerificationCode
+    {
+        get => _verificationCode;
+        set
+        {
+            _verificationCode = value;
+            _verificationError = null;
+            StateHasChanged(); // 强制 UI 更新
+        }
+    }
+    //验证码错误信息
+    private string _verificationError;
 
     //按钮名称
     private string _buttonName = "发送验证码";
 
     private bool _isDisabled=false;
 
+
     //计时器
     private System.Timers.Timer _timer;
-    
+
+    //倒计时计数
+    private int _countDown = 60;
+
+
+    //启动定时器，禁用按钮，定时60秒,60秒倒计时结束之后，恢复按钮
+    private void StartTimer()
+    {
+        _countDown = 60;
+        _isDisabled = true;
+        _timer = new System.Timers.Timer(1000);
+        _timer.Elapsed += (sender, e) =>
+        {
+            _countDown--;
+            if (_countDown <= 0)
+            {
+                _timer.Stop();
+                _isDisabled = false;
+                _buttonName = "发送验证码";
+            }
+            else
+            {
+                _buttonName = $"发送验证码({_countDown})";
+            }
+            StateHasChanged();
+        };
+        _timer.Start();
+
+
+    }
+
+
+    [Inject] private IDialogService DialogService { get; set; }
 
     private async Task SendVerificationCode()
     {
 
-        // 在这里实现发送验证码的逻辑
-        // 例如，你可以调用一个API来发送验证码
-        // 记得设置验证码的有效期为60秒
-
-        //访问后端接口发送验证码
-
-        var Http= HttpClientFactory.CreateClient();
-        var response = await Http.PostAsJsonAsync("api/VerifyCode/SendVerificationCode", new { PhoneNumber = _phoneNumber });
-
-        if (response.IsSuccessStatusCode)
+        if (string.IsNullOrWhiteSpace(_phoneNumber) || !IsPhoneNumber(_phoneNumber))
         {
-            //发送成功
-            //显示提示信息
-            await JsRuntime.InvokeVoidAsync("alert", "验证码已发送，请查收");
-
-            //禁用按钮60秒
-
+            return;
         }
-        else
+
+        try
         {
-            //发送失败
-            //显示提示信息
-            await JsRuntime.InvokeVoidAsync("alert", "验证码发送失败，请重试");
+            StartTimer();
+            // 在这里实现发送验证码的逻辑
+
+            var httpClient = HttpClientFactory.CreateClient("weixin");
+            var response = await httpClient.PostAsync($"AliyunSms/SendSms?phone={_phoneNumber}", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                //发送成功
+
+                var redpacketresult = await response.Content.ReadFromJsonAsync<AliyunSmsResult>();
+
+                if (redpacketresult.IsSuccess)
+                {
+                    // return redpacketresult.Data;
+                }
+            }
+            else
+            {
+                bool? result = await DialogService.ShowMessageBox(
+        "Warning",
+        $"发送短信失败",
+        yesText: "Delete!", cancelText: "Cancel");
+            }
         }
+        catch (Exception ex)
+        {
+
+            bool? result = await DialogService.ShowMessageBox(
+        "Warning",
+        $"{ex.Message}",
+        yesText: "Delete!", cancelText: "Cancel");
+            // throw;
+
+            return ;
+            // throw;
+        }
+
     }
 
     private async Task VerifyCode()
     {
+
+        //校验参数
+        if (!IsPhoneNumber(_phoneNumber)||string.IsNullOrWhiteSpace(_phoneNumber) || string.IsNullOrWhiteSpace(_verificationCode) || string.IsNullOrWhiteSpace(Container.OpenId))
+        {
+            return;
+        }
+
         // 在这里实现验证验证码的逻辑
         // 如果验证码正确，关闭对话框
         // 如果验证码错误，显示错误信息
 
         //访问后端接口验证验证码
-        var Http = HttpClientFactory.CreateClient();
-        var response = await Http.PostAsJsonAsync("api/VerifyCode/VerifyCode", new { PhoneNumber = _phoneNumber, VerificationCode = _verificationCode, OpenId = Container.OpenId });
-    
+        var Http = HttpClientFactory.CreateClient("weixin");
+        var response = await Http.PostAsync($"AliyunSmsVerifyCode/VerifyCode?phone={_phoneNumber}&code={_verificationCode}&openid={Container.OpenId}",null);
+
         if (response.IsSuccessStatusCode)
         {
-            //验证成功
-            //关闭对话框
-            Close();
+            var redpacketresult = await response.Content.ReadFromJsonAsync<AliyunSmsResult>();
+
+            if (redpacketresult.IsSuccess)
+            {
+               
+                _verificationError = null;
+                Close();
+                return;
+            }
+            _verificationError = redpacketresult.Message;
+
         }
         else
         {
-            //验证失败
-            //显示提示信息
-            await JsRuntime.InvokeVoidAsync("alert", "验证码错误，请重试");
+            _verificationError = "验证码错误，请重试";
         }
     
     }
 
 
+    //正则判断字符串是否是手机号
+    private bool IsPhoneNumber(string phoneNumber)
+    {
+        return System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^1[3456789]\d{9}$");
+    }
+
+
+    private void ValidatePhoneNumber(ChangeEventArgs e)
+    {
+        _phoneNumber = e.Value.ToString();
+        if (!IsPhoneNumber(_phoneNumber))
+        {
+            // 如果手机号不合法，你可以在这里设置一个错误信息
+            // 例如：
+            _phoneNumberError = "请输入有效的手机号";
+        }
+        else
+        {
+            // 如果手机号合法，清除错误信息
+            _phoneNumberError = null;
+        }
+    }
 }

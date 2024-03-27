@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
     <PackageReference Include="Microsoft.DotNet.Scaffolding.Shared" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.27.0" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.34.0" />
     <PackageReference Include="MiniExcel" Version="1.30.2" />
     <PackageReference Include="MudBlazor" Version="6.2.2" />
     <PackageReference Include="NetTopologySuite.IO.SqlServerBytes" Version="2.1.0" />

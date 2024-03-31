@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ScanCode.Model.Dto;
 using ScanCode.Model.Entity;
 
 using ScanCode.Repository.Interface;
@@ -114,34 +115,113 @@ namespace ScanCode.Repository
         }
 
         //这个函数根据字段ReOpenId分组统计，每个ReOpenId领取红包金额TotalAmount（这个需要转换int才能使用sum,保留两位小数）
-        public async Task<List<RedPacketRecord>> GetRedPacketRecordsGroupByReOpenIdAsync(int topCount)
+
+        public async Task<List<RedPacketRankingDto>> GetRedPacketRankingsAsync()
         {
+            try
+            {
+                using (var context = _contextFactory.CreateDbContext())
+                {
+                    var groupRecords = from record in context.RedPacketRecords
+                                       group record by record.ReOpenId into g
+                                       select new
+                                       {
+                                           ReOpenId = g.Key,
+                                           TotalAmount = g.Sum(s => Convert.ToInt32(s.TotalAmount))
+                                       };
+
+                    var topRecords = await groupRecords.OrderByDescending(t => t.TotalAmount)
+                                                       .Take(10)
+                                                       .ToListAsync();
+
+                    var query = from r in topRecords
+                                join user in context.UserVerifyInfos on r.ReOpenId equals user.WxOpenId into gj
+                                from subUser in gj.DefaultIfEmpty()
+                                select new RedPacketRankingDto()
+                                {
+                                    OpenId = r.ReOpenId,
+                                    TotalAmount = Math.Round(r.TotalAmount / 100.0, 2).ToString(),
+                                    PhoneNumber = subUser == null ? "" : subUser.PhoneNumber,
+                                };
+
+                    return query.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Array.Empty<RedPacketRankingDto>().ToList();
+            }
+        }
+
+        public async Task<List<RedPacketRecordDto>> GetRedPacketRecordsWithPhoneAsync(DateTime startTime, DateTime endTime)
+        {
+            //设置endTime 到最后23点59分59秒
+            endTime = endTime.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.RedPacketRecords.AsNoTracking()
+                var query = from record in context.RedPacketRecords
+                            join user in context.UserVerifyInfos on record.ReOpenId equals user.WxOpenId into gj
+                            from subUser in gj.DefaultIfEmpty()
+                            where record.CreateTime >= startTime && record.CreateTime <= endTime
+                            select new RedPacketRecordDto()
+                            {
+                                CreateTime = record.CreateTime,
+                                AdminUser = record.AdminUser,
+                                Id = record.Id,
+                                QrCode = record.QrCode,
+                                Captcha = record.Captcha,
+                                ActivityName = record.ActivityName,
+                                CashAmount = record.CashAmount,
+                                ReceiveTime = record.ReceiveTime,
+                                IssueTime = record.IssueTime,
+                                MchbillNo = record.MchbillNo,
+                                MchId = record.MchId,
+                                WxAppId = record.WxAppId,
+                                Phone = subUser.PhoneNumber,
+                                ReOpenId = record.ReOpenId,
+                                TotalAmount = record.TotalAmount,
+                                SendListid = record.SendListid,
+                                NonceStr = record.NonceStr,
+                                PaySign = record.PaySign
+                            };
 
-                    .GroupBy(g => g.ReOpenId)
-                    .Select(s => new RedPacketRecord()
-                    {
-                        ReOpenId = s.Key,
-                        TotalAmount = Math.Round(s.Sum(s => int.Parse(s.TotalAmount)) / 100.0, 2).ToString()
-                    })
-                    .OrderByDescending(t => t.TotalAmount)
-                    .Take(topCount)
-                    .ToListAsync();
+                return await query.OrderByDescending(o => o.IssueTime).ToListAsync();
             }
         }
 
         //返回指定用户领取红包的明细
-        public async Task<List<RedPacketRecord>> GetUserRedPacketDetailAsync(string openid)
+        public async Task<List<RedPacketRecordDto>> GetUserRedPacketDetailAsync(string openid)
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.RedPacketRecords.AsNoTracking()
-                    .Where(x => x.ReOpenId == openid)
+                var query = from record in context.RedPacketRecords
+                            join user in context.UserVerifyInfos on record.ReOpenId equals user.WxOpenId into gj
+                            from subUser in gj.DefaultIfEmpty()
+                            where record.ReOpenId == openid
+                            select new RedPacketRecordDto()
+                            {
+                                ReOpenId = record.ReOpenId,
+                                TotalAmount = Math.Round(Convert.ToInt32(record.TotalAmount) / 100.0, 2).ToString(),
+                                Phone = subUser == null ? "" : subUser.PhoneNumber,
+                                QrCode = record.QrCode,
+                                Captcha = record.Captcha,
+                                ActivityName = record.ActivityName,
+                                CashAmount = record.CashAmount,
+                                ReceiveTime = record.ReceiveTime,
+                                IssueTime = record.IssueTime,
+                                MchbillNo = record.MchbillNo,
+                                MchId = record.MchId,
+                                WxAppId = record.WxAppId,
+                                SendListid = record.SendListid,
+                                NonceStr = record.NonceStr,
+                                PaySign = record.PaySign
+                            };
 
-                    .ToListAsync();
+                return await query.ToListAsync();
             }
         }
+
+        //
     }
 }

@@ -1,7 +1,9 @@
 ﻿@page "/receiveredpackmanage"
+@using ScanCode.Model.Dto
 
 
 @attribute [Authorize(Policy = Permissions.RedPackets.RedPacketGiveOutView)]
+
 @inject RedPacketRecordRepository _PacketRecordRepository
 
 
@@ -49,7 +51,7 @@ else
     </MudStack>*@
 
     <MudTable Items="@PacketRecords"
-          Filter="new Func<RedPacketRecord, bool>(FilterFunc1)"
+              Filter="new Func<RedPacketRecordDto, bool>(FilterFunc1)"
               Dense="true" Striped="true" @ref="@_table">
         <ToolBarContent>
 
@@ -72,37 +74,24 @@ else
 
                 </MudStack>
             </MudHidden>
-            @*  <MudButton Color="Color.Primary" OnClick="@(async () => await LoadData())" StartIcon="@Icons.Material.Filled.Refresh" Variant="Variant.Filled">重新加载</MudButton>
-            <MudButton Class="mx-3" Color="Color.Primary" OnClick="@(async () => await ExportToExcel())" StartIcon="@Icons.Material.Filled.ImportExport" Variant="Variant.Text">导出Excel</MudButton>
-            <MudSpacer></MudSpacer>
-            <MudSpacer></MudSpacer>
-            <MudSpacer></MudSpacer>
-            <MudSpacer></MudSpacer>
-            <MudTextField T="string" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-*@
-           @* <MudText Typo="Typo.h6">红包领取记录</MudText>
-            <MudSpacer/>
-            <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>*@
         </ToolBarContent>
+
         <HeaderContent>
             
             <MudTh>微信OpenID</MudTh>
+            <MudTh>手机号码</MudTh>
             <MudTh>订单号</MudTh>
             <MudTh>标签序号</MudTh>
             <MudTh>验证码</MudTh>
             <MudTh>活动名称</MudTh>
             <MudTh>发放金额(分)</MudTh>
             <MudTh>发放时间</MudTh>
-            @*      <MudTh>奖品描述</MudTh>
-        <MudTh>奖品图片</MudTh>
-        <MudTh>功能</MudTh>*@
+
         </HeaderContent>
         <RowTemplate Context="prize">
 
-            @*       <MudTd>
-        <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnToggledChanged(prize))">@(prize.IsActive ? "已激活" : "未激活")</MudButton>
-        </MudTd>*@
             <MudTd>@prize.ReOpenId</MudTd>
+            <MudTd>@prize.Phone</MudTd>
             <MudTd>@prize.MchbillNo</MudTd>
             <MudTd>@prize.QrCode</MudTd>
             <MudTd>@prize.Captcha</MudTd>
@@ -110,13 +99,7 @@ else
             <MudTd>@prize.TotalAmount</MudTd>
             <MudTd>@prize.IssueTime</MudTd>
 
-            @*          <MudTd>
-        <MudStack Row="true" Spacing="1">
-        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnEditPrize(prize))">编辑</MudButton>
-        <MudButton Color="Color.Error" Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => OnDeletePrize(prize))">删除</MudButton>
 
-        </MudStack>
-        </MudTd>*@
         </RowTemplate>
         <PagerContent>
             <MudStack Spacing="3" Class="my-5" Justify="Justify.SpaceAround">
@@ -131,9 +114,9 @@ else
     private MudDateRangePicker _picker;
     private DateRange _dateRange = new DateRange(DateTime.Now.Date.AddDays(-7), DateTime.Now.Date);
 
-    private MudTable<RedPacketRecord> _table;
+    private MudTable<RedPacketRecordDto> _table;
 
-    private IEnumerable<RedPacketRecord> PacketRecords { set; get; }
+    private IEnumerable<RedPacketRecordDto> PacketRecords { set; get; }
 
     // private MudTable<RedPacketRecord> mtable;
     //private MudTable<Element> table;
@@ -153,66 +136,16 @@ else
     }
 
 
-    //private async Task<TableData<RedPacketRecord>> ServerReload(TableState state)
-    //{
-    //    var datalist = await _PacketRecordRepository.GetAllAsync();
-    //    datalist = datalist.Where(element =>
-    //    {
-    //        if (string.IsNullOrWhiteSpace(searchString))
-    //            return true;
-    //        if (element.ReOpenId.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-    //            return true;
-    //        if (element.Captcha.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-    //            return true;
 
-    //        if (element.QrCode.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-    //            return true;
-
-    //        if (element.TotalAmount.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-    //            return true;
-
-
-    //        if ($"{element.ReOpenId} {element.Captcha} {element.QrCode}".Contains(searchString))
-    //            return true;
-    //        return false;
-    //    }).ToArray();
-    //    redPacketRecordCunt = datalist.Count();
-    //    switch (state.SortLabel)
-    //    {
-    //        case "QrCode":
-    //            datalist = datalist.OrderByDirection(state.SortDirection, o => o.QrCode);
-    //            break;
-    //        case "CreateTime":
-    //            datalist = datalist.OrderByDirection(state.SortDirection, o => o.CreateTime);
-    //            break;
-    //        case "CashAmount":
-    //            datalist = datalist.OrderByDirection(state.SortDirection, o => o.CashAmount);
-    //            break;
-    //        case "MchbillNo":
-    //            datalist = datalist.OrderByDirection(state.SortDirection, o => o.MchbillNo);
-    //            break;
-    //        case "mass_field":
-    //            break;
-    //    }
-    //    PacketRecords = datalist.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-    //    return new TableData<RedPacketRecord>() { TotalItems = redPacketRecordCunt, Items = PacketRecords };
-
-    //}
-    //private Task OnSearch(string text)
-    //{
-    //    searchString = text;
-    //    _table.ReloadServerData();
-    //    return Task.CompletedTask;
-    //}
 
     private void PageChanged(int i)
     {
         _table.NavigateTo(i - 1);
     }
 
-    private bool FilterFunc1(RedPacketRecord element) => FilterFunc(element, searchString);
+    private bool FilterFunc1(RedPacketRecordDto element) => FilterFunc(element, searchString);
 
-    private bool FilterFunc(RedPacketRecord element, string searchString)
+    private bool FilterFunc(RedPacketRecordDto element, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
         {
@@ -240,13 +173,13 @@ else
     {
         PacketRecords = null;
         _picker.Close();
-        PacketRecords = await _PacketRecordRepository.FindAsync(f => f.CreateTime >= _dateRange.Start.Value && f.CreateTime <= _dateRange.End.Value);
+        PacketRecords = await _PacketRecordRepository.GetRedPacketRecordsWithPhoneAsync(_dateRange.Start.Value , _dateRange.End.Value);
         return; 
     }
 
     private async Task LoadData()
     {
-        PacketRecords = (await _PacketRecordRepository.FindAsync(f=>f.CreateTime>=DateTime.Now.Date.AddDays(-90))).OrderByDescending(o=>o.IssueTime).ToList();
+        PacketRecords = await _PacketRecordRepository.GetRedPacketRecordsWithPhoneAsync(DateTime.Now.Date.AddDays(-90), _dateRange.End.Value);
 
         if (PacketRecords is not null && PacketRecords.Count()>1)
         {
@@ -287,7 +220,7 @@ else
         }
     }
 
-    public List<RedPacketRecordExcel> FormatDateTime(List<RedPacketRecord> dt)
+    public List<RedPacketRecordExcel> FormatDateTime(List<RedPacketRecordDto> dt)
     {
         return dt.Select(r => new RedPacketRecordExcel
             {
@@ -305,7 +238,8 @@ else
                 TotalAmount = r.TotalAmount,
                 SendListid = r.SendListid,
                 NonceStr = r.NonceStr,
-                PaySign = r.PaySign
+                PaySign = r.PaySign,
+                Phone = r.Phone
             }).OrderByDescending(o => o.IssueTime).ToList();
     }
 
@@ -359,6 +293,10 @@ else
         /// 公众账号appid
         /// </summary>
         public string WxAppId { get; set; }
+
+        //手机号
+        public string Phone { get; set; }
+
 
         /// <summary>
         /// 用户openid

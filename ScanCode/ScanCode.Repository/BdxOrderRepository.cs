@@ -15,32 +15,34 @@ namespace ScanCode.Repository
         private readonly IMediator _mediator;
         private readonly IDbContextFactory<ErpContext> _contextFactory;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="dbContextFactory">数据库上下文工厂</param>
+        /// <param name="Imediator">中介者</param>
+        /// <param name="logger">日志记录器</param>
         public BdxOrderRepository(IDbContextFactory<ErpContext> dbContextFactory, IMediator Imediator, ILogger<BdxOrder> logger)
-
         {
             _contextFactory = dbContextFactory;
             _logger = logger;
             _mediator = Imediator;
         }
 
-        ///根据表达式树条件返回单个对象结果
-        //public async Task<BdxOrder> GetSingleAsync(string ddno)
-        //{
-        //    using var context = _contextFactory.CreateDbContext();
-
-        //    DateTime time = DateTime.Now.AddDays(-180);
-        //    var oders = await context.BdxOrders.AsNoTracking().Where(w => w.DDNO.Contains(ddno)).FirstOrDefaultAsync();
-        //    return oders;
-        //}
-        public async Task<BdxOrder> GetSingleAsync(string ddno)
+        /// <summary>
+        /// 根据订单号和查询天数获取单个订单,用作查询订单是否存在
+        /// </summary>
+        /// <param name="ddno">订单号</param>
+        /// <param name="queryDays">查询天数</param>
+        /// <returns>订单对象</returns>
+        public async Task<BdxOrder> GetSingleAsync(string ddno, int queryDays)
         {
             try
             {
                 using var context = _contextFactory.CreateDbContext();
 
-                DateTime startDate = DateTime.Now.AddDays(-180);
+                //DateTime startDate = DateTime.Now.AddDays(-queryDays);
 
-                var results = await GetBdxOrderListAsync(ddno.Trim());
+                var results = await GetBdxOrderListAsync(ddno.Trim(), queryDays);
 
                 var order = results.Where(w => w.DDNO.Contains(ddno)).FirstOrDefault();
 
@@ -54,9 +56,14 @@ namespace ScanCode.Repository
             }
         }
 
-        public async Task<List<GroupedBdxOrder>> GetGroupedBdxOrdersDDNOAsync(string ddno)
+        /// <summary>
+        /// 根据订单号获取分组后的订单列表
+        /// </summary>
+        /// <param name="ddno">订单号</param>
+        /// <returns>分组后的订单列表</returns>
+        public async Task<List<GroupedBdxOrder>> GetGroupedBdxOrdersDDNOAsync(string ddno, int queryDays)
         {
-            var bdxOrders = await GetBdxOrderListAsync(ddno);
+            var bdxOrders = await GetBdxOrderListAsync(ddno, queryDays);
 
             var groupedOrders = bdxOrders
                 .GroupBy(order => order.DDNO)
@@ -78,6 +85,10 @@ namespace ScanCode.Repository
             return groupedOrders;
         }
 
+        /// <summary>
+        /// 获取分组后的订单列表
+        /// </summary>
+        /// <returns>分组后的订单列表</returns>
         public async Task<List<GroupedBdxOrder>> GetGroupedBdxOrdersAsync()
         {
             // 获取 ERP 出库单列表
@@ -105,10 +116,9 @@ namespace ScanCode.Repository
         }
 
         /// <summary>
-        /// 获取数据列表
+        /// 获取订单列表
         /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <returns>订单列表</returns>
         private async Task<List<BdxOrder>> GetBdxOrdersAsync()
         {
             try
@@ -120,25 +130,19 @@ namespace ScanCode.Repository
 
                 // 您可能需要根据您的表结构和字段类型调整此 SQL 查询
                 var sql = @"
-                            SELECT DDNO, DDRQ, KH, XH, GGXH, SL, DW, DJ, THRQ, YS
-                            FROM T_BDX_ORDER
-                            WHERE TRUNC(TO_DATE(DDRQ, 'YYYY-MM-DD HH24:MI:SS')) >= :startDate
-                            AND TRUNC(TO_DATE(DDRQ, 'YYYY-MM-DD HH24:MI:SS')) <= :endDate
-                            AND (THRQ IS NULL OR LENGTH(THRQ) = 0)";
+                                SELECT DDNO, DDRQ, KH, XH, GGXH, SL, DW, DJ, THRQ, YS
+                                FROM T_BDX_ORDER
+                                WHERE TRUNC(TO_DATE(DDRQ, 'YYYY-MM-DD HH24:MI:SS')) >= :startDate
+                                AND TRUNC(TO_DATE(DDRQ, 'YYYY-MM-DD HH24:MI:SS')) <= :endDate
+                                AND (THRQ IS NULL OR LENGTH(THRQ) = 0)";
 
                 var parameters = new[]
                 {
-                    new OracleParameter("startDate", OracleDbType.Date) { Value = startDate },
-                    new OracleParameter("endDate", OracleDbType.Date) { Value = endDate },
-                };
+                        new OracleParameter("startDate", OracleDbType.Date) { Value = startDate },
+                        new OracleParameter("endDate", OracleDbType.Date) { Value = endDate },
+                    };
 
                 var oders = await context.BdxOrders.FromSqlRaw(sql, parameters).ToListAsync();
-
-                //var oders = await context.BdxOrders.AsNoTracking()
-                //     //.Where(order => DateTime.Parse(order.DDRQ) >= startDate && DateTime.Parse(order.DDRQ) <= endDate)
-                //     //.Where(order => EF.Functions.TruncateTime(order.DDRQ) >= startDate.Date && EF.Functions.TruncateTime(order.DDRQ) <= endDate.Date)
-                //    .Where(order => string.IsNullOrWhiteSpace(order.THRQ))
-                //    .ToListAsync();
 
                 return oders;
             }
@@ -153,50 +157,33 @@ namespace ScanCode.Repository
                 });
                 return new List<BdxOrder>();
             }
-
-            //throw new NotImplementedException();
         }
 
-        ///// <summary>
-        ///// 返回订单号列表
-        ///// </summary>
-        ///// <param name="ddno"></param>
-        ///// <returns></returns>
-        ///// <exception cref="NotImplementedException"></exception>
-        ////public async Task<List<BdxOrder>> GetBdxOrderListAsync(string ddno)
-        ////{
-        ////    using var context = _contextFactory.CreateDbContext();
-
-        ////    DateTime time = DateTime.Now.AddDays(-180);
-        ////    var oders = await context.BdxOrders.AsNoTracking().Where(w => w.DDNO.Contains(ddno)).ToListAsync();
-        ////    return oders;
-        ////}
-
         /// <summary>
-        /// 返回订单号列表
+        /// 根据订单号获取订单列表
         /// </summary>
-        /// <param name="ddno"></param>
-        /// <returns></returns>
-        public async Task<List<BdxOrder>> GetBdxOrderListAsync(string ddno)
+        /// <param name="ddno">订单号</param>
+        /// <returns>订单列表</returns>
+        public async Task<List<BdxOrder>> GetBdxOrderListAsync(string ddno, int queryDays)
         {
             try
             {
                 using var context = _contextFactory.CreateDbContext();
 
-                DateTime startDate = DateTime.Now.AddDays(-180);
+                DateTime startDate = DateTime.Now.AddDays(-queryDays);
 
                 // 您可能需要根据您的表结构和字段类型调整此 SQL 查询
                 var sql = @"
-                            SELECT DDNO, DDRQ, KH, XH, GGXH, SL, DW, DJ, THRQ, YS
-                            FROM T_BDX_ORDER
-                            WHERE TRUNC(TO_DATE(DDRQ, 'YYYY-MM-DD HH24:MI:SS')) >= :startDate
-                            AND DDNO LIKE :ddNo";
+                                SELECT DDNO, DDRQ, KH, XH, GGXH, SL, DW, DJ, THRQ, YS
+                                FROM T_BDX_ORDER
+                                WHERE TRUNC(TO_DATE(DDRQ, 'YYYY-MM-DD HH24:MI:SS')) >= :startDate
+                                AND DDNO LIKE :ddNo";
 
                 var parameters = new[]
                 {
-                    new OracleParameter("startDate", OracleDbType.Date) { Value = startDate },
-                    new OracleParameter("ddNo", OracleDbType.NVarchar2) { Value = $"%{ddno}%" },
-                };
+                        new OracleParameter("startDate", OracleDbType.Date) { Value = startDate },
+                        new OracleParameter("ddNo", OracleDbType.NVarchar2) { Value = $"%{ddno}%" },
+                    };
 
                 var oders = await context.BdxOrders.FromSqlRaw(sql, parameters).ToListAsync();
 
@@ -204,7 +191,6 @@ namespace ScanCode.Repository
             }
             catch (OracleException e)
             {
-                //Console.WriteLine(e);
                 _ = _mediator?.Publish(new SendEmailEvent()
                 {
                     Title = "重要通知：ERP-ORACLE 链接失败",
@@ -212,7 +198,6 @@ namespace ScanCode.Repository
                     Email = ""
                 });
                 _logger.LogError($"模糊查询订单号异常：{e.Message}");
-                // throw;
                 return new List<BdxOrder>();
             }
         }

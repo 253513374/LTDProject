@@ -198,7 +198,11 @@ namespace ScanCode.Web.Admin.SignalRHub
         /// <returns></returns>
         public async Task<List<GroupedBdxOrder>> SendGroupedBdxOrdersDDNOAsync(string ddno)
         {
-            return await _bdxOrderRepository.GetGroupedBdxOrdersDDNOAsync(ddno);
+            //标识查询天数
+
+            int queryDays = 180;
+
+            return await _bdxOrderRepository.GetGroupedBdxOrdersDDNOAsync(ddno, queryDays);
         }
 
         /// <summary>
@@ -249,7 +253,8 @@ namespace ScanCode.Web.Admin.SignalRHub
         /// <returns></returns>
         public async Task<List<BdxOrder>> SendBdxOrderListAsync(string ddno)
         {
-            var list = await _bdxOrderRepository.GetBdxOrderListAsync(ddno);
+            int queryDays = 180;
+            var list = await _bdxOrderRepository.GetBdxOrderListAsync(ddno, queryDays);
             // await Clients.All.SendAsync(HubClientMethods., list);
             return list;
         }

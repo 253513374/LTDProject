@@ -345,8 +345,10 @@ namespace ScanCode.Mvc.Services
                     return RedStatusResult.FailNotImportData("红包数据不存在");
                 }
 
+                int queryDays = 270;
+
                 //判断订单数据是否出库发车（激活）,
-                var bdxOrder = await _bdxOrderRepository.GetSingleAsync(ordernumbels);
+                var bdxOrder = await _bdxOrderRepository.GetSingleAsync(ordernumbels, queryDays);
                 if (bdxOrder is not null)
                 {
                     if (string.IsNullOrWhiteSpace(bdxOrder.THRQ))
